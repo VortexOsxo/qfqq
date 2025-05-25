@@ -1,3 +1,25 @@
 {
-  "helloWorld": "Hello World!"
+  "helloWorld": "Hello World!",
+  
+  "selectDateCancel": "Cancel",
+  "selectDateOk": "OK",
+  "selectDateSelected": "Selected:",
+  "selectDateHourLabel": "HH",
+  "selectDateMinuteLabel": "MM",
+  "selectDateInvalidHourMinute": "Please enter a valid hour (0-23) and minute (0-59).",
+  "agendaPageActualName": "Redaction Date",
+  "agendaPageTitle": "Meeting Title",
+  "agendaPageGoals": "Goals of the meeting",
+  "agendaPageLocation": "Meeting Location",
+  "agendaPageMeetingOn": "Meeting on {date}",
+  "agendaPageTitleAppBar": "Agenda",
+  "agendaPageSectionMeetingDetails": "Meeting Details",
+  "agendaPageSectionScheduleLocation": "Schedule & Location",
+  "agendaPageSectionThemes": "Themes",
+  "agendaPageSectionPeople": "People",
+  "agendaPageAnimatorLabel": "Animator",
+  "agendaPageAddParticipant": "Add participant",
+  "agendaPageAddTheme": "Add theme",
+  "agendaPageCancel": "Cancel",
+  "agendaPageSaveAgenda": "Save Agenda"
 }

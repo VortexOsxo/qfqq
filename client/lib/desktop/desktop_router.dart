@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/pages/agenda_page.dart';
 import 'package:qfqq/common/pages/home_page.dart';
 import 'package:qfqq/common/pages/about_page.dart';
 
@@ -11,6 +12,10 @@ final GoRouter desktopRouter = GoRouter(
     GoRoute(
       path: '/about',
       builder: (context, state) => const AboutPage(),
+    ),
+    GoRoute(
+      path: '/agenda',
+      builder: (context, state) => const AgendaPage(),
     ),
   ],
 );

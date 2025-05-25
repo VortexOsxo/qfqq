@@ -10,8 +10,8 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(title: const Text('Home')),
       body: Center(
         child: ElevatedButton(
-          onPressed: () => context.go('/about'),
-          child: const Text('Go to About'),
+          onPressed: () => context.go('/agenda'),
+          child: const Text('Agenda Page'),
         ),
       ),
     );
