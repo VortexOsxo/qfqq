@@ -30,4 +30,8 @@ def _get_db() -> Database:
 def _create_db():
     db = _get_db()
     users_collection = db['users']
-    users_collection.create_index([("user_id", 1)], unique=True)
+    users_collection.create_index([("email", 1)], unique=True)
+
+if __name__ == "__main__":
+    _create_db()
+    print("Database created")

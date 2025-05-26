@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:qfqq/generated/l10n.dart';
 
 Future<DateTime?> showDateTimePicker(BuildContext context, DateTime currentDateTime) async {
   DateTime selectedDate = currentDateTime;
@@ -11,7 +11,7 @@ Future<DateTime?> showDateTimePicker(BuildContext context, DateTime currentDateT
   final DateTime? result = await showDialog<DateTime>(
     context: context,
     builder: (BuildContext context) {
-      final loc = AppLocalizations.of(context)!;
+      final loc = S.of(context);
       return Dialog(
         child: Padding(
           padding: const EdgeInsets.all(16.0),

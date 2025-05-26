@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:qfqq/common/providers/current_meeting_agenda.dart';
 import 'package:qfqq/common/utils/modals/select_date.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:qfqq/generated/l10n.dart';
 
 class AgendaPage extends ConsumerStatefulWidget {
   const AgendaPage({super.key});
@@ -133,7 +133,7 @@ class _AgendaPageState extends ConsumerState<AgendaPage> {
     final locale = Localizations.localeOf(context).toString();
     String formattedDateTime = DateFormat.yMMMd(locale).add_Hm().format(_selectedDateTime);
     String formattedRedactionDate = DateFormat.yMMMd(locale).format(_redactionDate);
-    final loc = AppLocalizations.of(context)!;
+    final loc = S.of(context);
 
     ref.watch(currentMeetingAgendaProvider);
 

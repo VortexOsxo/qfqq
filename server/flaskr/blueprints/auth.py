@@ -30,6 +30,7 @@ def signup():
     data = request.get_json()
 
     username = data.get('username')
+    email = data.get('email')
     password = data.get('password')
 
     users_collection = get_collection('users')
@@ -37,27 +38,28 @@ def signup():
     try:
         users_collection.insert_one({
             'username': username,
+            'email': email,
             'password': generate_password_hash(password)
         })
     except DuplicateKeyError:
-        return jsonify({'error': f'User {username} is already registered'}), 400 
+        return jsonify({'emailError': 1}), 400 
 
-    return jsonify({'error': f'Account created for {username}'}), 201
+    return jsonify({}), 201
 
 @auth_bp.route('/login', methods=(['POST']))
 def login():
     data = request.get_json()
 
-    username = data.get('username')
+    email = data.get('email')
     password = data.get('password')
 
     users_collection = get_collection('users')
-    user = users_collection.find_one({"username": username})
+    user = users_collection.find_one({'email': email})
 
     if user is None:
-        return jsonify({'error': 'Incorrect username'}), 401
+        return jsonify({'error': 2}), 401
     elif not check_password_hash(user['password'], password):
-        return jsonify({'error': 'Incorrect password'}), 401
+        return jsonify({'error': 1}), 401
     
     token = jwt.encode({
         'user_id': str(user['_id']),

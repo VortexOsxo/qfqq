@@ -9,8 +9,9 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Home')),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () => context.go('/agenda'),
+        child:
+            ElevatedButton(
+              onPressed: () => context.go('/agenda'),
           child: const Text('Agenda Page'),
         ),
       ),
