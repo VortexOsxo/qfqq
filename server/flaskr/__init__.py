@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask
-from .db import init_db
+from .database import init_db
 
 from .blueprints import *
 
@@ -22,10 +22,6 @@ def create_app(test_config=None):
         pass
 
     app.register_blueprint(auth_bp)
-
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
 
     init_db(app)
 

@@ -3,8 +3,8 @@ import jwt
 from flask import Blueprint, g, request, jsonify, current_app
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime, timedelta
-from flaskr.db import get_collection
-from pymongo.errors import DuplicateKeyError
+
+from flaskr.database import UserDataHandler
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -33,17 +33,8 @@ def signup():
     email = data.get('email')
     password = data.get('password')
 
-    users_collection = get_collection('users')
-
-    try:
-        users_collection.insert_one({
-            'username': username,
-            'email': email,
-            'password': generate_password_hash(password)
-        })
-    except DuplicateKeyError:
+    if not UserDataHandler.create_user(username, email, generate_password_hash(password)):
         return jsonify({'emailError': 1}), 400 
-
     return jsonify({}), 201
 
 @auth_bp.route('/login', methods=(['POST']))
@@ -53,16 +44,15 @@ def login():
     email = data.get('email')
     password = data.get('password')
 
-    users_collection = get_collection('users')
-    user = users_collection.find_one({'email': email})
+    user = UserDataHandler.get_user(email)
 
     if user is None:
         return jsonify({'error': 2}), 401
-    elif not check_password_hash(user['password'], password):
+    elif not check_password_hash(user.passwordHash, password):
         return jsonify({'error': 1}), 401
     
     token = jwt.encode({
-        'user_id': str(user['_id']),
+        'user_id': str(user.id),
         'exp': datetime.utcnow() + timedelta(hours=3)
     }, current_app.config['SECRET_KEY'], algorithm='HS256')
 
