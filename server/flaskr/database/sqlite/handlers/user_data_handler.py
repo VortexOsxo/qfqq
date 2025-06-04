@@ -24,3 +24,9 @@ class UserDataHandler:
             (email,)
         ).fetchone()
         return User(user[0], user[1], user[2], user[3])
+
+    @staticmethod
+    def get_users():
+        db = get_db_access()
+        users = db.execute("SELECT * FROM users").fetchall()
+        return [User(user[0], user[1], user[2], user[3]) for user in users]

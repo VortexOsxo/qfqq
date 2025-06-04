@@ -1,11 +1,11 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask
+
 from .database import init_db
+from .blueprints import register_blueprints
 
-from .blueprints import *
-
-def create_app(test_config=None):
+def create_app():
     load_dotenv()
 
     app = Flask(__name__, instance_relative_config=True)
@@ -21,8 +21,7 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    app.register_blueprint(auth_bp)
-
+    register_blueprints(app)
     init_db(app)
 
     return app

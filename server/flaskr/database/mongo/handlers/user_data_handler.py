@@ -4,7 +4,7 @@ from flaskr.models import User
 
 class UserDataHandler:
     @staticmethod
-    def create_user(self, username: str, email: str, passwordHash: str):
+    def create_user(username: str, email: str, passwordHash: str):
         users_collection = get_collection('users')
         try:
             users_collection.insert_one({
@@ -20,4 +20,10 @@ class UserDataHandler:
     def get_user(email: str):
         users_collection = get_collection('users')
         user = users_collection.find_one({'email': email})
-        return User(str(user['_id']), user['username'], user['email'], user['passwordHash'])
+        return User(str(user['_id']), user['username'], user['passwordHash'], user['email'])
+
+    @staticmethod
+    def get_users():
+        users_collection = get_collection('users')
+        users = users_collection.find()
+        return [User(str(user['_id']), user['username'], user['passwordHash'], user['email']) for user in users]
