@@ -1,9 +1,10 @@
 import 'package:go_router/go_router.dart';
-import 'package:qfqq/common/pages/agenda_page.dart';
+import 'package:qfqq/common/pages/agenda_modification__page.dart';
 import 'package:qfqq/common/pages/home_page.dart';
 import 'package:qfqq/common/pages/about_page.dart';
 import 'package:qfqq/common/pages/login_page.dart';
 import 'package:qfqq/common/pages/signup_page.dart';
+import 'package:qfqq/common/pages/agenda_list_page.dart';
 
 final GoRouter desktopRouter = GoRouter(
   initialLocation: '/login',
@@ -18,7 +19,11 @@ final GoRouter desktopRouter = GoRouter(
     ),
     GoRoute(
       path: '/agenda',
-      builder: (context, state) => const AgendaPage(),
+      builder: (context, state) => const AgendaModificationPage(),
+    ),
+    GoRoute(
+      path: '/agendas',
+      builder: (context, state) => const AgendasListPage(),
     ),
     GoRoute(
       path: '/login',

@@ -7,7 +7,7 @@ MeetingAgendaStatus {
 
 class MeetingAgenda {
   final String title;
-  final String reunionGoals = '';
+  String reunionGoals;
   final MeetingAgendaStatus status;
 
   final DateTime redactionDate;
@@ -25,5 +25,6 @@ class MeetingAgenda {
     required this.title,
     required this.redactionDate,
     required this.status,
+    this.reunionGoals = '',
   });
 }

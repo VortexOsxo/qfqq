@@ -3,17 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:qfqq/common/providers/current_meeting_agenda.dart';
+import 'package:qfqq/common/services/meeting_agenda_service.dart';
 import 'package:qfqq/common/utils/modals/select_date.dart';
 import 'package:qfqq/generated/l10n.dart';
 
-class AgendaPage extends ConsumerStatefulWidget {
-  const AgendaPage({super.key});
+class AgendaModificationPage extends ConsumerStatefulWidget {
+  const AgendaModificationPage({super.key});
 
   @override
-  ConsumerState<AgendaPage> createState() => _AgendaPageState();
+  ConsumerState<AgendaModificationPage> createState() => _AgendaModificationPageState();
 }
 
-class _AgendaPageState extends ConsumerState<AgendaPage> {
+class _AgendaModificationPageState extends ConsumerState<AgendaModificationPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _goalsController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
@@ -352,7 +353,16 @@ class _AgendaPageState extends ConsumerState<AgendaPage> {
                   Expanded(
                     child: FilledButton(
                       onPressed: _titleController.text.isNotEmpty ? () {
-                        // Handle save action
+                        ref.read(meetingAgendaServiceProvider).createMeetingAgenda(
+                          title: _titleController.text,
+                          redactionDate: _redactionDate,
+                          reunionGoals: _goalsController.text,
+                          reunionDate: _selectedDateTime,
+                          reunionLocation: _locationController.text,
+                          animator: _animatorController.text,
+                          participants: _participants,
+                          themes: _themes,
+                        );
                       } : null,
                       style: FilledButton.styleFrom(
                         minimumSize: const Size(double.infinity, 48),

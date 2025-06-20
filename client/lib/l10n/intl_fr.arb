@@ -33,5 +33,17 @@
   "signupPageLabelUsername": "Nom d'utilisateur",
   "signupPageLabelPassword": "Mot de passe",
   "signupPageButtonSignup": "S'inscrire",
-  "signupPageLinkLogin": "Déjà un compte ? Se connecter"
+  "signupPageLinkLogin": "Déjà un compte ? Se connecter",
+  "homePageTitle": "Accueil",
+  "homePageCreateAgenda": "Créer un ordre du jour",
+  "homePageUpdateAgenda": "Modifier l'ordre du jour",
+  "homePageViewAgendas": "Voir les ordres du jour",
+  "agendasListPageTitle": "Ordres du jour",
+  "agendasListPageEmpty": "Aucun ordre du jour trouvé",
+  "agendasListPageStatusCreated": "Créé",
+  "agendasListPageStatusSaved": "Enregistré",
+  "agendasListPageStatusValidated": "Validé",
+  "agendasListPageRedactionDate": "Date de rédaction : {date}",
+  "agendasListPageReunionDate": "Date de réunion : {date}",
+  "agendasListPageNoReunionDate": "Aucune date de réunion définie"
 }

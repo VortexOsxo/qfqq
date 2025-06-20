@@ -3,3 +3,5 @@ flaskr.sqlite
 instance
 __pycache__
 .env
+
+.vscode
