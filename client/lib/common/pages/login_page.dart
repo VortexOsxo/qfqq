@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/providers/router_provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/widgets/common_app_bar.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -32,7 +33,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+      appBar: const CommonAppBar(title: 'Login', showHomeButton: false),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(

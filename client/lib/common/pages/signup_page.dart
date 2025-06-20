@@ -4,6 +4,7 @@ import 'package:qfqq/common/providers/router_provider.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/generated/l10n.dart';
+import 'package:qfqq/common/widgets/common_app_bar.dart';
 
 class SignupPage extends ConsumerStatefulWidget {
   const SignupPage({super.key});
@@ -55,7 +56,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
     final loc = S.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(loc.signupPageTitle)),
+      appBar: CommonAppBar(title: loc.signupPageTitle, showHomeButton: false),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(

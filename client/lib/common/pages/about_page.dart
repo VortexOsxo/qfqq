@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qfqq/common/widgets/common_app_bar.dart';
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
@@ -6,7 +7,7 @@ class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('About')),
+      appBar: const CommonAppBar(title: 'About'),
       body: const Center(child: Text('About Page')),
     );
   }

@@ -4,6 +4,7 @@ import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/services/meeting_agenda_service.dart';
 import 'package:qfqq/generated/l10n.dart';
 import 'package:intl/intl.dart';
+import 'package:qfqq/common/widgets/common_app_bar.dart';
 
 final agendasProvider = FutureProvider<List<MeetingAgenda>>((ref) async {
   final service = ref.read(meetingAgendaServiceProvider);
@@ -18,9 +19,7 @@ class AgendasListPage extends ConsumerWidget {
     final agendasAsync = ref.watch(agendasProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(S.of(context).agendasListPageTitle),
-      ),
+      appBar: CommonAppBar(title: S.of(context).agendasListPageTitle),
       body: agendasAsync.when(
         data: (agendas) => _buildAgendasList(context, agendas),
         loading: () => const Center(child: CircularProgressIndicator()),

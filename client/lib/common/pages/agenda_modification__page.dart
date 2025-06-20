@@ -6,6 +6,7 @@ import 'package:qfqq/common/providers/current_meeting_agenda.dart';
 import 'package:qfqq/common/services/meeting_agenda_service.dart';
 import 'package:qfqq/common/utils/modals/select_date.dart';
 import 'package:qfqq/generated/l10n.dart';
+import 'package:qfqq/common/widgets/common_app_bar.dart';
 
 class AgendaModificationPage extends ConsumerStatefulWidget {
   const AgendaModificationPage({super.key});
@@ -140,12 +141,7 @@ class _AgendaModificationPageState extends ConsumerState<AgendaModificationPage>
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        title: Text(loc.agendaPageTitleAppBar),
-        elevation: 0,
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        surfaceTintColor: Colors.transparent,
-      ),
+      appBar: CommonAppBar(title: loc.agendaPageTitleAppBar),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),

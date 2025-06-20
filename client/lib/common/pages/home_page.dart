@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/generated/l10n.dart';
+import 'package:qfqq/common/widgets/common_app_bar.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -8,7 +9,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(S.of(context).homePageTitle)),
+      appBar: CommonAppBar(title: S.of(context).homePageTitle),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
