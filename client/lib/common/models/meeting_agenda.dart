@@ -6,6 +6,7 @@ MeetingAgendaStatus {
 }
 
 class MeetingAgenda {
+  final String id;
   final String title;
   String reunionGoals;
   final MeetingAgendaStatus status;
@@ -22,6 +23,7 @@ class MeetingAgenda {
   String project = '';
 
   MeetingAgenda({
+    required this.id,
     required this.title,
     required this.redactionDate,
     required this.status,

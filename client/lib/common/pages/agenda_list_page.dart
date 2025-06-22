@@ -5,6 +5,7 @@ import 'package:qfqq/common/services/meeting_agenda_service.dart';
 import 'package:qfqq/generated/l10n.dart';
 import 'package:intl/intl.dart';
 import 'package:qfqq/common/widgets/common_app_bar.dart';
+import 'package:qfqq/common/pages/agenda_modification__page.dart';
 
 final agendasProvider = FutureProvider<List<MeetingAgenda>>((ref) async {
   final service = ref.read(meetingAgendaServiceProvider);
@@ -112,10 +113,9 @@ class AgendasListPage extends ConsumerWidget {
             ),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
-              // TODO: Navigate to agenda detail/edit page
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Opening agenda: ${agenda.title}'),
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => AgendaModificationPage(initialAgenda: agenda),
                 ),
               );
             },

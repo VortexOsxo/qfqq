@@ -56,6 +56,7 @@ class MeetingAgendaService {
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       return data.map((item) => MeetingAgenda(
+        id: item['id'],
         title: item['title'],
         redactionDate: DateTime.parse(item['redactionDate']),
         status: MeetingAgendaStatus.values.firstWhere(
@@ -72,5 +73,39 @@ class MeetingAgendaService {
     } else {
       throw Exception('Failed to fetch meeting agendas: ${response.statusCode}');
     }
+  }
+
+  Future<bool> updateMeetingAgenda({
+    required String id,
+    required String title,
+    required DateTime redactionDate,
+    MeetingAgendaStatus status = MeetingAgendaStatus.created,
+    required String reunionGoals,
+    DateTime? reunionDate,
+    String? reunionLocation,
+    String? animator,
+    List<String>? participants,
+    List<String>? themes,
+    String? project,
+  }) async {
+    final response = await http.put(
+      Uri.parse('$_apiUrl/meeting-agendas/$id'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'title': title,
+        'redactionDate': redactionDate.toIso8601String(),
+        'status': status.toString().split('.').last,
+        'reunionGoals': reunionGoals,
+        if (reunionDate != null) 'reunionDate': reunionDate.toIso8601String(),
+        if (reunionLocation != null) 'reunionLocation': reunionLocation,
+        if (animator != null) 'animator': animator,
+        if (participants != null) 'participants': participants,
+        if (themes != null) 'themes': themes,
+        if (project != null) 'project': project,
+      }),
+    );
+    return response.statusCode == 200;
   }
 } 

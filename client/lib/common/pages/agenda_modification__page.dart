@@ -7,25 +7,45 @@ import 'package:qfqq/common/services/meeting_agenda_service.dart';
 import 'package:qfqq/common/utils/modals/select_date.dart';
 import 'package:qfqq/generated/l10n.dart';
 import 'package:qfqq/common/widgets/common_app_bar.dart';
+import 'package:qfqq/common/models/meeting_agenda.dart';
 
 class AgendaModificationPage extends ConsumerStatefulWidget {
-  const AgendaModificationPage({super.key});
+  final MeetingAgenda? initialAgenda;
+  const AgendaModificationPage({super.key, this.initialAgenda});
 
   @override
   ConsumerState<AgendaModificationPage> createState() => _AgendaModificationPageState();
 }
 
 class _AgendaModificationPageState extends ConsumerState<AgendaModificationPage> {
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _goalsController = TextEditingController();
-  final TextEditingController _locationController = TextEditingController();
-  final TextEditingController _themeController = TextEditingController();
-  DateTime _selectedDateTime = DateTime.now();
-  final DateTime _redactionDate = DateTime.now();
-  final List<String> _themes = [];
-  final TextEditingController _animatorController = TextEditingController(text: 'Me');
-  final TextEditingController _participantController = TextEditingController();
-  final List<String> _participants = [];
+  late final TextEditingController _titleController;
+  late final TextEditingController _goalsController;
+  late final TextEditingController _locationController;
+  late final TextEditingController _themeController;
+  late DateTime _selectedDateTime;
+  late final DateTime _redactionDate;
+  late final List<String> _themes;
+  late final TextEditingController _animatorController;
+  late final TextEditingController _participantController;
+  late final List<String> _participants;
+  late MeetingAgendaStatus _status;
+
+  @override
+  void initState() {
+    super.initState();
+    final agenda = widget.initialAgenda;
+    _titleController = TextEditingController(text: agenda?.title ?? '');
+    _goalsController = TextEditingController(text: agenda?.reunionGoals ?? '');
+    _locationController = TextEditingController(text: agenda?.reunionLocation ?? '');
+    _themeController = TextEditingController();
+    _selectedDateTime = agenda?.reunionDate ?? DateTime.now();
+    _redactionDate = agenda?.redactionDate ?? DateTime.now();
+    _themes = List<String>.from(agenda?.themes ?? []);
+    _animatorController = TextEditingController(text: agenda?.animator ?? 'Me');
+    _participantController = TextEditingController();
+    _participants = List<String>.from(agenda?.participants ?? []);
+    _status = agenda?.status ?? MeetingAgendaStatus.created;
+  }
 
   Future<void> _handleDateTimeSelection() async {
     final DateTime? result = await showDateTimePicker(context, _selectedDateTime);
@@ -136,12 +156,13 @@ class _AgendaModificationPageState extends ConsumerState<AgendaModificationPage>
     String formattedDateTime = DateFormat.yMMMd(locale).add_Hm().format(_selectedDateTime);
     String formattedRedactionDate = DateFormat.yMMMd(locale).format(_redactionDate);
     final loc = S.of(context);
+    final isEditing = widget.initialAgenda != null;
 
     ref.watch(currentMeetingAgendaProvider);
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: CommonAppBar(title: loc.agendaPageTitleAppBar),
+      appBar: CommonAppBar(title: isEditing ? loc.agendaPageTitleAppBar + ' - Update' : loc.agendaPageTitleAppBar),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -348,17 +369,35 @@ class _AgendaModificationPageState extends ConsumerState<AgendaModificationPage>
                   const SizedBox(width: 16),
                   Expanded(
                     child: FilledButton(
-                      onPressed: _titleController.text.isNotEmpty ? () {
-                        ref.read(meetingAgendaServiceProvider).createMeetingAgenda(
-                          title: _titleController.text,
-                          redactionDate: _redactionDate,
-                          reunionGoals: _goalsController.text,
-                          reunionDate: _selectedDateTime,
-                          reunionLocation: _locationController.text,
-                          animator: _animatorController.text,
-                          participants: _participants,
-                          themes: _themes,
-                        );
+                      onPressed: _titleController.text.isNotEmpty ? () async {
+                        final service = ref.read(meetingAgendaServiceProvider);
+                        if (isEditing) {
+                          await service.updateMeetingAgenda(
+                            id: widget.initialAgenda!.id,
+                            title: _titleController.text,
+                            redactionDate: _redactionDate,
+                            status: _status,
+                            reunionGoals: _goalsController.text,
+                            reunionDate: _selectedDateTime,
+                            reunionLocation: _locationController.text,
+                            animator: _animatorController.text,
+                            participants: _participants,
+                            themes: _themes,
+                          );
+                        } else {
+                          await service.createMeetingAgenda(
+                            title: _titleController.text,
+                            redactionDate: _redactionDate,
+                            status: _status,
+                            reunionGoals: _goalsController.text,
+                            reunionDate: _selectedDateTime,
+                            reunionLocation: _locationController.text,
+                            animator: _animatorController.text,
+                            participants: _participants,
+                            themes: _themes,
+                          );
+                        }
+                        context.go('/agendas');
                       } : null,
                       style: FilledButton.styleFrom(
                         minimumSize: const Size(double.infinity, 48),
@@ -366,7 +405,7 @@ class _AgendaModificationPageState extends ConsumerState<AgendaModificationPage>
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: Text(loc.agendaPageSaveAgenda),
+                      child: Text(isEditing ? 'Update' : loc.agendaPageSaveAgenda),
                     ),
                   ),
                 ],
