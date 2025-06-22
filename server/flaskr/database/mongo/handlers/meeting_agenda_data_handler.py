@@ -4,6 +4,7 @@ from flaskr.models import MeetingAgendaStatus, MeetingAgenda
 from datetime import datetime
 from bson import ObjectId
 
+
 class MeetingAgendaDataHandler:
     @staticmethod
     def create_meeting_agenda(
