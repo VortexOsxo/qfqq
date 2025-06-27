@@ -1,9 +1,4 @@
-enum 
-MeetingAgendaStatus {
-  created,
-  saved,
-  validated,
-}
+enum MeetingAgendaStatus { created, saved, validated }
 
 class MeetingAgenda {
   final String id;
@@ -12,7 +7,7 @@ class MeetingAgenda {
   final MeetingAgendaStatus status;
 
   final DateTime redactionDate;
-  
+
   DateTime? reunionDate;
   String? reunionLocation;
 
@@ -23,7 +18,7 @@ class MeetingAgenda {
   String project = '';
 
   MeetingAgenda({
-    required this.id,
+    this.id = '',
     required this.title,
     required this.redactionDate,
     required this.status,

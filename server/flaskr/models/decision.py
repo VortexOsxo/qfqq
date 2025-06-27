@@ -11,7 +11,7 @@ class DecisionStatus(Enum):
     approved = 5
     toBeValidated = 6
 
-@dataclass
+@dataclass(slots=True)
 class Decision:
     id: str | int
     description: str

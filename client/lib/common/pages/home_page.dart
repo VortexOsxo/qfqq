@@ -23,8 +23,13 @@ class HomePage extends StatelessWidget {
               onPressed: () => context.go('/agendas'),
               child: Text(S.of(context).homePageUpdateAgenda),
             ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () => context.go('/projects'),
+              child: Text('Projects'),
+            ),
           ],
-        ),
+        ),    
       ),
     );
   }
