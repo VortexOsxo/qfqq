@@ -5,6 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime, timedelta
 
 from flaskr.database import UserDataHandler
+from flaskr.errors import AuthError
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -34,7 +35,7 @@ def signup():
     password = data.get('password')
 
     if not UserDataHandler.create_user(username, email, generate_password_hash(password)):
-        return jsonify({'emailError': 1}), 400 
+        return jsonify({'emailError': AuthError.emailAlreadyExists.value}), 400 
     return jsonify({}), 201
 
 @auth_bp.route('/login', methods=(['POST']))
@@ -47,9 +48,9 @@ def login():
     user = UserDataHandler.get_user(email)
 
     if user is None:
-        return jsonify({'error': 2}), 401
+        return jsonify({'error': AuthError.userNotFound.value}), 401
     elif not check_password_hash(user.passwordHash, password):
-        return jsonify({'error': 1}), 401
+        return jsonify({'error': AuthError.wrongPassword.value}), 401
     
     token = jwt.encode({
         'user_id': str(user.id),
@@ -62,7 +63,7 @@ def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if request.method != "OPTIONS" and g.user_id is None:
-            return jsonify({'error': 'Must be logged in'}), 401
+            return jsonify({'error': AuthError.mustBeLoggedIn.value}), 401
         return view(**kwargs)
 
     return wrapped_view
