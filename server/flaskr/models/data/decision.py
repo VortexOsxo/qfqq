@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 from datetime import datetime
 
+
 class DecisionStatus(Enum):
     inProgress = 0
     cancelled = 1
@@ -11,15 +12,21 @@ class DecisionStatus(Enum):
     approved = 5
     toBeValidated = 6
 
+
+    def as_int(self):
+        return self.value
+
+
 @dataclass(slots=True)
 class Decision:
     id: str | int
     description: str
     status: DecisionStatus
-    
-    initialDate: datetime
-    dueDate: datetime
 
+    initialDate: datetime
+    dueDate: datetime | None
+
+    reporterId: str
     responsibleId: str
     assistantsId: list[str]
 
@@ -33,6 +40,7 @@ class Decision:
             "initialDate": self.initialDate.isoformat(),
             "dueDate": self.dueDate.isoformat(),
             "responsibleId": self.responsibleId,
+            "reporterId": self.reporterId,
             "assistantsId": self.assistantsId,
             "projectId": self.projectId,
         }

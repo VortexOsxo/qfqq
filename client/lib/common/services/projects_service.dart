@@ -2,16 +2,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:qfqq/common/models/project.dart';
-import 'package:qfqq/common/providers/serverl_url.dart';
 
-final projectServiceProvider = Provider<ProjectService>(
-  (ref) => ProjectService(ref.read(serverUrlProvider)),
-);
-
-class ProjectService {
+class ProjectsService extends StateNotifier<List<Project>> {
   final String _apiUrl;
 
-  ProjectService(String apiUrl) : _apiUrl = apiUrl;
+  ProjectsService(String apiUrl) : _apiUrl = apiUrl, super([]) {
+    _loadProjects();
+  }
 
   // TODO: Add feedback
   Future<bool> createProject({
@@ -25,6 +22,11 @@ class ProjectService {
     );
 
     return response.statusCode == 201;
+  }
+
+  Future<void> _loadProjects() async {
+    final projects = await getProjects();
+    state = projects;
   }
 
   Future<List<Project>> getProjects() async {

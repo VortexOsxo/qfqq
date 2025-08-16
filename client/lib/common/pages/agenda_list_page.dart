@@ -1,49 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
-import 'package:qfqq/common/services/meeting_agenda_service.dart';
+import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/generated/l10n.dart';
 import 'package:intl/intl.dart';
 import 'package:qfqq/common/widgets/common_app_bar.dart';
 import 'package:qfqq/common/pages/agenda_modification__page.dart';
 
-final agendasProvider = FutureProvider<List<MeetingAgenda>>((ref) async {
-  final service = ref.read(meetingAgendaServiceProvider);
-  return await service.getMeetingAgendas();
-});
 
 class AgendasListPage extends ConsumerWidget {
   const AgendasListPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final agendasAsync = ref.watch(agendasProvider);
+    final agendas = ref.watch(meetingsAgendasProvider);
 
     return Scaffold(
       appBar: CommonAppBar(title: S.of(context).agendasListPageTitle),
-      body: agendasAsync.when(
-        data: (agendas) => _buildAgendasList(context, agendas),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error, size: 64, color: Colors.red),
-              const SizedBox(height: 16),
-              Text(
-                'Error: ${error.toString()}',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => ref.refresh(agendasProvider),
-                child: const Text('Retry'),
-              ),
-            ],
-          ),
-        ),
-      ),
+      body: _buildAgendasList(context, agendas),
     );
   }
 

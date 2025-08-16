@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 from datetime import datetime
 
+
 class MeetingAgendaStatus(Enum):
     created = 0
     saved = 1
@@ -13,7 +14,7 @@ class MeetingAgenda:
     title: str
     reunionGoals: str
     status: MeetingAgendaStatus
-    
+
     redactionDate: datetime
     meetingDate: datetime
     meetingLocation: str

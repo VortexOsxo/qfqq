@@ -23,13 +23,18 @@ class ProjectDataHandler:
     def get_project(id: str):
         projects_collection = get_collection("projects")
         project = projects_collection.find_one({"_id": ObjectId(id)})
-        return Project(str(project["_id"]), project["title"], project["description"])
+        return ProjectDataHandler._from_dict(project)
 
     @staticmethod
     def get_projects():
         projects_collection = get_collection("projects")
         projects = projects_collection.find()
-        return [
-            Project(str(project["_id"]), project["title"], project["description"])
-            for project in projects
-        ]
+        return [ProjectDataHandler._from_dict(project) for project in projects]
+
+    @staticmethod
+    def _from_dict(project_dict):
+        return Project(
+            str(project_dict["_id"]),
+            project_dict["title"],
+            project_dict["description"],
+        )

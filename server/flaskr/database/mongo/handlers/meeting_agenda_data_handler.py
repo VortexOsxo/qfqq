@@ -44,19 +44,7 @@ class MeetingAgendaDataHandler:
         meeting_agenda_collection = get_collection("meeting_agendas")
         meeting_agendas = meeting_agenda_collection.find()
         return [
-            MeetingAgenda(
-                str(meeting_agenda["_id"]),
-                meeting_agenda["title"],
-                meeting_agenda["reunionGoals"],
-                meeting_agenda["status"],
-                meeting_agenda["redactionDate"],
-                meeting_agenda["meetingDate"],
-                meeting_agenda["meetingLocation"],
-                meeting_agenda["animatorId"],
-                meeting_agenda["participantsIds"],
-                meeting_agenda["themes"],
-                meeting_agenda["project"],
-            )
+            MeetingAgendaDataHandler._from_mongo_dict(meeting_agenda)
             for meeting_agenda in meeting_agendas
         ]
 
@@ -65,19 +53,23 @@ class MeetingAgendaDataHandler:
         meeting_agenda_collection = get_collection("meeting_agendas")
         meeting_agenda = meeting_agenda_collection.find_one({"_id": ObjectId(id)})
         return (
-            MeetingAgenda(
-                str(meeting_agenda["_id"]),
-                meeting_agenda["title"],
-                meeting_agenda["reunionGoals"],
-                meeting_agenda["status"],
-                meeting_agenda["redactionDate"],
-                meeting_agenda["meetingDate"],
-                meeting_agenda["meetingLocation"],
-                meeting_agenda["animatorId"],
-                meeting_agenda["participantsIds"],
-                meeting_agenda["themes"],
-                meeting_agenda["project"],
-            )
+            MeetingAgendaDataHandler._from_mongo_dict(meeting_agenda)
             if meeting_agenda
             else None
+        )
+
+    @staticmethod
+    def _from_mongo_dict(meeting_agenda):
+        return MeetingAgenda(
+            str(meeting_agenda["_id"]),
+            meeting_agenda["title"],
+            meeting_agenda["reunionGoals"],
+            meeting_agenda["status"],
+            meeting_agenda["redactionDate"],
+            meeting_agenda["meetingDate"],
+            meeting_agenda["meetingLocation"],
+            meeting_agenda["animatorId"],
+            meeting_agenda["participantsIds"],
+            meeting_agenda["themes"],
+            meeting_agenda["project"],
         )

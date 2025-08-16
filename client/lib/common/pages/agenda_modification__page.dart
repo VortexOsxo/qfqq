@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:qfqq/common/providers/current_meeting_agenda.dart';
-import 'package:qfqq/common/services/meeting_agenda_service.dart';
+import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/utils/modals/select_date.dart';
 import 'package:qfqq/generated/l10n.dart';
 import 'package:qfqq/common/widgets/common_app_bar.dart';

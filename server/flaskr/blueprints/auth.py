@@ -57,7 +57,7 @@ def login():
         'exp': datetime.utcnow() + timedelta(hours=3)
     }, current_app.config['SECRET_KEY'], algorithm='HS256')
 
-    return jsonify({'token': token}), 200
+    return jsonify({'session_token': token}), 200
 
 def login_required(view):
     @functools.wraps(view)

@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/project.dart';
-import 'package:qfqq/common/services/project_service.dart';
+import 'package:qfqq/common/providers/projects_provider.dart';
+import 'package:qfqq/common/services/projects_service.dart';
 import 'package:qfqq/common/widgets/common_app_bar.dart';
 import 'package:qfqq/common/widgets/default_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
-
-final projectsProvider = FutureProvider<List<Project>>((ref) async {
-  final service = ref.read(projectServiceProvider);
-  return await service.getProjects();
-});
 
 class ProjectPage extends ConsumerStatefulWidget {
   const ProjectPage({super.key});
@@ -38,7 +34,7 @@ class _ProjectPageState extends ConsumerState<ProjectPage> {
 
   @override
   Widget build(BuildContext context) {
-    final projectService = ref.read(projectServiceProvider);
+    final projectService = ref.read(projectsServiceProvider);
 
     return Scaffold(
       appBar: CommonAppBar(title: S.of(context).homePageTitle),
@@ -62,7 +58,7 @@ class _ProjectPageState extends ConsumerState<ProjectPage> {
   Widget _buildProjectCreationForm(
     TextEditingController titleController,
     TextEditingController descriptionController,
-    ProjectService projectService,
+    ProjectsService projectService,
   ) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -102,16 +98,9 @@ class _ProjectPageState extends ConsumerState<ProjectPage> {
     );
   }
 
-  Widget _buildProjectsListAsync(ProjectService projectService, WidgetRef ref) {
-    var projectsAsync = ref.watch(projectsProvider);
-
-    return projectsAsync.when(
-      data: (projects) => _buildProjectsList(projects),
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(
-        child: Text('Error: $error'),
-      ),
-    );
+  Widget _buildProjectsListAsync(ProjectsService projectService, WidgetRef ref) {
+    var projects = ref.watch(projectsProvider);
+    return  _buildProjectsList(projects);
   }
 
   Widget _buildProjectsList(List<Project> projects) {

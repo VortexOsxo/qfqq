@@ -2,14 +2,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:qfqq/common/models/meeting_agenda.dart';
-import 'package:qfqq/common/providers/serverl_url.dart';
 
-final meetingAgendaServiceProvider = Provider<MeetingAgendaService>((ref) => MeetingAgendaService(ref.read(serverUrlProvider)));
-
-class MeetingAgendaService {
+class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
   final String _apiUrl;
 
-  MeetingAgendaService(String apiUrl) : _apiUrl = apiUrl;
+  MeetingAgendaService(String apiUrl) : _apiUrl = apiUrl, super([]) {
+    _loadMeetingAgendas();
+  }
 
   Future<bool> createMeetingAgenda({
     required String title,
@@ -108,4 +107,13 @@ class MeetingAgendaService {
     );
     return response.statusCode == 200;
   }
-} 
+
+  MeetingAgenda? getMeetingAgendaById(String id) {
+    return state.firstWhere((agenda) => agenda.id == id);
+  }
+
+  Future<void> _loadMeetingAgendas() async {
+    final meetingAgendas = await getMeetingAgendas();
+    state = meetingAgendas;
+  }
+}

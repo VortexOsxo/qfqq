@@ -15,21 +15,30 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
+              onPressed: () => context.go('/meeting-selection'),
+              style: ElevatedButton.styleFrom(minimumSize: const Size(200, 50)),
+              child: Text('Start Meeting'),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
               onPressed: () => context.go('/agenda'),
+              style: ElevatedButton.styleFrom(minimumSize: const Size(200, 50)),
               child: Text(S.of(context).homePageCreateAgenda),
             ),
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () => context.go('/agendas'),
+              style: ElevatedButton.styleFrom(minimumSize: const Size(200, 50)),
               child: Text(S.of(context).homePageUpdateAgenda),
             ),
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () => context.go('/projects'),
+              style: ElevatedButton.styleFrom(minimumSize: const Size(200, 50)),
               child: Text('Projects'),
             ),
           ],
-        ),    
+        ),
       ),
     );
   }
