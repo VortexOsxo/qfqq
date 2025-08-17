@@ -14,17 +14,23 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: showHomeButton
-          ? IconButton(
-              icon: const Icon(Icons.home),
-              onPressed: () => context.go('/'),
-              tooltip: 'Home',
-            )
-          : null,
-      title: Text(title),
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      leading:
+          showHomeButton
+              ? IconButton(
+                icon: const Icon(Icons.home),
+                onPressed: () => context.go('/'),
+                tooltip: 'Home',
+                color: Theme.of(context).colorScheme.onPrimary,
+              )
+              : null,
+      title: Text(
+        title,
+        style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+      ),
     );
   }
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-} 
+}

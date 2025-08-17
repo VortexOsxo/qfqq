@@ -67,7 +67,6 @@ class DecisionsService extends StateNotifier<List<Decision>> {
             ),
           )
           .toList();
-      print(state);
     }
   }
 }

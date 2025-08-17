@@ -4,7 +4,7 @@ import 'package:qfqq/common/providers/initializer_provider.dart';
 import 'package:qfqq/desktop/desktop_router.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:qfqq/generated/l10n.dart';
-
+import 'package:qfqq/common/theme/theme.dart';
 class DesktopApp extends ConsumerWidget {
   const DesktopApp({super.key});
 
@@ -22,6 +22,10 @@ class DesktopApp extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: S.delegate.supportedLocales,
+      theme: lightTheme,
+      //darkTheme: darkTheme,
+      //themeMode: ThemeMode.system,
+      // TODO: Implement dark mode support
     );
   }
 }
