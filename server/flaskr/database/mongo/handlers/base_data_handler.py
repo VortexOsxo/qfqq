@@ -1,6 +1,6 @@
-from ..mongo import get_collection
 from abc import ABC, abstractmethod
-
+from ..mongo import get_collection
+from pymongo.errors import DuplicateKeyError
 
 class BaseDataHandler(ABC):
     def __init__(self, collection_name):
@@ -29,3 +29,12 @@ class BaseDataHandler(ABC):
             filter.update_query(query)
         decisions = collection.find(query)
         return [cls._from_mongo_dict(decision) for decision in decisions]
+
+    @classmethod
+    def attempt_create_item(cls, item_dict):
+        collection = cls.get_collection()
+        try:
+            collection.insert_one(item_dict)
+        except DuplicateKeyError:
+            return False
+        return True

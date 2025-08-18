@@ -1,13 +1,16 @@
-from ..mongo import get_collection
-from pymongo.errors import DuplicateKeyError
 from flaskr.models import MeetingAgendaStatus, MeetingAgenda
 from datetime import datetime
-from bson import ObjectId
+from .base_data_handler import BaseDataHandler
+from ..filters.default_filter import IdFilter
 
+class MeetingAgendaDataHandler(BaseDataHandler):
+    @classmethod
+    def get_collection_name(cls):
+        return "meeting_agendas"
 
-class MeetingAgendaDataHandler:
-    @staticmethod
+    @classmethod
     def create_meeting_agenda(
+        cls,
         title: str,
         reunionGoals: str,
         status: MeetingAgendaStatus,
@@ -19,47 +22,31 @@ class MeetingAgendaDataHandler:
         themes: list[str],
         project: str,
     ):
-        meeting_agenda_collection = get_collection("meeting_agendas")
-        try:
-            meeting_agenda_collection.insert_one(
-                {
-                    "title": title,
-                    "reunionGoals": reunionGoals,
-                    "status": status,
-                    "redactionDate": redactionDate,
-                    "meetingDate": meetingDate,
-                    "meetingLocation": meetingLocation,
-                    "animatorId": animatorId,
-                    "participantsIds": participantsIds,
-                    "themes": themes,
-                    "project": project,
-                }
-            )
-        except DuplicateKeyError:
-            return False
-        return True
-
-    @staticmethod
-    def get_meeting_agendas():
-        meeting_agenda_collection = get_collection("meeting_agendas")
-        meeting_agendas = meeting_agenda_collection.find()
-        return [
-            MeetingAgendaDataHandler._from_mongo_dict(meeting_agenda)
-            for meeting_agenda in meeting_agendas
-        ]
-
-    @staticmethod
-    def get_meeting_agenda(id: str) -> MeetingAgenda | None:
-        meeting_agenda_collection = get_collection("meeting_agendas")
-        meeting_agenda = meeting_agenda_collection.find_one({"_id": ObjectId(id)})
-        return (
-            MeetingAgendaDataHandler._from_mongo_dict(meeting_agenda)
-            if meeting_agenda
-            else None
+        return cls.attempt_create_item(
+            {
+                "title": title,
+                "reunionGoals": reunionGoals,
+                "status": status,
+                "redactionDate": redactionDate,
+                "meetingDate": meetingDate,
+                "meetingLocation": meetingLocation,
+                "animatorId": animatorId,
+                "participantsIds": participantsIds,
+                "themes": themes,
+                "project": project,
+            }
         )
 
-    @staticmethod
-    def _from_mongo_dict(meeting_agenda):
+    @classmethod
+    def get_meeting_agendas(cls):
+        return cls.get_items([])
+
+    @classmethod
+    def get_meeting_agenda(cls, id: str) -> MeetingAgenda | None:
+        return cls.get_items([IdFilter(id)])
+
+    @classmethod
+    def _from_mongo_dict(cls, meeting_agenda):
         return MeetingAgenda(
             str(meeting_agenda["_id"]),
             meeting_agenda["title"],

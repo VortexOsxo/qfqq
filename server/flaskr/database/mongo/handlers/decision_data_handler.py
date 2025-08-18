@@ -1,5 +1,3 @@
-from ..mongo import get_collection
-from pymongo.errors import DuplicateKeyError
 from datetime import datetime
 from flaskr.models import Decision
 from ..filters.default_filter import IdFilter
@@ -7,6 +5,10 @@ from .base_data_handler import BaseDataHandler
 
 
 class DecisionDataHandler(BaseDataHandler):
+    @classmethod
+    def get_collection_name(cls):
+        return "decisions"
+
     @classmethod
     def create_decision(
         cls,
@@ -26,33 +28,22 @@ class DecisionDataHandler(BaseDataHandler):
         if projectId is None:
             projectId = ""
 
-        decisions_collection = cls.get_collection()
-        try:
-            decisions_collection.insert_one(
-                {
-                    "description": description,
-                    "status": status,
-                    "initialDate": initialDate,
-                    "dueDate": dueDate,
-                    "responsibleId": responsibleId,
-                    "reporterId": reporterId,
-                    "assistantsId": assistantsId,
-                    "projectId": projectId,
-                }
-            )
-        except DuplicateKeyError:
-            return False
-        return True
-
-    @classmethod
-    def get_collection_name(cls):
-        return "decisions"
+        return cls.attempt_create_item(
+            {
+                "description": description,
+                "status": status,
+                "initialDate": initialDate,
+                "dueDate": dueDate,
+                "responsibleId": responsibleId,
+                "reporterId": reporterId,
+                "assistantsId": assistantsId,
+                "projectId": projectId,
+            }
+        )
 
     @classmethod
     def get_decision(cls, decision_id: str):
-        return cls.get_items(
-            [IdFilter("_id", decision_id)]
-        )
+        return cls.get_items([IdFilter("_id", decision_id)])
 
     @classmethod
     def get_decisions(cls):

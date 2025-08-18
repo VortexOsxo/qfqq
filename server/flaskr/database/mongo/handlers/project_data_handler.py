@@ -1,38 +1,32 @@
-from ..mongo import get_collection
-from pymongo.errors import DuplicateKeyError
 from flaskr.models import Project
-from bson import ObjectId
+from .base_data_handler import BaseDataHandler
+from ..filters.default_filter import IdFilter
 
 
-class ProjectDataHandler:
-    @staticmethod
-    def create_project(title: str, description: str):
-        projects_collection = get_collection("projects")
-        try:
-            projects_collection.insert_one(
-                {
-                    "title": title,
-                    "description": description,
-                }
-            )
-        except DuplicateKeyError:
-            return False
-        return True
+class ProjectDataHandler(BaseDataHandler):
+    @classmethod
+    def get_collection_name(cls):
+        return "projects"
 
-    @staticmethod
-    def get_project(id: str):
-        projects_collection = get_collection("projects")
-        project = projects_collection.find_one({"_id": ObjectId(id)})
-        return ProjectDataHandler._from_dict(project)
+    @classmethod
+    def create_project(cls, title: str, description: str):
+        return cls.attempt_create_item(
+            {
+                "title": title,
+                "description": description,
+            }
+        )
 
-    @staticmethod
-    def get_projects():
-        projects_collection = get_collection("projects")
-        projects = projects_collection.find()
-        return [ProjectDataHandler._from_dict(project) for project in projects]
+    @classmethod
+    def get_project(cls, id: str):
+        return cls.get_items([IdFilter(id)])
 
-    @staticmethod
-    def _from_dict(project_dict):
+    @classmethod
+    def get_projects(cls):
+        return cls.get_items([])
+
+    @classmethod
+    def _from_mongo_dict(cls, project_dict):
         return Project(
             str(project_dict["_id"]),
             project_dict["title"],
