@@ -26,7 +26,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
               : null,
       title: Text(
         title,
-        style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+        style: TextStyle(color: Theme.of(context).colorScheme.onPrimary, fontSize: 18),
       ),
     );
   }

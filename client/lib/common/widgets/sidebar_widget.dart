@@ -8,7 +8,7 @@ class SidebarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 250,
-      color: Theme.of(context).colorScheme.primary,
+      decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,

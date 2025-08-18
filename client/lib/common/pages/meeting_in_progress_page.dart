@@ -18,7 +18,7 @@ class MeetingInProgressPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final agenda = ref.watch(meetingAgendaByIdProvider(id));
-    final decisionsService = ref.read(decisionsServiceProvider);
+    final decisionsService = ref.read(decisionsProvider.notifier);
 
     final String title = agenda?.title ?? "Hi";
 

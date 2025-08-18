@@ -8,6 +8,25 @@ enum DecisionStatus {
   toBeValidated,
 }
 
+getDecisionStatusName(DecisionStatus status) {
+  switch (status) {
+    case DecisionStatus.inProgress:
+      return 'In Progress';
+    case DecisionStatus.cancelled:
+      return 'Cancelled';
+    case DecisionStatus.pending:
+      return 'Pending';
+    case DecisionStatus.completed:
+      return 'Completed';
+    case DecisionStatus.taskDescription:
+      return 'Task Description';
+    case DecisionStatus.approved:
+      return 'Approved';
+    case DecisionStatus.toBeValidated:
+      return 'To Be Validated';
+  }
+}
+
 class Decision {
   final String id;
   final String description;
