@@ -1,19 +1,15 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:qfqq/common/models/decision.dart';
 import 'dart:convert';
 import 'package:qfqq/common/services/auth_service.dart';
 
-class DecisionsService extends StateNotifier<List<Decision>> {
+class DecisionsService {
   final String _apiUrl;
   final AuthService _authService;
 
   DecisionsService(String apiUrl, AuthService authService)
     : _apiUrl = apiUrl,
-      _authService = authService,
-      super([]) {
-    _loadDecisions();
-  }
+      _authService = authService;
 
   Future<bool> createDecision({
     required String description,
@@ -39,34 +35,34 @@ class DecisionsService extends StateNotifier<List<Decision>> {
     return response.statusCode == 201;
   }
 
-  Future<void> _loadDecisions() async {
+  Future<List<Decision>> loadDecisions([String queryArgs = ""]) async {
     final response = await http.get(
-      Uri.parse('$_apiUrl/decisions'),
-      headers: {'Content-Type': 'application/json'},
+      Uri.parse('$_apiUrl/decisions?$queryArgs'),
+      headers: _authService.addAuthHeader({'Content-Type': 'application/json'}),
     );
 
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-      state = data
-          .map(
-            (item) => Decision(
-              id: item['id'],
-              description: item['description'],
-              status: DecisionStatus.values[item['status']],
-              initialDate: DateTime.parse(item['initialDate']),
-              dueDate:
-                  item['dueDate'] != null
-                      ? DateTime.parse(item['dueDate'])
-                      : null,
-              responsibleId: item['responsibleId'],
-              assistantsId:
-                  item['assistantsId'] != null
-                      ? List<String>.from(item['assistantsId'])
-                      : [],
-              projectId: item['projectId'],
-            ),
-          )
-          .toList();
-    }
+    if (response.statusCode != 200) return [];
+
+    final List<dynamic> data = jsonDecode(response.body);
+    return data
+        .map(
+          (item) => Decision(
+            id: item['id'],
+            description: item['description'],
+            status: DecisionStatus.values[item['status']],
+            initialDate: DateTime.parse(item['initialDate']),
+            dueDate:
+                item['dueDate'] != null
+                    ? DateTime.parse(item['dueDate'])
+                    : null,
+            responsibleId: item['responsibleId'],
+            assistantsId:
+                item['assistantsId'] != null
+                    ? List<String>.from(item['assistantsId'])
+                    : [],
+            projectId: item['projectId'],
+          ),
+        )
+        .toList();
   }
 }

@@ -43,11 +43,15 @@ class DecisionDataHandler(BaseDataHandler):
 
     @classmethod
     def get_decision(cls, decision_id: str):
-        return cls.get_items([IdFilter("_id", decision_id)])
+        return cls.get_first_item([IdFilter("_id", decision_id)])
 
     @classmethod
     def get_decisions(cls):
         return cls.get_items([])
+    
+    @classmethod
+    def get_decisions_by_filters(cls, filters):
+        return cls.get_items(filters)
 
     @classmethod
     def _from_mongo_dict(cls, decision_dict):

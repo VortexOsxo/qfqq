@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify, request, g
 from flaskr.models import DecisionStatus
-from flaskr.database import DecisionDataHandler
 from flaskr.blueprints.auth import login_required
+from flaskr.database import DecisionDataHandler
+from flaskr.database import ValueFilter
 from datetime import datetime
 
 decisions_bp = Blueprint("decisions", __name__, url_prefix="/decisions")
@@ -46,5 +47,11 @@ def create_decision():
 
 @decisions_bp.route("/", methods=["GET"])
 def get_decisions():
-    decisions = DecisionDataHandler.get_decisions()
+    filters = []
+
+    responsibleId = request.args.get("responsibleId")
+    if responsibleId:
+        filters.append(ValueFilter("responsibleId", g.user_id if responsibleId == 'me' else responsibleId))
+
+    decisions = DecisionDataHandler.get_decisions_by_filters(filters)
     return jsonify([decision for decision in decisions]), 200

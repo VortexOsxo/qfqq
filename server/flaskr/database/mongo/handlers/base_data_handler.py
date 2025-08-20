@@ -29,6 +29,11 @@ class BaseDataHandler(ABC):
             filter.update_query(query)
         decisions = collection.find(query)
         return [cls._from_mongo_dict(decision) for decision in decisions]
+    
+    @classmethod
+    def get_first_item(cls, filters):
+        items = cls.get_items(filters)
+        return items[0] if items else None
 
     @classmethod
     def attempt_create_item(cls, item_dict):

@@ -13,10 +13,10 @@ final authStateProvider = StateNotifierProvider<AuthService, AuthState>(
 class AuthState {
   final String sessionId;
   bool get isAuthenticated => sessionId.isNotEmpty;
-  AuthState({String? sessionId, String? username})
+  AuthState({String? sessionId, String? email})
     : sessionId = sessionId ?? "";
 
-  AuthState copyWith({String? sessionId, String? username}) {
+  AuthState copyWith({String? sessionId, String? email}) {
     return AuthState(sessionId: sessionId ?? this.sessionId);
   }
 }
@@ -89,8 +89,9 @@ class AuthService extends StateNotifier<AuthState> {
   }
 
   // TODO: Handle successful auth
-  _onSuccessfulAuth(String sessionId, String username) {
-    state = AuthState(sessionId: sessionId, username: username);
+  _onSuccessfulAuth(String sessionId, String email) {
+    state = AuthState(sessionId: sessionId, email: email);
+    connectionNotifier.notify(email);
   }
 
   Map<String, String> addAuthHeader(Map<String, String> headers) {
