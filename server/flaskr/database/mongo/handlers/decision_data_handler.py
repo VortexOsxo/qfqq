@@ -2,7 +2,7 @@ from datetime import datetime
 from flaskr.models import Decision
 from ..filters.default_filter import IdFilter
 from .base_data_handler import BaseDataHandler
-
+from bson import ObjectId
 
 class DecisionDataHandler(BaseDataHandler):
     @classmethod
@@ -34,10 +34,10 @@ class DecisionDataHandler(BaseDataHandler):
                 "status": status,
                 "initialDate": initialDate,
                 "dueDate": dueDate,
-                "responsibleId": responsibleId,
-                "reporterId": reporterId,
-                "assistantsId": assistantsId,
-                "projectId": projectId,
+                "responsibleId": ObjectId(responsibleId),
+                "reporterId": ObjectId(reporterId),
+                "assistantsId": [ObjectId(a_id) for a_id in assistantsId],
+                "projectId": ObjectId(projectId),
             }
         )
 
@@ -61,8 +61,8 @@ class DecisionDataHandler(BaseDataHandler):
             decision_dict["status"],
             decision_dict["initialDate"].isoformat(),
             decision_dict["dueDate"].isoformat() if decision_dict["dueDate"] else None,
-            decision_dict["responsibleId"],
-            decision_dict["reporterId"],
-            decision_dict["assistantsId"],
-            decision_dict["projectId"],
+            str(decision_dict["responsibleId"]),
+            str(decision_dict["reporterId"]),
+            [str(a_id) for a_id in decision_dict["assistantsId"]],
+            str(decision_dict["projectId"]),
         )

@@ -2,6 +2,7 @@ from flaskr.models import MeetingAgendaStatus, MeetingAgenda
 from datetime import datetime
 from .base_data_handler import BaseDataHandler
 from ..filters.default_filter import IdFilter
+from bson import ObjectId
 
 class MeetingAgendaDataHandler(BaseDataHandler):
     @classmethod
@@ -20,7 +21,7 @@ class MeetingAgendaDataHandler(BaseDataHandler):
         animatorId: str,
         participantsIds: list[str],
         themes: list[str],
-        project: str,
+        projectId: str,
     ):
         return cls.attempt_create_item(
             {
@@ -30,10 +31,10 @@ class MeetingAgendaDataHandler(BaseDataHandler):
                 "redactionDate": redactionDate,
                 "meetingDate": meetingDate,
                 "meetingLocation": meetingLocation,
-                "animatorId": animatorId,
-                "participantsIds": participantsIds,
+                "animatorId": ObjectId(animatorId) if animatorId else None,
+                "participantsIds": [ObjectId(id_a) for id_a in participantsIds],
                 "themes": themes,
-                "project": project,
+                "projectId": ObjectId(projectId) if projectId else None,
             }
         )
 

@@ -41,7 +41,7 @@ def create_meeting_agenda():
         animatorId=data["animatorId"] if "animatorId" in data else None,
         participantsIds=data["participantsIds"] if "participantsIds" in data else [],
         themes=data["themes"] if "themes" in data else [],
-        project=data["project"] if "project" in data else None,
+        project=data["projectId"] if "projectId" in data else None,
     )
     return jsonify({"message": "Meeting agenda created successfully"}), 201
 
