@@ -12,7 +12,8 @@ elif database == "mongo":
         DecisionDataHandler,
         MeetingAgendaDataHandler,
         ProjectDataHandler,
-        ValueFilter
+        ValueFilter,
+        ValueUpdater,
     )
 else:
     raise ValueError("Invalid database type")

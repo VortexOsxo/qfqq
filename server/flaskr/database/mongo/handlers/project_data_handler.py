@@ -20,6 +20,10 @@ class ProjectDataHandler(BaseDataHandler):
     @classmethod
     def get_project(cls, id: str):
         return cls.get_items([IdFilter(id)])
+    
+    @classmethod
+    def update_project(cls, id: str, updaters):
+        cls.update_item(id, updaters)
 
     @classmethod
     def get_projects(cls):

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
 import 'package:qfqq/common/services/projects_service.dart';
@@ -7,14 +8,14 @@ import 'package:qfqq/common/widgets/common_app_bar.dart';
 import 'package:qfqq/common/widgets/default_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 
-class ProjectPage extends ConsumerStatefulWidget {
-  const ProjectPage({super.key});
+class ProjectListPage extends ConsumerStatefulWidget {
+  const ProjectListPage({super.key});
 
   @override
-  ConsumerState<ProjectPage> createState() => _ProjectPageState();
+  ConsumerState<ProjectListPage> createState() => _ProjectPageState();
 }
 
-class _ProjectPageState extends ConsumerState<ProjectPage> {
+class _ProjectPageState extends ConsumerState<ProjectListPage> {
   late final TextEditingController titleController;
   late final TextEditingController descriptionController;
 
@@ -49,7 +50,7 @@ class _ProjectPageState extends ConsumerState<ProjectPage> {
             ),
           ),
           const SizedBox(width: 32),
-          Expanded(child: _buildProjectsListAsync(projectService, ref)),
+          Expanded(child: _buildProjectsListAsync(context, ref)),
         ],
       ),
     );
@@ -98,12 +99,12 @@ class _ProjectPageState extends ConsumerState<ProjectPage> {
     );
   }
 
-  Widget _buildProjectsListAsync(ProjectsService projectService, WidgetRef ref) {
+  Widget _buildProjectsListAsync(BuildContext context, WidgetRef ref) {
     var projects = ref.watch(projectsProvider);
-    return  _buildProjectsList(projects);
+    return  _buildProjectsList(context, projects);
   }
 
-  Widget _buildProjectsList(List<Project> projects) {
+  Widget _buildProjectsList(BuildContext context, List<Project> projects) {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: projects.length,
@@ -122,7 +123,7 @@ class _ProjectPageState extends ConsumerState<ProjectPage> {
             ),
             subtitle: Text(project.description),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: () {},
+            onTap: () { context.go('/project/${project.id}'); },
           ),
         );
       },
