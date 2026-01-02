@@ -6,6 +6,7 @@ import 'package:qfqq/common/providers/projects_provider.dart';
 import 'package:qfqq/common/services/projects_service.dart';
 import 'package:qfqq/common/widgets/common_app_bar.dart';
 import 'package:qfqq/common/widgets/default_text_field.dart';
+import 'package:qfqq/common/widgets/sidebar_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class ProjectListPage extends ConsumerStatefulWidget {
@@ -41,6 +42,7 @@ class _ProjectPageState extends ConsumerState<ProjectListPage> {
       appBar: CommonAppBar(title: S.of(context).homePageTitle),
       body: Row(
         children: [
+          SidebarWidget(),
           SizedBox(
             width: 300, // Fixed width to prevent unbounded width issues
             child: _buildProjectCreationForm(
@@ -64,10 +66,10 @@ class _ProjectPageState extends ConsumerState<ProjectListPage> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text('Project Page'),
+          const Text('Create new project', style: TextStyle(fontSize: 18),),
           const SizedBox(height: 10),
           DefaultTextField(
             controller: titleController,
@@ -89,8 +91,6 @@ class _ProjectPageState extends ConsumerState<ProjectListPage> {
               // Clear the fields after creating
               titleController.clear();
               descriptionController.clear();
-              // Refresh the projects list
-              ref.invalidate(projectsProvider);
             },
             child: const Text('Create'),
           ),

@@ -21,7 +21,18 @@ class ProjectsService extends StateNotifier<List<Project>> {
       body: jsonEncode({'title': title, 'description': description}),
     );
 
-    return response.statusCode == 201;
+    if (response.statusCode == 201) {
+      dynamic data = jsonDecode(response.body);
+      Project newProject = Project(
+        id: data['id'],
+        title: data['title'],
+        description: data['description'],
+      );
+      state = [...state, newProject];
+      return true;
+    }
+
+    return false;
   }
 
   Future<void> _loadProjects() async {
@@ -47,9 +58,7 @@ class ProjectsService extends StateNotifier<List<Project>> {
           )
           .toList();
     } else {
-      throw Exception(
-        'Failed to fetch projects: ${response.statusCode}',
-      );
+      throw Exception('Failed to fetch projects: ${response.statusCode}');
     }
   }
 }

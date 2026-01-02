@@ -23,7 +23,7 @@ class MeetingAgendaDataHandler(BaseDataHandler):
         themes: list[str],
         projectId: str,
     ):
-        return cls.attempt_create_item(
+        objectId, acknowledged = cls.attempt_create_item(
             {
                 "title": title,
                 "reunionGoals": reunionGoals,
@@ -37,6 +37,7 @@ class MeetingAgendaDataHandler(BaseDataHandler):
                 "projectId": ObjectId(projectId) if projectId else None,
             }
         )
+        return acknowledged
 
     @classmethod
     def get_meeting_agendas(cls):

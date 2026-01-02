@@ -13,11 +13,15 @@ def create_project():
     if missing:
         return jsonify({"error": f'Missing fields: {", ".join(missing)}'}), 400
 
-    ProjectDataHandler.create_project(
+    objectId, acknowledged = ProjectDataHandler.create_project(
         title=data["title"],
         description=data["description"],
     )
-    return jsonify({"message": "Meeting agenda created successfully"}), 201
+
+    if not acknowledged:
+        return "Could not create the new project", 400
+    
+    return jsonify({'id': str(objectId), 'title':data['title'], 'description': data['description']}), 201
 
 @projects_bp.route("", methods=['GET'])
 def get_projects():

@@ -45,10 +45,10 @@ class BaseDataHandler(ABC):
         return items[0] if items else None
 
     @classmethod
-    def attempt_create_item(cls, item_dict):
+    def attempt_create_item(cls, item_dict) -> tuple[bool, str]:
         collection = cls.get_collection()
         try:
-            collection.insert_one(item_dict)
+            result = collection.insert_one(item_dict)
+            return result.inserted_id, result.acknowledged
         except DuplicateKeyError:
-            return False
-        return True
+            return None, False
