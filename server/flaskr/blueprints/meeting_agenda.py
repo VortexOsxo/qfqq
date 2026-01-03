@@ -1,9 +1,9 @@
-from flask import Blueprint, request, jsonify
-from flaskr.models import MeetingAgendaStatus
-from flaskr.database.mongo.handlers.meeting_agenda_data_handler import (
-    MeetingAgendaDataHandler,
-)
 from datetime import datetime
+from flask import Blueprint, request, jsonify
+
+from flaskr.models import MeetingAgendaStatus
+from flaskr.database import MeetingAgendaDataHandler
+from flaskr.utils import StringValidator, EnumValidator, verify_missing_inputs
 
 meeting_agendas_bp = Blueprint(
     "meeting_agendas", __name__, url_prefix="/meeting-agendas"
@@ -13,13 +13,16 @@ meeting_agendas_bp = Blueprint(
 @meeting_agendas_bp.route("", methods=["POST"])
 def create_meeting_agenda():
     data = request.get_json()
-    required_fields = ["title", "reunionGoals", "status", "redactionDate"]
-    missing = [field for field in required_fields if field not in data]
-    if missing:
-        return jsonify({"error": f'Missing fields: {", ".join(missing)}'}), 400
 
-    if data["status"] not in MeetingAgendaStatus.__members__:
-        return jsonify({"error": "Invalid status"}), 400
+    required_fields = [
+        StringValidator("title"),
+        StringValidator("reunionGoals"),
+        EnumValidator("status", MeetingAgendaStatus),
+        StringValidator("redactionDate"), # TODO: DateValidator ?
+    ]
+    missings = verify_missing_inputs(required_fields)
+    if missings:
+        return jsonify({"error": f'Missing/Invalid fields: {", ".join(missings)}'}), 400
 
     try:
         redactionDate = datetime.fromisoformat(data["redactionDate"])
