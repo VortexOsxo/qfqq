@@ -9,14 +9,14 @@ import 'package:qfqq/common/widgets/default_text_field.dart';
 import 'package:qfqq/common/widgets/sidebar_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
-class ProjectListPage extends ConsumerStatefulWidget {
-  const ProjectListPage({super.key});
+class ProjectPage extends ConsumerStatefulWidget {
+  const ProjectPage({super.key});
 
   @override
-  ConsumerState<ProjectListPage> createState() => _ProjectPageState();
+  ConsumerState<ProjectPage> createState() => _ProjectPageState();
 }
 
-class _ProjectPageState extends ConsumerState<ProjectListPage> {
+class _ProjectPageState extends ConsumerState<ProjectPage> {
   late final TextEditingController titleController;
   late final TextEditingController descriptionController;
 
