@@ -20,7 +20,7 @@ def create_meeting_agenda():
         EnumValidator("status", MeetingAgendaStatus),
         StringValidator("redactionDate"), # TODO: DateValidator ?
     ]
-    missings = verify_missing_inputs(required_fields)
+    missings = verify_missing_inputs(data, required_fields)
     if missings:
         return jsonify({"error": f'Missing/Invalid fields: {", ".join(missings)}'}), 400
 
@@ -44,7 +44,7 @@ def create_meeting_agenda():
         animatorId=data["animatorId"] if "animatorId" in data else None,
         participantsIds=data["participantsIds"] if "participantsIds" in data else [],
         themes=data["themes"] if "themes" in data else [],
-        project=data["projectId"] if "projectId" in data else None,
+        projectId=data["projectId"] if "projectId" in data else None,
     )
     return jsonify({"message": "Meeting agenda created successfully"}), 201
 

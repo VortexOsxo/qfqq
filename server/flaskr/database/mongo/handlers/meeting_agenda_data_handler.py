@@ -60,5 +60,5 @@ class MeetingAgendaDataHandler(BaseDataHandler):
             meeting_agenda["animatorId"],
             meeting_agenda["participantsIds"],
             meeting_agenda["themes"],
-            meeting_agenda["project"],
+            meeting_agenda["projectId"],
         )
