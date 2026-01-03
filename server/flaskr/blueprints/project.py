@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flaskr.database import ProjectDataHandler
 from flaskr.database import ValueUpdater
+from flaskr.utils import verify_missing_inputs, StringValidator
 
 projects_bp = Blueprint("projects", __name__, url_prefix="/projects")
 
@@ -8,16 +9,20 @@ projects_bp = Blueprint("projects", __name__, url_prefix="/projects")
 @projects_bp.route("", methods=["POST"])
 def create_project():
     data = request.get_json()
-    required_fields = ["title", "description"]
-    missing = [field for field in required_fields if field not in data]
-    if missing:
-        return jsonify({"error": f'Missing fields: {", ".join(missing)}'}), 400
+    required_fields = [StringValidator("title"), StringValidator("description")]
+    missings = verify_missing_inputs(data, required_fields)
+    if missings:
+        return jsonify({"error": f'Missing fields: {", ".join(missings)}'}), 400
 
-    ProjectDataHandler.create_project(
+    objectId, acknowledged = ProjectDataHandler.create_project(
         title=data["title"],
-        description=data["description"],
+        description=data.get("description", ""),
     )
-    return jsonify({"message": "Meeting agenda created successfully"}), 201
+
+    if not acknowledged:
+        return "Could not create the new project", 400
+    
+    return jsonify({'id': str(objectId), 'title':data['title'], 'description': data['description']}), 201
 
 @projects_bp.route("", methods=['GET'])
 def get_projects():

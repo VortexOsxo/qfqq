@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 
 from flaskr.database import UserDataHandler
 from flaskr.errors import AuthError
+from flaskr.utils import verify_missing_inputs, StringValidator, EmailValidator
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -33,6 +34,16 @@ def load_logged_in_user():
 def signup():
     data = request.get_json()
 
+    required_fields = [
+        StringValidator("username"),
+        # TODO: Add proper password validator
+        StringValidator("password"),
+        EmailValidator("email")
+    ]
+    missings = verify_missing_inputs(data, required_fields)
+    if missings:
+        return jsonify({"error": f'Missing fields: {", ".join(missings)}'}), 400
+
     username = data.get("username")
     email = data.get("email")
     password = data.get("password")
@@ -47,6 +58,15 @@ def signup():
 @auth_bp.route("/login", methods=(["POST"]))
 def login():
     data = request.get_json()
+
+    required_fields = [
+        # TODO: Add proper password validator
+        StringValidator("password"),
+        EmailValidator("email")
+    ]
+    missings = verify_missing_inputs(data, required_fields)
+    if missings:
+        return jsonify({"error": f'Missing fields: {", ".join(missings)}'}), 400
 
     email = data.get("email")
     password = data.get("password")

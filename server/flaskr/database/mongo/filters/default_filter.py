@@ -11,5 +11,5 @@ class ValueFilter(DataFilter):
         return query
 
 class IdFilter(ValueFilter):
-    def __init__(self, id):
+    def __init__(self, id: str):
         super().__init__('_id', ObjectId(id))

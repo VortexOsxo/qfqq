@@ -1,9 +1,10 @@
+from datetime import datetime
 from flask import Blueprint, jsonify, request, g
+
 from flaskr.models import DecisionStatus
 from flaskr.blueprints.auth import login_required
-from flaskr.database import DecisionDataHandler
-from flaskr.database import ValueFilter
-from datetime import datetime
+from flaskr.database import DecisionDataHandler, ValueFilter
+from flaskr.utils import verify_missing_inputs, UserIdValidator, StringValidator
 
 decisions_bp = Blueprint("decisions", __name__, url_prefix="/decisions")
 
@@ -12,10 +13,11 @@ decisions_bp = Blueprint("decisions", __name__, url_prefix="/decisions")
 @login_required
 def create_decision():
     data = request.get_json()
-    required_fields = ["description", "responsibleId"]
-    missing = [field for field in required_fields if field not in data]
-    if missing:
-        return jsonify({"error": f'Missing fields: {", ".join(missing)}'}), 400
+    required_fields = [StringValidator("description"), UserIdValidator("responsibleId")]
+
+    missings = verify_missing_inputs(data, required_fields)
+    if missings:
+        return jsonify({"error": f'Missing fields: {", ".join(missings)}'}), 400
 
     if "status" not in data:
         data["status"] = DecisionStatus.toBeValidated

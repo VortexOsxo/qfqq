@@ -6,16 +6,30 @@ import 'package:qfqq/common/providers/projects_provider.dart';
 import 'package:qfqq/common/services/projects_service.dart';
 import 'package:qfqq/common/widgets/common_app_bar.dart';
 import 'package:qfqq/common/widgets/default_text_field.dart';
+import 'package:qfqq/common/widgets/sidebar_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
-class ProjectListPage extends ConsumerStatefulWidget {
-  const ProjectListPage({super.key});
+final projectSearchQueryProvider = StateProvider<String>((ref) => '');
+
+final filteredProjectProvider = Provider<List<Project>>((ref) {
+  var projects = ref.watch(projectsProvider);
+  var query = ref.watch(projectSearchQueryProvider);
+
+  if (query.isEmpty ) return projects;
+
+  return projects
+      .where((project) => project.title.toLowerCase().contains(query.toLowerCase()))
+      .toList();
+});
+
+class ProjectPage extends ConsumerStatefulWidget {
+  const ProjectPage({super.key});
 
   @override
-  ConsumerState<ProjectListPage> createState() => _ProjectPageState();
+  ConsumerState<ProjectPage> createState() => _ProjectPageState();
 }
 
-class _ProjectPageState extends ConsumerState<ProjectListPage> {
+class _ProjectPageState extends ConsumerState<ProjectPage> {
   late final TextEditingController titleController;
   late final TextEditingController descriptionController;
 
@@ -41,33 +55,26 @@ class _ProjectPageState extends ConsumerState<ProjectListPage> {
       appBar: CommonAppBar(title: S.of(context).homePageTitle),
       body: Row(
         children: [
+          SidebarWidget(),
           SizedBox(
             width: 300, // Fixed width to prevent unbounded width issues
-            child: _buildProjectCreationForm(
-              titleController,
-              descriptionController,
-              projectService,
-            ),
+            child: _buildProjectCreationForm(projectService),
           ),
           const SizedBox(width: 32),
-          Expanded(child: _buildProjectsListAsync(context, ref)),
+          _buildProjectsListAsync(context, ref),
         ],
       ),
     );
   }
 
-  Widget _buildProjectCreationForm(
-    TextEditingController titleController,
-    TextEditingController descriptionController,
-    ProjectsService projectService,
-  ) {
+  Widget _buildProjectCreationForm(ProjectsService projectService) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text('Project Page'),
+          const Text('Create new project', style: TextStyle(fontSize: 18)),
           const SizedBox(height: 10),
           DefaultTextField(
             controller: titleController,
@@ -89,8 +96,6 @@ class _ProjectPageState extends ConsumerState<ProjectListPage> {
               // Clear the fields after creating
               titleController.clear();
               descriptionController.clear();
-              // Refresh the projects list
-              ref.invalidate(projectsProvider);
             },
             child: const Text('Create'),
           ),
@@ -100,12 +105,12 @@ class _ProjectPageState extends ConsumerState<ProjectListPage> {
   }
 
   Widget _buildProjectsListAsync(BuildContext context, WidgetRef ref) {
-    var projects = ref.watch(projectsProvider);
-    return  _buildProjectsList(context, projects);
+    var projects = ref.watch(filteredProjectProvider);
+    return _buildProjectsList(context, projects);
   }
 
   Widget _buildProjectsList(BuildContext context, List<Project> projects) {
-    return ListView.builder(
+    var projectLists = ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: projects.length,
       itemBuilder: (context, index) {
@@ -116,17 +121,37 @@ class _ProjectPageState extends ConsumerState<ProjectListPage> {
             contentPadding: const EdgeInsets.all(16),
             title: Text(
               project.title,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             subtitle: Text(project.description),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: () { context.go('/project/${project.id}'); },
+            onTap: () {
+              context.go('/project/${project.id}');
+            },
           ),
         );
       },
+    );
+
+    return Expanded(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: DefaultTextField(
+              onChanged:
+                  (value) =>
+                      ref.read(projectSearchQueryProvider.notifier).state =
+                          value,
+              hintText: 'Search',
+            ),
+          ),
+          SizedBox(height: 16),
+          Expanded(child: projectLists),
+        ],
+      ),
     );
   }
 }

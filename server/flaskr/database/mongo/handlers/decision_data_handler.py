@@ -28,7 +28,7 @@ class DecisionDataHandler(BaseDataHandler):
         if projectId is None:
             projectId = ""
 
-        return cls.attempt_create_item(
+        objectId, acknowledged = cls.attempt_create_item(
             {
                 "description": description,
                 "status": status,
@@ -40,6 +40,7 @@ class DecisionDataHandler(BaseDataHandler):
                 "projectId": ObjectId(projectId),
             }
         )
+        return acknowledged
 
     @classmethod
     def get_decision(cls, decision_id: str):
