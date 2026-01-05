@@ -89,7 +89,7 @@ class AgendasListPage extends ConsumerWidget {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (_) => AgendaModificationPage(initialAgenda: agenda),
+                  builder: (_) => AgendaModificationPage(agendaToModify: agenda),
                 ),
               );
             },

@@ -41,6 +41,38 @@ class MeetingAgendaDataHandler(BaseDataHandler):
         return acknowledged
 
     @classmethod
+    def update_meeting_agenda(
+        cls,
+        id: str,
+        title: str,
+        reunionGoals: str,
+        status: MeetingAgendaStatus,
+        redactionDate: datetime,
+        meetingDate: datetime,
+        meetingLocation: str,
+        animatorId: str,
+        participantsIds: list[str],
+        themes: list[str],
+        projectId: str,
+    ):
+        collection = cls.get_collection()
+        collection.replace_one(
+            {"_id": ObjectId(id)},
+            {
+                "title": title,
+                "reunionGoals": reunionGoals,
+                "status": status,
+                "redactionDate": redactionDate,
+                "meetingDate": meetingDate,
+                "meetingLocation": meetingLocation,
+                "animatorId": ObjectId(animatorId) if animatorId else None,
+                "participantsIds": [ObjectId(id_a) for id_a in participantsIds],
+                "themes": themes,
+                "projectId": ObjectId(projectId) if projectId else None,
+            },
+        )
+
+    @classmethod
     def get_meeting_agendas(cls) -> list[MeetingAgenda]:
         return cls.get_items([])
 
