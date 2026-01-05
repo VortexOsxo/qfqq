@@ -28,7 +28,7 @@ class UserDataHandler(BaseDataHandler):
     @classmethod
     def _from_mongo_dict(cls, user_dict):
         return User(
-            str(user_dict["_id"]),
+            cls._get_id_from_mongo_entry(user_dict["_id"]),
             user_dict["username"],
             user_dict["passwordHash"],
             user_dict["email"],

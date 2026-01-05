@@ -57,13 +57,13 @@ class DecisionDataHandler(BaseDataHandler):
     @classmethod
     def _from_mongo_dict(cls, decision_dict):
         return Decision(
-            str(decision_dict["_id"]),
+            cls._get_id_from_mongo_entry(decision_dict["_id"]),
             decision_dict["description"],
             decision_dict["status"],
             decision_dict["initialDate"].isoformat(),
             decision_dict["dueDate"].isoformat() if decision_dict["dueDate"] else None,
-            str(decision_dict["responsibleId"]),
-            str(decision_dict["reporterId"]),
+            cls._get_id_from_mongo_entry(decision_dict["responsibleId"]),
+            cls._get_id_from_mongo_entry(decision_dict["reporterId"]),
             [str(a_id) for a_id in decision_dict["assistantsId"]],
-            str(decision_dict["projectId"]),
+            cls._get_id_from_mongo_entry(decision_dict["projectId"]),
         )

@@ -10,7 +10,7 @@ class MeetingAgendaStatus(Enum):
 
 @dataclass(slots=True)
 class MeetingAgenda:
-    id: str | int
+    id: str
     title: str
     reunionGoals: str
     status: MeetingAgendaStatus
@@ -23,7 +23,7 @@ class MeetingAgenda:
     participantsIds: list[str]
 
     themes: list[str]
-    project: str
+    projectId: str
 
     def to_dict(self):
         return {
@@ -37,5 +37,5 @@ class MeetingAgenda:
             "animatorId": self.animatorId,
             "participantsIds": self.participantsIds,
             "themes": self.themes,
-            "project": self.project,
+            "projectId": self.projectId,
         }

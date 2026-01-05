@@ -32,7 +32,7 @@ class ProjectDataHandler(BaseDataHandler):
     @classmethod
     def _from_mongo_dict(cls, project_dict):
         return Project(
-            str(project_dict["_id"]),
+            cls._get_id_from_mongo_entry(project_dict["_id"]),
             project_dict["title"],
             project_dict["description"],
         )
