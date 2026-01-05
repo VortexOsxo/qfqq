@@ -9,8 +9,10 @@ meeting_agendas_bp = Blueprint(
     "meeting_agendas", __name__, url_prefix="/meeting-agendas"
 )
 
+# TODO: Have a unified way to get and object such as a method agenda from the query body, we can then pass that object to the different method, instead
+# of having to pass each parameter separatedly
 
-@meeting_agendas_bp.route("", methods=["POST"])
+@meeting_agendas_bp.route("", methods=["POST", "PUT"])
 def create_meeting_agenda():
     data = request.get_json()
 
@@ -20,7 +22,7 @@ def create_meeting_agenda():
         EnumValidator("status", MeetingAgendaStatus),
         StringValidator("redactionDate"), # TODO: DateValidator ?
     ]
-    missings = verify_missing_inputs(required_fields)
+    missings = verify_missing_inputs(data, required_fields)
     if missings:
         return jsonify({"error": f'Missing/Invalid fields: {", ".join(missings)}'}), 400
 
@@ -34,19 +36,29 @@ def create_meeting_agenda():
     except Exception as e:
         return jsonify({"error": f"Invalid data format: {str(e)}"}), 400
 
-    MeetingAgendaDataHandler.create_meeting_agenda(
-        title=data["title"],
-        reunionGoals=data["reunionGoals"],
-        status=data["status"],
-        redactionDate=redactionDate,
-        meetingDate=meetingDate,
-        meetingLocation=data["meetingLocation"] if "meetingLocation" in data else None,
-        animatorId=data["animatorId"] if "animatorId" in data else None,
-        participantsIds=data["participantsIds"] if "participantsIds" in data else [],
-        themes=data["themes"] if "themes" in data else [],
-        project=data["projectId"] if "projectId" in data else None,
-    )
-    return jsonify({"message": "Meeting agenda created successfully"}), 201
+    kwargs = {
+        'title': data["title"],
+        'reunionGoals': data["reunionGoals"],
+        'status': data["status"],
+        'redactionDate': redactionDate,
+        'meetingDate': meetingDate,
+        'meetingLocation': data["meetingLocation"] if "meetingLocation" in data else None,
+        'animatorId': data["animatorId"] if "animatorId" in data else None,
+        'participantsIds': data["participantsIds"] if "participantsIds" in data else [],
+        'themes': data["themes"] if "themes" in data else [],
+        'projectId': data["projectId"] if "projectId" in data else None,
+    }
+
+    if request.method == "POST":
+        MeetingAgendaDataHandler.create_meeting_agenda(*kwargs)
+        return "", 201
+    elif request.method == "PUT":
+        # TODO: Handle concurrent update reflects that could cause conflicts ?
+        if not "id" in data:
+            return jsonify({"error": "Missing/Invalid fields: id"}), 400
+        MeetingAgendaDataHandler.update_meeting_agenda(id=data["id"], **kwargs)
+        return "", 204
+    return "", 405
 
 @meeting_agendas_bp.route("", methods=["GET"])
 def get_meeting_agendas():

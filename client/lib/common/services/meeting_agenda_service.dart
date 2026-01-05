@@ -10,35 +10,11 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
     _loadMeetingAgendas();
   }
 
-  Future<bool> createMeetingAgenda({
-    required String title,
-    required DateTime redactionDate,
-    MeetingAgendaStatus status = MeetingAgendaStatus.created,
-    required String reunionGoals,
-    DateTime? reunionDate,
-    String? reunionLocation,
-    String? animator,
-    List<String>? participants,
-    List<String>? themes,
-    String? project,
-  }) async {
+  Future<bool> createMeetingAgenda(MeetingAgenda agenda) async {
     final response = await http.post(
       Uri.parse('$_apiUrl/meeting-agendas'),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({
-        'title': title,
-        'redactionDate': redactionDate.toIso8601String(),
-        'status': status.toString().split('.').last,
-        'reunionGoals': reunionGoals,
-        if (reunionDate != null) 'reunionDate': reunionDate.toIso8601String(),
-        if (reunionLocation != null) 'reunionLocation': reunionLocation,
-        if (animator != null) 'animator': animator,
-        if (participants != null) 'participants': participants,
-        if (themes != null) 'themes': themes,
-        if (project != null) 'project': project,
-      }),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(agenda),
     );
 
     return response.statusCode == 201;
@@ -47,63 +23,24 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
   Future<List<MeetingAgenda>> getMeetingAgendas() async {
     final response = await http.get(
       Uri.parse('$_apiUrl/meeting-agendas'),
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: {'Content-Type': 'application/json'},
     );
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
-      return data.map((item) => MeetingAgenda(
-        id: item['id'],
-        title: item['title'],
-        redactionDate: DateTime.parse(item['redactionDate']),
-        status: MeetingAgendaStatus.values.firstWhere(
-          (e) => e.toString().split('.').last == item['status'],
-        ),
-      )..reunionGoals = item['reunionGoals']
-        ..reunionDate = item['reunionDate'] != null ? DateTime.parse(item['reunionDate']) : null
-        ..reunionLocation = item['reunionLocation']
-        ..animator = item['animator']
-        ..participants = List<String>.from(item['participants'] ?? [])
-        ..themes = List<String>.from(item['themes'] ?? [])
-        ..project = item['project'] ?? ''
-      ).toList();
+      return data.map(MeetingAgenda.fromJson).toList();
     } else {
-      throw Exception('Failed to fetch meeting agendas: ${response.statusCode}');
+      throw Exception(
+        'Failed to fetch meeting agendas: ${response.statusCode}',
+      );
     }
   }
 
-  Future<bool> updateMeetingAgenda({
-    required String id,
-    required String title,
-    required DateTime redactionDate,
-    MeetingAgendaStatus status = MeetingAgendaStatus.created,
-    required String reunionGoals,
-    DateTime? reunionDate,
-    String? reunionLocation,
-    String? animator,
-    List<String>? participants,
-    List<String>? themes,
-    String? project,
-  }) async {
+  Future<bool> updateMeetingAgenda(MeetingAgenda agenda) async {
     final response = await http.put(
-      Uri.parse('$_apiUrl/meeting-agendas/$id'),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({
-        'title': title,
-        'redactionDate': redactionDate.toIso8601String(),
-        'status': status.toString().split('.').last,
-        'reunionGoals': reunionGoals,
-        if (reunionDate != null) 'reunionDate': reunionDate.toIso8601String(),
-        if (reunionLocation != null) 'reunionLocation': reunionLocation,
-        if (animator != null) 'animator': animator,
-        if (participants != null) 'participants': participants,
-        if (themes != null) 'themes': themes,
-        if (project != null) 'project': project,
-      }),
+      Uri.parse('$_apiUrl/meeting-agendas'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(agenda),
     );
     return response.statusCode == 200;
   }

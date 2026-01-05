@@ -52,3 +52,7 @@ class BaseDataHandler(ABC):
             return result.inserted_id, result.acknowledged
         except DuplicateKeyError:
             return None, False
+        
+    @classmethod
+    def _get_id_from_mongo_entry(cls, id):
+        return str(id) if id is not None else None

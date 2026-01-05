@@ -16,7 +16,7 @@ final GoRouter desktopRouter = GoRouter(
     GoRoute(path: '/', builder: (context, state) => const HomePage()),
     GoRoute(
       path: '/agenda',
-      builder: (context, state) => const AgendaModificationPage(),
+      builder: (context, state) => AgendaModificationPage(),
     ),
     GoRoute(
       path: '/agendas',
