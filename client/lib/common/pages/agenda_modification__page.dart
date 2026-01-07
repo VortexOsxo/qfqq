@@ -7,6 +7,7 @@ import 'package:qfqq/common/providers/current_meeting_agenda.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/utils/modals/select_date.dart';
 import 'package:qfqq/common/widgets/reusables/chip_list.dart';
+import 'package:qfqq/common/widgets/reusables/project_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/user_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/users_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -265,6 +266,25 @@ class _AgendaModificationPageState extends ConsumerState<AgendaModificationPage>
                   ],
                 ),
               ),
+
+              const SizedBox(height: 20),
+
+              // Project Section
+              _buildCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildSectionTitle('Select Owning Project'),
+                    ProjectTextField(
+                      label: 'Project',
+                      initialProjectId: widget.agenda.projectId ?? '',
+                      onSelected:
+                          (project) => widget.agenda.projectId = project.id,
+                    ),
+                  ],
+                ),
+              ),
+
 
               const SizedBox(height: 32),
 

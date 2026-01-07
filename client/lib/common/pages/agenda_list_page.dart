@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
+import 'package:qfqq/common/widgets/sidebar_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 import 'package:intl/intl.dart';
 import 'package:qfqq/common/widgets/common_app_bar.dart';
@@ -17,7 +18,12 @@ class AgendasListPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: CommonAppBar(title: S.of(context).agendasListPageTitle),
-      body: _buildAgendasList(context, agendas),
+      body: Row(
+        children: [
+          SidebarWidget(),
+          Expanded(child: _buildAgendasList(context, agendas),)
+        ],
+      ),
     );
   }
 
