@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:qfqq/common/models/user.dart';
-import 'package:qfqq/common/providers/current_meeting_agenda.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/utils/modals/select_date.dart';
 import 'package:qfqq/common/widgets/reusables/chip_list.dart';
@@ -101,8 +100,6 @@ class _AgendaModificationPageState extends ConsumerState<AgendaModificationPage>
     String formattedRedactionDate = DateFormat.yMMMd(locale).format(widget.agenda.redactionDate);
     final loc = S.of(context);
     final isEditing = !widget.isNewAgenda;
-
-    ref.watch(currentMeetingAgendaProvider);
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
