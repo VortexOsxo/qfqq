@@ -19,6 +19,7 @@ def create_decision():
     if missings:
         return jsonify({"error": f'Missing fields: {", ".join(missings)}'}), 400
 
+    # TODO: Refactor those status
     if "status" not in data:
         data["status"] = DecisionStatus.toBeValidated
     elif data["status"] not in DecisionStatus.__members__:

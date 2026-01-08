@@ -1,3 +1,5 @@
+import 'package:qfqq/common/utils/is_id_valid.dart';
+
 enum DecisionStatus {
   inProgress,
   cancelled,
@@ -29,16 +31,17 @@ getDecisionStatusName(DecisionStatus status) {
 
 class Decision {
   final String id;
-  final String description;
-  final DecisionStatus status;
+  String description;
+  DecisionStatus status;
 
-  final DateTime initialDate;
-  final DateTime? dueDate;
+  DateTime initialDate;
+  DateTime? dueDate;
 
-  final String responsibleId;
-  final List<String> assistantsId;
+  String? responsibleId;
+  String? reporterId;
+  List<String> assistantsIds;
 
-  final String projectId;
+  String? projectId;
 
   Decision({
     required this.id,
@@ -47,20 +50,44 @@ class Decision {
     required this.initialDate,
     required this.dueDate,
     required this.responsibleId,
-    required this.assistantsId,
+    required this.reporterId,
+    required this.assistantsIds,
     required this.projectId,
   });
 
+  Decision.empty()
+    : id = '',
+      description = '',
+      status = DecisionStatus.toBeValidated,
+      initialDate = DateTime.now(),
+      assistantsIds = [];
+
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      if (isIdValid(id)) 'id': id,
       'description': description,
       'status': status.name,
       'initialDate': initialDate.toIso8601String(),
       'dueDate': dueDate?.toIso8601String(),
-      'responsibleId': responsibleId,
-      'assistantsId': assistantsId,
-      'projectId': projectId,
+      if (isIdValid(responsibleId)) 'responsibleId': responsibleId,
+      if (isIdValid(reporterId)) 'reporterId': reporterId,
+      'assistantsIds': assistantsIds,
+      if (isIdValid(projectId)) 'projectId': projectId,
     };
   }
+
+  Decision.fromJson(dynamic data)
+    : id = data['id'],
+      description = data['description'],
+      status = DecisionStatus.values[data['status']],
+      initialDate = DateTime.parse(data['initialDate']),
+      dueDate =
+          data['dueDate'] != null ? DateTime.parse(data['dueDate']) : null,
+      responsibleId = data['responsibleId'],
+      reporterId = data['reporterId'],
+      assistantsIds =
+          data['assistantsIds'] != null
+              ? List<String>.from(data['assistantsIds'])
+              : [],
+      projectId = data['projectId'];
 }

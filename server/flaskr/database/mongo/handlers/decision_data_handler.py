@@ -25,8 +25,6 @@ class DecisionDataHandler(BaseDataHandler):
             initialDate = datetime.now()
         if assistantsId is None:
             assistantsId = []
-        if projectId is None:
-            projectId = ""
 
         objectId, acknowledged = cls.attempt_create_item(
             {
@@ -34,10 +32,10 @@ class DecisionDataHandler(BaseDataHandler):
                 "status": status,
                 "initialDate": initialDate,
                 "dueDate": dueDate,
-                "responsibleId": ObjectId(responsibleId),
-                "reporterId": ObjectId(reporterId),
+                "responsibleId": ObjectId(responsibleId) if responsibleId else None,
+                "reporterId": ObjectId(reporterId) if reporterId else None,
                 "assistantsId": [ObjectId(a_id) for a_id in assistantsId],
-                "projectId": ObjectId(projectId),
+                "projectId": ObjectId(projectId) if projectId else None,
             }
         )
         return acknowledged

@@ -1,73 +1,109 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qfqq/common/models/decision.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/models/user.dart';
 import 'package:qfqq/common/providers/decisions_provider.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/widgets/common_app_bar.dart';
 import 'package:qfqq/common/widgets/default_text_field.dart';
-import 'package:qfqq/common/widgets/project_selection_dropdown_widget.dart';
-import 'package:qfqq/common/widgets/user_selection_dropdown_widget.dart';
-import 'package:qfqq/common/widgets/users_selection_dropdown_widget.dart';
+import 'package:qfqq/common/widgets/reusables/project_text_field.dart';
+import 'package:qfqq/common/widgets/reusables/user_text_field.dart';
+import 'package:qfqq/common/widgets/reusables/users_text_field.dart';
+import 'package:qfqq/common/widgets/sidebar_widget.dart';
 
 class MeetingInProgressPage extends ConsumerWidget {
   final String id;
+  final Decision decision = Decision.empty();
 
-  const MeetingInProgressPage({super.key, required this.id});
+  MeetingInProgressPage({super.key, required this.id});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final agenda = ref.watch(meetingAgendaByIdProvider(id));
     final decisionsService = ref.read(decisionsServiceProvider);
 
-    final String title = agenda?.title ?? "Hi";
-
-    Project? project;
-    User? responsible;
-    List<User> assistants = [];
-
-    TextEditingController descriptionController = TextEditingController();
+    final agenda = ref.watch(meetingAgendaByIdProvider(id));
+    assert(agenda != null, "Meeting in progress should not allow invalid id");
+    if (decision.projectId == null && agenda!.projectId != null) {
+      decision.projectId = agenda.projectId ?? '';
+    }
 
     return Scaffold(
       appBar: CommonAppBar(title: "Meeting in progress"),
-      body: Center(
-        child: Column(
-          children: [
-            Text(title),
-            DefaultTextField(
-              controller: descriptionController,
-              hintText: 'Decision',
+      body: Row(
+        children: [
+          SidebarWidget(),
+          Expanded(
+            child: Center(
+              child: Column(
+                children: [
+                  Card(
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(width: 250, height: 75),
+                          Column(
+                            children: [
+                              Text(
+                                agenda!.title,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              Text(agenda.reunionGoals),
+                            ],
+                          ),
+
+                          Container(
+                            width: 250,
+                            height: 75,
+                            padding: EdgeInsets.all(8),
+                            child: ProjectTextField(
+                              label: 'Project',
+                              initialProjectId: agenda.projectId ?? '',
+                              onSelected:
+                                  (Project p) => decision.projectId = p.id,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 32),
+
+                  Text('Take a Decision: '),
+                  DefaultTextField(
+                    onChanged: (String desc) => decision.description = desc,
+                    hintText: 'Decision',
+                  ),
+                  UserTextField(
+                    label: 'Responsible',
+                    onSelected: (User u) => decision.responsibleId = u.id,
+                  ),
+                  UserTextField(
+                    label: 'Reporter',
+                    onSelected: (User u) => decision.reporterId = u.id,
+                  ),
+                  UsersTextField(
+                    onChanged:
+                        (List<User> u) =>
+                            decision.assistantsIds =
+                                u.map((u) => u.id).toList(),
+                    label: "Participants",
+                  ),
+                  ElevatedButton(
+                    onPressed: () => decisionsService.createDecision(decision),
+                    child: Text('Create'),
+                  ),
+                ],
+              ),
             ),
-            ProjectSelectionDropdownWidget(
-              onSelected: (Project? p) {
-                project = p;
-              },
-            ),
-            UserSelectionDropdownWidget(
-              onSelected: (User? u) {
-                responsible = u;
-              },
-              text: "Responsible",
-            ),
-            UsersSelectionDropdownWidget(
-              onSelected: (List<User> u) {
-                assistants = u;
-              },
-              text: "Participants",
-            ),
-            ElevatedButton(
-              onPressed: () {
-                decisionsService.createDecision(
-                  description: descriptionController.text,
-                  projectId: project?.id,
-                  responsibleId: responsible?.id,
-                  assistantsId: assistants.map((e) => e.id).toList(),
-                );
-              },
-              child: Text('Create'),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

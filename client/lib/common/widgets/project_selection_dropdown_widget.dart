@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
 
+
+// TODO: Unused
 class ProjectSelectionDropdownWidget extends ConsumerWidget {
   final void Function(Project?) onSelected;
 

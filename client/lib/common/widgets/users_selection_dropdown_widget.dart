@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/user.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
 
+// TODO: unused
 class UsersSelectionDropdownWidget extends ConsumerStatefulWidget {
   final void Function(List<User>) onSelected;
   final String text;

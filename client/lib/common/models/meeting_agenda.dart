@@ -30,8 +30,7 @@ class MeetingAgenda {
       title = '',
       reunionGoals = '',
       status = MeetingAgendaStatus.created,
-      redactionDate = DateTime.now(),
-      projectId = '';
+      redactionDate = DateTime.now();
 
   @override 
   bool operator ==(Object other) { 
