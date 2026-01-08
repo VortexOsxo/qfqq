@@ -1,32 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/widgets/agendas/agenda_future_widget.dart';
 import 'package:qfqq/common/widgets/decisions/decision_responsabilities_widget.dart';
-import 'package:qfqq/common/widgets/sidebar_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
-import 'package:qfqq/common/widgets/common_app_bar.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CommonAppBar(title: S.of(context).homePageTitle),
-      body: Row(
-        children: [
-          SidebarWidget(),
-          Expanded(
-            child: Column(
-              children: [
-                Expanded(child: buildMainContent(context)),
-                buildMainButtons(context),
-              ],
-            ),
-          ),
-        ],
-      ),
+    String title = S.of(context).homePageTitle;
+    Widget content = Column(
+      children: [
+        Expanded(child: buildMainContent(context)),
+        buildMainButtons(context),
+      ],
     );
+    return buildPageTemplate(context, content, title);
   }
 
   Widget buildMainButtons(BuildContext context) {
@@ -34,7 +25,6 @@ class HomePage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          buildButton(context, 'Start Meeting', '/meeting-selection'),
           buildButton(context, S.of(context).homePageCreateAgenda, '/agenda'),
           buildButton(context, S.of(context).homePageUpdateAgenda, '/agendas'),
           buildButton(context, 'Projects', '/projects'),
@@ -67,9 +57,13 @@ class HomePage extends StatelessWidget {
     );
   }
 
-// TODO: When the user logs in, directly send the first page of it's meetings and decisions
+  // TODO: When the user logs in, directly send the first page of it's meetings and decisions
   Widget buildDecisionsContent(BuildContext context) {
-    return buildContentCard(context, 'Responsabilities', DecisionResponsabilitiesWidget());
+    return buildContentCard(
+      context,
+      'Responsabilities',
+      DecisionResponsabilitiesWidget(),
+    );
   }
 
   Widget buildMeetingsContent(BuildContext context) {

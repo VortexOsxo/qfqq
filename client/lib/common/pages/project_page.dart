@@ -4,9 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
 import 'package:qfqq/common/services/projects_service.dart';
-import 'package:qfqq/common/widgets/common_app_bar.dart';
+import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/widgets/default_text_field.dart';
-import 'package:qfqq/common/widgets/sidebar_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 final projectSearchQueryProvider = StateProvider<String>((ref) => '');
@@ -15,10 +14,12 @@ final filteredProjectProvider = Provider<List<Project>>((ref) {
   var projects = ref.watch(projectsProvider);
   var query = ref.watch(projectSearchQueryProvider);
 
-  if (query.isEmpty ) return projects;
+  if (query.isEmpty) return projects;
 
   return projects
-      .where((project) => project.title.toLowerCase().contains(query.toLowerCase()))
+      .where(
+        (project) => project.title.toLowerCase().contains(query.toLowerCase()),
+      )
       .toList();
 });
 
@@ -51,20 +52,18 @@ class _ProjectPageState extends ConsumerState<ProjectPage> {
   Widget build(BuildContext context) {
     final projectService = ref.read(projectsServiceProvider);
 
-    return Scaffold(
-      appBar: CommonAppBar(title: S.of(context).homePageTitle),
-      body: Row(
-        children: [
-          SidebarWidget(),
-          SizedBox(
-            width: 300, // Fixed width to prevent unbounded width issues
-            child: _buildProjectCreationForm(projectService),
-          ),
-          const SizedBox(width: 32),
-          _buildProjectsListAsync(context, ref),
-        ],
-      ),
+    String title = S.of(context).homePageTitle;
+    Widget content = Row(
+      children: [
+        SizedBox(
+          width: 300, // Fixed width to prevent unbounded width issues
+          child: _buildProjectCreationForm(projectService),
+        ),
+        const SizedBox(width: 32),
+        _buildProjectsListAsync(context, ref),
+      ],
     );
+    return buildPageTemplate(context, content, title);
   }
 
   Widget _buildProjectCreationForm(ProjectsService projectService) {

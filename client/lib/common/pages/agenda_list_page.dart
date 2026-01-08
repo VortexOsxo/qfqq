@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
-import 'package:qfqq/common/widgets/sidebar_widget.dart';
+import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/generated/l10n.dart';
 import 'package:intl/intl.dart';
-import 'package:qfqq/common/widgets/common_app_bar.dart';
 import 'package:qfqq/common/pages/agenda_modification__page.dart';
 
 
@@ -14,17 +13,12 @@ class AgendasListPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final agendas = ref.watch(meetingsAgendasProvider);
+   final agendas = ref.watch(meetingsAgendasProvider);
 
-    return Scaffold(
-      appBar: CommonAppBar(title: S.of(context).agendasListPageTitle),
-      body: Row(
-        children: [
-          SidebarWidget(),
-          Expanded(child: _buildAgendasList(context, agendas),)
-        ],
-      ),
-    );
+    String title = S.of(context).agendasListPageTitle;
+    Widget content = _buildAgendasList(context, agendas);
+
+    return buildPageTemplate(context, content, title);
   }
 
   Widget _buildAgendasList(BuildContext context, List<MeetingAgenda> agendas) {

@@ -13,6 +13,7 @@ class SidebarWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          _SideBarItem(title: 'Home', path: '/'),
           _SideBarItem(title: 'Projects', path: '/projects'),
           _SideBarItem(title: 'Agendas', path: '/agendas'),
           _SideBarItem(title: 'Decisions', path: '/decisions'),
