@@ -27,7 +27,7 @@ class DecisionsService {
 
   Future<List<Decision>> loadDecisions([String queryArgs = ""]) async {
     final response = await http.get(
-      Uri.parse('$_apiUrl/decisions?$queryArgs'),
+      Uri.parse('$_apiUrl/decisions/?$queryArgs'),
       headers: _authService.addAuthHeader({'Content-Type': 'application/json'}),
     );
 

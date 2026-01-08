@@ -12,9 +12,7 @@ class DecisionsResponsabilitiesFetcherService
     this._decisionsService,
     this._authService,
   ) : super() {
-    _authService.connectionNotifier.subscribe((_) {
-      loadData();
-    });
+    _authService.connectionNotifier.subscribe((_) => loadData());
   }
 
   @override

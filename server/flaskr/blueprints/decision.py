@@ -1,5 +1,6 @@
 from datetime import datetime
 from flask import Blueprint, jsonify, request, g
+from bson import ObjectId
 
 from flaskr.models import DecisionStatus
 from flaskr.blueprints.auth import login_required
@@ -54,7 +55,7 @@ def get_decisions():
 
     responsibleId = request.args.get("responsibleId")
     if responsibleId:
-        filters.append(ValueFilter("responsibleId", g.user_id if responsibleId == 'me' else responsibleId))
+        filters.append(ValueFilter("responsibleId", ObjectId(g.user_id if responsibleId == 'me' else responsibleId)))
 
     decisions = DecisionDataHandler.get_decisions_by_filters(filters)
     return jsonify([decision for decision in decisions]), 200
