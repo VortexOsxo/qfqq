@@ -4,28 +4,30 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:qfqq/common/models/user.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
+import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/utils/modals/select_date.dart';
 import 'package:qfqq/common/widgets/reusables/chip_list.dart';
 import 'package:qfqq/common/widgets/reusables/project_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/user_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/users_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
-import 'package:qfqq/common/widgets/common_app_bar.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 
 class AgendaModificationPage extends ConsumerStatefulWidget {
   final MeetingAgenda agenda;
   final bool isNewAgenda;
-  
+
   AgendaModificationPage({super.key, MeetingAgenda? agendaToModify})
     : agenda = agendaToModify ?? MeetingAgenda.empty(),
       isNewAgenda = agendaToModify == null;
 
   @override
-  ConsumerState<AgendaModificationPage> createState() => _AgendaModificationPageState();
+  ConsumerState<AgendaModificationPage> createState() =>
+      _AgendaModificationPageState();
 }
 
-class _AgendaModificationPageState extends ConsumerState<AgendaModificationPage> {
+class _AgendaModificationPageState
+    extends ConsumerState<AgendaModificationPage> {
   late final TextEditingController _themeController;
 
   @override
@@ -35,7 +37,10 @@ class _AgendaModificationPageState extends ConsumerState<AgendaModificationPage>
   }
 
   Future<void> _handleDateTimeSelection() async {
-    final DateTime? result = await showDateTimePicker(context, widget.agenda.reunionDate ?? DateTime.now());
+    final DateTime? result = await showDateTimePicker(
+      context,
+      widget.agenda.reunionDate ?? DateTime.now(),
+    );
     if (result == null) return;
     setState(() => widget.agenda.reunionDate = result);
   }
@@ -58,31 +63,24 @@ class _AgendaModificationPageState extends ConsumerState<AgendaModificationPage>
     setState(() {});
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildLabel(String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0, top: 8.0),
+      padding: const EdgeInsets.only(bottom: 8.0),
       child: Text(
-        title,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.w600,
-          color: Theme.of(context).colorScheme.primary,
+        text,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+          fontWeight: FontWeight.w500,
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: .7),
         ),
       ),
     );
   }
 
-  Widget _buildCard({required Widget child}) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: Theme.of(context).colorScheme.outline.withValues(alpha: .2),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: child,
+  Widget _buildDivider() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 24.0),
+      child: Divider(
+        color: Theme.of(context).colorScheme.outline.withValues(alpha: .2),
       ),
     );
   }
@@ -96,240 +94,304 @@ class _AgendaModificationPageState extends ConsumerState<AgendaModificationPage>
   @override
   Widget build(BuildContext context) {
     final locale = Localizations.localeOf(context).toString();
-    String formattedDateTime = DateFormat.yMMMd(locale).add_Hm().format(widget.agenda.reunionDate ?? DateTime.now());
-    String formattedRedactionDate = DateFormat.yMMMd(locale).format(widget.agenda.redactionDate);
+    String formattedDateTime = DateFormat.yMMMd(
+      locale,
+    ).add_Hm().format(widget.agenda.reunionDate ?? DateTime.now());
     final loc = S.of(context);
     final isEditing = !widget.isNewAgenda;
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: CommonAppBar(title: isEditing ? '${loc.agendaPageTitleAppBar} - Update' : loc.agendaPageTitleAppBar),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // BASIC INFO SECTION
-              _buildCard(
-                child: Column(
+    void saveAgenda(MeetingAgendaStatus status) async {
+      widget.agenda.status = status;
+      final service = ref.read(meetingAgendaServiceProvider);
+      if (isEditing) {
+        await service.updateMeetingAgenda(widget.agenda);
+      } else {
+        await service.createMeetingAgenda(widget.agenda);
+      }
+      context.go('/agendas');
+    }
+
+    String title =
+        isEditing
+            ? '${loc.agendaPageTitleAppBar} - Update'
+            : loc.agendaPageTitleAppBar;
+
+    Widget content = SingleChildScrollView(
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Title and Goals
+                _buildLabel(loc.agendaPageTitle),
+                TextFormField(
+                  initialValue: widget.agenda.title,
+                  onChanged: (value) => widget.agenda.title = value,
+                  decoration: InputDecoration(
+                    hintText: 'Enter meeting title',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                _buildLabel(loc.agendaPageGoals),
+                TextFormField(
+                  initialValue: widget.agenda.reunionGoals,
+                  onChanged: (value) => widget.agenda.reunionGoals = value,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    hintText: 'What do you want to achieve?',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                  ),
+                ),
+
+                _buildDivider(),
+
+                // Date, Time & Location in a grid
+                _buildLabel(loc.agendaPageSectionScheduleLocation),
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildSectionTitle(loc.agendaPageSectionMeetingDetails),
-                    TextField(
-                      controller: TextEditingController(text: formattedRedactionDate),
-                      decoration: InputDecoration(
-                        labelText: loc.agendaPageActualName,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        prefixIcon: const Icon(Icons.today),
-                        filled: true,
-                        fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: .3),
+                    Expanded(
+                      flex: 2,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Date & Time',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                          const SizedBox(height: 8),
+                          OutlinedButton.icon(
+                            onPressed: _handleDateTimeSelection,
+                            icon: const Icon(Icons.calendar_today, size: 18),
+                            label: Text(formattedDateTime),
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
+                              minimumSize: const Size(double.infinity, 48),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              alignment: Alignment.centerLeft,
+                            ),
+                          ),
+                        ],
                       ),
-                      enabled: false,
                     ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      initialValue: widget.agenda.title,
-                      onChanged: (value) => widget.agenda.title = value,
-                      decoration: InputDecoration(
-                        labelText: loc.agendaPageTitle,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        prefixIcon: const Icon(Icons.title),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Location',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                          const SizedBox(height: 8),
+                          TextFormField(
+                            initialValue: widget.agenda.reunionLocation,
+                            decoration: InputDecoration(
+                              hintText: 'Room or link',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
+                            ),
+                            onChanged:
+                                (value) =>
+                                    widget.agenda.reunionLocation = value,
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      initialValue: widget.agenda.reunionGoals,
-                      onChanged: (value) => widget.agenda.reunionGoals = value,
-                      decoration: InputDecoration(
-                        labelText:  loc.agendaPageGoals,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        alignLabelWithHint: true,
-                        prefixIcon: const Padding(
-                          padding: EdgeInsets.only(bottom: 60),
-                          child: Icon(Icons.flag_outlined),
-                        ),
-                      ),
-                    )
                   ],
                 ),
-              ),
-              
-              const SizedBox(height: 20),
 
-              // DATE & LOCATION SECTION
-              _buildCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                _buildDivider(),
+
+                // Themes
+                _buildLabel(loc.agendaPageSectionThemes),
+                Row(
                   children: [
-                    _buildSectionTitle(loc.agendaPageSectionScheduleLocation),
-                    OutlinedButton.icon(
-                      onPressed: _handleDateTimeSelection,
-                      icon: const Icon(Icons.schedule),
-                      label: Text(formattedDateTime),
-                      style: OutlinedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 52),
+                    Expanded(
+                      child: TextField(
+                        controller: _themeController,
+                        decoration: InputDecoration(
+                          hintText: 'Add a discussion topic',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                        ),
+                        onSubmitted: (_) => _addTheme(),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    FilledButton.icon(
+                      onPressed: _addTheme,
+                      icon: const Icon(Icons.add, size: 20),
+                      label: const Text('Add'),
+                      style: FilledButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 14,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      initialValue: widget.agenda.reunionLocation,
-                      decoration: InputDecoration(
-                        labelText: loc.agendaPageLocation,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        prefixIcon: const Icon(Icons.location_on),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                ChipList<String>(
+                  items: widget.agenda.themes,
+                  displayString: (String theme) => theme,
+                  onDelete: _removeTheme,
+                ),
+
+                _buildDivider(),
+
+                // People
+                _buildLabel(loc.agendaPageSectionPeople),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Facilitator',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                          const SizedBox(height: 8),
+                          UserTextField(
+                            label: loc.agendaPageAnimatorLabel,
+                            initialUserId: widget.agenda.animatorId ?? '',
+                            onSelected:
+                                (p0) => widget.agenda.animatorId = p0.id,
+                          ),
+                        ],
                       ),
-                      onChanged: (value) => widget.agenda.reunionLocation = value,
                     ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // THEMES SECTION
-              _buildCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSectionTitle(loc.agendaPageSectionThemes),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _themeController,
-                            decoration: InputDecoration(
-                              labelText: loc.agendaPageAddTheme,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              prefixIcon: const Icon(Icons.topic_outlined),
-                            ),
-                            onSubmitted: (_) => _addTheme(),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Project',
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        FilledButton(
-                          onPressed: _addTheme,
-                          style: FilledButton.styleFrom(
-                            minimumSize: const Size(52, 52),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
+                          const SizedBox(height: 8),
+                          ProjectTextField(
+                            label: 'Select project',
+                            initialProjectId: widget.agenda.projectId ?? '',
+                            onSelected:
+                                (project) =>
+                                    widget.agenda.projectId = project.id,
                           ),
-                          child: const Icon(Icons.add),
-                        ),
-                      ],
-                    ),
-                    ChipList<String>(
-                      items: widget.agenda.themes,
-                      displayString: (String theme) => theme,
-                      onDelete: _removeTheme,
+                        ],
+                      ),
                     ),
                   ],
                 ),
-              ),
+                const SizedBox(height: 20),
 
-              const SizedBox(height: 20),
+                _buildLabel('Participants'),
+                UsersTextField(
+                  label: loc.agendaPageAddParticipant,
+                  initialUsersIds: widget.agenda.participantsIds,
+                  onChanged: _updateParticipants,
+                ),
 
-              // PEOPLE SECTION
-              _buildCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                const SizedBox(height: 40),
+
+                // Action Buttons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    _buildSectionTitle(loc.agendaPageSectionPeople),
-                    UserTextField(
-                      label: loc.agendaPageAnimatorLabel,
-                      initialUserId: widget.agenda.animatorId ?? '',
-                      onSelected: (p0) => widget.agenda.animatorId = p0.id,
-                    ),
-                    const SizedBox(height: 16),
-                    UsersTextField(
-                      label: loc.agendaPageAddParticipant,
-                      initialUsersIds: widget.agenda.participantsIds,
-                      onChanged: _updateParticipants,
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // Project Section
-              _buildCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSectionTitle('Select Owning Project'),
-                    ProjectTextField(
-                      label: 'Project',
-                      initialProjectId: widget.agenda.projectId ?? '',
-                      onSelected:
-                          (project) => widget.agenda.projectId = project.id,
-                    ),
-                  ],
-                ),
-              ),
-
-
-              const SizedBox(height: 32),
-
-              // ACTION BUTTONS
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
+                    OutlinedButton(
                       onPressed: () => context.go('/'),
                       style: OutlinedButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 48),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 14,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                       child: Text(loc.agendaPageCancel),
                     ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: FilledButton(
-                      // TODO : Add local validation and : null
-                      onPressed: () async {
-                        final service = ref.read(meetingAgendaServiceProvider);
-                        if (isEditing) {
-                          await service.updateMeetingAgenda(widget.agenda);
-                        } else {
-                          await service.createMeetingAgenda(widget.agenda);
-                        }
-                        context.go('/agendas');
-                      },
+                    const SizedBox(width: 12),
+                    FilledButton(
+                      onPressed: () => saveAgenda(MeetingAgendaStatus.draft),
                       style: FilledButton.styleFrom(
-                        minimumSize: const Size(double.infinity, 48),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 14,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: Text(isEditing ? 'Update' : loc.agendaPageSaveAgenda),
+                      child: Text(
+                        isEditing ? 'Update Agenda as draft' : 'Save Agenda as draft',
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              
-              const SizedBox(height: 20),
-            ],
+                    const SizedBox(width: 12),
+                    FilledButton(
+                      onPressed: () => saveAgenda(MeetingAgendaStatus.planned),
+                      style: FilledButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 14,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        isEditing ? 'Update Agenda' : loc.agendaPageSaveAgenda,
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 24),
+              ],
+            ),
           ),
         ),
       ),
     );
+
+    return buildPageTemplate(context, content, title);
   }
 }

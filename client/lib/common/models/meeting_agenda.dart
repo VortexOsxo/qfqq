@@ -1,4 +1,4 @@
-enum MeetingAgendaStatus { created, saved, validated }
+enum MeetingAgendaStatus { draft, planned, completed }
 
 class MeetingAgenda {
   final String id;
@@ -29,7 +29,7 @@ class MeetingAgenda {
     : id = '',
       title = '',
       reunionGoals = '',
-      status = MeetingAgendaStatus.created,
+      status = MeetingAgendaStatus.draft,
       redactionDate = DateTime.now();
 
   @override 

@@ -38,11 +38,13 @@
   "homePageCreateAgenda": "Create Meeting Agenda",
   "homePageUpdateAgenda": "Update Meeting Agenda",
   "homePageViewAgendas": "View Agendas",
+
+  "agendaStatusDraft": "Draft",
+  "agendaStatusPlanned": "Planned",
+  "agendaStatusCompleted": "Completed",
+
   "agendasListPageTitle": "Meeting Agendas",
   "agendasListPageEmpty": "No meeting agendas found",
-  "agendasListPageStatusCreated": "Created",
-  "agendasListPageStatusSaved": "Saved",
-  "agendasListPageStatusValidated": "Validated",
   "agendasListPageRedactionDate": "Redaction Date: {date}",
   "agendasListPageReunionDate": "Meeting Date: {date}",
   "agendasListPageNoReunionDate": "No meeting date set"

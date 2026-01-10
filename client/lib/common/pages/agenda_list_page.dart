@@ -104,24 +104,24 @@ class AgendasListPage extends ConsumerWidget {
     String label;
 
     switch (status) {
-      case MeetingAgendaStatus.created:
+      case MeetingAgendaStatus.draft:
         color = Colors.orange;
-        label = S.of(context).agendasListPageStatusCreated;
+        label = S.of(context).agendaStatusDraft;
         break;
-      case MeetingAgendaStatus.saved:
+      case MeetingAgendaStatus.planned:
         color = Colors.blue;
-        label = S.of(context).agendasListPageStatusSaved;
+        label = S.of(context).agendaStatusPlanned;
         break;
-      case MeetingAgendaStatus.validated:
+      case MeetingAgendaStatus.completed:
         color = Colors.green;
-        label = S.of(context).agendasListPageStatusValidated;
+        label = S.of(context).agendaStatusCompleted;
         break;
     }
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withAlpha(26),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: color),
       ),
