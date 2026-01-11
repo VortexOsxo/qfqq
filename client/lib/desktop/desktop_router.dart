@@ -1,5 +1,7 @@
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/pages/agenda_modification__page.dart';
+import 'package:qfqq/common/pages/agenda_view_page.dart';
 import 'package:qfqq/common/pages/decisions_list_page.dart';
 import 'package:qfqq/common/pages/home_page.dart';
 import 'package:qfqq/common/pages/login_page.dart';
@@ -15,11 +17,21 @@ final GoRouter desktopRouter = GoRouter(
     GoRoute(path: '/', builder: (context, state) => const HomePage()),
     GoRoute(
       path: '/agenda',
-      builder: (context, state) => AgendaModificationPage(),
+      builder: (context, state) {
+        final agenda = state.extra as MeetingAgenda?;
+        return AgendaModificationPage(agendaToModify: agenda,);
+      },
     ),
     GoRoute(
       path: '/agendas',
       builder: (context, state) => const AgendasListPage(),
+    ),
+    GoRoute(
+      path: '/agendas/:id',
+      builder: (context, state) {
+        final id = state.pathParameters['id']!;
+        return AgendaViewPage(agendaId: id);
+      },
     ),
     GoRoute(
       path: '/decisions',
@@ -44,6 +56,6 @@ final GoRouter desktopRouter = GoRouter(
         final id = state.pathParameters['id']!;
         return MeetingInProgressPage(id: id);
       },
-    )
+    ),
   ],
 );

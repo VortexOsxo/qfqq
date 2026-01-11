@@ -23,7 +23,12 @@ class AgendaLineHeader extends StatelessWidget {
           Text(agenda.title, style: TextStyle(fontSize: 16)),
           const Spacer(),
           TextButton(
-            child: Text('Start Meeting'),
+            child: Text('View'),
+            onPressed: () => context.go('/agendas/${agenda.id}'),
+          ),
+          SizedBox(width: 8),
+          TextButton(
+            child: Text('Start'),
             onPressed: () => context.go('/meeting-in-progress/${agenda.id}'),
           ),
           SizedBox(width: 8),

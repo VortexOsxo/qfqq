@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:qfqq/common/models/user.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/templates/page_template.dart';
+import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/modals/select_date.dart';
 import 'package:qfqq/common/widgets/reusables/chip_list.dart';
 import 'package:qfqq/common/widgets/reusables/project_text_field.dart';
@@ -93,10 +93,8 @@ class _AgendaModificationPageState
 
   @override
   Widget build(BuildContext context) {
-    final locale = Localizations.localeOf(context).toString();
-    String formattedDateTime = DateFormat.yMMMd(
-      locale,
-    ).add_Hm().format(widget.agenda.reunionDate ?? DateTime.now());
+    String formattedDateTime = formatDate(context, widget.agenda.reunionDate);
+
     final loc = S.of(context);
     final isEditing = !widget.isNewAgenda;
 
@@ -362,7 +360,9 @@ class _AgendaModificationPageState
                         ),
                       ),
                       child: Text(
-                        isEditing ? 'Update Agenda as draft' : 'Save Agenda as draft',
+                        isEditing
+                            ? 'Update Agenda as draft'
+                            : 'Save Agenda as draft',
                       ),
                     ),
                     const SizedBox(width: 12),

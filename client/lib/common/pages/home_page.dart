@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/templates/button_template.dart';
 import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/widgets/agendas/agenda_future_widget.dart';
 import 'package:qfqq/common/widgets/decisions/decision_responsabilities_widget.dart';
@@ -25,9 +25,9 @@ class HomePage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          buildButton(context, S.of(context).homePageCreateAgenda, '/agenda'),
-          buildButton(context, S.of(context).homePageUpdateAgenda, '/agendas'),
-          buildButton(context, 'Projects', '/projects'),
+          buildNavButtonTemplate(context, S.of(context).homePageCreateAgenda, '/agenda'),
+          buildNavButtonTemplate(context, S.of(context).homePageUpdateAgenda, '/agendas'),
+          buildNavButtonTemplate(context, 'Projects', '/projects'),
         ],
       ),
     );
@@ -42,17 +42,6 @@ class HomePage extends StatelessWidget {
           buildDecisionsContent(context),
           buildMeetingsContent(context),
         ],
-      ),
-    );
-  }
-
-  Widget buildButton(BuildContext context, String text, String path) {
-    return Padding(
-      padding: EdgeInsets.all(10),
-      child: ElevatedButton(
-        onPressed: () => context.go(path),
-        style: ElevatedButton.styleFrom(minimumSize: const Size(200, 50)),
-        child: Text(text),
       ),
     );
   }

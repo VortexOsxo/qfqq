@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/generated/l10n.dart';
 import 'package:intl/intl.dart';
-import 'package:qfqq/common/pages/agenda_modification__page.dart';
 
 
 class AgendasListPage extends ConsumerWidget {
@@ -86,13 +86,7 @@ class AgendasListPage extends ConsumerWidget {
               ],
             ),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => AgendaModificationPage(agendaToModify: agenda),
-                ),
-              );
-            },
+            onTap: () => context.go('/agendas/${agenda.id}'),
           ),
         );
       },

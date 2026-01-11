@@ -1,0 +1,110 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qfqq/common/models/meeting_agenda.dart';
+import 'package:qfqq/common/models/project.dart';
+import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
+import 'package:qfqq/common/providers/projects_provider.dart';
+import 'package:qfqq/common/templates/button_template.dart';
+import 'package:qfqq/common/templates/page_template.dart';
+import 'package:qfqq/common/utils/fromatting.dart';
+import 'package:qfqq/common/utils/is_id_valid.dart';
+
+class AgendaViewPage extends ConsumerWidget {
+  final String agendaId;
+  const AgendaViewPage({super.key, required this.agendaId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    String title = 'Agenda Page';
+
+    MeetingAgenda? agenda = ref.watch(meetingAgendaByIdProvider(agendaId));
+    return buildPageTemplate(
+      context,
+      _buildContent(context, ref, agenda),
+      title,
+    );
+  }
+
+  Widget _buildContent(
+    BuildContext context,
+    WidgetRef ref,
+    MeetingAgenda? agenda,
+  ) {
+    if (agenda == null) {
+      return Center(child: Text('Project not found'));
+    }
+
+    return Center(
+      child: Column(
+        children: [
+          _buildTopCard(context, ref, agenda),
+          Padding(
+            padding: EdgeInsets.all(8),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text('Goals: ${agenda.reunionGoals}'),
+            ),
+          ),
+          Spacer(),
+          Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                buildNavButtonTemplate(
+                  context,
+                  'Modify',
+                  '/agenda',
+                  extra: agenda,
+                ),
+                buildNavButtonTemplate(
+                  context,
+                  'Start',
+                  '/meeting-in-progress/${agenda.id}',
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTopCard(
+    BuildContext context,
+    WidgetRef ref,
+    MeetingAgenda agenda,
+  ) {
+    Project? project =
+        isIdValid(agenda.projectId)
+            ? ref.watch(projectProviderById(agenda.projectId!))
+            : null;
+
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(agenda.reunionLocation ?? 'No Location Set'),
+                Text(
+                  agenda.reunionDate != null
+                      ? formatDate(context, agenda.reunionDate)
+                      : 'No Date Set',
+                ),
+              ],
+            ),
+            Text(
+              agenda.title,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+
+            Text(project != null ? 'Project: ${project.title}' : 'No Project'),
+          ],
+        ),
+      ),
+    );
+  }
+}
