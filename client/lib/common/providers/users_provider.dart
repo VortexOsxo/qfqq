@@ -7,4 +7,9 @@ final usersProvider = StateNotifierProvider<UsersService, List<User>>(
   (ref) => UsersService(ref.read(serverUrlProvider)),
 );
 
+final userByIdProvider = Provider.family<User, String>((ref, id) {
+  final users = ref.read(usersProvider);
+  return users.firstWhere((user) => user.id == id);
+});
+
 final userServiceProvider = Provider<UsersService>((ref) =>ref.read(usersProvider.notifier));
