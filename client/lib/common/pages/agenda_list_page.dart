@@ -4,24 +4,54 @@ import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/templates/page_template.dart';
+import 'package:qfqq/common/widgets/default_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 import 'package:intl/intl.dart';
 
+final agendaSearchQueryProvider = StateProvider<String>((ref) => '');
+
+final filteredAgendaProvider = Provider<List<MeetingAgenda>>((ref) {
+  final agendas = ref.watch(meetingsAgendasProvider);
+
+  final query = ref.watch(agendaSearchQueryProvider);
+  if (query.isEmpty) return agendas;
+
+  return agendas
+      .where(
+        (MeetingAgenda agenda) =>
+            agenda.title.toLowerCase().contains(query.toLowerCase()),
+      )
+      .toList();
+});
 
 class AgendasListPage extends ConsumerWidget {
   const AgendasListPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-   final agendas = ref.watch(meetingsAgendasProvider);
+    final agendas = ref.watch(filteredAgendaProvider);
 
     String title = S.of(context).agendasListPageTitle;
-    Widget content = _buildAgendasList(context, agendas);
+    Widget content = Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: DefaultTextField(
+            onChanged:
+                (value) =>
+                    ref.read(agendaSearchQueryProvider.notifier).state = value,
+            hintText: 'Search',
+          ),
+        ),
 
+        SizedBox(height: 16),
+        Expanded(child: _buildAgendasList(context, ref, agendas)),
+      ],
+    );
     return buildPageTemplate(context, content, title);
   }
 
-  Widget _buildAgendasList(BuildContext context, List<MeetingAgenda> agendas) {
+  Widget _buildAgendasList(BuildContext context, WidgetRef ref, List<MeetingAgenda> agendas) {
     if (agendas.isEmpty) {
       return Center(
         child: Column(
@@ -31,9 +61,9 @@ class AgendasListPage extends ConsumerWidget {
             const SizedBox(height: 16),
             Text(
               S.of(context).agendasListPageEmpty,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: Colors.grey,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(color: Colors.grey),
             ),
           ],
         ),
@@ -51,26 +81,32 @@ class AgendasListPage extends ConsumerWidget {
             contentPadding: const EdgeInsets.all(16),
             title: Text(
               agenda.title,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 8),
                 Text(
-                  S.of(context).agendasListPageRedactionDate(
-                    DateFormat('MMM dd, yyyy').format(agenda.redactionDate),
-                  ),
+                  S
+                      .of(context)
+                      .agendasListPageRedactionDate(
+                        DateFormat('MMM dd, yyyy').format(agenda.redactionDate),
+                      ),
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 4),
                 if (agenda.reunionDate != null)
                   Text(
-                    S.of(context).agendasListPageReunionDate(
-                      DateFormat('MMM dd, yyyy').format(agenda.reunionDate!),
-                    ),
+                    S
+                        .of(context)
+                        .agendasListPageReunionDate(
+                          DateFormat(
+                            'MMM dd, yyyy',
+                          ).format(agenda.reunionDate!),
+                        ),
                     style: Theme.of(context).textTheme.bodyMedium,
                   )
                 else
@@ -129,4 +165,4 @@ class AgendasListPage extends ConsumerWidget {
       ),
     );
   }
-} 
+}
