@@ -14,8 +14,10 @@ import 'package:qfqq/common/widgets/default_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 final agendaSearchQueryProvider = StateProvider<String>((ref) => '');
-final agendaStatusQueryProvider = StateProvider<MeetingAgendaStatus?>((ref) => MeetingAgendaStatus.draft);
-
+final agendaStatusQueryProvider = StateProvider<MeetingAgendaStatus?>(
+  (ref) => MeetingAgendaStatus.draft,
+);
+final agendaProjectQueryProvider = StateProvider<String?>((ref) => null);
 
 final filteredAgendaProvider = Provider<List<MeetingAgenda>>((ref) {
   var agendas = ref.watch(meetingsAgendasProvider);
@@ -38,6 +40,12 @@ final filteredAgendaProvider = Provider<List<MeetingAgenda>>((ref) {
             .where((MeetingAgenda agenda) => agenda.status == status)
             .toList();
   }
+
+  final projectId = ref.watch(agendaProjectQueryProvider);
+  if (isIdValid(projectId)) {
+    agendas = agendas.where((agenda) => agenda.projectId == projectId).toList();
+  }
+
   return agendas;
 });
 
@@ -59,20 +67,6 @@ class AgendasListPage extends ConsumerWidget {
   }
 
   Widget _buildSearchAndFilterSection(BuildContext context, WidgetRef ref) {
-    final List<DropdownMenuEntry<MeetingAgendaStatus?>> menuEntries =
-        UnmodifiableListView([
-          const DropdownMenuEntry<MeetingAgendaStatus?>(
-            value: null,
-            label: 'Status: All',
-          ),
-          ...MeetingAgendaStatus.values.map(
-            (status) => DropdownMenuEntry<MeetingAgendaStatus?>(
-              value: status,
-              label: 'Status: ${status.name}',
-            ),
-          ),
-        ]);
-
     return Padding(
       padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
       child: Column(
@@ -85,16 +79,64 @@ class AgendasListPage extends ConsumerWidget {
             hintText: 'Search',
           ),
           SizedBox(height: 8),
-          DropdownMenu<MeetingAgendaStatus?>(
-            width: 200,
-            initialSelection: MeetingAgendaStatus.values.first,
-            onSelected: (MeetingAgendaStatus? value) {
-              ref.read(agendaStatusQueryProvider.notifier).state = value; 
-            },
-            dropdownMenuEntries: menuEntries,
-          )
+          Row(
+            children: [
+              _buildStatusFilterDropdown(context, ref),
+              SizedBox(width: 16),
+              _buildProjectFilterDropdown(context, ref),
+            ],
+          ),
         ],
       ),
+    );
+  }
+
+  Widget _buildStatusFilterDropdown(BuildContext context, WidgetRef ref) {
+    final List<DropdownMenuEntry<MeetingAgendaStatus?>> menuEntries =
+        UnmodifiableListView([
+          const DropdownMenuEntry<MeetingAgendaStatus?>(
+            value: null,
+            label: 'Any Status',
+          ),
+          ...MeetingAgendaStatus.values.map(
+            (status) => DropdownMenuEntry<MeetingAgendaStatus?>(
+              value: status,
+              label: 'Status: ${status.name}',
+            ),
+          ),
+        ]);
+    return DropdownMenu<MeetingAgendaStatus?>(
+      width: 200,
+      initialSelection: ref.read(agendaStatusQueryProvider),
+      onSelected: (MeetingAgendaStatus? value) {
+        ref.read(agendaStatusQueryProvider.notifier).state = value;
+      },
+      dropdownMenuEntries: menuEntries,
+    );
+  }
+
+  Widget _buildProjectFilterDropdown(BuildContext context, WidgetRef ref) {
+    var projects = ref.watch(projectsProvider);
+
+    final List<DropdownMenuEntry<String?>> menuEntries = UnmodifiableListView([
+      const DropdownMenuEntry<String?>(
+        value: null,
+        label: 'Any Project',
+      ),
+      ...projects.map(
+        (project) => DropdownMenuEntry<String?>(
+          value: project.id,
+          label: 'Project: ${project.title}',
+        ),
+      ),
+    ]);
+    return DropdownMenu<String?>(
+      width: 200,
+      initialSelection: ref.read(agendaProjectQueryProvider),
+      onSelected: (String? value) {
+        ref.read(agendaProjectQueryProvider.notifier).state = value;
+      },
+      dropdownMenuEntries: menuEntries,
     );
   }
 
