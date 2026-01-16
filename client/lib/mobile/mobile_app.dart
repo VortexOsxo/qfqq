@@ -17,6 +17,19 @@ class MobileApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: S.delegate.supportedLocales,
+      localeListResolutionCallback: (locales, supportedLocales) {
+        if (locales != null) {
+          for (var locale in locales) {
+            if (locale.languageCode == 'en') {
+              return const Locale('en');
+            }
+            if (locale.languageCode == 'fr') {
+              return const Locale('fr');
+            }
+          }
+        }
+        return const Locale('fr');
+      },
     );
   }
 }

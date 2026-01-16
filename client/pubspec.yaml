@@ -30,5 +30,6 @@ flutter:
 flutter_intl:
   enabled: true
   class_name: S
+  main_locale: fr
   arb_dir: lib/l10n
   output_dir: lib/generated
