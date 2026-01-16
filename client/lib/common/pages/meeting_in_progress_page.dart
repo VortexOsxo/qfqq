@@ -13,6 +13,7 @@ import 'package:qfqq/common/widgets/default_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/project_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/user_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/users_text_field.dart';
+import 'package:qfqq/generated/l10n.dart';
 
 class MeetingInProgressPage extends ConsumerWidget {
   final String id;
@@ -23,6 +24,7 @@ class MeetingInProgressPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final decisionsService = ref.read(decisionsServiceProvider);
+    final loc = S.of(context);
 
     final agenda = ref.watch(meetingAgendaByIdProvider(id));
     assert(agenda != null, "Meeting in progress should not allow invalid id");
@@ -38,27 +40,27 @@ class MeetingInProgressPage extends ConsumerWidget {
     Widget content = Center(
       child: Column(
         children: [
-          _buildMeetingHeaderInfo(agenda, animator),
+          _buildMeetingHeaderInfo(context, agenda, animator),
           SizedBox(height: 32),
-          Text('Take a Decision: '),
+          Text(loc.meetingInProgressTakeDecision),
           Padding(
             padding: EdgeInsets.all(8),
             child: DefaultTextField(
               onChanged: (String desc) => decision.description = desc,
-              hintText: 'Decision',
+              hintText: loc.meetingInProgressDecision,
             ),
           ),
           Padding(
             padding: EdgeInsets.all(8),
             child: UserTextField(
-              label: 'Responsible',
+              label: loc.meetingInProgressResponsible,
               onSelected: (User u) => decision.responsibleId = u.id,
             ),
           ),
           Padding(
             padding: EdgeInsets.all(8),
             child: UserTextField(
-              label: 'Reporter',
+              label: loc.meetingInProgressReporter,
               onSelected: (User u) => decision.reporterId = u.id,
             ),
           ),
@@ -68,18 +70,18 @@ class MeetingInProgressPage extends ConsumerWidget {
               onChanged:
                   (List<User> u) =>
                       decision.assistantsIds = u.map((u) => u.id).toList(),
-              label: "Participants",
+              label: loc.meetingInProgressParticipants,
             ),
           ),
           ElevatedButton(
             onPressed: () => decisionsService.createDecision(decision),
-            child: Text('Create'),
+            child: Text(loc.meetingInProgressCreateButton),
           ),
         ],
       ),
     );
 
-    return buildPageTemplate(context, content, "Meeting in progress");
+    return buildPageTemplate(context, content, loc.meetingInProgressPageTitle);
   }
 
   Widget _buildMeetingHeaderSide(Widget content, bool isLeft) {
@@ -94,7 +96,9 @@ class MeetingInProgressPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildMeetingHeaderInfo(MeetingAgenda agenda, User? animator) {
+  Widget _buildMeetingHeaderInfo(BuildContext context, MeetingAgenda agenda, User? animator) {
+    final loc = S.of(context);
+    
     return Card(
       child: Padding(
         padding: EdgeInsets.all(16),
@@ -103,7 +107,7 @@ class MeetingInProgressPage extends ConsumerWidget {
           children: [
             _buildMeetingHeaderSide(
               (animator != null)
-                  ? Text('Animator: ${animator.username}')
+                  ? Text(loc.meetingInProgressAnimator(animator.username))
                   : SizedBox.shrink(),
               true,
             ),
@@ -118,7 +122,7 @@ class MeetingInProgressPage extends ConsumerWidget {
             ),
             _buildMeetingHeaderSide(
               ProjectTextField(
-                label: 'Project',
+                label: loc.meetingInProgressProject,
                 initialProjectId: agenda.projectId ?? '',
                 onSelected: (Project p) => decision.projectId = p.id,
               ),

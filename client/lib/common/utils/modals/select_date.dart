@@ -97,7 +97,7 @@ Future<DateTime?> showDateTimePicker(BuildContext context, DateTime currentDateT
                   ],
                   const SizedBox(height: 16),
                   Text(
-                    '${loc.selectDateSelected} ${DateFormat('yyyy-MM-dd HH:mm').format(composedDate)}',
+                    '${loc.selectDateSelected} ${DateFormat.yMd().add_Hm().format(composedDate)}',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 16),

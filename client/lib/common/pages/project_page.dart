@@ -51,13 +51,14 @@ class _ProjectPageState extends ConsumerState<ProjectPage> {
   @override
   Widget build(BuildContext context) {
     final projectService = ref.read(projectsServiceProvider);
+    final loc = S.of(context);
 
-    String title = S.of(context).homePageTitle;
+    String title = loc.projectPageTitle;
     Widget content = Row(
       children: [
         SizedBox(
           width: 300, // Fixed width to prevent unbounded width issues
-          child: _buildProjectCreationForm(projectService),
+          child: _buildProjectCreationForm(projectService, loc),
         ),
         const SizedBox(width: 32),
         _buildProjectsListAsync(context, ref),
@@ -66,23 +67,23 @@ class _ProjectPageState extends ConsumerState<ProjectPage> {
     return buildPageTemplate(context, content, title);
   }
 
-  Widget _buildProjectCreationForm(ProjectsService projectService) {
+  Widget _buildProjectCreationForm(ProjectsService projectService, S loc) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text('Create new project', style: TextStyle(fontSize: 18)),
+          Text(loc.projectPageCreateNewProject, style: const TextStyle(fontSize: 18)),
           const SizedBox(height: 10),
           DefaultTextField(
             controller: titleController,
-            hintText: 'Enter a project title',
+            hintText: loc.projectPageTitleHint,
           ),
           const SizedBox(height: 10),
           DefaultTextField(
             controller: descriptionController,
-            hintText: 'Enter a project description',
+            hintText: loc.projectPageDescriptionHint,
             maxLines: 3,
           ),
           const SizedBox(height: 10),
@@ -96,7 +97,7 @@ class _ProjectPageState extends ConsumerState<ProjectPage> {
               titleController.clear();
               descriptionController.clear();
             },
-            child: const Text('Create'),
+            child: Text(loc.projectPageCreateButton),
           ),
         ],
       ),
@@ -144,7 +145,7 @@ class _ProjectPageState extends ConsumerState<ProjectPage> {
                   (value) =>
                       ref.read(projectSearchQueryProvider.notifier).state =
                           value,
-              hintText: 'Search',
+              hintText: S.of(context).projectPageSearchHint,
             ),
           ),
           SizedBox(height: 16),

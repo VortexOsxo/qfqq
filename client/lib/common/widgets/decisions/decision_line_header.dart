@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:qfqq/common/models/decision.dart';
+import 'package:qfqq/generated/l10n.dart';
 
 class DecisionLineHeader extends StatelessWidget {
   final Decision decision;
@@ -9,10 +10,11 @@ class DecisionLineHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = S.of(context);
     final dueDateText =
         decision.dueDate != null
             ? DateFormat.yMMMd().format(decision.dueDate!)
-            : 'No due date';
+            : loc.commonNoDueDate;
 
     final statusText = getDecisionStatusName(decision.status);
 

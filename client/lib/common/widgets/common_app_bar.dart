@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/generated/l10n.dart';
 
 class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -13,6 +14,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = S.of(context);
     return AppBar(
       backgroundColor: Theme.of(context).colorScheme.primary,
       leading:
@@ -20,7 +22,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
               ? IconButton(
                 icon: const Icon(Icons.home),
                 onPressed: () => context.go('/'),
-                tooltip: 'Home',
+                tooltip: loc.commonTooltipHome,
                 color: Theme.of(context).colorScheme.onPrimary,
               )
               : null,

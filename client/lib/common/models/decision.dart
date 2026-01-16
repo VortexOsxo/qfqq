@@ -1,4 +1,5 @@
 import 'package:qfqq/common/utils/is_id_valid.dart';
+import 'package:qfqq/generated/l10n.dart';
 
 enum DecisionStatus {
   inProgress,
@@ -13,19 +14,19 @@ enum DecisionStatus {
 getDecisionStatusName(DecisionStatus status) {
   switch (status) {
     case DecisionStatus.inProgress:
-      return 'In Progress';
+      return S.current.decisionStatusInProgress;
     case DecisionStatus.cancelled:
-      return 'Cancelled';
+      return S.current.decisionStatusCancelled;
     case DecisionStatus.pending:
-      return 'Pending';
+      return S.current.decisionStatusPending;
     case DecisionStatus.completed:
-      return 'Completed';
+      return S.current.decisionStatusCompleted;
     case DecisionStatus.taskDescription:
-      return 'Task Description';
+      return S.current.decisionStatusTaskDescription;
     case DecisionStatus.approved:
-      return 'Approved';
+      return S.current.decisionStatusApproved;
     case DecisionStatus.toBeValidated:
-      return 'To Be Validated';
+      return S.current.decisionStatusToBeValidated;
   }
 }
 

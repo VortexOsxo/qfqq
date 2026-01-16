@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:qfqq/generated/l10n.dart';
 
 class DatePickerWidget extends StatefulWidget {
   final DateTime? initialDate;
   final void Function(DateTime) onDateSelected;
-  final String label;
+  final String? label;
 
   const DatePickerWidget({
     super.key,
     this.initialDate,
     required this.onDateSelected,
-    this.label = 'Select Date',
+    this.label,
   });
 
   @override
@@ -61,11 +62,12 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = S.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          widget.label,
+          widget.label ?? loc.commonSelectDate,
           style: Theme.of(context).textTheme.labelMedium,
         ),
         const SizedBox(height: 8),
@@ -73,7 +75,7 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
           controller: _controller,
           readOnly: true,
           decoration: InputDecoration(
-            hintText: 'Tap to select date',
+            hintText: loc.commonTapToSelectDate,
             suffixIcon: const Icon(Icons.calendar_today),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
@@ -84,4 +86,5 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
       ],
     );
   }
-} 
+}
+ 

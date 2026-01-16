@@ -76,7 +76,7 @@ class AgendasListPage extends ConsumerWidget {
             onChanged:
                 (value) =>
                     ref.read(agendaSearchQueryProvider.notifier).state = value,
-            hintText: 'Search',
+            hintText: S.of(context).commonSearch,
           ),
           SizedBox(height: 8),
           Row(
@@ -94,9 +94,9 @@ class AgendasListPage extends ConsumerWidget {
   Widget _buildStatusFilterDropdown(BuildContext context, WidgetRef ref) {
     final List<DropdownMenuEntry<MeetingAgendaStatus?>> menuEntries =
         UnmodifiableListView([
-          const DropdownMenuEntry<MeetingAgendaStatus?>(
+          DropdownMenuEntry<MeetingAgendaStatus?>(
             value: null,
-            label: 'Any Status',
+            label: S.of(context).agendaListAnyStatus,
           ),
           ...MeetingAgendaStatus.values.map(
             (status) => DropdownMenuEntry<MeetingAgendaStatus?>(
@@ -119,9 +119,9 @@ class AgendasListPage extends ConsumerWidget {
     var projects = ref.watch(projectsProvider);
 
     final List<DropdownMenuEntry<String?>> menuEntries = UnmodifiableListView([
-      const DropdownMenuEntry<String?>(
+      DropdownMenuEntry<String?>(
         value: null,
-        label: 'Any Project',
+        label: S.of(context).agendaListAnyProject,
       ),
       ...projects.map(
         (project) => DropdownMenuEntry<String?>(
@@ -179,14 +179,14 @@ class AgendasListPage extends ConsumerWidget {
         Row(
           children: [
             SizedBox(width: 16),
-            Expanded(child: Text('Title')),
-            Expanded(child: Text('Status')),
-            Expanded(child: Text('Date')),
-            Expanded(child: Text('Location')),
-            Expanded(child: Text('Animator')),
-            Expanded(child: Text('Project')),
+            Expanded(child: Text(S.of(context).agendaListTitle)),
+            Expanded(child: Text(S.of(context).agendaListStatus)),
+            Expanded(child: Text(S.of(context).agendaListDate)),
+            Expanded(child: Text(S.of(context).agendaListLocation)),
+            Expanded(child: Text(S.of(context).agendaListAnimator)),
+            Expanded(child: Text(S.of(context).agendaListProject)),
             Expanded(
-              child: Align(alignment: Alignment.center, child: Text('Action')),
+              child: Align(alignment: Alignment.center, child: Text(S.of(context).agendaListAction)),
             ),
             SizedBox(width: 16),
           ],
@@ -198,6 +198,7 @@ class AgendasListPage extends ConsumerWidget {
             separatorBuilder:
                 (BuildContext context, int index) => const Divider(),
             itemBuilder: (context, index) {
+              final loc = S.of(context);
               final agenda = agendas[index];
               final project =
                   isIdValid(agenda.projectId)
@@ -218,20 +219,20 @@ class AgendasListPage extends ConsumerWidget {
                     child: Text(
                       agenda.reunionDate != null
                           ? formatDate(context, agenda.reunionDate)
-                          : 'No date set',
+                          : loc.commonNoDateSet,
                     ),
                   ),
                   Expanded(
-                    child: Text(agenda.reunionLocation ?? 'No location set'),
+                    child: Text(agenda.reunionLocation ?? loc.commonNoLocationSet),
                   ),
                   Expanded(
                     child: Text(
-                      animator != null ? animator.username : 'No animator set',
+                      animator != null ? animator.username : loc.commonNoAnimatorSet,
                     ),
                   ),
                   Expanded(
                     child: Text(
-                      project != null ? project.title : 'No project set',
+                      project != null ? project.title : loc.commonNoProjectSet,
                     ),
                   ),
                   Expanded(
@@ -239,7 +240,7 @@ class AgendasListPage extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         TextButton(
-                          child: Text('View'),
+                          child: Text(loc.agendaListView),
                           onPressed: () => context.go('/agendas/${agenda.id}'),
                         ),
                         SizedBox(width: 8),
@@ -250,7 +251,7 @@ class AgendasListPage extends ConsumerWidget {
                                   : () => context.go(
                                     '/meeting-in-progress/${agenda.id}',
                                   ),
-                          child: Text('Start'),
+                          child: Text(loc.agendaListStart),
                         ),
                       ],
                     ),

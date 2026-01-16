@@ -4,6 +4,7 @@ import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/providers/router_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/widgets/common_app_bar.dart';
+import 'package:qfqq/generated/l10n.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -32,8 +33,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = S.of(context);
+    
     return Scaffold(
-      appBar: const CommonAppBar(title: 'Login', showHomeButton: false),
+      appBar: CommonAppBar(title: loc.loginPageTitle, showHomeButton: false),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -41,11 +44,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           child: ListView(
             children: [
               TextFormField(
-                decoration: const InputDecoration(labelText: 'Email'),
+                decoration: InputDecoration(labelText: loc.loginPageLabelEmail),
                 onSaved: (val) => email = val ?? '',
               ),
               TextFormField(
-                decoration: const InputDecoration(labelText: 'Password'),
+                decoration: InputDecoration(labelText: loc.loginPageLabelPassword),
                 obscureText: true,
                 onSaved: (val) => password = val ?? '',
               ),
@@ -54,11 +57,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 Text(error, style: const TextStyle(color: Colors.red)),
               ElevatedButton(
                 onPressed: _submit,
-                child: const Text('Login'),
+                child: Text(loc.loginPageButtonLogin),
               ),
               TextButton(
                 onPressed: () => context.go('/signup'),
-                child: const Text("Don't have an account? Sign Up"),
+                child: Text(loc.loginPageLinkSignup),
               ),
             ],
           ),

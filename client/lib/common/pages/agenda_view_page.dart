@@ -8,6 +8,7 @@ import 'package:qfqq/common/templates/button_template.dart';
 import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
+import 'package:qfqq/generated/l10n.dart';
 
 class AgendaViewPage extends ConsumerWidget {
   final String agendaId;
@@ -15,7 +16,8 @@ class AgendaViewPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    String title = 'Agenda Page';
+    final loc = S.of(context);
+    String title = loc.agendaPageTitleAppBar;
 
     MeetingAgenda? agenda = ref.watch(meetingAgendaByIdProvider(agendaId));
     return buildPageTemplate(
@@ -30,8 +32,9 @@ class AgendaViewPage extends ConsumerWidget {
     WidgetRef ref,
     MeetingAgenda? agenda,
   ) {
+    final loc = S.of(context);
     if (agenda == null) {
-      return Center(child: Text('Project not found'));
+      return Center(child: Text(loc.projectNotFound));
     }
 
     return Center(
@@ -42,7 +45,7 @@ class AgendaViewPage extends ConsumerWidget {
             padding: EdgeInsets.all(8),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text('Goals: ${agenda.reunionGoals}'),
+              child: Text(loc.agendaViewGoals(agenda.reunionGoals)),
             ),
           ),
           Spacer(),
@@ -52,13 +55,13 @@ class AgendaViewPage extends ConsumerWidget {
               children: [
                 buildNavButtonTemplate(
                   context,
-                  'Modify',
+                  loc.commonModify,
                   '/agenda',
                   extra: agenda,
                 ),
                 buildNavButtonTemplate(
                   context,
-                  'Start',
+                  loc.commonStart,
                   '/meeting-in-progress/${agenda.id}',
                 ),
               ],
@@ -74,6 +77,7 @@ class AgendaViewPage extends ConsumerWidget {
     WidgetRef ref,
     MeetingAgenda agenda,
   ) {
+    final loc = S.of(context);
     Project? project =
         isIdValid(agenda.projectId)
             ? ref.watch(projectProviderById(agenda.projectId!))
@@ -88,11 +92,11 @@ class AgendaViewPage extends ConsumerWidget {
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(agenda.reunionLocation ?? 'No Location Set'),
+                Text(agenda.reunionLocation ?? loc.commonNoLocationSet),
                 Text(
                   agenda.reunionDate != null
                       ? formatDate(context, agenda.reunionDate)
-                      : 'No Date Set',
+                      : loc.commonNoDateSet,
                 ),
               ],
             ),
@@ -101,7 +105,11 @@ class AgendaViewPage extends ConsumerWidget {
               style: Theme.of(context).textTheme.headlineSmall,
             ),
 
-            Text(project != null ? 'Project: ${project.title}' : 'No Project'),
+            Text(
+              project != null
+                  ? loc.commonProjectWithTitle(project.title)
+                  : loc.commonNoProject,
+            ),
           ],
         ),
       ),

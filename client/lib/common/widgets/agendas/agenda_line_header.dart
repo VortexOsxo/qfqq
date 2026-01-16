@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
+import 'package:qfqq/generated/l10n.dart';
 
 class AgendaLineHeader extends StatelessWidget {
   final MeetingAgenda agenda;
@@ -10,10 +11,11 @@ class AgendaLineHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = S.of(context);
     final agendaDateText =
         agenda.reunionDate != null
             ? DateFormat.yMMMd().format(agenda.reunionDate!)
-            : 'No reunion date';
+            : loc.commonNoReunionDate;
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -23,12 +25,12 @@ class AgendaLineHeader extends StatelessWidget {
           Text(agenda.title, style: TextStyle(fontSize: 16)),
           const Spacer(),
           TextButton(
-            child: Text('View'),
+            child: Text(loc.commonView),
             onPressed: () => context.go('/agendas/${agenda.id}'),
           ),
           SizedBox(width: 8),
           TextButton(
-            child: Text('Start'),
+            child: Text(loc.commonStart),
             onPressed: () => context.go('/meeting-in-progress/${agenda.id}'),
           ),
           SizedBox(width: 8),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
+import 'package:qfqq/generated/l10n.dart';
 
 
 // TODO: Unused
@@ -32,7 +33,7 @@ class ProjectSelectionDropdownWidget extends ConsumerWidget {
         enableFilter: true,
         requestFocusOnTap: true,
         leadingIcon: const Icon(Icons.search),
-        label: const Text('Project'),
+        label: Text(S.of(context).widgetProjectLabel),
         inputDecorationTheme: const InputDecorationTheme(
           filled: true,
           contentPadding: EdgeInsets.symmetric(vertical: 5.0),

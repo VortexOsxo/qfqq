@@ -21,13 +21,15 @@ class HomePage extends StatelessWidget {
   }
 
   Widget buildMainButtons(BuildContext context) {
+    final loc = S.of(context);
+    
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          buildNavButtonTemplate(context, S.of(context).homePageCreateAgenda, '/agenda'),
-          buildNavButtonTemplate(context, S.of(context).homePageUpdateAgenda, '/agendas'),
-          buildNavButtonTemplate(context, 'Projects', '/projects'),
+          buildNavButtonTemplate(context, loc.homePageCreateAgenda, '/agenda'),
+          buildNavButtonTemplate(context, loc.homePageUpdateAgenda, '/agendas'),
+          buildNavButtonTemplate(context, loc.homePageProjects, '/projects'),
         ],
       ),
     );
@@ -48,15 +50,19 @@ class HomePage extends StatelessWidget {
 
   // TODO: When the user logs in, directly send the first page of it's meetings and decisions
   Widget buildDecisionsContent(BuildContext context) {
+    final loc = S.of(context);
+    
     return buildContentCard(
       context,
-      'Responsabilities',
+      loc.homePageResponsabilities,
       DecisionResponsabilitiesWidget(),
     );
   }
 
   Widget buildMeetingsContent(BuildContext context) {
-    return buildContentCard(context, 'Future Meetings', AgendaFuturesWidget());
+    final loc = S.of(context);
+    
+    return buildContentCard(context, loc.homePageFutureMeetings, AgendaFuturesWidget());
   }
 
   Widget buildContentCard(BuildContext context, String title, Widget child) {

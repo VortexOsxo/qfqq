@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qfqq/generated/l10n.dart';
 
 class SimpleErrorWidget extends StatelessWidget {
   final Object error;
@@ -15,13 +16,13 @@ class SimpleErrorWidget extends StatelessWidget {
           const Icon(Icons.error, size: 64, color: Colors.red),
           const SizedBox(height: 16),
           Text(
-            'Error: ${error.toString()}',
+            S.of(context).commonErrorWithContent(error.toString()),
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           if (onRetry != null) ...[
             const SizedBox(height: 16),
-            ElevatedButton(onPressed: onRetry, child: const Text('Retry')),
+            ElevatedButton(onPressed: onRetry, child: Text(S.of(context).commonRetry)),
           ],
         ],
       ),

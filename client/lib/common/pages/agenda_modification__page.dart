@@ -129,7 +129,7 @@ class _AgendaModificationPageState
                   initialValue: widget.agenda.title,
                   onChanged: (value) => widget.agenda.title = value,
                   decoration: InputDecoration(
-                    hintText: 'Enter meeting title',
+                    hintText: loc.agendaPageTitleHint,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -147,7 +147,7 @@ class _AgendaModificationPageState
                   onChanged: (value) => widget.agenda.reunionGoals = value,
                   maxLines: 3,
                   decoration: InputDecoration(
-                    hintText: 'What do you want to achieve?',
+                    hintText: loc.agendaPageGoalsHint,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -171,7 +171,7 @@ class _AgendaModificationPageState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Date & Time',
+                            loc.agendaPageDateTime,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                           const SizedBox(height: 8),
@@ -200,14 +200,14 @@ class _AgendaModificationPageState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Location',
+                            loc.agendaPageLocationLabel,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                           const SizedBox(height: 8),
                           TextFormField(
                             initialValue: widget.agenda.reunionLocation,
                             decoration: InputDecoration(
-                              hintText: 'Room or link',
+                              hintText: loc.agendaPageLocationHint,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
@@ -236,7 +236,7 @@ class _AgendaModificationPageState
                       child: TextField(
                         controller: _themeController,
                         decoration: InputDecoration(
-                          hintText: 'Add a discussion topic',
+                          hintText: loc.agendaPageThemeHint,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -252,7 +252,7 @@ class _AgendaModificationPageState
                     FilledButton.icon(
                       onPressed: _addTheme,
                       icon: const Icon(Icons.add, size: 20),
-                      label: const Text('Add'),
+                      label: Text(loc.agendaPageAddButton),
                       style: FilledButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 20,
@@ -284,7 +284,7 @@ class _AgendaModificationPageState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Facilitator',
+                            loc.agendaPageFacilitator,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                           const SizedBox(height: 8),
@@ -303,12 +303,12 @@ class _AgendaModificationPageState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Project',
+                            loc.agendaPageProjectLabel,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                           const SizedBox(height: 8),
                           ProjectTextField(
-                            label: 'Select project',
+                            label: loc.agendaPageSelectProject,
                             initialProjectId: widget.agenda.projectId ?? '',
                             onSelected:
                                 (project) =>
@@ -321,7 +321,7 @@ class _AgendaModificationPageState
                 ),
                 const SizedBox(height: 20),
 
-                _buildLabel('Participants'),
+                _buildLabel(loc.agendaPageParticipantsLabel),
                 UsersTextField(
                   label: loc.agendaPageAddParticipant,
                   initialUsersIds: widget.agenda.participantsIds,
@@ -361,8 +361,8 @@ class _AgendaModificationPageState
                       ),
                       child: Text(
                         isEditing
-                            ? 'Update Agenda as draft'
-                            : 'Save Agenda as draft',
+                            ? loc.agendaPageUpdateDraft
+                            : loc.agendaPageSaveDraft,
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -378,7 +378,7 @@ class _AgendaModificationPageState
                         ),
                       ),
                       child: Text(
-                        isEditing ? 'Update Agenda' : loc.agendaPageSaveAgenda,
+                        isEditing ? loc.agendaPageUpdateAgenda : loc.agendaPageSaveAgenda,
                       ),
                     ),
                   ],

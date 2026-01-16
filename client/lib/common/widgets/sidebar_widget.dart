@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/generated/l10n.dart';
 
 class SidebarWidget extends StatelessWidget {
   const SidebarWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final loc = S.of(context);
     return Container(
       width: 250,
       decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary),
@@ -13,10 +15,10 @@ class SidebarWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          _SideBarItem(title: 'Home', path: '/'),
-          _SideBarItem(title: 'Projects', path: '/projects'),
-          _SideBarItem(title: 'Agendas', path: '/agendas'),
-          _SideBarItem(title: 'Decisions', path: '/decisions'),
+          _SideBarItem(title: loc.homePageTitle, path: '/'),
+          _SideBarItem(title: loc.projectPageTitle, path: '/projects'),
+          _SideBarItem(title: loc.agendasListPageTitle, path: '/agendas'),
+          _SideBarItem(title: loc.decisionsListPageTitle, path: '/decisions'),
         ],
       ),
     );

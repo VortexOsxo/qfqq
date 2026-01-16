@@ -12,11 +12,12 @@ class ProjectViewPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    String title = S.of(context).homePageTitle;
+    final loc = S.of(context);
+    String title = loc.projectViewPageTitle;
 
     final project = ref.watch(projectProviderById(projectId));
     if (project == null) {
-      return buildPageTemplate(context, Center(child: Text('Project not found')), title);
+      return buildPageTemplate(context, Center(child: Text(loc.projectNotFound)), title);
     }
 
     Widget content = Center(
