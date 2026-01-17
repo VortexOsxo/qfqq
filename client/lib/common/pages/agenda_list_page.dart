@@ -7,6 +7,7 @@ import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
+import 'package:qfqq/common/templates/card_template.dart';
 import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
@@ -145,16 +146,6 @@ class AgendasListPage extends ConsumerWidget {
     WidgetRef ref,
     List<MeetingAgenda> agendas,
   ) {
-    buildCard(Widget cardContent) {
-      return Card(
-        margin: EdgeInsets.all(16),
-        child: Padding(
-          padding: EdgeInsets.only(top: 16, bottom: 16),
-          child: cardContent,
-        ),
-      );
-    }
-
     if (agendas.isEmpty) {
       Widget cardContent = Center(
         child: Column(
@@ -171,7 +162,7 @@ class AgendasListPage extends ConsumerWidget {
           ],
         ),
       );
-      return buildCard(cardContent);
+      return buildContentListCardTemplate(cardContent);
     }
 
     Widget cardContent = Column(
@@ -186,7 +177,7 @@ class AgendasListPage extends ConsumerWidget {
             Expanded(child: Text(S.of(context).agendaListAnimator)),
             Expanded(child: Text(S.of(context).agendaListProject)),
             Expanded(
-              child: Align(alignment: Alignment.center, child: Text(S.of(context).agendaListAction)),
+              child: Align(alignment: Alignment.center, child: Text(S.of(context).commonAction)),
             ),
             SizedBox(width: 16),
           ],
@@ -264,7 +255,7 @@ class AgendasListPage extends ConsumerWidget {
         ),
       ],
     );
-    return buildCard(cardContent);
+    return buildContentListCardTemplate(cardContent);
   }
 
   Widget _buildStatusChip(BuildContext context, MeetingAgendaStatus status) {
