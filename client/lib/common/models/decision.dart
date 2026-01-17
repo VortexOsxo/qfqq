@@ -69,7 +69,7 @@ class Decision {
       'description': description,
       'status': status.name,
       'initialDate': initialDate.toIso8601String(),
-      'dueDate': dueDate?.toIso8601String(),
+      if (dueDate != null) 'dueDate': dueDate?.toIso8601String(),
       if (isIdValid(responsibleId)) 'responsibleId': responsibleId,
       if (isIdValid(reporterId)) 'reporterId': reporterId,
       'assistantsIds': assistantsIds,
@@ -80,7 +80,9 @@ class Decision {
   Decision.fromJson(dynamic data)
     : id = data['id'],
       description = data['description'],
-      status = DecisionStatus.values[data['status']],
+      status = DecisionStatus.values.firstWhere(
+        (e) => e.toString().split('.').last == data['status'],
+      ),
       initialDate = DateTime.parse(data['initialDate']),
       dueDate =
           data['dueDate'] != null ? DateTime.parse(data['dueDate']) : null,

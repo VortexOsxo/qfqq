@@ -77,6 +77,30 @@ class MeetingInProgressPage extends ConsumerWidget {
             onPressed: () => decisionsService.createDecision(decision),
             child: Text(loc.meetingInProgressCreateButton),
           ),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: TextButton(
+              onPressed: () async {
+                final picked = await showDatePicker(
+                  context: context,
+                  initialDate: decision.dueDate ?? DateTime.now(),
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime(2100),
+                );
+
+                if (picked != null) {
+                  decision.dueDate = picked;
+                }
+              },
+              child: Text(
+                decision.dueDate == null
+                    ? loc.meetingInProgressDueDate
+                    : loc.meetingInProgressDueDateSelected(
+                      decision.dueDate!.toIso8601String().split('T').first,
+                    ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -96,9 +120,13 @@ class MeetingInProgressPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildMeetingHeaderInfo(BuildContext context, MeetingAgenda agenda, User? animator) {
+  Widget _buildMeetingHeaderInfo(
+    BuildContext context,
+    MeetingAgenda agenda,
+    User? animator,
+  ) {
     final loc = S.of(context);
-    
+
     return Card(
       child: Padding(
         padding: EdgeInsets.all(16),

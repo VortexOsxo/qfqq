@@ -111,6 +111,8 @@
   "meetingInProgressCreateButton": "Create",
   "meetingInProgressAnimator": "Animator: {name}",
   "meetingInProgressProject": "Project",
+  "meetingInProgressDueDate": "Due date",
+  "meetingInProgressDueDateSelected": "Due date: {date}",
   
   "decisionsListPageTitle": "Decisions",
   

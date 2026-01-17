@@ -38,7 +38,7 @@ def create_decision():
 
     DecisionDataHandler.create_decision(
         description=data["description"],
-        status=data["status"].as_int(),
+        status=data["status"],
         dueDate=dueDate,
         responsibleId=data["responsibleId"],
         reporterId=g.user_id,
