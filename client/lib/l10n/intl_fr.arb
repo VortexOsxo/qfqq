@@ -76,9 +76,7 @@
   
   "homePageTitle": "Accueil",
   "homePageCreateAgenda": "Créer un ordre du jour",
-  "homePageUpdateAgenda": "Modifier l'ordre du jour",
   "homePageViewAgendas": "Voir les ordres du jour",
-  "homePageProjects": "Projets",
   "homePageResponsabilities": "Responsabilités",
   "homePageFutureMeetings": "Réunions à venir",
 
@@ -137,6 +135,7 @@
   "commonNext": "Suivant",
   "commonPrevious": "Précédent",
   "commonView": "Voir",
+  "commonViewAll": "Voir tous",
   "commonStart": "Démarrer",
   "commonModify": "Modifier",
   "commonNoDateSet": "Aucune date définie",

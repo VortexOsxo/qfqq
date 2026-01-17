@@ -76,9 +76,7 @@
   
   "homePageTitle": "Home",
   "homePageCreateAgenda": "Create Meeting Agenda",
-  "homePageUpdateAgenda": "Update Meeting Agenda",
   "homePageViewAgendas": "View Agendas",
-  "homePageProjects": "Projects",
   "homePageResponsabilities": "Responsabilities",
   "homePageFutureMeetings": "Future Meetings",
 
@@ -137,6 +135,7 @@
   "commonNext": "Next",
   "commonPrevious": "Previous",
   "commonView": "View",
+  "commonViewAll": "View all",
   "commonStart": "Start",
   "commonModify": "Modify",
   "commonNoDateSet": "No date set",

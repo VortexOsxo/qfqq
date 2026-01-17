@@ -24,6 +24,11 @@ class AgendaLineHeader extends StatelessWidget {
         children: [
           Text(agenda.title, style: TextStyle(fontSize: 16)),
           const Spacer(),
+          Text(
+            agendaDateText,
+            style: TextStyle(fontSize: 14, color: Colors.grey),
+          ),
+          SizedBox(width: 8),
           TextButton(
             child: Text(loc.commonView),
             onPressed: () => context.go('/agendas/${agenda.id}'),
@@ -32,11 +37,6 @@ class AgendaLineHeader extends StatelessWidget {
           TextButton(
             child: Text(loc.commonStart),
             onPressed: () => context.go('/meeting-in-progress/${agenda.id}'),
-          ),
-          SizedBox(width: 8),
-          Text(
-            agendaDateText,
-            style: TextStyle(fontSize: 14, color: Colors.grey),
           ),
         ],
       ),
