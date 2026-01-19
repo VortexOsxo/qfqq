@@ -44,11 +44,24 @@ final filteredDecisionProvider = Provider<List<Decision>>((ref) {
   return decisions;
 });
 
-class DecisionsListPage extends ConsumerWidget {
+class DecisionsListPage extends ConsumerStatefulWidget {
   const DecisionsListPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DecisionsListPage> createState() => _DecisionsListPageState();
+}
+
+class _DecisionsListPageState extends ConsumerState<DecisionsListPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(decisionsFetcherProvider.notifier).loadData();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final decisions = ref.watch(filteredDecisionProvider);
 
     String title = S.of(context).decisionsListPageTitle;

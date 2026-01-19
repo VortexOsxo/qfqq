@@ -14,10 +14,10 @@ final decisionsServiceProvider = Provider<DecisionsService>(
 );
 
 final decisionsFetcherProvider = StateNotifierProvider<
-  DecisionsFercherService,
+  DecisionsFetcherService,
   FetcherState<List<Decision>>
 >(
-  (ref) => DecisionsFercherService(
+  (ref) => DecisionsFetcherService(
     ref.read(decisionsServiceProvider),
     ref.read(authStateProvider.notifier),
   ),

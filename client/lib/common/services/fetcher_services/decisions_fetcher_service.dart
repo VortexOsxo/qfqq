@@ -3,12 +3,12 @@ import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/decisions_service.dart';
 import 'package:qfqq/common/services/fetcher_services/base_fetcher_service.dart';
 
-class DecisionsFercherService
+class DecisionsFetcherService
     extends BaseFetcherService<List<Decision>> {
   final DecisionsService _decisionsService;
   final AuthService _authService;
 
-  DecisionsFercherService(
+  DecisionsFetcherService(
     this._decisionsService,
     this._authService,
   ) : super() {
