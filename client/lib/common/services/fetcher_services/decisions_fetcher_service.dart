@@ -17,7 +17,7 @@ class DecisionsFetcherService
 
   @override
   Future<void> loadData() async {
-    final decisions = await _decisionsService.loadDecisions();
+    final decisions = await _decisionsService.getDecisions();
     state = state.copyWith(data: decisions, isLoaded: true, errorCode: 0);
   }
 }

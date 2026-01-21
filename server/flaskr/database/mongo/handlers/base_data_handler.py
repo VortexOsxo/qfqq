@@ -28,6 +28,8 @@ class BaseDataHandler(ABC):
         query = {}
         for filter in filters:
             filter.update_query(query)
+
+        print(query)
         decisions = collection.find(query)
         return [cls._from_mongo_dict(decision) for decision in decisions]
     

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qfqq/common/providers/fetcher_providers/decisions_responsabilities_fetcher_provider.dart';
+import 'package:qfqq/common/providers/fetcher_providers.dart';
 import 'package:qfqq/common/widgets/decisions/decision_line_header.dart';
 
 class DecisionResponsabilitiesWidget extends ConsumerWidget {

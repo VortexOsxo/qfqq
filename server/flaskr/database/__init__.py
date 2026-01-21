@@ -15,6 +15,7 @@ elif database == "mongo":
         ValueFilter,
         IdFilter,
         ValueUpdater,
+        ListContainsValueFilter,
     )
 else:
     raise ValueError("Invalid database type")

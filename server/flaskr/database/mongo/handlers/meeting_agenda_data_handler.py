@@ -75,6 +75,10 @@ class MeetingAgendaDataHandler(BaseDataHandler):
     @classmethod
     def get_meeting_agendas(cls) -> list[MeetingAgenda]:
         return cls.get_items([])
+    
+    @classmethod
+    def get_meeting_agendas_by_filters(cls, filters: list) -> list[MeetingAgenda]:
+        return cls.get_items(filters)
 
     @classmethod
     def get_meeting_agenda(cls, id: str) -> MeetingAgenda | None:

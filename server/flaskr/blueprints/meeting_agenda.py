@@ -1,8 +1,9 @@
 from datetime import datetime
-from flask import Blueprint, request, jsonify
+from bson import ObjectId
+from flask import Blueprint, request, jsonify, g
 
 from flaskr.models import MeetingAgendaStatus
-from flaskr.database import MeetingAgendaDataHandler
+from flaskr.database import MeetingAgendaDataHandler, ListContainsValueFilter
 from flaskr.utils import StringValidator, EnumValidator, verify_missing_inputs
 
 meeting_agendas_bp = Blueprint(
@@ -60,9 +61,15 @@ def create_meeting_agenda():
         return "", 204
     return "", 405
 
-@meeting_agendas_bp.route("", methods=["GET"])
+@meeting_agendas_bp.route("/", methods=["GET"])
 def get_meeting_agendas():
-    meeting_agendas = MeetingAgendaDataHandler.get_meeting_agendas()
+    filters = []
+
+    participantId = request.args.get("participantId")
+    if participantId:
+        filters.append(ListContainsValueFilter("participantsIds", ObjectId(g.user_id if participantId == 'me' else participantId)))
+
+    meeting_agendas = MeetingAgendaDataHandler.get_meeting_agendas_by_filters(filters)
     return jsonify([meeting_agenda.to_dict() for meeting_agenda in meeting_agendas]), 200
 
 @meeting_agendas_bp.route("/<string:id>", methods=["GET"])
