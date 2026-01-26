@@ -75,7 +75,7 @@
   
   "homePageTitle": "Home",
   "homePageCreateAgenda": "Create Meeting Agenda",
-  "homePageViewAgendas": "View Agendas",
+  "homePageCreateProject": "Create a Project",
   "homePageResponsabilities": "Responsabilities",
   "homePageFutureMeetings": "Future Meetings",
 
@@ -89,13 +89,17 @@
   "agendasListPageReunionDate": "Meeting Date: {date}",
   "agendasListPageNoReunionDate": "No meeting date set",
   
+  "projectSupervisor": "Supervisor",
+
   "projectPageTitle": "Projects",
-  "projectPageCreateNewProject": "Create new project",
-  "projectPageTitleHint": "Enter a project title",
-  "projectPageDescriptionHint": "Enter a project description",
-  "projectPageCreateButton": "Create",
   "projectPageSearchHint": "Search",
   "projectNotFound": "Project not found",
+
+  "projectCreationPageTitleHint": "Enter a project title",
+  "projectCreationPageGoalsHint": "Enter the project goals",
+  "projectCreationPageSupervisorLabel": "Supervisor",
+  "projectCreationPageCreateProject": "Create new project",
+  "projectCreationPageUpdateProject": "Modify project",
   
   "projectViewPageTitle": "Project Details",
   

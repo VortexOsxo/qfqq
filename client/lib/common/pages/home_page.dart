@@ -15,10 +15,20 @@ class HomePage extends StatelessWidget {
     Widget content = Column(
       children: [
         Expanded(child: buildMainContent(context)),
-        buildNavButtonTemplate(
-          context,
-          S.of(context).homePageCreateAgenda,
-          '/agenda',
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            buildNavButtonTemplate(
+              context,
+              S.of(context).homePageCreateAgenda,
+              '/agenda',
+            ),
+            buildNavButtonTemplate(
+              context,
+              S.of(context).homePageCreateProject,
+              '/project/creation',
+            ),
+          ],
         ),
       ],
     );

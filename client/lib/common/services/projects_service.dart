@@ -11,33 +11,43 @@ class ProjectsService extends StateNotifier<List<Project>> {
   }
 
   // TODO: Add feedback
-  Future<bool> createProject({
-    required String title,
-    required String description,
-  }) async {
+  Future<bool> createProject(Project project) async {
     final response = await http.post(
       Uri.parse('$_apiUrl/projects'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'title': title, 'description': description}),
+      body: jsonEncode(project.toJson()),
     );
 
     if (response.statusCode == 201) {
       dynamic data = jsonDecode(response.body);
-      Project newProject = Project(
-        id: data['id'],
-        title: data['title'],
-        description: data['description'],
-      );
-      state = [...state, newProject];
+      data['number'] = _estimateProjectNumber();
+      state = [...state, Project.fromJson(data)];
       return true;
     }
-
     return false;
+  }
+
+  Future<void> updateProject(Project project) async {
+    await http.put(
+      Uri.parse('$_apiUrl/projects'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(project.toJson()),
+    );
+
+    final projects = state;
+    state = projects.map((e) => e.id != project.id ? e : project).toList();
   }
 
   Future<void> _loadProjects() async {
     final projects = await getProjects();
     state = projects;
+  }
+
+  int _estimateProjectNumber() {
+    if (state.isEmpty) return 1;
+    
+    final numbers = state.map((project) => project.number).toList();
+    return (numbers.reduce((a, b) => a > b ? a : b)) + 1;
   }
 
   Future<List<Project>> getProjects() async {
@@ -48,15 +58,8 @@ class ProjectsService extends StateNotifier<List<Project>> {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
-      return data
-          .map(
-            (item) => Project(
-              id: item['id'] ?? '',
-              title: item['title'] ?? '',
-              description: item['description'] ?? '',
-            ),
-          )
-          .toList();
+      return data.map(Project.fromJson)
+        .toList();
     } else {
       throw Exception('Failed to fetch projects: ${response.statusCode}');
     }

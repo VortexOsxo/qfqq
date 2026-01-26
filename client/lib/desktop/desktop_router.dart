@@ -1,11 +1,13 @@
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
+import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/pages/agenda_modification__page.dart';
 import 'package:qfqq/common/pages/agenda_view_page.dart';
 import 'package:qfqq/common/pages/decisions_list_page.dart';
 import 'package:qfqq/common/pages/home_page.dart';
 import 'package:qfqq/common/pages/login_page.dart';
 import 'package:qfqq/common/pages/meeting_in_progress_page.dart';
+import 'package:qfqq/common/pages/project_modification_page.dart';
 import 'package:qfqq/common/pages/project_page.dart';
 import 'package:qfqq/common/pages/project_view_page.dart';
 import 'package:qfqq/common/pages/signup_page.dart';
@@ -19,7 +21,7 @@ final GoRouter desktopRouter = GoRouter(
       path: '/agenda',
       builder: (context, state) {
         final agenda = state.extra as MeetingAgenda?;
-        return AgendaModificationPage(agendaToModify: agenda,);
+        return AgendaModificationPage(agendaToModify: agenda);
       },
     ),
     GoRoute(
@@ -42,6 +44,14 @@ final GoRouter desktopRouter = GoRouter(
     GoRoute(
       path: '/projects',
       builder: (context, state) => const ProjectPage(),
+    ),
+    GoRoute(
+      path: '/project/creation',
+
+      builder: (context, state) {
+        final project = state.extra as Project?;
+        return ProjectModificationPage(projectToModify: project);
+      },
     ),
     GoRoute(
       path: '/project/:id',
