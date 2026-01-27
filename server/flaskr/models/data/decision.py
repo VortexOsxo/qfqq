@@ -20,13 +20,14 @@ class DecisionStatus(Enum):
 @dataclass(slots=True)
 class Decision:
     id: str | int
+    number: int
     description: str
     status: DecisionStatus
 
     initialDate: datetime
     dueDate: datetime | None
+    completedDate: datetime | None
 
-    reporterId: str
     responsibleId: str
     assistantsId: list[str]
 
@@ -35,10 +36,12 @@ class Decision:
     def to_dict(self):
         return {
             "id": self.id,
+            "number": self.number,
             "description": self.description,
             "status": self.status,
             "initialDate": self.initialDate.isoformat(),
-            "dueDate": self.dueDate.isoformat(),
+            "dueDate": self.dueDate.isoformat() if self.dueDate else None,
+            "completedDate": self.completedDate.isoformat() if self.completedDate else None,
             "responsibleId": self.responsibleId,
             "reporterId": self.reporterId,
             "assistantsId": self.assistantsId,

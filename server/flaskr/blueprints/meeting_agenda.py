@@ -51,7 +51,7 @@ def create_meeting_agenda():
     }
 
     if request.method == "POST":
-        MeetingAgendaDataHandler.create_meeting_agenda(*kwargs)
+        MeetingAgendaDataHandler.create_meeting_agenda(**kwargs)
         return "", 201
     elif request.method == "PUT":
         # TODO: Handle concurrent update reflects that could cause conflicts ?

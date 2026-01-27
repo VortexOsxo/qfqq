@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import re
 
-from flaskr.database import UserDataHandler
+from flaskr.database import UserDataHandler, ProjectDataHandler
 
 
 class InputValidator(ABC):
@@ -41,17 +41,26 @@ class EmailValidator(StringValidator):
         value = data.get(self.field_name, "")
         return re.match(self.EmailRegex, value) is not None
 
+class _ObjectIdValidator(InputValidator):
+    @property
+    @abstractmethod
+    def dataHandler(self):
+        pass
 
-# TODO: Test it :)
-class UserIdValidator(InputValidator):
     def validate(self, data) -> bool:
         id = data.get(self.field_name, None)
         if id is None:
             return False
 
-        user = UserDataHandler.get_user_by_id(id)
-        return user is not None
+        obj = self.dataHandler.get_item_by_id(id)
+        return obj is not None
 
+# TODO: Test it :)
+class UserIdValidator(_ObjectIdValidator):
+    dataHandler = UserDataHandler
+
+class ProjectIdValidator(_ObjectIdValidator):
+    dataHandler = ProjectDataHandler
 
 # TODO: Test it :)
 class EnumValidator(InputValidator):

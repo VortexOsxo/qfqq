@@ -32,32 +32,35 @@ getDecisionStatusName(DecisionStatus status) {
 
 class Decision {
   final String id;
+  final int number;
   String description;
   DecisionStatus status;
 
   DateTime initialDate;
   DateTime? dueDate;
+  DateTime? completedDate;
 
   String? responsibleId;
-  String? reporterId;
   List<String> assistantsIds;
 
   String? projectId;
 
   Decision({
     required this.id,
+    required this.number,
     required this.description,
     required this.status,
     required this.initialDate,
     required this.dueDate,
+    required this.completedDate,
     required this.responsibleId,
-    required this.reporterId,
     required this.assistantsIds,
     required this.projectId,
   });
 
   Decision.empty()
     : id = '',
+      number = 0,
       description = '',
       status = DecisionStatus.toBeValidated,
       initialDate = DateTime.now(),
@@ -70,8 +73,8 @@ class Decision {
       'status': status.name,
       'initialDate': initialDate.toIso8601String(),
       if (dueDate != null) 'dueDate': dueDate?.toIso8601String(),
+      if (completedDate != null) 'completedDate': completedDate?.toIso8601String(),
       if (isIdValid(responsibleId)) 'responsibleId': responsibleId,
-      if (isIdValid(reporterId)) 'reporterId': reporterId,
       'assistantsIds': assistantsIds,
       if (isIdValid(projectId)) 'projectId': projectId,
     };
@@ -79,15 +82,16 @@ class Decision {
 
   Decision.fromJson(dynamic data)
     : id = data['id'],
+      number = data['number'],
       description = data['description'],
       status = DecisionStatus.values.firstWhere(
         (e) => e.toString().split('.').last == data['status'],
       ),
       initialDate = DateTime.parse(data['initialDate']),
+      completedDate = data['completedDate'] != null ? DateTime.parse(data['completedDate']) : null,
       dueDate =
           data['dueDate'] != null ? DateTime.parse(data['dueDate']) : null,
       responsibleId = data['responsibleId'],
-      reporterId = data['reporterId'],
       assistantsIds =
           data['assistantsIds'] != null
               ? List<String>.from(data['assistantsIds'])

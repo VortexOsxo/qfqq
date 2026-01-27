@@ -16,7 +16,6 @@ class DecisionDataHandler(BaseDataHandler):
         status,
         dueDate,
         responsibleId,
-        reporterId,
         initialDate=None,
         assistantsId=None,
         projectId=None,
@@ -33,7 +32,6 @@ class DecisionDataHandler(BaseDataHandler):
                 "initialDate": initialDate,
                 "dueDate": dueDate,
                 "responsibleId": ObjectId(responsibleId) if responsibleId else None,
-                "reporterId": ObjectId(reporterId) if reporterId else None,
                 "assistantsId": [ObjectId(a_id) for a_id in assistantsId],
                 "projectId": ObjectId(projectId) if projectId else None,
             }
@@ -55,13 +53,14 @@ class DecisionDataHandler(BaseDataHandler):
     @classmethod
     def _from_mongo_dict(cls, decision_dict):
         return Decision(
-            cls._get_id_from_mongo_entry(decision_dict["_id"]),
-            decision_dict["description"],
-            decision_dict["status"],
-            decision_dict["initialDate"].isoformat(),
-            decision_dict["dueDate"].isoformat() if decision_dict["dueDate"] else None,
-            cls._get_id_from_mongo_entry(decision_dict["responsibleId"]),
-            cls._get_id_from_mongo_entry(decision_dict["reporterId"]),
-            [str(a_id) for a_id in decision_dict["assistantsId"]],
-            cls._get_id_from_mongo_entry(decision_dict["projectId"]),
+            id=cls._get_id_from_mongo_entry(decision_dict["_id"]),
+            number=int(decision_dict.get('decisionNumber')),
+            description=decision_dict["description"],
+            status=decision_dict["status"],
+            initialDate=decision_dict["initialDate"].isoformat(),
+            dueDate=decision_dict["dueDate"].isoformat() if decision_dict["dueDate"] else None,
+            completedDate=decision_dict["completedDate"].isoformat() if decision_dict["dueDate"] else None,
+            responsibleId=cls._get_id_from_mongo_entry(decision_dict["responsibleId"]),
+            assistantsId=[str(a_id) for a_id in decision_dict["assistantsId"]],
+            projectId=cls._get_id_from_mongo_entry(decision_dict["projectId"]),
         )

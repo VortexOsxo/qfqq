@@ -59,13 +59,6 @@ class MeetingInProgressPage extends ConsumerWidget {
           ),
           Padding(
             padding: EdgeInsets.all(8),
-            child: UserTextField(
-              label: loc.meetingInProgressReporter,
-              onSelected: (User u) => decision.reporterId = u.id,
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(8),
             child: UsersTextField(
               onChanged:
                   (List<User> u) =>

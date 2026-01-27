@@ -24,6 +24,7 @@ class MeetingAgendaDataHandler(BaseDataHandler):
         themes: list[str],
         projectId: str,
     ):
+        print(animatorId)
         objectId, acknowledged = cls.attempt_create_item(
             {
                 "title": title,

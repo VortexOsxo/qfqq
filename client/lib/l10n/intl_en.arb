@@ -117,11 +117,12 @@
   
   "decisionsListPageTitle": "Decisions",
   "decisionsListPageEmpty": "No decisions found",
+
+  "decisionListNumber": "Id",
   "decisionListDescription": "Description",
   "decisionListStatus": "Status",
   "decisionListDueDate": "Due Date",
   "decisionListResponsible": "Responsible",
-  "decisionListReporter": "Reporter",
   "decisionListProject": "Project",
   "decisionListNoResponsibleSet": "No responsible set",
   "decisionListNoReporterSet": "No reporter set",

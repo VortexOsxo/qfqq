@@ -164,11 +164,11 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
         Row(
           children: [
             SizedBox(width: 16),
+            Expanded(child: Text(loc.decisionListNumber)),
             Expanded(child: Text(loc.decisionListDescription)),
             Expanded(child: Text(loc.decisionListStatus)),
             Expanded(child: Text(loc.decisionListDueDate)),
             Expanded(child: Text(loc.decisionListResponsible)),
-            Expanded(child: Text(loc.decisionListReporter)),
             Expanded(child: Text(loc.decisionListProject)),
             Expanded(
               child: Align(
@@ -197,15 +197,12 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
                       ? ref.watch(userByIdProvider(decision.responsibleId!))
                       : null;
 
-              final reporter =
-                  isIdValid(decision.reporterId)
-                      ? ref.watch(userByIdProvider(decision.reporterId!))
-                      : null;
 
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   SizedBox(width: 16),
+                  Expanded(child: Text(decision.number.toString())),
                   Expanded(child: Text(decision.description)),
                   Expanded(child: Text(getDecisionStatusName(decision.status))),
                   Expanded(
@@ -220,13 +217,6 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
                       responsible != null
                           ? responsible.username
                           : loc.decisionListNoResponsibleSet,
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      reporter != null
-                          ? reporter.username
-                          : loc.decisionListNoReporterSet,
                     ),
                   ),
                   Expanded(

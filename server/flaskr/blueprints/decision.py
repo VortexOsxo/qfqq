@@ -5,7 +5,7 @@ from bson import ObjectId
 from flaskr.models import DecisionStatus
 from flaskr.blueprints.auth import login_required
 from flaskr.database import DecisionDataHandler, ValueFilter
-from flaskr.utils import verify_missing_inputs, UserIdValidator, StringValidator
+from flaskr.utils import verify_missing_inputs, UserIdValidator, StringValidator, ProjectIdValidator
 
 decisions_bp = Blueprint("decisions", __name__, url_prefix="/decisions")
 
@@ -14,7 +14,7 @@ decisions_bp = Blueprint("decisions", __name__, url_prefix="/decisions")
 @login_required
 def create_decision():
     data = request.get_json()
-    required_fields = [StringValidator("description"), UserIdValidator("responsibleId")]
+    required_fields = [StringValidator("description"), UserIdValidator("responsibleId"), ProjectIdValidator("projectId")]
 
     missings = verify_missing_inputs(data, required_fields)
     if missings:
@@ -41,7 +41,6 @@ def create_decision():
         status=data["status"],
         dueDate=dueDate,
         responsibleId=data["responsibleId"],
-        reporterId=g.user_id,
         initialDate=initialDate,
         assistantsId=data["assistantsId"] if "assistantsId" in data else None,
         projectId=data["projectId"] if "projectId" in data else None,

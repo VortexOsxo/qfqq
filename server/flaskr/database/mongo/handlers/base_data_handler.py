@@ -3,6 +3,8 @@ from ..mongo import get_collection
 from pymongo.errors import DuplicateKeyError
 from bson import ObjectId
 
+from ..filters.default_filter import IdFilter
+
 class BaseDataHandler(ABC):
     def __init__(self, collection_name):
         self.collection_name = collection_name
@@ -29,8 +31,8 @@ class BaseDataHandler(ABC):
         for filter in filters:
             filter.update_query(query)
 
-        decisions = collection.find(query)
-        return [cls._from_mongo_dict(decision) for decision in decisions]
+        items = collection.find(query)
+        return [cls._from_mongo_dict(item) for item in items]
     
     @classmethod
     def update_item(cls, id, updaters):
@@ -44,6 +46,10 @@ class BaseDataHandler(ABC):
     def get_first_item(cls, filters):
         items = cls.get_items(filters)
         return items[0] if items else None
+    
+    @classmethod
+    def get_item_by_id(cls, id: str):
+        return cls.get_first_item([IdFilter(id)])
 
     @classmethod
     def attempt_create_item(cls, item_dict) -> tuple[bool, str]:

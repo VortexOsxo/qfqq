@@ -23,7 +23,7 @@ class UserDataHandler(BaseDataHandler):
     
     @classmethod
     def get_user_by_id(cls, id: str) -> User | None:
-        return cls.get_first_item([IdFilter(id)])
+        return cls.get_item_by_id(id)
 
     @classmethod
     def _from_mongo_dict(cls, user_dict):
