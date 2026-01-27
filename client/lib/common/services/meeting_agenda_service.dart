@@ -22,7 +22,9 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
       body: jsonEncode(agenda),
     );
 
-    return response.statusCode == 201;
+    if (response.statusCode != 201) return false;
+    _loadMeetingAgendas();
+    return true;
   }
 
   Future<List<MeetingAgenda>> getMeetingAgendas([String queryArgs = ""]) async {
@@ -43,7 +45,9 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(agenda),
     );
-    return response.statusCode == 200;
+    if (response.statusCode != 200) return false;
+    _loadMeetingAgendas();
+    return true;
   }
 
   MeetingAgenda? getMeetingAgendaById(String id) {

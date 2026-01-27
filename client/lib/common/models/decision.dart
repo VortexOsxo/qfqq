@@ -31,8 +31,8 @@ getDecisionStatusName(DecisionStatus status) {
 }
 
 class Decision {
-  final String id;
-  final int number;
+  String id;
+  int number;
   String description;
   DecisionStatus status;
 

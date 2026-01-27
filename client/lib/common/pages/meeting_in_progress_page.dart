@@ -15,18 +15,25 @@ import 'package:qfqq/common/widgets/reusables/user_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/users_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 
-class MeetingInProgressPage extends ConsumerWidget {
+class MeetingInProgressPage extends ConsumerStatefulWidget {
   final String id;
-  final Decision decision = Decision.empty();
 
-  MeetingInProgressPage({super.key, required this.id});
+  const MeetingInProgressPage({super.key, required this.id});
+
+    @override
+  ConsumerState<MeetingInProgressPage> createState() =>
+      _MeetingInProgessState();
+}
+
+class _MeetingInProgessState extends ConsumerState<MeetingInProgressPage> {
+  Decision decision = Decision.empty();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final decisionsService = ref.read(decisionsServiceProvider);
     final loc = S.of(context);
 
-    final agenda = ref.watch(meetingAgendaByIdProvider(id));
+    final agenda = ref.watch(meetingAgendaByIdProvider(widget.id));
     assert(agenda != null, "Meeting in progress should not allow invalid id");
 
     if (decision.projectId == null && agenda!.projectId != null) {
@@ -67,7 +74,10 @@ class MeetingInProgressPage extends ConsumerWidget {
             ),
           ),
           ElevatedButton(
-            onPressed: () => decisionsService.createDecision(decision),
+            onPressed: () {
+              decisionsService.createDecision(decision);
+              setState( () => decision = Decision.empty()..projectId = agenda.projectId);
+            },
             child: Text(loc.meetingInProgressCreateButton),
           ),
           Padding(
