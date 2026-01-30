@@ -54,7 +54,7 @@ class DecisionDataHandler(BaseDataHandler):
     def _from_mongo_dict(cls, decision_dict):
         return Decision(
             id=cls._get_id_from_mongo_entry(decision_dict["_id"]),
-            number=int(decision_dict.get('decisionNumber')),
+            number=int(decision_dict.get('decisionNb')),
             description=decision_dict["description"],
             status=decision_dict["status"],
             initialDate=decision_dict["initialDate"].isoformat(),

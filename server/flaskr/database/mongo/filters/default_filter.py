@@ -20,5 +20,5 @@ class ListContainsValueFilter(DataFilter):
         return query
 
 class IdFilter(ValueFilter):
-    def __init__(self, id: str):
-        super().__init__('_id', ObjectId(id))
+    def __init__(self, id: str, field='_id'):
+        super().__init__(field, ObjectId(id))

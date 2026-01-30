@@ -17,6 +17,8 @@ dependencies:
   http: ^1.4.0
   intl: any
   intl_utils: ^2.8.10
+  pdfrx: ^2.2.20
+  path_provider: ^2.1.2
 
 dev_dependencies:
   flutter_test:

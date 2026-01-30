@@ -1,6 +1,9 @@
-from flask import Blueprint, jsonify, request
-from flaskr.database import ProjectDataHandler
+from flask import Blueprint, jsonify, request, send_file
+
+from flaskr.database import ProjectDataHandler, DecisionDataHandler, IdFilter
 from flaskr.utils import verify_missing_inputs, StringValidator, UserIdValidator
+from flaskr.reports import ProjectReportBuilder
+
 
 projects_bp = Blueprint("projects", __name__, url_prefix="/projects")
 
@@ -43,3 +46,17 @@ def get_projects():
     projects = ProjectDataHandler.get_projects()
     return jsonify([project.to_dict() for project in projects])
 
+@projects_bp.route("/<id>/reports")
+def get_project_report(id: str):
+    project = ProjectDataHandler.get_item_by_id(id)
+    if project is None: return "No project found", 404
+
+    decisions = DecisionDataHandler.get_decisions_by_filters([IdFilter(project.id, 'projectId')])
+
+    buffer = ProjectReportBuilder(project, decisions).build()
+    return send_file(
+        buffer,
+        mimetype="application/pdf",
+        as_attachment=False,          # True → download, False → inline
+        download_name="report.pdf",
+    )

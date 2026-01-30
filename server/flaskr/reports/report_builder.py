@@ -104,9 +104,9 @@ class ReportBuilder:
         self.doc = None
         self.elements = []
 
-    def start(self, filename: str, margin: int = 28):
+    def start(self, buffer, margin: int = 28):
         self.doc = SimpleDocTemplate(
-            f"{filename}.pdf",
+            buffer,
             pagesize=A4,
             rightMargin=margin,
             leftMargin=margin,
