@@ -4,7 +4,14 @@ from flask import Blueprint, request, jsonify, g
 
 from flaskr.models import MeetingAgendaStatus
 from flaskr.database import MeetingAgendaDataHandler, ListContainsValueFilter
-from flaskr.utils import StringValidator, EnumValidator, verify_missing_inputs
+from flaskr.utils import (
+    StringValidator,
+    EnumValidator,
+    UserIdValidator,
+    ListValidator,
+    ProjectIdValidator,
+    verify_missing_inputs,
+)
 
 meeting_agendas_bp = Blueprint(
     "meeting_agendas", __name__, url_prefix="/meeting-agendas"
@@ -17,12 +24,29 @@ meeting_agendas_bp = Blueprint(
 def create_meeting_agenda():
     data = request.get_json()
 
+    status = (
+        MeetingAgendaStatus.planned
+        if data.get("status", "") == MeetingAgendaStatus.planned.value
+        else MeetingAgendaStatus.draft
+    )
+
     required_fields = [
         StringValidator("title"),
-        StringValidator("reunionGoals"),
-        EnumValidator("status", MeetingAgendaStatus),
         StringValidator("redactionDate"), # TODO: DateValidator ?
     ]
+
+    if status == MeetingAgendaStatus.planned:
+        required_fields.extend([
+            StringValidator("reunionGoals"),
+            EnumValidator("status", MeetingAgendaStatus),
+            StringValidator("meetingDate"),
+            StringValidator("meetingLocation"),
+            UserIdValidator("animatorId"),
+            ListValidator("participantsIds"),
+            ListValidator("themes"),
+            ProjectIdValidator("projectId")
+        ])
+
     missings = verify_missing_inputs(data, required_fields)
     if missings:
         return jsonify({"error": f'Missing/Invalid fields: {", ".join(missings)}'}), 400
@@ -40,7 +64,7 @@ def create_meeting_agenda():
     kwargs = {
         'title': data["title"],
         'reunionGoals': data["reunionGoals"],
-        'status': data["status"],
+        'status': status,
         'redactionDate': redactionDate,
         'meetingDate': meetingDate,
         'meetingLocation': data["meetingLocation"] if "meetingLocation" in data else None,

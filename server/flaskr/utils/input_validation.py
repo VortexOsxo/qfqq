@@ -49,10 +49,12 @@ class _ObjectIdValidator(InputValidator):
 
     def validate(self, data) -> bool:
         id = data.get(self.field_name, None)
-        if id is None:
+        if id is None or id == '':
             return False
-
-        obj = self.dataHandler.get_item_by_id(id)
+        try:
+            obj = self.dataHandler.get_item_by_id(id)
+        except:
+            return False
         return obj is not None
 
 # TODO: Test it :)
@@ -71,3 +73,19 @@ class EnumValidator(InputValidator):
     def validate(self, data) -> bool:
         value = data.get(self.field_name)
         return value in self.enum.__members__
+
+class ListValidator(InputValidator):
+    def __init__(self, field_name, can_be_empty=True):
+        super().__init__(field_name)
+        self.can_be_empty=can_be_empty
+    
+    def validate(self, data):
+        l = data.get(self.field_name, [])
+        if not isinstance(list, l):
+            return False
+        
+        if not self.can_be_empty and len(l) == 0:
+            return False
+        
+        return True
+        
