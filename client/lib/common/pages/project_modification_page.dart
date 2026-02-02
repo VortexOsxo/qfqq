@@ -25,6 +25,7 @@ class ProjectModificationPage extends ConsumerStatefulWidget {
 
 class _ProjectModificationState extends ConsumerState<ProjectModificationPage> {
   ProjectErrors errors = ProjectErrors();
+  bool isSending = false;
 
   Future<void> updateProject() async {
     var projectsError = validateProject(widget.project);
@@ -33,13 +34,14 @@ class _ProjectModificationState extends ConsumerState<ProjectModificationPage> {
       return;
     }
 
+    setState(() => isSending = true);
     final projectService = ref.read(projectsServiceProvider);
-
     final serverErrors =
         widget.isNewProject
             ? await projectService.createProject(widget.project)
             : await projectService.updateProject(widget.project);
 
+    setState(() => isSending = true);
     if (serverErrors.hasAny()) {
       setState(() => errors = serverErrors);
       return;
@@ -47,7 +49,7 @@ class _ProjectModificationState extends ConsumerState<ProjectModificationPage> {
 
     if (!mounted) {
       return;
-    } 
+    }
 
     context.go(
       widget.isNewProject ? '/projects' : '/project/${widget.project.id}',
@@ -88,7 +90,7 @@ class _ProjectModificationState extends ConsumerState<ProjectModificationPage> {
                 label: loc.projectCreationPageSupervisorLabel,
                 initialUserId: widget.project.supervisorId,
                 onSelected: (p0) => widget.project.supervisorId = p0.id,
-                error: errors.supervisorErrors,
+                error: errors.supervisorError,
               ),
               const SizedBox(height: 20),
 
@@ -103,10 +105,22 @@ class _ProjectModificationState extends ConsumerState<ProjectModificationPage> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: Text(
-                  widget.isNewProject
-                      ? loc.projectCreationPageCreateProject
-                      : loc.projectCreationPageUpdateProject,
+                child: SizedBox(
+                  width: 150,
+                  height: 30,
+                  child: Center(
+                    child:
+                        isSending
+                            ? CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            )
+                            : Text(
+                              widget.isNewProject
+                                  ? loc.projectCreationPageCreateProject
+                                  : loc.projectCreationPageUpdateProject,
+                            ),
+                  ),
                 ),
               ),
             ],
