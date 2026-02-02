@@ -4,9 +4,9 @@ from datetime import datetime
 
 
 class MeetingAgendaStatus(Enum):
-    draft = 0
-    planned = 1
-    completed = 2
+    draft = 'draft'
+    planned = 'planned'
+    completed = 'completed'
 
 @dataclass(slots=True)
 class MeetingAgenda:

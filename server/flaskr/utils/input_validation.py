@@ -35,7 +35,7 @@ def verify_missing_inputs(data: dict, validators: list[InputValidator]) -> list[
         validator.field_name for validator in validators if validator.validate(data) != InputError.NoError
     ]
 
-def get_inputs_errors(data: dict, validators: list[InputValidator]) -> dict[str, InputError]:
+def get_inputs_errors(data: dict, validators: list[InputValidator]) -> dict[str, int]:
     results = [
         (validator.field_name, validator.validate(data)) for validator in validators
     ]
@@ -56,8 +56,8 @@ class EmailValidator(StringValidator):
     EmailRegex = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
 
     def validate(self, data) -> InputError:
-        if not super().validate(data):
-            return InputError.RequiredField
+        if (error := super().validate(data)) != InputError.NoError:
+            return error
         value = data.get(self.field_name, "")
         return (
             InputError.NoError
@@ -98,7 +98,7 @@ class EnumValidator(InputValidator):
         super().__init__(field_name)
         self.enum = enum
 
-    def validate(self, data) -> bool:
+    def validate(self, data) -> InputError:
         value = data.get(self.field_name, "")
         if value is None:
             return InputError.RequiredField
@@ -115,9 +115,9 @@ class ListValidator(InputValidator):
         super().__init__(field_name)
         self.can_be_empty = can_be_empty
 
-    def validate(self, data):
+    def validate(self, data) -> InputError:
         l = data.get(self.field_name, [])
-        if not isinstance(list, l):
+        if not isinstance(l, list):
             return InputError.ValueMustBeAList
 
         if not self.can_be_empty and len(l) == 0:
