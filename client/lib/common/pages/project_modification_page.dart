@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/models/errors/projects_error.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
 import 'package:qfqq/common/templates/page_template.dart';
+import 'package:qfqq/common/utils/validation.dart';
+import 'package:qfqq/common/widgets/reusables/modification_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/user_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 
-class ProjectModificationPage extends ConsumerWidget {
+class ProjectModificationPage extends ConsumerStatefulWidget {
   final Project project;
   final bool isNewProject;
 
@@ -16,21 +19,46 @@ class ProjectModificationPage extends ConsumerWidget {
       isNewProject = projectToModify == null;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    Future<void> updateProject() async {
-      final projectService = ref.read(projectsServiceProvider);
-      if (isNewProject) {
-        await projectService.createProject(project);
-        context.go('/projects');
-      } else {
-        await projectService.updateProject(project);
-        context.go('/project/${project.id}');
-      }
+  ConsumerState<ProjectModificationPage> createState() =>
+      _ProjectModificationState();
+}
+
+class _ProjectModificationState extends ConsumerState<ProjectModificationPage> {
+  ProjectErrors errors = ProjectErrors();
+
+  Future<void> updateProject() async {
+    var projectsError = validateProject(widget.project);
+    if (projectsError.hasAny()) {
+      setState(() => errors = projectsError);
+      return;
     }
 
+    final projectService = ref.read(projectsServiceProvider);
+
+    final serverErrors =
+        widget.isNewProject
+            ? await projectService.createProject(widget.project)
+            : await projectService.updateProject(widget.project);
+
+    if (serverErrors.hasAny()) {
+      setState(() => errors = serverErrors);
+      return;
+    }
+
+    if (!mounted) {
+      return;
+    } 
+
+    context.go(
+      widget.isNewProject ? '/projects' : '/project/${widget.project.id}',
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final loc = S.of(context);
 
-    const title = 'Project Creation';
+    final title = loc.projectModificationPageTitle;
 
     final content = Center(
       child: ConstrainedBox(
@@ -40,42 +68,27 @@ class ProjectModificationPage extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextFormField(
-                initialValue: project.title,
-                onChanged: (value) => project.title = value,
-                decoration: InputDecoration(
-                  hintText: loc.projectCreationPageTitleHint,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
-                ),
+              ModificationTextField(
+                initialValue: widget.project.title,
+                hintText: loc.projectCreationPageTitleHint,
+                onChanged: (value) => widget.project.title = value,
+                error: errors.titleError,
               ),
               const SizedBox(height: 20),
 
-              TextFormField(
-                initialValue: project.goals,
-                onChanged: (value) => project.goals = value,
-                decoration: InputDecoration(
-                  hintText: loc.projectCreationPageGoalsHint,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
-                ),
+              ModificationTextField(
+                initialValue: widget.project.goals,
+                hintText: loc.projectCreationPageGoalsHint,
+                onChanged: (value) => widget.project.goals = value,
+                error: errors.goalsError,
               ),
               const SizedBox(height: 20),
 
               UserTextField(
                 label: loc.projectCreationPageSupervisorLabel,
-                initialUserId: project.supervisorId,
-                onSelected: (p0) => project.supervisorId = p0.id,
+                initialUserId: widget.project.supervisorId,
+                onSelected: (p0) => widget.project.supervisorId = p0.id,
+                error: errors.supervisorErrors,
               ),
               const SizedBox(height: 20),
 
@@ -91,7 +104,7 @@ class ProjectModificationPage extends ConsumerWidget {
                   ),
                 ),
                 child: Text(
-                  isNewProject
+                  widget.isNewProject
                       ? loc.projectCreationPageCreateProject
                       : loc.projectCreationPageUpdateProject,
                 ),

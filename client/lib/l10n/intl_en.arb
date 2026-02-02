@@ -100,6 +100,7 @@
   "projectCreationPageSupervisorLabel": "Supervisor",
   "projectCreationPageCreateProject": "Create new project",
   "projectCreationPageUpdateProject": "Modify project",
+  "projectModificationPageTitle": "Project creation",
   
   "projectViewPageTitle": "Project Details",
   
@@ -165,6 +166,10 @@
   "commonTooltipHome": "Home",
   "commonErrorWithContent": "Error: {error}",
   
+  "commonFormsEnterTitle": "Please enter a title",
+  "commonFormsEnterGoals": "Please enter the goals",
+  "commonFormsEnterSupervisor": "Please select a supervisor",
+
   "widgetProjectLabel": "Project",
   "widgetUserLabel": "User",
   
