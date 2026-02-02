@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request, send_file
 
 from flaskr.database import ProjectDataHandler, DecisionDataHandler, IdFilter
-from flaskr.utils import verify_missing_inputs, StringValidator, UserIdValidator
+from flaskr.utils import get_inputs_errors, StringValidator, UserIdValidator
 from flaskr.reports import ProjectReportBuilder
 
 
@@ -12,9 +12,9 @@ projects_bp = Blueprint("projects", __name__, url_prefix="/projects")
 def create_project():
     data = request.get_json()
     required_fields = [StringValidator("title"), StringValidator("goals"), UserIdValidator("supervisorId")]
-    missings = verify_missing_inputs(data, required_fields)
-    if missings:
-        return jsonify({"error": f'Missing fields: {", ".join(missings)}'}), 400
+    errors = get_inputs_errors(data, required_fields)
+    if len(errors):
+        return jsonify(errors), 400
 
     kwargs = {
         "title": data["title"],

@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:qfqq/common/models/account_error.dart';
+import 'package:qfqq/common/models/errors/account_error.dart';
 import 'dart:convert';
 import 'package:qfqq/common/providers/server_url.dart';
 import 'package:qfqq/common/utils/events/event_notifier.dart';

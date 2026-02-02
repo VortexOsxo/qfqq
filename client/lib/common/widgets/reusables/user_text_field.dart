@@ -7,12 +7,14 @@ class UserTextField extends ConsumerWidget {
   final String label;
   final String initialUserId;
   final void Function(User)? onSelected;
+  final String? error;
 
   const UserTextField({
     super.key,
     required this.label,
     this.initialUserId = '',
     this.onSelected,
+    this.error,
   });
 
   @override
@@ -38,11 +40,12 @@ class UserTextField extends ConsumerWidget {
       FocusNode focusNode,
       VoidCallback onFieldSubmitted,
     ) {
-      return TextField(
+      return TextFormField(
         controller: textController,
         focusNode: focusNode,
         decoration: InputDecoration(
           labelText: label,
+          errorText: error,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
           prefixIcon: const Icon(Icons.person),
         ),
@@ -50,7 +53,7 @@ class UserTextField extends ConsumerWidget {
     }
 
     return Autocomplete<User>(
-      key: ValueKey(currentUser?.id ?? 'no-id'),
+      key: ValueKey('${currentUser?.id ?? 'no-id'}-${error ?? ''}'),
       optionsBuilder: getOptions,
       initialValue: TextEditingValue(
         text: currentUser != null ? _displayStringForOption(currentUser) : '',
