@@ -17,7 +17,7 @@ ProjectErrors validateProject(Project project) {
   errors.goalsError =
       stringValidator(project.goals) ? null : loc.commonFormsEnterGoals;
 
-  errors.supervisorErrors =
+  errors.supervisorError =
       stringValidator(project.supervisorId) ? null : loc.commonFormsEnterGoals;
 
   return errors;

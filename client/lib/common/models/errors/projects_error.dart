@@ -1,15 +1,17 @@
 class ProjectErrors {
   String? titleError;
   String? goalsError;
-  String? supervisorErrors;
+  String? supervisorError;
 
-  ProjectErrors({this.titleError, this.goalsError, this.supervisorErrors});
+  ProjectErrors({this.titleError, this.goalsError, this.supervisorError});
 
   bool hasAny() {
-    return titleError != null || goalsError != null || supervisorErrors != null;
+    return titleError != null || goalsError != null || supervisorError != null;
   }
 
   ProjectErrors.fromJson(dynamic json) {
+    if (json == null || json is! Map) return;
+
     if (json.containsKey('title')) {
       titleError = json['title'].toString();
     }
@@ -19,7 +21,7 @@ class ProjectErrors {
     }
     
     if (json.containsKey('supervisorId')) {
-      supervisorErrors = json['supervisorId'].toString();
+      supervisorError = json['supervisorId'].toString();
     }
   }
 }
