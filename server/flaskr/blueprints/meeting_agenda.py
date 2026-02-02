@@ -63,7 +63,7 @@ def create_meeting_agenda():
 
     kwargs = {
         'title': data["title"],
-        'reunionGoals': data["reunionGoals"],
+        'reunionGoals': data.get("reunionGoals", ""),
         'status': status,
         'redactionDate': redactionDate,
         'meetingDate': meetingDate,

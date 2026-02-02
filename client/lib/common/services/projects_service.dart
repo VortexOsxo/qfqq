@@ -36,7 +36,7 @@ class ProjectsService extends StateNotifier<List<Project>> {
       body: jsonEncode(project.toJson()),
     );
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 204) {
       final projects = state;
       state = projects.map((e) => e.id != project.id ? e : project).toList();
       return ProjectErrors();
