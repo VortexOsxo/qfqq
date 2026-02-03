@@ -45,7 +45,7 @@ class ProjectTextField extends ConsumerWidget {
           labelText: label,
           errorText: error,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-          prefixIcon: const Icon(Icons.person),
+          prefixIcon: const Icon(Icons.folder),
         ),
       );
     }

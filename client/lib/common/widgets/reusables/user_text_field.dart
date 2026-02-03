@@ -40,7 +40,7 @@ class UserTextField extends ConsumerWidget {
       FocusNode focusNode,
       VoidCallback onFieldSubmitted,
     ) {
-      return TextFormField(
+      return TextField(
         controller: textController,
         focusNode: focusNode,
         decoration: InputDecoration(

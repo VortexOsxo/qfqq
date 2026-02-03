@@ -9,6 +9,8 @@ import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/modals/select_date.dart';
 import 'package:qfqq/common/utils/validation.dart';
 import 'package:qfqq/common/widgets/reusables/chip_list.dart';
+import 'package:qfqq/common/widgets/reusables/form_filled_button.dart';
+import 'package:qfqq/common/widgets/reusables/form_outlined_button.dart';
 import 'package:qfqq/common/widgets/reusables/modification_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/project_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/user_text_field.dart';
@@ -32,6 +34,7 @@ class AgendaModificationPage extends ConsumerStatefulWidget {
 class _AgendaModificationPageState
     extends ConsumerState<AgendaModificationPage> {
   MeetingAgendaErrors errors = MeetingAgendaErrors();
+  bool isSending = false;
   late final TextEditingController _themeController;
 
   @override
@@ -95,6 +98,34 @@ class _AgendaModificationPageState
     super.dispose();
   }
 
+  void saveAgenda(MeetingAgendaStatus status) async {
+    widget.agenda.status = status;
+    var meetingsError = validateMeetingAgenda(widget.agenda);
+    if (meetingsError.hasAny()) {
+      setState(() => errors = meetingsError);
+      return;
+    }
+
+    setState(() => isSending = true);
+    final service = ref.read(meetingAgendaServiceProvider);
+    !widget.isNewAgenda
+        ? await service.updateMeetingAgenda(widget.agenda)
+        : await service.createMeetingAgenda(widget.agenda);
+    setState(() => isSending = false);
+
+    goBack();
+  }
+
+  void goBack() {
+    if (!mounted) {
+      return;
+    }
+
+    context.go(
+      widget.isNewAgenda ? '/agendas' : '/agendas/${widget.agenda.id}',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     String? formattedDateTime =
@@ -104,23 +135,6 @@ class _AgendaModificationPageState
 
     final loc = S.of(context);
     final isEditing = !widget.isNewAgenda;
-
-    void saveAgenda(MeetingAgendaStatus status) async {
-      widget.agenda.status = status;
-      var meetingsError = validateMeetingAgenda(widget.agenda);
-      if (meetingsError.hasAny()) {
-        setState(() => errors = meetingsError);
-        return;
-      }
-
-      final service = ref.read(meetingAgendaServiceProvider);
-      if (isEditing) {
-        await service.updateMeetingAgenda(widget.agenda);
-      } else {
-        await service.createMeetingAgenda(widget.agenda);
-      }
-      context.go('/agendas');
-    }
 
     String title =
         isEditing
@@ -349,54 +363,29 @@ class _AgendaModificationPageState
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    OutlinedButton(
-                      onPressed: () => context.go('/'),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 14,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: Text(loc.agendaPageCancel),
+                    FormOutlinedButton(
+                      text: loc.commonCancel,
+                      onPressed: goBack,
                     ),
+
                     const SizedBox(width: 12),
-                    FilledButton(
+                    FormFilledButton(
+                      text:
+                          isEditing
+                              ? loc.agendaPageUpdateDraft
+                              : loc.agendaPageSaveDraft,
+                      isSending: isSending,
                       onPressed: () => saveAgenda(MeetingAgendaStatus.draft),
-                      style: FilledButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32,
-                          vertical: 14,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: Text(
-                        isEditing
-                            ? loc.agendaPageUpdateDraft
-                            : loc.agendaPageSaveDraft,
-                      ),
                     ),
+
                     const SizedBox(width: 12),
-                    FilledButton(
+                    FormFilledButton(
+                      text:
+                          isEditing
+                              ? loc.agendaPageUpdateAgenda
+                              : loc.agendaPageSaveAgenda,
+                      isSending: isSending,
                       onPressed: () => saveAgenda(MeetingAgendaStatus.planned),
-                      style: FilledButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32,
-                          vertical: 14,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: Text(
-                        isEditing
-                            ? loc.agendaPageUpdateAgenda
-                            : loc.agendaPageSaveAgenda,
-                      ),
                     ),
                   ],
                 ),

@@ -6,6 +6,8 @@ import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
 import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/utils/validation.dart';
+import 'package:qfqq/common/widgets/reusables/form_filled_button.dart';
+import 'package:qfqq/common/widgets/reusables/form_outlined_button.dart';
 import 'package:qfqq/common/widgets/reusables/modification_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/user_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -41,12 +43,16 @@ class _ProjectModificationState extends ConsumerState<ProjectModificationPage> {
             ? await projectService.createProject(widget.project)
             : await projectService.updateProject(widget.project);
 
-    setState(() => isSending = true);
+    setState(() => isSending = false);
     if (serverErrors.hasAny()) {
       setState(() => errors = serverErrors);
       return;
     }
 
+    goBack();
+  }
+
+  void goBack() {
     if (!mounted) {
       return;
     }
@@ -94,34 +100,20 @@ class _ProjectModificationState extends ConsumerState<ProjectModificationPage> {
               ),
               const SizedBox(height: 20),
 
-              FilledButton(
-                onPressed: () => updateProject(),
-                style: FilledButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 14,
+              Row(
+                children: [
+                  FormOutlinedButton(text: loc.commonCancel, onPressed: goBack),
+
+                  const SizedBox(width: 12),
+                  FormFilledButton(
+                    text:
+                        widget.isNewProject
+                            ? loc.projectCreationPageCreateProject
+                            : loc.projectCreationPageUpdateProject,
+                    isSending: isSending,
+                    onPressed: () => updateProject(),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: SizedBox(
-                  width: 150,
-                  height: 30,
-                  child: Center(
-                    child:
-                        isSending
-                            ? CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            )
-                            : Text(
-                              widget.isNewProject
-                                  ? loc.projectCreationPageCreateProject
-                                  : loc.projectCreationPageUpdateProject,
-                            ),
-                  ),
-                ),
+                ],
               ),
             ],
           ),
