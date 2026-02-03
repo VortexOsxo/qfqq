@@ -26,7 +26,7 @@ class DesktopApp extends ConsumerWidget {
         if (locales != null) {
           for (var locale in locales) {
             if (locale.languageCode == 'en') {
-              return const Locale('en');
+              return const Locale('fr');
             }
             if (locale.languageCode == 'fr') {
               return const Locale('fr');

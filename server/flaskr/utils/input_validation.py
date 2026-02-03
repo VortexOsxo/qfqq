@@ -100,7 +100,7 @@ class EnumValidator(InputValidator):
 
     def validate(self, data) -> InputError:
         value = data.get(self.field_name, "")
-        if value is None:
+        if value is "":
             return InputError.RequiredField
 
         return (
