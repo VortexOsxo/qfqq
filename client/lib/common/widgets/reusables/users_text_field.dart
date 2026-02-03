@@ -9,12 +9,14 @@ class UsersTextField extends ConsumerStatefulWidget {
   final String label;
   final List<String> initialUsersIds;
   final void Function(List<User>)? onChanged;
+  final String? error;
 
   const UsersTextField({
     super.key,
     required this.label,
     initialUsersIds,
     this.onChanged,
+    this.error,
   }) : initialUsersIds = initialUsersIds ?? const [];
 
   @override
@@ -67,6 +69,7 @@ class _UsersTextFieldState extends ConsumerState<UsersTextField> {
               child: UserTextField(
                 label: widget.label,
                 onSelected: _onUserSelected,
+                error: widget.error,
               ),
             ),
             const SizedBox(width: 12),

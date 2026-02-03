@@ -1,9 +1,11 @@
-import 'package:qfqq/common/models/errors/projects_error.dart';
+import 'package:qfqq/common/models/errors/meeting_agenda_errors.dart';
+import 'package:qfqq/common/models/errors/project_errors.dart';
+import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 bool stringValidator(String? value) {
-  return value != null && value.trim() != "";
+    return value != null && value.trim().isNotEmpty;
 }
 
 ProjectErrors validateProject(Project project) {
@@ -18,7 +20,45 @@ ProjectErrors validateProject(Project project) {
       stringValidator(project.goals) ? null : loc.commonFormsEnterGoals;
 
   errors.supervisorError =
-      stringValidator(project.supervisorId) ? null : loc.commonFormsEnterSupervisor;
+      stringValidator(project.supervisorId)
+          ? null
+          : loc.commonFormsEnterSupervisor;
+
+  return errors;
+}
+
+MeetingAgendaErrors validateMeetingAgenda(MeetingAgenda agenda) {
+  var errors = MeetingAgendaErrors();
+  final loc = S.current;
+
+  errors.titleError =
+      stringValidator(agenda.title) ? null : loc.commonFormsEnterTitle;
+
+  if (agenda.status == MeetingAgendaStatus.draft) {
+    return errors;
+  }
+
+  errors.reunionGoalsError =
+      stringValidator(agenda.reunionGoals) ? null : loc.commonFormsEnterGoals;
+
+  errors.reunionDateError =
+      agenda.reunionDate != null ? null : loc.commonFormsEnterMeetingDate;
+
+  errors.reunionLocationError =
+      stringValidator(agenda.reunionLocation)
+          ? null
+          : loc.commonFormsEnterReunionLocation;
+
+  errors.animatorError =
+      stringValidator(agenda.animatorId) ? null : loc.commonFormsEnterAnimator;
+
+  errors.participantsError =
+      agenda.participantsIds.isNotEmpty
+          ? null
+          : loc.commonFormsEnterParticipants;
+
+  errors.projectError =
+      stringValidator(agenda.projectId) ? null : loc.commonFormsEnterProject;
 
   return errors;
 }

@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/project.dart';
-import 'package:qfqq/common/pages/agenda_modification__page.dart';
+import 'package:qfqq/common/pages/agenda_modification_page.dart';
 import 'package:qfqq/common/pages/agenda_view_page.dart';
 import 'package:qfqq/common/pages/decisions_list_page.dart';
 import 'package:qfqq/common/pages/home_page.dart';

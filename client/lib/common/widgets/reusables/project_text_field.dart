@@ -7,12 +7,14 @@ class ProjectTextField extends ConsumerWidget {
   final String label;
   final String initialProjectId;
   final void Function(Project)? onSelected;
+  final String? error;
 
   const ProjectTextField({
     super.key,
     required this.label,
     this.initialProjectId = '',
     this.onSelected,
+    this.error,
   });
 
   @override
@@ -41,6 +43,7 @@ class ProjectTextField extends ConsumerWidget {
         focusNode: focusNode,
         decoration: InputDecoration(
           labelText: label,
+          errorText: error,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
           prefixIcon: const Icon(Icons.person),
         ),
@@ -48,7 +51,7 @@ class ProjectTextField extends ConsumerWidget {
     }
 
     return Autocomplete<Project>(
-      key: ValueKey(currentProject?.id ?? 'no-id'),
+      key: ValueKey('${currentProject?.id ?? 'no-id'}-${error ?? ''}'),
       optionsBuilder: getOptions,
       initialValue: TextEditingValue(
         text: currentProject != null ? _displayStringForOption(currentProject) : '',

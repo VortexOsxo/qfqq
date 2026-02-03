@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:qfqq/common/models/errors/projects_error.dart';
+import 'package:qfqq/common/models/errors/project_errors.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
 import 'package:qfqq/common/templates/page_template.dart';
