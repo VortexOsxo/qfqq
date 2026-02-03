@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:qfqq/common/models/errors/projects_error.dart';
+import 'package:qfqq/common/models/errors/project_errors.dart';
 import 'dart:convert';
 import 'package:qfqq/common/models/project.dart';
 

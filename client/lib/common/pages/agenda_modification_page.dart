@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/models/errors/meeting_agenda_errors.dart';
 import 'package:qfqq/common/models/user.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/modals/select_date.dart';
+import 'package:qfqq/common/utils/validation.dart';
 import 'package:qfqq/common/widgets/reusables/chip_list.dart';
+import 'package:qfqq/common/widgets/reusables/modification_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/project_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/user_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/users_text_field.dart';
@@ -28,6 +31,7 @@ class AgendaModificationPage extends ConsumerStatefulWidget {
 
 class _AgendaModificationPageState
     extends ConsumerState<AgendaModificationPage> {
+  MeetingAgendaErrors errors = MeetingAgendaErrors();
   late final TextEditingController _themeController;
 
   @override
@@ -93,13 +97,22 @@ class _AgendaModificationPageState
 
   @override
   Widget build(BuildContext context) {
-    String formattedDateTime = formatDate(context, widget.agenda.reunionDate);
+    String? formattedDateTime =
+        widget.agenda.reunionDate != null
+            ? formatDate(context, widget.agenda.reunionDate)
+            : null;
 
     final loc = S.of(context);
     final isEditing = !widget.isNewAgenda;
 
     void saveAgenda(MeetingAgendaStatus status) async {
       widget.agenda.status = status;
+      var meetingsError = validateMeetingAgenda(widget.agenda);
+      if (meetingsError.hasAny()) {
+        setState(() => errors = meetingsError);
+        return;
+      }
+
       final service = ref.read(meetingAgendaServiceProvider);
       if (isEditing) {
         await service.updateMeetingAgenda(widget.agenda);
@@ -125,37 +138,21 @@ class _AgendaModificationPageState
               children: [
                 // Title and Goals
                 _buildLabel(loc.agendaPageTitle),
-                TextFormField(
+                ModificationTextField(
                   initialValue: widget.agenda.title,
+                  hintText: loc.agendaPageTitleHint,
                   onChanged: (value) => widget.agenda.title = value,
-                  decoration: InputDecoration(
-                    hintText: loc.agendaPageTitleHint,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
-                  ),
+                  error: errors.titleError,
                 ),
                 const SizedBox(height: 20),
 
                 _buildLabel(loc.agendaPageGoals),
-                TextFormField(
+                ModificationTextField(
                   initialValue: widget.agenda.reunionGoals,
+                  hintText: loc.agendaPageGoalsHint,
                   onChanged: (value) => widget.agenda.reunionGoals = value,
+                  error: errors.reunionGoalsError,
                   maxLines: 3,
-                  decoration: InputDecoration(
-                    hintText: loc.agendaPageGoalsHint,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
-                  ),
                 ),
 
                 _buildDivider(),
@@ -178,7 +175,7 @@ class _AgendaModificationPageState
                           OutlinedButton.icon(
                             onPressed: _handleDateTimeSelection,
                             icon: const Icon(Icons.calendar_today, size: 18),
-                            label: Text(formattedDateTime),
+                            label: Text(formattedDateTime ?? ''),
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 16,
@@ -188,9 +185,32 @@ class _AgendaModificationPageState
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
+                              side:
+                                  errors.reunionDateError != null
+                                      ? BorderSide(
+                                        color:
+                                            Theme.of(context).colorScheme.error,
+                                      )
+                                      : null,
                               alignment: Alignment.centerLeft,
                             ),
                           ),
+                          if (errors.reunionDateError != null)
+                            SizedBox(height: 8),
+                          if (errors.reunionDateError != null)
+                            Row(
+                              children: [
+                                SizedBox(width: 16),
+                                Text(
+                                  errors.reunionDateError!,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context).colorScheme.error,
+                                  ),
+                                ),
+                              ],
+                            ),
                         ],
                       ),
                     ),
@@ -204,21 +224,13 @@ class _AgendaModificationPageState
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                           const SizedBox(height: 8),
-                          TextFormField(
-                            initialValue: widget.agenda.reunionLocation,
-                            decoration: InputDecoration(
-                              hintText: loc.agendaPageLocationHint,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 14,
-                              ),
-                            ),
+                          ModificationTextField(
+                            initialValue: widget.agenda.reunionLocation ?? '',
+                            hintText: loc.agendaPageLocationHint,
                             onChanged:
                                 (value) =>
                                     widget.agenda.reunionLocation = value,
+                            error: errors.reunionLocationError,
                           ),
                         ],
                       ),
@@ -293,6 +305,7 @@ class _AgendaModificationPageState
                             initialUserId: widget.agenda.animatorId ?? '',
                             onSelected:
                                 (p0) => widget.agenda.animatorId = p0.id,
+                            error: errors.animatorError,
                           ),
                         ],
                       ),
@@ -313,6 +326,7 @@ class _AgendaModificationPageState
                             onSelected:
                                 (project) =>
                                     widget.agenda.projectId = project.id,
+                            error: errors.projectError,
                           ),
                         ],
                       ),
@@ -326,6 +340,7 @@ class _AgendaModificationPageState
                   label: loc.agendaPageAddParticipant,
                   initialUsersIds: widget.agenda.participantsIds,
                   onChanged: _updateParticipants,
+                  error: errors.participantsError,
                 ),
 
                 const SizedBox(height: 40),
@@ -378,7 +393,9 @@ class _AgendaModificationPageState
                         ),
                       ),
                       child: Text(
-                        isEditing ? loc.agendaPageUpdateAgenda : loc.agendaPageSaveAgenda,
+                        isEditing
+                            ? loc.agendaPageUpdateAgenda
+                            : loc.agendaPageSaveAgenda,
                       ),
                     ),
                   ],

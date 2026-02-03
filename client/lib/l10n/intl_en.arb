@@ -169,6 +169,11 @@
   "commonFormsEnterTitle": "Please enter a title",
   "commonFormsEnterGoals": "Please enter the goals",
   "commonFormsEnterSupervisor": "Please select a supervisor",
+  "commonFormsEnterMeetingDate": "Please enter the meeting date",
+  "commonFormsEnterReunionLocation": "Please enter the meeting location",
+  "commonFormsEnterAnimator": "Please select an animator",
+  "commonFormsEnterParticipants": "Please select at least one participant",
+  "commonFormsEnterProject": "Please select a project",
 
   "widgetProjectLabel": "Project",
   "widgetUserLabel": "User",
