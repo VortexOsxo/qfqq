@@ -17,6 +17,20 @@ elif database == "mongo":
         ValueUpdater,
         ListContainsValueFilter,
     )
+elif database == "postgres":
+    from .postgres import (
+        create_db,
+        close_db,
+        UserDataHandler,
+        ProjectDataHandler,
+        DecisionDataHandler,
+        MeetingDataHandler,
+    )
+    MeetingAgendaDataHandler = ...
+    ValueFilter = ...
+    IdFilter = ...
+    ValueUpdater  =...
+    ListContainsValueFilter = ...
 else:
     raise ValueError("Invalid database type")
 

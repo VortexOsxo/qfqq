@@ -21,10 +21,10 @@ class MeetingAgenda:
     meetingLocation: str
 
     animatorId: str
-    participantsIds: list[str]
-
-    themes: list[str]
     projectId: str
+
+    participantsIds: list[str]
+    themes: list[str]
 
     def to_dict(self):
         return {
