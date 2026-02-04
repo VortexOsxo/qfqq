@@ -76,7 +76,7 @@ class MeetingAgendaDataHandler(BaseDataHandler):
     @classmethod
     def get_meeting_agendas(cls) -> list[MeetingAgenda]:
         return cls.get_items([])
-    
+
     @classmethod
     def get_meeting_agendas_by_filters(cls, filters: list) -> list[MeetingAgenda]:
         return cls.get_items(filters)
@@ -89,14 +89,18 @@ class MeetingAgendaDataHandler(BaseDataHandler):
     def _from_mongo_dict(cls, meeting_agenda):
         return MeetingAgenda(
             cls._get_id_from_mongo_entry(meeting_agenda["_id"]),
+            int(meeting_agenda["agendaNb"]),
             meeting_agenda["title"],
-            meeting_agenda["reunionGoals"],
+            meeting_agenda["goals"],
             meeting_agenda["status"],
             meeting_agenda["redactionDate"],
             meeting_agenda["meetingDate"],
             meeting_agenda["meetingLocation"],
             cls._get_id_from_mongo_entry(meeting_agenda["animatorId"]),
-            [str(pId) for pId in meeting_agenda["participantsIds"]],
+            [
+                cls._get_id_from_mongo_entry(pId)
+                for pId in meeting_agenda["participantsIds"]
+            ],
             meeting_agenda["themes"],
             cls._get_id_from_mongo_entry(meeting_agenda["projectId"]),
         )

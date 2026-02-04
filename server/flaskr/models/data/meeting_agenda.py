@@ -11,8 +11,9 @@ class MeetingAgendaStatus(Enum):
 @dataclass(slots=True)
 class MeetingAgenda:
     id: str
+    number: int
     title: str
-    reunionGoals: str
+    goals: str
     status: MeetingAgendaStatus
 
     redactionDate: datetime
@@ -28,8 +29,9 @@ class MeetingAgenda:
     def to_dict(self):
         return {
             "id": self.id,
+            "number": self.number,
             "title": self.title,
-            "reunionGoals": self.reunionGoals,
+            "goals": self.goals,
             "status": self.status,
             "redactionDate": self.redactionDate.isoformat(),
             "meetingDate": self.meetingDate.isoformat() if self.meetingDate else None,

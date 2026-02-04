@@ -37,7 +37,7 @@ def create_meeting_agenda():
 
     if status == MeetingAgendaStatus.planned:
         required_fields.extend([
-            StringValidator("reunionGoals"),
+            StringValidator("goals"),
             EnumValidator("status", MeetingAgendaStatus),
             StringValidator("meetingDate"),
             StringValidator("meetingLocation"),
@@ -63,7 +63,7 @@ def create_meeting_agenda():
 
     kwargs = {
         'title': data["title"],
-        'reunionGoals': data.get("reunionGoals", ""),
+        'goals': data.get("goals", ""),
         'status': status,
         'redactionDate': redactionDate,
         'meetingDate': meetingDate,

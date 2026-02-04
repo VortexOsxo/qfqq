@@ -37,6 +37,7 @@
   "agendaPageSaveDraft": "Enregistrer comme brouillon",
   "agendaPageUpdateAgenda": "Mettre à jour l'ordre du jour",
   
+  "agendaListNumber": "Id",
   "agendaListTitle": "Titre",
   "agendaListStatus": "Statut",
   "agendaListDate": "Date",

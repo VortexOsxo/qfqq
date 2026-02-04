@@ -39,13 +39,13 @@ MeetingAgendaErrors validateMeetingAgenda(MeetingAgenda agenda) {
   }
 
   errors.reunionGoalsError =
-      stringValidator(agenda.reunionGoals) ? null : loc.commonFormsEnterGoals;
+      stringValidator(agenda.goals) ? null : loc.commonFormsEnterGoals;
 
   errors.reunionDateError =
-      agenda.reunionDate != null ? null : loc.commonFormsEnterMeetingDate;
+      agenda.meetingDate != null ? null : loc.commonFormsEnterMeetingDate;
 
   errors.reunionLocationError =
-      stringValidator(agenda.reunionLocation)
+      stringValidator(agenda.meetingLocation)
           ? null
           : loc.commonFormsEnterReunionLocation;
 

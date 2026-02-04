@@ -45,7 +45,7 @@ class AgendaViewPage extends ConsumerWidget {
             padding: EdgeInsets.all(8),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text(loc.agendaViewGoals(agenda.reunionGoals)),
+              child: Text(loc.agendaViewGoals(agenda.goals ?? '')),
             ),
           ),
           Spacer(),
@@ -92,10 +92,10 @@ class AgendaViewPage extends ConsumerWidget {
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(agenda.reunionLocation ?? loc.commonNoLocationSet),
+                Text(agenda.meetingLocation ?? loc.commonNoLocationSet),
                 Text(
-                  agenda.reunionDate != null
-                      ? formatDate(context, agenda.reunionDate)
+                  agenda.meetingDate != null
+                      ? formatDate(context, agenda.meetingDate)
                       : loc.commonNoDateSet,
                 ),
               ],

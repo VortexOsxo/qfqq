@@ -148,7 +148,7 @@ class _MeetingInProgessState extends ConsumerState<MeetingInProgressPage> {
                   agenda.title,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
                 ),
-                Text(agenda.reunionGoals),
+                Text(agenda.goals ?? ''),
               ],
             ),
             _buildMeetingHeaderSide(

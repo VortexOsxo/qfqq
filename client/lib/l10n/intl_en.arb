@@ -37,6 +37,7 @@
   "agendaPageSaveDraft": "Save Agenda as draft",
   "agendaPageUpdateAgenda": "Update Agenda",
   
+  "agendaListNumber": "Id",
   "agendaListTitle": "Title",
   "agendaListStatus": "Status",
   "agendaListDate": "Date",

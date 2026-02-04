@@ -46,10 +46,10 @@ class _AgendaModificationPageState
   Future<void> _handleDateTimeSelection() async {
     final DateTime? result = await showDateTimePicker(
       context,
-      widget.agenda.reunionDate ?? DateTime.now(),
+      widget.agenda.meetingDate ?? DateTime.now(),
     );
     if (result == null) return;
-    setState(() => widget.agenda.reunionDate = result);
+    setState(() => widget.agenda.meetingDate = result);
   }
 
   void _addTheme() {
@@ -129,8 +129,8 @@ class _AgendaModificationPageState
   @override
   Widget build(BuildContext context) {
     String? formattedDateTime =
-        widget.agenda.reunionDate != null
-            ? formatDate(context, widget.agenda.reunionDate)
+        widget.agenda.meetingDate != null
+            ? formatDate(context, widget.agenda.meetingDate)
             : null;
 
     final loc = S.of(context);
@@ -162,9 +162,9 @@ class _AgendaModificationPageState
 
                 _buildLabel(loc.agendaPageGoals),
                 ModificationTextField(
-                  initialValue: widget.agenda.reunionGoals,
+                  initialValue: widget.agenda.goals ?? '',
                   hintText: loc.agendaPageGoalsHint,
-                  onChanged: (value) => widget.agenda.reunionGoals = value,
+                  onChanged: (value) => widget.agenda.goals = value,
                   error: errors.reunionGoalsError,
                   maxLines: 3,
                 ),
@@ -239,11 +239,11 @@ class _AgendaModificationPageState
                           ),
                           const SizedBox(height: 8),
                           ModificationTextField(
-                            initialValue: widget.agenda.reunionLocation ?? '',
+                            initialValue: widget.agenda.meetingLocation ?? '',
                             hintText: loc.agendaPageLocationHint,
                             onChanged:
                                 (value) =>
-                                    widget.agenda.reunionLocation = value,
+                                    widget.agenda.meetingLocation = value,
                             error: errors.reunionLocationError,
                           ),
                         ],

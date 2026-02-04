@@ -170,6 +170,7 @@ class AgendasListPage extends ConsumerWidget {
         Row(
           children: [
             SizedBox(width: 16),
+            Expanded(child: Text(S.of(context).agendaListNumber)),
             Expanded(child: Text(S.of(context).agendaListTitle)),
             Expanded(child: Text(S.of(context).agendaListStatus)),
             Expanded(child: Text(S.of(context).agendaListDate)),
@@ -204,17 +205,18 @@ class AgendasListPage extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   SizedBox(width: 16),
+                  Expanded(child: Text(agenda.number.toString())),
                   Expanded(child: Text(agenda.title)),
                   Expanded(child: _buildStatusChip(context, agenda.status)),
                   Expanded(
                     child: Text(
-                      agenda.reunionDate != null
-                          ? formatDate(context, agenda.reunionDate)
+                      agenda.meetingDate != null
+                          ? formatDate(context, agenda.meetingDate)
                           : loc.commonNoDateSet,
                     ),
                   ),
                   Expanded(
-                    child: Text(agenda.reunionLocation ?? loc.commonNoLocationSet),
+                    child: Text(agenda.meetingLocation ?? loc.commonNoLocationSet),
                   ),
                   Expanded(
                     child: Text(

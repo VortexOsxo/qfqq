@@ -13,8 +13,8 @@ class AgendaLineHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = S.of(context);
     final agendaDateText =
-        agenda.reunionDate != null
-            ? DateFormat.yMMMd().format(agenda.reunionDate!)
+        agenda.meetingDate != null
+            ? DateFormat.yMMMd().format(agenda.meetingDate!)
             : loc.commonNoReunionDate;
 
     return Padding(
