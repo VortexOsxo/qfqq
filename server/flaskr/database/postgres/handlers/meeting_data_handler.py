@@ -72,17 +72,17 @@ class MeetingDataHandler:
     @classmethod
     def update_meeting_agenda(
         cls,
-        meetingId: str,
+        meetingId: int,
         title: str,
         goals: str,
         status: MeetingAgendaStatus,
         redactionDate: datetime,
         meetingDate: datetime,
         meetingLocation: str,
-        animatorId: str,
-        participantsIds: list[str],
+        animatorId: int,
+        participantsIds: list[int],
         themes: list[str],
-        projectId: str,
+        projectId: int,
     ):
         with get_db_access() as conn:
             cur = conn.cursor()
@@ -133,11 +133,11 @@ class MeetingDataHandler:
     def get_meeting_agenda(cls, id: int) -> MeetingAgenda | None:
         query = "SELECT * FROM meetingsComplete WHERE id = %s;"
 
-        meeting = read_query(query, (id,))[0]
-        return MeetingAgenda(*meeting)
+        meetings = read_query(query, (id,))
+        return MeetingAgenda(*meetings[0]) if meetings else None
 
     @classmethod
-    def get_meetings_by_participant(cls, participantId: int) -> MeetingAgenda | None:
+    def get_meetings_by_participant(cls, participantId: int) -> list[MeetingAgenda]:
         query = "SELECT * FROM meetingsComplete WHERE %s = ANY(participantsIds);"
 
         meetings = read_query(query, (participantId,))

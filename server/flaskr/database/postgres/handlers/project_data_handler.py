@@ -20,7 +20,7 @@ class ProjectDataHandler:
 
     @classmethod
     def update_project(
-        cls, id: str, number: int, title: str, goals: str, supervisorId: str
+        cls, id: int, number: int, title: str, goals: str, supervisorId: int
     ):
         query = f"UPDATE projects SET title = %s, goals = %s, supervisorId = %s WHERE id = %s;"
         params = (title, goals, supervisorId, id)
@@ -34,5 +34,5 @@ class ProjectDataHandler:
     @classmethod
     def get_project_by_id(cls, id: int):
         query = f"SELECT * from projects WHERE id = %s LIMIT 1;"
-        params = (id,)
-        return Project(*(read_query(query, params)[0]))
+        projects = read_query(query, (id,))
+        return Project(*projects[0]) if projects else None

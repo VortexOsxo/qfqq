@@ -34,9 +34,10 @@ class _MeetingInProgessState extends ConsumerState<MeetingInProgressPage> {
     final agenda = ref.watch(meetingAgendaByIdProvider(widget.id));
     assert(agenda != null, "Meeting in progress should not allow invalid id");
 
-    if (decision.projectId == null && isIdValid(agenda!.id)) {
+    if (decision.meetingId == null && isIdValid(agenda!.id)) {
       decision.meetingId = agenda.id;
     }
+
     User? animator;
     if (isIdValid(agenda!.animatorId)) {
       animator = ref.watch(userByIdProvider(agenda.animatorId ?? 0));

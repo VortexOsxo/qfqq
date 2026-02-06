@@ -90,3 +90,11 @@ def test_get_newly_created_meeting(app_ctx):
     assert fetched_meeting.title == "Retrospective"
     assert fetched_meeting.animatorId == 2
     assert len(fetched_meeting.participantsIds) == 3
+
+def test_get_not_found_meeting(app_ctx):
+    meeting = MeetingDataHandler.get_meeting_agenda(5)
+    assert meeting is None
+
+def test_get_not_found_meeting_by_participant(app_ctx):
+    meetings = MeetingDataHandler.get_meetings_by_participant(10)
+    assert len(meetings) == 0

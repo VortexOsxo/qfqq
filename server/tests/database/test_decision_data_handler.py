@@ -81,3 +81,11 @@ def test_create_decision(app_ctx):
     assert decision.initialDate == initialDate.date()
     assert decision.assistantsIds == [2]
     assert decision.meetingId == 1
+
+def test_get_not_found_decision(app_ctx):
+    decision = DecisionDataHandler.get_decision(25)
+    assert decision is None
+
+def test_get_not_found_decision_by_responsible(app_ctx):
+    decisions = DecisionDataHandler.get_decision_by_responsible(25)
+    assert len(decisions) == 0

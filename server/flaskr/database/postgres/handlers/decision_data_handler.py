@@ -55,11 +55,11 @@ class DecisionDataHandler:
         return [Decision(*d) for d in decisions]
 
     @classmethod
-    def get_decision(cls, decisionId: str):
+    def get_decision(cls, decisionId: int):
         query = "SELECT * from decisionsComplete WHERE id = %s;"
         params = (decisionId,)
-        decision = read_query(query, params)[0]
-        return Decision(*decision)
+        decisions = read_query(query, params)
+        return Decision(*decisions[0]) if decisions else None
 
     @classmethod
     def get_decision_by_project(cls, projectId: int):

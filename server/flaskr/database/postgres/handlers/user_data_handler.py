@@ -30,11 +30,11 @@ class UserDataHandler:
         query = f"SELECT * from users WHERE id = %s LIMIT 1;"
         params = (id,)
         users = read_query(query, params)
-        return User(*users[0])
+        return User(*users[0]) if users else None
 
     @classmethod
     def get_user_by_email(cls, email: str):
         query = f"SELECT * from users WHERE email = %s LIMIT 1;"
         params = (email,)
         users = read_query(query, params)
-        return User(*users[0])
+        return User(*users[0]) if users else None

@@ -41,7 +41,7 @@ def create_decision():
         dueDate=dueDate,
         responsibleId=data["responsibleId"],
         initialDate=initialDate,
-        assistantsIds=data.get("assistantsId", None),
+        assistantsIds=data.get("assistantsIds", None),
         meetingId=data.get("meetingId", None),
     )
     return jsonify({"message": "Meeting agenda created successfully"}), 201

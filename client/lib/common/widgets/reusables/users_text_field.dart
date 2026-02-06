@@ -47,7 +47,7 @@ class _UsersTextFieldState extends ConsumerState<UsersTextField> {
   void _initializeUsers(List<User> users) {
     if (isInitialized || users.isEmpty) return;
 
-    var currentUsersSet = Set<String>.from(widget.initialUsersIds);
+    var currentUsersSet = Set<int>.from(widget.initialUsersIds);
     _users = users.where((user) => currentUsersSet.contains(user.id)).toList();
     isInitialized = true;
   }

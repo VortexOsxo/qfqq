@@ -45,6 +45,6 @@ class Decision:
             "completedDate": self.completedDate.isoformat() if self.completedDate else None,
             "responsibleId": self.responsibleId,
             "meetingId": self.meetingId,
-            "assistantsId": self.assistantsIds or [],
+            "assistantsIds": self.assistantsIds or [],
             "projectId": self.projectId,
         }
