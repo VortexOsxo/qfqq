@@ -5,14 +5,14 @@ import 'package:qfqq/common/providers/projects_provider.dart';
 
 class ProjectTextField extends ConsumerWidget {
   final String label;
-  final String initialProjectId;
+  final int initialProjectId;
   final void Function(Project)? onSelected;
   final String? error;
 
   const ProjectTextField({
     super.key,
     required this.label,
-    this.initialProjectId = '',
+    this.initialProjectId = 0,
     this.onSelected,
     this.error,
   });

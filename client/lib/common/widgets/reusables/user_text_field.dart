@@ -5,14 +5,14 @@ import 'package:qfqq/common/providers/users_provider.dart';
 
 class UserTextField extends ConsumerWidget {
   final String label;
-  final String initialUserId;
+  final int initialUserId;
   final void Function(User)? onSelected;
   final String? error;
 
   const UserTextField({
     super.key,
     required this.label,
-    this.initialUserId = '',
+    this.initialUserId = 0,
     this.onSelected,
     this.error,
   });

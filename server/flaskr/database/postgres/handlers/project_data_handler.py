@@ -1,13 +1,22 @@
-from ..postgres import read_query, write_query
+from ..postgres import read_query, write_query, get_db_access
 from flaskr.models import Project
 
 
 class ProjectDataHandler:
     @classmethod
     def create_project(cls, title: str, goals: str, supervisorId: int) -> bool:
-        query = f"INSERT INTO projects (title, goals, supervisorId) values (%s, %s, %s)"
-        params = (title, goals, supervisorId)
-        write_query(query, params)
+        try:
+            with get_db_access() as conn:
+                cur = conn.cursor()
+                query = f"INSERT INTO projects (title, goals, supervisorId) values (%s, %s, %s) RETURNING id, nb"
+                params = (title, goals, supervisorId)
+                cur.execute(query, params)
+                id, nb = cur.fetchone()
+                return Project(id, nb, *params)
+        except:
+            pass
+        return None
+
 
     @classmethod
     def update_project(

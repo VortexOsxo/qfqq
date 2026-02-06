@@ -7,7 +7,7 @@ import 'package:qfqq/common/widgets/decisions/decisions_list_widget.dart';
 import 'package:qfqq/common/widgets/pdf_viewer_widget.dart';
 
 class ProjectContentWidget extends ConsumerWidget {
-  final String projectId;
+  final int projectId;
 
   const ProjectContentWidget({super.key, required this.projectId});
 

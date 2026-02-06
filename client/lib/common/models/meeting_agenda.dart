@@ -1,25 +1,24 @@
 enum MeetingAgendaStatus { draft, planned, completed }
 
 class MeetingAgenda {
-  final String id;
+  final int id;
   int number;
   String title;
   String? goals;
   MeetingAgendaStatus status;
 
   final DateTime redactionDate;
-
   DateTime? meetingDate;
   String? meetingLocation;
 
-  String? animatorId;
-  List<String> participantsIds = [];
+  int? animatorId;
+  int? projectId;
 
+  List<int> participantsIds = [];
   List<String> themes = [];
-  String? projectId;
 
   MeetingAgenda({
-    this.id = '',
+    this.id = 0,
     this.number = 0,
     required this.title,
     required this.redactionDate,
@@ -28,7 +27,7 @@ class MeetingAgenda {
   });
 
   MeetingAgenda.empty()
-    : id = '',
+    : id = 0,
       number = 0,
       title = '',
       goals = '',
@@ -59,7 +58,7 @@ class MeetingAgenda {
               : null,
       meetingLocation = data['meetingLocation'],
       animatorId = data['animatorId'],
-      participantsIds = List<String>.from(data['participantsIds']),
+      participantsIds = List<int>.from(data['participantsIds']),
       themes = List<String>.from(data['themes']),
       projectId = data['projectId'];
 
@@ -72,8 +71,8 @@ class MeetingAgenda {
       'status': status.toString().split('.').last,
 
       if (goals != null) 'goals': goals,
-      if (meetingDate != null) 'reunionDate': meetingDate!.toIso8601String(),
-      if (meetingLocation != null) 'reunionLocation': meetingLocation,
+      if (meetingDate != null) 'meetingDate': meetingDate!.toIso8601String(),
+      if (meetingLocation != null) 'meetingLocation': meetingLocation,
       if (animatorId != null) 'animatorId': animatorId,
       if (participantsIds.isNotEmpty) 'participantsIds': participantsIds,
       if (themes.isNotEmpty) 'themes': themes,

@@ -12,90 +12,64 @@ class DecisionDataHandler:
         dueDate,
         responsibleId,
         initialDate=None,
-        assistantsId=None,
+        assistantsIds=None,
         meetingId=None,
     ):
         initialDate = initialDate or datetime.now()
-        assistantsId = assistantsId or []
+        assistantsIds = assistantsIds or []
+        try:
+            with get_db_access() as conn:
+                cur = conn.cursor()
 
-        with get_db_access() as conn:
-            cur = conn.cursor()
+                query = (
+                    "INSERT INTO decisions (description, status, initialDate, dueDate, completedDate, responsibleId, meetingId) "
+                    "VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id, nb;"
+                )
+                params = (
+                    description,
+                    status,
+                    initialDate,
+                    dueDate,
+                    None,
+                    responsibleId,
+                    meetingId,
+                )
 
-            query = (
-                "INSERT INTO decisions (description, status, initialDate, dueDate, completedDate, responsibleId, meetingId) "
-                "VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id;"
-            )
-            params = (
-                description,
-                status,
-                initialDate,
-                dueDate,
-                None,
-                responsibleId,
-                meetingId,
-            )
+                cur.execute(query, params)
 
-            cur.execute(query, params)
+                decisionId, decisionNb = cur.fetchone()
+                query = "INSERT INTO decisionsAssistants (decisionId, userId) VALUES (%s, %s)"
+                params = [(decisionId, assistantId) for assistantId in assistantsIds]
+                cur.executemany(query, params)
 
-            decisionId = cur.fetchone()[0]
-            query = (
-                "INSERT INTO decisionsAssistants (decisionId, userId) VALUES (%s, %s)"
-            )
-            params = [(decisionId, assistantId) for assistantId in assistantsId]
-            cur.executemany(query, params)
+            return cls.get_decision(decisionId)
+
+        except Exception as e:
+            pass
+        return None
 
     @classmethod
     def get_decisions(cls):
-        query = (
-            "SELECT d.*, da.assistantsIds FROM decisions d "
-            "LEFT JOIN ("
-            "   SELECT decisionId, array_agg(userId) AS assistantsIds "
-            "   FROM decisionsAssistants GROUP BY decisionId"
-            ") da ON da.decisionId = d.id;"
-        )
+        query = "SELECT * from decisionsComplete;"
         decisions = read_query(query)
         return [Decision(*d) for d in decisions]
 
     @classmethod
     def get_decision(cls, decisionId: str):
-        query = (
-            "SELECT d.*, da.assistantsIds FROM decisions d "
-            "LEFT JOIN ( "
-            "   SELECT decisionId, array_agg(userId) AS assistantsIds "
-            "   FROM decisionsAssistants GROUP BY decisionId"
-            ") da ON d.id = da.decisionId "
-            "WHERE d.id = %s;"
-        )
+        query = "SELECT * from decisionsComplete WHERE id = %s;"
         params = (decisionId,)
         decision = read_query(query, params)[0]
         return Decision(*decision)
 
     @classmethod
     def get_decision_by_project(cls, projectId: int):
-        query = (
-            "SELECT d.*, da.assistantsIds FROM decisions d "
-            "LEFT JOIN ( "
-            "   SELECT decisionId, array_agg(userId) AS assistantsIds "
-            "   FROM decisionsAssistants GROUP BY decisionId"
-            ") da ON d.id = da.decisionId " \
-            "LEFT JOIN (" \
-            "   SELECT id, projectId FROM meetings" \
-            ") p ON p.id = d.id "
-            "WHERE p.projectId = %s;"
-        )
+        query = "SELECT * from decisionsComplete WHERE projectId = %s;"
+
         decisions = read_query(query, (projectId,))
         return [Decision(*d) for d in decisions]
-    
+
     @classmethod
     def get_decision_by_responsible(cls, responsibleId: int):
-        query = (
-            "SELECT d.*, da.assistantsIds FROM decisions d "
-            "LEFT JOIN ( "
-            "   SELECT decisionId, array_agg(userId) AS assistantsIds "
-            "   FROM decisionsAssistants GROUP BY decisionId"
-            ") da ON d.id = da.decisionId "
-            "WHERE d.responsibleId = %s;"
-        )
+        query = "SELECT * from decisionsComplete WHERE responsibleId = %s;"
         decisions = read_query(query, (responsibleId,))
         return [Decision(*d) for d in decisions]
-

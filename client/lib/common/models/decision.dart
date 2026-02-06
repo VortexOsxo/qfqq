@@ -31,7 +31,7 @@ getDecisionStatusName(DecisionStatus status) {
 }
 
 class Decision {
-  String id;
+  int id;
   int number;
   String description;
   DecisionStatus status;
@@ -40,10 +40,11 @@ class Decision {
   DateTime? dueDate;
   DateTime? completedDate;
 
-  String? responsibleId;
-  List<String> assistantsIds;
+  int? responsibleId;
+  int? meetingId;
 
-  String? projectId;
+  List<int> assistantsIds;
+  int? projectId;
 
   Decision({
     required this.id,
@@ -54,12 +55,13 @@ class Decision {
     required this.dueDate,
     required this.completedDate,
     required this.responsibleId,
+    required this.meetingId,
     required this.assistantsIds,
     required this.projectId,
   });
 
   Decision.empty()
-    : id = '',
+    : id = 0,
       number = 0,
       description = '',
       status = DecisionStatus.toBeValidated,
@@ -75,6 +77,7 @@ class Decision {
       if (dueDate != null) 'dueDate': dueDate?.toIso8601String(),
       if (completedDate != null) 'completedDate': completedDate?.toIso8601String(),
       if (isIdValid(responsibleId)) 'responsibleId': responsibleId,
+      if (isIdValid(meetingId)) 'meetingId': meetingId,
       'assistantsIds': assistantsIds,
       if (isIdValid(projectId)) 'projectId': projectId,
     };
@@ -92,9 +95,10 @@ class Decision {
       dueDate =
           data['dueDate'] != null ? DateTime.parse(data['dueDate']) : null,
       responsibleId = data['responsibleId'],
+      meetingId = data['meetingId'],
       assistantsIds =
           data['assistantsIds'] != null
-              ? List<String>.from(data['assistantsIds'])
+              ? List<int>.from(data['assistantsIds'])
               : [],
       projectId = data['projectId'];
 }

@@ -9,7 +9,7 @@ import 'package:qfqq/common/widgets/projects/project_view_control.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class ProjectViewPage extends ConsumerWidget {
-  final String projectId;
+  final int projectId;
   const ProjectViewPage({super.key, required this.projectId});
 
   @override

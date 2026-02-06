@@ -66,6 +66,33 @@ CREATE TABLE
     PRIMARY KEY (meetingId, userId)
   );
 
+CREATE VIEW
+  meetingsComplete AS
+SELECT
+  m.*,
+  mp.participantsIds,
+  mt.themes
+FROM
+  meetings m
+  LEFT JOIN (
+    SELECT
+      meetingId,
+      array_agg (userId) AS participantsIds
+    FROM
+      meetingsParticipants
+    GROUP BY
+      meetingId
+  ) mp ON mp.meetingId = m.id
+  LEFT JOIN (
+    SELECT
+      meetingId,
+      array_agg (theme) AS themes
+    FROM
+      meetingsThemes
+    GROUP BY
+      meetingId
+  ) mt ON mt.meetingId = m.id;
+
 CREATE TABLE
   decisions (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -85,3 +112,22 @@ CREATE TABLE
     userId INTEGER REFERENCES users (id),
     PRIMARY KEY (decisionId, userId)
   );
+
+CREATE VIEW
+  decisionsComplete AS
+SELECT
+  d.*,
+  da.assistantsIds,
+  m.projectId
+FROM
+  decisions d
+  LEFT JOIN (
+    SELECT
+      decisionId,
+      array_agg (userId) as assistantsIds
+    FROM
+      decisionsAssistants
+    GROUP BY
+      decisionId
+  ) da ON da.decisionId = d.id
+  JOIN meetings m on m.id = d.meetingId;

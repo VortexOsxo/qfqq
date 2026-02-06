@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from enum import Enum
 import re
 
-from flaskr.database import UserDataHandler, ProjectDataHandler
+from flaskr.database import UserDataHandler, ProjectDataHandler, MeetingDataHandler
 
 
 class InputError(Enum):
@@ -74,10 +74,10 @@ class _ObjectIdValidator(InputValidator):
 
     def validate(self, data) -> InputError:
         id = data.get(self.field_name, None)
-        if id is None or id == "":
+        if id is None or id <= 0:
             return InputError.RequiredField
         try:
-            obj = self.dataHandler.get_item_by_id(id)
+            obj = self.dataHandler(id)
         except:
             return InputError.ObjectIdNotFound
         return InputError.NoError if obj is not None else InputError.ObjectIdNotFound
@@ -85,12 +85,14 @@ class _ObjectIdValidator(InputValidator):
 
 # TODO: Test it :)
 class UserIdValidator(_ObjectIdValidator):
-    dataHandler = UserDataHandler
+    dataHandler = UserDataHandler.get_user_by_id
 
 
 class ProjectIdValidator(_ObjectIdValidator):
-    dataHandler = ProjectDataHandler
+    dataHandler = ProjectDataHandler.get_project_by_id
 
+class MeetingIdValidator(_ObjectIdValidator):
+    dataHandler = MeetingDataHandler.get_meeting_agenda
 
 # TODO: Test it :)
 class EnumValidator(InputValidator):
@@ -100,7 +102,7 @@ class EnumValidator(InputValidator):
 
     def validate(self, data) -> InputError:
         value = data.get(self.field_name, "")
-        if value is "":
+        if value == "":
             return InputError.RequiredField
 
         return (

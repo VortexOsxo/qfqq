@@ -1,11 +1,10 @@
 from datetime import datetime
 from flask import Blueprint, jsonify, request, g
-from bson import ObjectId
 
 from flaskr.models import DecisionStatus
 from flaskr.blueprints.auth import login_required
-from flaskr.database import DecisionDataHandler, ValueFilter
-from flaskr.utils import verify_missing_inputs, UserIdValidator, StringValidator, ProjectIdValidator
+from flaskr.database import DecisionDataHandler
+from flaskr.utils import verify_missing_inputs, UserIdValidator, StringValidator, MeetingIdValidator
 
 decisions_bp = Blueprint("decisions", __name__, url_prefix="/decisions")
 
@@ -14,7 +13,7 @@ decisions_bp = Blueprint("decisions", __name__, url_prefix="/decisions")
 @login_required
 def create_decision():
     data = request.get_json()
-    required_fields = [StringValidator("description"), UserIdValidator("responsibleId"), ProjectIdValidator("projectId")]
+    required_fields = [StringValidator("description"), UserIdValidator("responsibleId"), MeetingIdValidator("meetingId")]
 
     missings = verify_missing_inputs(data, required_fields)
     if missings:
@@ -42,19 +41,20 @@ def create_decision():
         dueDate=dueDate,
         responsibleId=data["responsibleId"],
         initialDate=initialDate,
-        assistantsId=data["assistantsId"] if "assistantsId" in data else None,
-        projectId=data["projectId"] if "projectId" in data else None,
+        assistantsIds=data.get("assistantsId", None),
+        meetingId=data.get("meetingId", None),
     )
     return jsonify({"message": "Meeting agenda created successfully"}), 201
 
 
 @decisions_bp.route("/", methods=["GET"])
 def get_decisions():
-    filters = []
-
     responsibleId = request.args.get("responsibleId")
-    if responsibleId:
-        filters.append(ValueFilter("responsibleId", ObjectId(g.user_id if responsibleId == 'me' else responsibleId)))
 
-    decisions = DecisionDataHandler.get_decisions_by_filters(filters)
-    return jsonify([decision for decision in decisions]), 200
+    if responsibleId:
+        responsibleId = g.user_id if responsibleId == 'me' else responsibleId
+        decisions = DecisionDataHandler.get_decision_by_responsible(responsibleId)
+    else:
+        decisions = DecisionDataHandler.get_decisions()
+
+    return jsonify([decision.to_dict() for decision in decisions]), 200

@@ -7,7 +7,7 @@ import 'package:qfqq/common/widgets/reusables/user_text_field.dart';
 
 class UsersTextField extends ConsumerStatefulWidget {
   final String label;
-  final List<String> initialUsersIds;
+  final List<int> initialUsersIds;
   final void Function(List<User>)? onChanged;
   final String? error;
 

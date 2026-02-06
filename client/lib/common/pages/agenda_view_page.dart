@@ -11,7 +11,7 @@ import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class AgendaViewPage extends ConsumerWidget {
-  final String agendaId;
+  final int agendaId;
   const AgendaViewPage({super.key, required this.agendaId});
 
   @override

@@ -18,7 +18,7 @@ final agendaSearchQueryProvider = StateProvider<String>((ref) => '');
 final agendaStatusQueryProvider = StateProvider<MeetingAgendaStatus?>(
   (ref) => MeetingAgendaStatus.draft,
 );
-final agendaProjectQueryProvider = StateProvider<String?>((ref) => null);
+final agendaProjectQueryProvider = StateProvider<int?>((ref) => null);
 
 final filteredAgendaProvider = Provider<List<MeetingAgenda>>((ref) {
   var agendas = ref.watch(meetingsAgendasProvider);
@@ -119,22 +119,22 @@ class AgendasListPage extends ConsumerWidget {
   Widget _buildProjectFilterDropdown(BuildContext context, WidgetRef ref) {
     var projects = ref.watch(projectsProvider);
 
-    final List<DropdownMenuEntry<String?>> menuEntries = UnmodifiableListView([
-      DropdownMenuEntry<String?>(
+    final List<DropdownMenuEntry<int?>> menuEntries = UnmodifiableListView([
+      DropdownMenuEntry<int?>(
         value: null,
         label: S.of(context).agendaListAnyProject,
       ),
       ...projects.map(
-        (project) => DropdownMenuEntry<String?>(
+        (project) => DropdownMenuEntry<int?>(
           value: project.id,
           label: 'Project: ${project.title}',
         ),
       ),
     ]);
-    return DropdownMenu<String?>(
+    return DropdownMenu<int?>(
       width: 200,
       initialSelection: ref.read(agendaProjectQueryProvider),
-      onSelected: (String? value) {
+      onSelected: (int? value) {
         ref.read(agendaProjectQueryProvider.notifier).state = value;
       },
       dropdownMenuEntries: menuEntries,

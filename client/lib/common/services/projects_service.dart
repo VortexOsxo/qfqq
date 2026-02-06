@@ -22,7 +22,6 @@ class ProjectsService extends StateNotifier<List<Project>> {
     dynamic data = jsonDecode(response.body);
 
     if (response.statusCode == 201) {
-      data['number'] = _estimateProjectNumber();
       state = [...state, Project.fromJson(data)];
       return ProjectErrors();
     }
@@ -49,13 +48,6 @@ class ProjectsService extends StateNotifier<List<Project>> {
   Future<void> _loadProjects() async {
     final projects = await getProjects();
     state = projects;
-  }
-
-  int _estimateProjectNumber() {
-    if (state.isEmpty) return 1;
-
-    final numbers = state.map((project) => project.number).toList();
-    return (numbers.reduce((a, b) => a > b ? a : b)) + 1;
   }
 
   Future<List<Project>> getProjects() async {

@@ -8,7 +8,7 @@ final meetingsAgendasProvider = StateNotifierProvider<MeetingAgendaService, List
   (ref) => MeetingAgendaService(ref.read(serverUrlProvider), ref.read(authStateProvider.notifier)),
 );
 
-final meetingAgendaByIdProvider = Provider.family<MeetingAgenda?, String>((ref, id) {
+final meetingAgendaByIdProvider = Provider.family<MeetingAgenda?, int>((ref, id) {
   final agendas = ref.watch(meetingsAgendasProvider);
   return agendas.firstWhere((agenda) => agenda.id == id);
 });

@@ -16,14 +16,10 @@ def get_db_access():
 
 
 def create_db():
-    with _get_db() as conn:
-        cursor = conn.cursor()
+    _run_sql_file('schema')
 
-        with current_app.open_resource(
-            os.path.join("database", "postgres", "schema.sql")
-        ) as f:
-            cursor.execute(f.read().decode("utf8"))
-
+def fill_db():
+    _run_sql_file('mock_data')
 
 def write_query(query, params=None):
     with get_db_access() as conn:
@@ -39,13 +35,16 @@ def read_query(query, params=None):
 
     return items
 
+def _run_sql_file(filename: str):
+    with _get_db() as conn:
+        cursor = conn.cursor()
+
+        with current_app.open_resource(
+            os.path.join("database", "postgres", f"{filename}.sql")
+        ) as f:
+            cursor.execute(f.read().decode("utf8"))
+
 
 def _get_db():
-    return psycopg.connect(
-        host="localhost",
-        dbname="qfqq",
-        user="postgres",
-        password="user",
-        port=5432,
-        autocommit=False,
-    )
+    uri = current_app.config['DATABASE_URL']
+    return psycopg.connect(uri, autocommit=False)

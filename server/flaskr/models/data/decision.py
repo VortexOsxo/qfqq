@@ -28,10 +28,11 @@ class Decision:
     dueDate: datetime | None
     completedDate: datetime | None
 
-    projectId: str
+    responsibleId: int
+    meetingId: int
 
-    responsibleId: str
-    assistantsId: list[str]
+    assistantsIds: list[int]
+    projectId: int
 
     def to_dict(self):
         return {
@@ -43,7 +44,7 @@ class Decision:
             "dueDate": self.dueDate.isoformat() if self.dueDate else None,
             "completedDate": self.completedDate.isoformat() if self.completedDate else None,
             "responsibleId": self.responsibleId,
+            "meetingId": self.meetingId,
+            "assistantsId": self.assistantsIds or [],
             "projectId": self.projectId,
-            "reporterId": self.reporterId,
-            "assistantsId": self.assistantsId,
         }

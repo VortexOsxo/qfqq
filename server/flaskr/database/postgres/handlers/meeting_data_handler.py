@@ -19,14 +19,41 @@ class MeetingDataHandler:
         themes: list[str],
         projectId: str,
     ):
-        with get_db_access() as conn:
-            cur = conn.cursor()
+        try:
+            with get_db_access() as conn:
+                cur = conn.cursor()
 
-            query = (
-                "INSERT INTO meetings (title, goals, status, redactionDate, meetingDate, meetingLocation, animatorId, projectId) "
-                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING id;"
-            )
-            params = (
+                query = (
+                    "INSERT INTO meetings (title, goals, status, redactionDate, meetingDate, meetingLocation, animatorId, projectId) "
+                    "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING id, nb;"
+                )
+                params = (
+                    title,
+                    goals,
+                    status,
+                    redactionDate,
+                    meetingDate,
+                    meetingLocation,
+                    animatorId,
+                    projectId,
+                )
+
+                cur.execute(query, params)
+
+                meetingId, meetingNb = cur.fetchone()
+
+                query = "INSERT INTO meetingsParticipants (meetingId, userId) VALUES (%s, %s)"
+                params = [
+                    (meetingId, participantId) for participantId in participantsIds
+                ]
+                cur.executemany(query, params)
+
+                query = "INSERT INTO meetingsThemes (meetingId, theme) VALUES (%s, %s)"
+                params = [(meetingId, theme) for theme in themes]
+                cur.executemany(query, params)
+            return MeetingAgenda(
+                meetingId,
+                meetingNb,
                 title,
                 goals,
                 status,
@@ -35,22 +62,12 @@ class MeetingDataHandler:
                 meetingLocation,
                 animatorId,
                 projectId,
+                participantsIds,
+                themes,
             )
-
-            cur.execute(query, params)
-
-            meetingId = cur.fetchone()[0]
-
-            query = (
-                "INSERT INTO meetingsParticipants (meetingId, userId) VALUES (%s, %s)"
-            )
-            params = [(meetingId, participantId) for participantId in participantsIds]
-            cur.executemany(query, params)
-
-            query = "INSERT INTO meetingsThemes (meetingId, theme) VALUES (%s, %s)"
-            params = [(meetingId, theme) for theme in themes]
-            cur.executemany(query, params)
-        return True # TODO: make sure it's actually true
+        except Exception as e:
+            pass
+        return None
 
     @classmethod
     def update_meeting_agenda(
@@ -107,55 +124,21 @@ class MeetingDataHandler:
 
     @classmethod
     def get_meeting_agendas(cls) -> list[MeetingAgenda]:
-        query = (
-            "SELECT m.*, mp.participantsIds, mt.themes "
-            "FROM meetings m "
-            "LEFT JOIN ("
-            "   SELECT meetingId, array_agg(userId) AS participantsIds "
-            "   FROM meetingsParticipants GROUP BY meetingId"
-            ") mp ON mp.meetingId = m.id "
-            "LEFT JOIN ("
-            "   SELECT meetingId, array_agg(theme) AS themes "
-            "   FROM meetingsThemes GROUP BY meetingId"
-            ") mt ON mt.meetingId = m.id;"
-        )
+        query = "SELECT * FROM meetingsComplete;"
 
         meetings = read_query(query)
         return [MeetingAgenda(*m) for m in meetings]
 
     @classmethod
-    def get_meeting_agenda(cls, id: str) -> MeetingAgenda | None:
-        query = (
-            "SELECT m.*, mp.participantsIds, mt.themes "
-            "FROM meetings m "
-            "LEFT JOIN ("
-            "   SELECT meetingId, array_agg(userId) AS participantsIds "
-            "   FROM meetingsParticipants GROUP BY meetingId"
-            ") mp ON mp.meetingId = m.id "
-            "LEFT JOIN ("
-            "   SELECT meetingId, array_agg(theme) AS themes "
-            "   FROM meetingsThemes GROUP BY meetingId"
-            ") mt ON mt.meetingId = m.id "
-            "WHERE m.id = %s;"
-        )
+    def get_meeting_agenda(cls, id: int) -> MeetingAgenda | None:
+        query = "SELECT * FROM meetingsComplete WHERE id = %s;"
 
         meeting = read_query(query, (id,))[0]
         return MeetingAgenda(*meeting)
 
     @classmethod
     def get_meetings_by_participant(cls, participantId: int) -> MeetingAgenda | None:
-        query = (
-            "SELECT m.*, mp.participantsIds, mt.themes "
-            "FROM meetings m "
-            "LEFT JOIN ("
-            "   SELECT meetingId, array_agg(userId) AS participantsIds "
-            "   FROM meetingsParticipants GROUP BY meetingId"
-            ") mp ON mp.meetingId = m.id AND %s = ANY(mp.participantsIds)"
-            "LEFT JOIN ("
-            "   SELECT meetingId, array_agg(theme) AS themes "
-            "   FROM meetingsThemes GROUP BY meetingId"
-            ") mt ON mt.meetingId = m.id;"
-        )
+        query = "SELECT * FROM meetingsComplete WHERE %s = ANY(participantsIds);"
 
         meetings = read_query(query, (participantId,))
         return [MeetingAgenda(*m) for m in meetings]

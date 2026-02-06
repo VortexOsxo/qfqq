@@ -1,13 +1,23 @@
-from ..postgres import read_query, write_query
+from ..postgres import read_query, get_db_access
 from flaskr.models import User
 
 
 class UserDataHandler:
     @classmethod
-    def create_user(cls, username: str, email: str, passwordHash: str) -> bool:
-        query = f"INSERT INTO users (username, email, passwordHash) values (%s, %s, %s)"
-        params = (username, email, passwordHash)
-        write_query(query, params)
+    def create_user(cls, username: str, email: str, passwordHash: str) -> User:
+        try:
+            with get_db_access() as conn:
+                cur = conn.cursor()
+
+                query = f"INSERT INTO users (username, email, passwordHash) values (%s, %s, %s) RETURNING id;"
+                params = (username, email, passwordHash)
+                cur.execute(query, params)
+                userId = cur.fetchone()[0]
+            
+                return User(userId, *params)
+        except:
+            pass
+        return None
 
     @classmethod
     def get_users(cls):

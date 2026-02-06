@@ -37,7 +37,7 @@ class MeetingAgenda:
             "meetingDate": self.meetingDate.isoformat() if self.meetingDate else None,
             "meetingLocation": self.meetingLocation,
             "animatorId": self.animatorId,
-            "participantsIds": self.participantsIds,
-            "themes": self.themes,
+            "participantsIds": self.participantsIds or [],
+            "themes": self.themes or [],
             "projectId": self.projectId,
         }

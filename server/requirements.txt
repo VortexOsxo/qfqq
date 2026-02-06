@@ -1,4 +1,5 @@
 flask
-pymongo
 python-dotenv
 PyJWT
+psycopg
+pytest

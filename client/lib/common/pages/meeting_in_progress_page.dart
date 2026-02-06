@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/decision.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
-import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/models/user.dart';
 import 'package:qfqq/common/providers/decisions_provider.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
@@ -10,17 +9,16 @@ import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/widgets/default_text_field.dart';
-import 'package:qfqq/common/widgets/reusables/project_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/user_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/users_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class MeetingInProgressPage extends ConsumerStatefulWidget {
-  final String id;
+  final int id;
 
   const MeetingInProgressPage({super.key, required this.id});
 
-    @override
+  @override
   ConsumerState<MeetingInProgressPage> createState() =>
       _MeetingInProgessState();
 }
@@ -36,12 +34,12 @@ class _MeetingInProgessState extends ConsumerState<MeetingInProgressPage> {
     final agenda = ref.watch(meetingAgendaByIdProvider(widget.id));
     assert(agenda != null, "Meeting in progress should not allow invalid id");
 
-    if (decision.projectId == null && agenda!.projectId != null) {
-      decision.projectId = agenda.projectId ?? '';
+    if (decision.projectId == null && isIdValid(agenda!.id)) {
+      decision.meetingId = agenda.id;
     }
     User? animator;
     if (isIdValid(agenda!.animatorId)) {
-      animator = ref.watch(userByIdProvider(agenda.animatorId ?? ''));
+      animator = ref.watch(userByIdProvider(agenda.animatorId ?? 0));
     }
 
     Widget content = Center(
@@ -76,7 +74,9 @@ class _MeetingInProgessState extends ConsumerState<MeetingInProgressPage> {
           ElevatedButton(
             onPressed: () {
               decisionsService.createDecision(decision);
-              setState( () => decision = Decision.empty()..projectId = agenda.projectId);
+              setState(
+                () => decision = Decision.empty()..projectId = agenda.projectId,
+              );
             },
             child: Text(loc.meetingInProgressCreateButton),
           ),
@@ -151,14 +151,7 @@ class _MeetingInProgessState extends ConsumerState<MeetingInProgressPage> {
                 Text(agenda.goals ?? ''),
               ],
             ),
-            _buildMeetingHeaderSide(
-              ProjectTextField(
-                label: loc.meetingInProgressProject,
-                initialProjectId: agenda.projectId ?? '',
-                onSelected: (Project p) => decision.projectId = p.id,
-              ),
-              false,
-            ),
+            _buildMeetingHeaderSide(SizedBox(), false),
           ],
         ),
       ),

@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, send_file
 
-from flaskr.database import ProjectDataHandler, DecisionDataHandler, IdFilter
+from flaskr.database import ProjectDataHandler, DecisionDataHandler
 from flaskr.utils import get_inputs_errors, StringValidator, UserIdValidator
 from flaskr.reports import ProjectReportBuilder
 
@@ -23,16 +23,11 @@ def create_project():
     }
 
     if request.method == 'POST':
-        objectId, acknowledged = ProjectDataHandler.create_project(**kwargs)
-        if not acknowledged:
+        project = ProjectDataHandler.create_project(**kwargs)
+        if project is None:
             return "Could not create the new project", 400
 
-        return (jsonify({
-            "id": str(objectId),
-            "title": data["title"],
-            "goals": data["goals"],
-            "supervisorId": data["supervisorId"],
-        }), 201,)
+        return jsonify(project.to_dict()), 201
 
     elif request.method == 'PUT':
         # TODO: Handle concurrent update reflects that could cause conflicts ?
@@ -51,7 +46,7 @@ def get_project_report(id: str):
     project = ProjectDataHandler.get_item_by_id(id)
     if project is None: return "No project found", 404
 
-    decisions = DecisionDataHandler.get_decisions_by_filters([IdFilter(project.id, 'projectId')])
+    decisions = DecisionDataHandler.get_decision_by_project('projectId')
 
     buffer = ProjectReportBuilder(project, decisions).build()
     return send_file(
