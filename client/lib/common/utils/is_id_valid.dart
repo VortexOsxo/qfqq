@@ -1,3 +1,3 @@
-bool isIdValid(String? id) {
-  return id != '' && id != null;
+bool isIdValid(int? id) {
+  return id != null && id >= 0;
 }

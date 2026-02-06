@@ -3,7 +3,7 @@ from bson import ObjectId
 from flask import Blueprint, request, jsonify, g
 
 from flaskr.models import MeetingAgendaStatus
-from flaskr.database import MeetingAgendaDataHandler, ListContainsValueFilter
+from flaskr.database import MeetingDataHandler
 from flaskr.utils import (
     StringValidator,
     EnumValidator,
@@ -75,30 +75,31 @@ def create_meeting_agenda():
     }
 
     if request.method == "POST":
-        MeetingAgendaDataHandler.create_meeting_agenda(**kwargs)
+        MeetingDataHandler.create_meeting_agenda(**kwargs)
         return "", 201
     elif request.method == "PUT":
         # TODO: Handle concurrent update reflects that could cause conflicts ?
         if not "id" in data:
             return jsonify({"error": "Missing/Invalid fields: id"}), 400
-        MeetingAgendaDataHandler.update_meeting_agenda(id=data["id"], **kwargs)
+        MeetingDataHandler.update_meeting_agenda(id=data["id"], **kwargs)
         return "", 204
     return "", 405
 
 @meeting_agendas_bp.route("/", methods=["GET"])
 def get_meeting_agendas():
-    filters = []
-
     participantId = request.args.get("participantId")
-    if participantId:
-        filters.append(ListContainsValueFilter("participantsIds", ObjectId(g.user_id if participantId == 'me' else participantId)))
 
-    meeting_agendas = MeetingAgendaDataHandler.get_meeting_agendas_by_filters(filters)
+    if participantId:
+        participantId = g.user_id if participantId == 'me' else participantId
+        meeting_agendas = MeetingDataHandler.get_meetings_by_participant(participantId)
+    else:
+        meeting_agendas = MeetingDataHandler.get_meeting_agendas()
+
     return jsonify([meeting_agenda.to_dict() for meeting_agenda in meeting_agendas]), 200
 
 @meeting_agendas_bp.route("/<string:id>", methods=["GET"])
 def get_meeting_agenda(id: str):
-    meeting_agenda = MeetingAgendaDataHandler.get_meeting_agenda(id)
+    meeting_agenda = MeetingDataHandler.get_meeting_agenda(id)
     if not meeting_agenda:
         return jsonify({"error": "Meeting agenda not found"}), 404
     return jsonify(meeting_agenda.to_dict()), 200

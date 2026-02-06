@@ -8,7 +8,7 @@ final projectsProvider = StateNotifierProvider<ProjectsService, List<Project>>(
   (ref) => ProjectsService(ref.read(serverUrlProvider)),
 );
 
-final projectProviderById = Provider.family<Project?, String>((ref, id) {
+final projectProviderById = Provider.family<Project?, int>((ref, id) {
   final projects = ref.watch(projectsProvider);
   return projects.firstWhereOrNull((project) => project.id == id);
 });

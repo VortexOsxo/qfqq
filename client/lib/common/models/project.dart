@@ -1,14 +1,14 @@
 import 'package:qfqq/common/utils/is_id_valid.dart';
 
 class Project {
-  final String id;
+  final int id;
   final int number;
   String title;
   String goals;
-  String supervisorId;
+  int supervisorId;
 
   Project({
-    this.id = '',
+    this.id = 0,
     this.number = 0,
     required this.title,
     required this.goals,
@@ -16,11 +16,11 @@ class Project {
   });
 
   Project.empty()
-    : id = '',
+    : id = 0,
       number = 0,
       title = '',
       goals = '',
-      supervisorId = '';
+      supervisorId = 0;
 
   Project.fromJson(dynamic data)
     : id = data['id'],

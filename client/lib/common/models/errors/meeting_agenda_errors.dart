@@ -1,11 +1,11 @@
 class MeetingAgendaErrors {
   String? titleError;
-  String? reunionGoalsError;
+  String? goalsError;
   String? statusError;
 
   String? redactionDateError;
-  String? reunionDateError;
-  String? reunionLocationError;
+  String? meetingDateError;
+  String? meetingLocationError;
 
   String? animatorError;
   String? participantsError;
@@ -14,11 +14,11 @@ class MeetingAgendaErrors {
 
   MeetingAgendaErrors({
     this.titleError,
-    this.reunionGoalsError,
+    this.goalsError,
     this.statusError,
     this.redactionDateError,
-    this.reunionDateError,
-    this.reunionLocationError,
+    this.meetingDateError,
+    this.meetingLocationError,
     this.animatorError,
     this.participantsError,
     this.themesError,
@@ -27,11 +27,11 @@ class MeetingAgendaErrors {
 
   bool hasAny() {
     return titleError != null ||
-        reunionGoalsError != null ||
+        goalsError != null ||
         statusError != null ||
         redactionDateError != null ||
-        reunionDateError != null ||
-        reunionLocationError != null ||
+        meetingDateError != null ||
+        meetingLocationError != null ||
         animatorError != null ||
         participantsError != null ||
         themesError != null ||

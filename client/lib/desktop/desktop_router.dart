@@ -32,7 +32,7 @@ final GoRouter desktopRouter = GoRouter(
       path: '/agendas/:id',
       builder: (context, state) {
         final id = state.pathParameters['id']!;
-        return AgendaViewPage(agendaId: id);
+        return AgendaViewPage(agendaId: int.tryParse(id) ?? 0);
       },
     ),
     GoRoute(
@@ -57,14 +57,14 @@ final GoRouter desktopRouter = GoRouter(
       path: '/project/:id',
       builder: (context, state) {
         final id = state.pathParameters['id']!;
-        return ProjectViewPage(projectId: id);
+        return ProjectViewPage(projectId: int.tryParse(id) ?? 0);
       },
     ),
     GoRoute(
       path: '/meeting-in-progress/:id',
       builder: (context, state) {
         final id = state.pathParameters['id']!;
-        return MeetingInProgressPage(id: id);
+        return MeetingInProgressPage(id: int.tryParse(id) ?? 0);
       },
     ),
   ],

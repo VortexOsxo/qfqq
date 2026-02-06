@@ -32,7 +32,7 @@ class DecisionsListWidget extends ConsumerStatefulWidget {
 class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
   // Local state for filters
   String _searchQuery = '';
-  String? _selectedProjectId;
+  int? _selectedProjectId;
 
   @override
   void initState() {
@@ -110,23 +110,23 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
   Widget _buildProjectFilterDropdown(BuildContext context, WidgetRef ref) {
     var projects = ref.watch(projectsProvider);
 
-    final List<DropdownMenuEntry<String?>> menuEntries = UnmodifiableListView([
-      DropdownMenuEntry<String?>(
+    final List<DropdownMenuEntry<int?>> menuEntries = UnmodifiableListView([
+      DropdownMenuEntry<int?>(
         value: null,
         label: S.of(context).agendaListAnyProject,
       ),
       ...projects.map(
-        (project) => DropdownMenuEntry<String?>(
+        (project) => DropdownMenuEntry<int?>(
           value: project.id,
           label: S.of(context).commonProjectWithTitle(project.title),
         ),
       ),
     ]);
 
-    return DropdownMenu<String?>(
+    return DropdownMenu<int?>(
       width: 200,
       initialSelection: _selectedProjectId,
-      onSelected: (String? value) {
+      onSelected: (int? value) {
         setState(() {
           _selectedProjectId = value;
         });

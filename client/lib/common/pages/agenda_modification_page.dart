@@ -165,7 +165,7 @@ class _AgendaModificationPageState
                   initialValue: widget.agenda.goals ?? '',
                   hintText: loc.agendaPageGoalsHint,
                   onChanged: (value) => widget.agenda.goals = value,
-                  error: errors.reunionGoalsError,
+                  error: errors.goalsError,
                   maxLines: 3,
                 ),
 
@@ -200,7 +200,7 @@ class _AgendaModificationPageState
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               side:
-                                  errors.reunionDateError != null
+                                  errors.meetingDateError != null
                                       ? BorderSide(
                                         color:
                                             Theme.of(context).colorScheme.error,
@@ -209,14 +209,14 @@ class _AgendaModificationPageState
                               alignment: Alignment.centerLeft,
                             ),
                           ),
-                          if (errors.reunionDateError != null)
+                          if (errors.meetingDateError != null)
                             SizedBox(height: 8),
-                          if (errors.reunionDateError != null)
+                          if (errors.meetingDateError != null)
                             Row(
                               children: [
                                 SizedBox(width: 16),
                                 Text(
-                                  errors.reunionDateError!,
+                                  errors.meetingDateError!,
                                   style: Theme.of(
                                     context,
                                   ).textTheme.bodySmall?.copyWith(
@@ -244,7 +244,7 @@ class _AgendaModificationPageState
                             onChanged:
                                 (value) =>
                                     widget.agenda.meetingLocation = value,
-                            error: errors.reunionLocationError,
+                            error: errors.meetingLocationError,
                           ),
                         ],
                       ),
@@ -316,7 +316,7 @@ class _AgendaModificationPageState
                           const SizedBox(height: 8),
                           UserTextField(
                             label: loc.agendaPageAnimatorLabel,
-                            initialUserId: widget.agenda.animatorId ?? '',
+                            initialUserId: widget.agenda.animatorId ?? 0,
                             onSelected:
                                 (p0) => widget.agenda.animatorId = p0.id,
                             error: errors.animatorError,
@@ -336,7 +336,7 @@ class _AgendaModificationPageState
                           const SizedBox(height: 8),
                           ProjectTextField(
                             label: loc.agendaPageSelectProject,
-                            initialProjectId: widget.agenda.projectId ?? '',
+                            initialProjectId: widget.agenda.projectId ?? 0,
                             onSelected:
                                 (project) =>
                                     widget.agenda.projectId = project.id,

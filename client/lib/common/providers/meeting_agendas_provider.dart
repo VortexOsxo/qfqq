@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/services/auth_service.dart';
@@ -8,9 +9,9 @@ final meetingsAgendasProvider = StateNotifierProvider<MeetingAgendaService, List
   (ref) => MeetingAgendaService(ref.read(serverUrlProvider), ref.read(authStateProvider.notifier)),
 );
 
-final meetingAgendaByIdProvider = Provider.family<MeetingAgenda?, String>((ref, id) {
+final meetingAgendaByIdProvider = Provider.family<MeetingAgenda?, int>((ref, id) {
   final agendas = ref.watch(meetingsAgendasProvider);
-  return agendas.firstWhere((agenda) => agenda.id == id);
+  return agendas.firstWhereOrNull((agenda) => agenda.id == id);
 });
 
 final meetingAgendaServiceProvider = Provider<MeetingAgendaService>((ref) =>ref.read(meetingsAgendasProvider.notifier));

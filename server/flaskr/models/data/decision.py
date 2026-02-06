@@ -4,13 +4,13 @@ from datetime import datetime
 
 
 class DecisionStatus(Enum):
-    inProgress = 0
-    cancelled = 1
-    pending = 2
-    completed = 3
-    taskDescription = 4
-    approved = 5
-    toBeValidated = 6
+    inProgress = 'inProgress'
+    cancelled = 'cancelled'
+    pending = 'pending'
+    completed = 'completed'
+    taskDescription = 'taskDescription'
+    approved = 'approved'
+    toBeValidated = 'toBeValidated'
 
 
     def as_int(self):
@@ -28,10 +28,11 @@ class Decision:
     dueDate: datetime | None
     completedDate: datetime | None
 
-    responsibleId: str
-    assistantsId: list[str]
+    responsibleId: int
+    meetingId: int
 
-    projectId: str
+    assistantsIds: list[int]
+    projectId: int
 
     def to_dict(self):
         return {
@@ -43,7 +44,7 @@ class Decision:
             "dueDate": self.dueDate.isoformat() if self.dueDate else None,
             "completedDate": self.completedDate.isoformat() if self.completedDate else None,
             "responsibleId": self.responsibleId,
-            "reporterId": self.reporterId,
-            "assistantsId": self.assistantsId,
+            "meetingId": self.meetingId,
+            "assistantsIds": self.assistantsIds or [],
             "projectId": self.projectId,
         }

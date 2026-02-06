@@ -5,6 +5,7 @@ from .input_validation import (
     EmailValidator,
     UserIdValidator,
     ProjectIdValidator,
+    MeetingIdValidator,
     EnumValidator,
     ListValidator
 )

@@ -48,11 +48,12 @@ def signup():
     email = data.get("email")
     password = data.get("password")
 
-    if not UserDataHandler.create_user(
+    user = UserDataHandler.create_user(
         username, email, generate_password_hash(password)
-    ):
+    )
+    if user is None:
         return jsonify({"emailError": AuthError.emailAlreadyExists.value}), 400
-    return jsonify({}), 201
+    return jsonify(user.to_dict()), 201
 
 
 @auth_bp.route("/login", methods=(["POST"]))
@@ -71,7 +72,7 @@ def login():
     email = data.get("email")
     password = data.get("password")
 
-    user = UserDataHandler.get_user(email)
+    user = UserDataHandler.get_user_by_email(email)
 
     if user is None:
         return jsonify({"error": AuthError.userNotFound.value}), 401

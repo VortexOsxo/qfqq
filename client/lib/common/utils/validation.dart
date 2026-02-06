@@ -8,6 +8,10 @@ bool stringValidator(String? value) {
     return value != null && value.trim().isNotEmpty;
 }
 
+bool idValidator(int? id) {
+  return id != null && id > 0;
+}
+
 ProjectErrors validateProject(Project project) {
   var errors = ProjectErrors();
 
@@ -20,7 +24,7 @@ ProjectErrors validateProject(Project project) {
       stringValidator(project.goals) ? null : loc.commonFormsEnterGoals;
 
   errors.supervisorError =
-      stringValidator(project.supervisorId)
+      idValidator(project.supervisorId)
           ? null
           : loc.commonFormsEnterSupervisor;
 
@@ -38,19 +42,19 @@ MeetingAgendaErrors validateMeetingAgenda(MeetingAgenda agenda) {
     return errors;
   }
 
-  errors.reunionGoalsError =
+  errors.goalsError =
       stringValidator(agenda.goals) ? null : loc.commonFormsEnterGoals;
 
-  errors.reunionDateError =
+  errors.meetingDateError =
       agenda.meetingDate != null ? null : loc.commonFormsEnterMeetingDate;
 
-  errors.reunionLocationError =
+  errors.meetingLocationError =
       stringValidator(agenda.meetingLocation)
           ? null
           : loc.commonFormsEnterReunionLocation;
 
   errors.animatorError =
-      stringValidator(agenda.animatorId) ? null : loc.commonFormsEnterAnimator;
+      idValidator(agenda.animatorId) ? null : loc.commonFormsEnterAnimator;
 
   errors.participantsError =
       agenda.participantsIds.isNotEmpty
@@ -58,7 +62,7 @@ MeetingAgendaErrors validateMeetingAgenda(MeetingAgenda agenda) {
           : loc.commonFormsEnterParticipants;
 
   errors.projectError =
-      stringValidator(agenda.projectId) ? null : loc.commonFormsEnterProject;
+      idValidator(agenda.projectId) ? null : loc.commonFormsEnterProject;
 
   return errors;
 }
