@@ -15,9 +15,7 @@ import 'package:qfqq/common/widgets/default_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 final agendaSearchQueryProvider = StateProvider<String>((ref) => '');
-final agendaStatusQueryProvider = StateProvider<MeetingAgendaStatus?>(
-  (ref) => MeetingAgendaStatus.draft,
-);
+final agendaStatusQueryProvider = StateProvider<MeetingAgendaStatus?>((ref) => null);
 final agendaProjectQueryProvider = StateProvider<int?>((ref) => null);
 
 final filteredAgendaProvider = Provider<List<MeetingAgenda>>((ref) {

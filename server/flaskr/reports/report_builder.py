@@ -116,9 +116,10 @@ class ReportBuilder:
             bottomMargin=margin,
         )
         return self
-    
+
     def add_element(self, element):
         self.elements.append(element)
+        return self
 
     def header(self, title: str, subtitle: str = None, date: str = None):
         title = Paragraph(title, title_style_big)
@@ -219,7 +220,7 @@ class ReportBuilder:
                 str(decision.number),
                 decision.description,
                 responsible_name,
-                decision.dueDate.strftime("%Y-%m-%d"),
+                decision.dueDate.strftime("%Y-%m-%d") if decision.dueDate else " ",
                 DecisionStatus.as_string(decision.status, lang),
                 (
                     decision.completedDate.strftime("%Y-%m-%d")

@@ -107,11 +107,11 @@ def get_meeting_agenda(id: str):
 @meeting_agendas_bp.route("/<int:id>/reports")
 def get_meeting_report(id: int):
     meeting, participants = MeetingDataHandler.get_meeting_with_participants(id)
-    if meeting is None: return "No meeting found", 404
+    if meeting is None:
+        return "No meeting found", 404
 
-    
     lang = request.args.get('lang', 'fr')
-    decisions = DecisionDataHandler.get_decisions_and_responsible_by_project(meeting.id)
+    decisions = DecisionDataHandler.get_decisions_and_responsible_by_meeting(meeting.id)
     buffer = MeetingReportBuilder(meeting, participants, decisions, lang).build()
     return send_file(
         buffer,

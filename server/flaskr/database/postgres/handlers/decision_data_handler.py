@@ -69,7 +69,7 @@ class DecisionDataHandler:
         return [Decision(*d) for d in decisions]
     
     @classmethod
-    def get_decisions_and_responsible_by_project(cls, projectId: int):
+    def get_decisions_and_responsible_by_project(cls, projectId: int) -> list[tuple[Decision, str]]:
         query = "SELECT dc.*, u.username from decisionsComplete dc JOIN users u ON u.id = dc.responsibleId WHERE projectId = %s"
 
         decisions = read_query(query, (projectId,))
@@ -82,7 +82,7 @@ class DecisionDataHandler:
         return [Decision(*d) for d in decisions]
     
     @classmethod
-    def get_decisions_and_responsible_by_meeting(cls, meetingId: int):
+    def get_decisions_and_responsible_by_meeting(cls, meetingId: int) -> list[tuple[Decision, str]]:
         query = "SELECT dc.*, u.username from decisionsComplete dc JOIN users u ON u.id = dc.responsibleId WHERE dc.meetingId = %s"
 
         decisions = read_query(query, (meetingId,))

@@ -8,6 +8,7 @@ import 'package:qfqq/common/templates/button_template.dart';
 import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
+import 'package:qfqq/common/widgets/pdf_viewer_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class AgendaViewPage extends ConsumerWidget {
@@ -49,6 +50,8 @@ class AgendaViewPage extends ConsumerWidget {
             ),
           ),
           Spacer(),
+          _buildReportViewer(context),
+          Spacer(),
           Center(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -70,6 +73,15 @@ class AgendaViewPage extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Widget _buildReportViewer(BuildContext context) {
+    final Locale locale = Localizations.localeOf(context);
+
+    final pdfUrl =
+        'http://localhost:5000/meeting-agendas/$agendaId/reports?lang=${locale.languageCode}';
+
+    return SizedBox(height: 400, child: PdfViewerWidget(pdfUrl: pdfUrl));
   }
 
   Widget _buildTopCard(
