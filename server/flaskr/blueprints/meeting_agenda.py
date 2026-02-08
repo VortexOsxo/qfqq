@@ -1,9 +1,8 @@
 from datetime import datetime
-from bson import ObjectId
-from flask import Blueprint, request, jsonify, g
+from flask import Blueprint, request, jsonify, g, send_file
 
 from flaskr.models import MeetingAgendaStatus
-from flaskr.database import MeetingDataHandler
+from flaskr.database import MeetingDataHandler, DecisionDataHandler
 from flaskr.utils import (
     StringValidator,
     EnumValidator,
@@ -12,6 +11,7 @@ from flaskr.utils import (
     ProjectIdValidator,
     verify_missing_inputs,
 )
+from flaskr.reports import MeetingReportBuilder
 
 meeting_agendas_bp = Blueprint(
     "meeting_agendas", __name__, url_prefix="/meeting-agendas"
@@ -103,3 +103,19 @@ def get_meeting_agenda(id: str):
     if not meeting_agenda:
         return jsonify({"error": "Meeting agenda not found"}), 404
     return jsonify(meeting_agenda.to_dict()), 200
+
+@meeting_agendas_bp.route("/<int:id>/reports")
+def get_meeting_report(id: int):
+    meeting, participants = MeetingDataHandler.get_meeting_with_participants(id)
+    if meeting is None: return "No meeting found", 404
+
+    
+    lang = request.args.get('lang', 'fr')
+    decisions = DecisionDataHandler.get_decisions_and_responsible_by_project(meeting.id)
+    buffer = MeetingReportBuilder(meeting, participants, decisions, lang).build()
+    return send_file(
+        buffer,
+        mimetype="application/pdf",
+        as_attachment=False,
+        download_name="report.pdf",
+    )

@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request, send_file
 
 from flaskr.database import ProjectDataHandler, DecisionDataHandler
-from flaskr.utils import get_inputs_errors, StringValidator, UserIdValidator
+from flaskr.utils import get_inputs_errors, StringValidator, UserIdValidator, InputValidator
 from flaskr.reports import ProjectReportBuilder
 
 
@@ -11,7 +11,7 @@ projects_bp = Blueprint("projects", __name__, url_prefix="/projects")
 @projects_bp.route("", methods=["POST", "PUT"])
 def create_project():
     data = request.get_json()
-    required_fields = [StringValidator("title"), StringValidator("goals"), UserIdValidator("supervisorId")]
+    required_fields: list[InputValidator] = [StringValidator("title"), StringValidator("goals"), UserIdValidator("supervisorId")]
     errors = get_inputs_errors(data, required_fields)
     if len(errors):
         return jsonify(errors), 400
@@ -41,17 +41,18 @@ def get_projects():
     projects = ProjectDataHandler.get_projects()
     return jsonify([project.to_dict() for project in projects])
 
-@projects_bp.route("/<id>/reports")
-def get_project_report(id: str):
-    project = ProjectDataHandler.get_item_by_id(id)
+@projects_bp.route("/<int:id>/reports")
+def get_project_report(id: int):
+    project = ProjectDataHandler.get_project_by_id(id)
     if project is None: return "No project found", 404
 
-    decisions = DecisionDataHandler.get_decision_by_project('projectId')
+    decisions = DecisionDataHandler.get_decisions_and_responsible_by_project(project.id)
 
-    buffer = ProjectReportBuilder(project, decisions).build()
+    lang = request.args.get('lang', 'fr')
+    buffer = ProjectReportBuilder(project, decisions, lang).build()
     return send_file(
         buffer,
         mimetype="application/pdf",
-        as_attachment=False,          # True → download, False → inline
+        as_attachment=False,
         download_name="report.pdf",
     )

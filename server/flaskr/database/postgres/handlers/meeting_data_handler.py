@@ -137,6 +137,26 @@ class MeetingDataHandler:
         return MeetingAgenda(*meetings[0]) if meetings else None
 
     @classmethod
+    def get_meeting_with_participants(cls, id: int) -> tuple[MeetingAgenda, list[str]] | None:
+        query = """
+        SELECT
+        mc.*,
+        COALESCE(p.participantsNames, '{}') AS participantsNames
+        FROM meetingsComplete mc
+        LEFT JOIN LATERAL (
+        SELECT array_agg(u.username ORDER BY u.username) AS participantsNames
+        FROM users u
+        WHERE u.id = ANY(mc.participantsIds)
+        ) p ON TRUE
+        WHERE mc.id = %s;
+        """
+        meetings = read_query(query, (id,))
+        if not meetings: return None, []
+
+        meeting = meetings[0]
+        return MeetingAgenda(*meeting[:-1]), meeting[-1]
+
+    @classmethod
     def get_meetings_by_participant(cls, participantId: int) -> list[MeetingAgenda]:
         query = "SELECT * FROM meetingsComplete WHERE %s = ANY(participantsIds);"
 

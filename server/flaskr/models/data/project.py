@@ -3,13 +3,13 @@ from dataclasses import dataclass
 
 @dataclass(slots=True)
 class Project:
-    id: str | int
+    id: int
     number: int
     title: str
     goals: str
-    supervisorId: str
+    supervisorId: int
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, str | int]:
         return {
             "id": self.id,
             "number": self.number,

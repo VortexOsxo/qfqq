@@ -91,10 +91,22 @@ def test_get_newly_created_meeting(app_ctx):
     assert fetched_meeting.animatorId == 2
     assert len(fetched_meeting.participantsIds) == 3
 
+
 def test_get_not_found_meeting(app_ctx):
     meeting = MeetingDataHandler.get_meeting_agenda(5)
     assert meeting is None
 
+
 def test_get_not_found_meeting_by_participant(app_ctx):
     meetings = MeetingDataHandler.get_meetings_by_participant(10)
     assert len(meetings) == 0
+
+
+def test_get_meeting_with_participants_names(app_ctx):
+    meeting, participants = MeetingDataHandler.get_meeting_with_participants(2)
+
+    assert meeting.title == "Sprint Review"
+
+    assert len(participants) == 2
+    assert "bob" in participants
+    assert "dave" in participants

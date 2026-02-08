@@ -51,14 +51,28 @@ def test_get_decisions_by_notfound_responsible(app_ctx):
     assert len(decisions) == 0
 
 
-def test_get_decisions_by_project_apollo(app_ctx):
-    decisions = DecisionDataHandler.get_decision_by_project(1)
+def test_get_decisions_by_project(app_ctx):
+    decisions = DecisionDataHandler.get_decisions_by_project(1)
 
     assert len(decisions) == 2
     decisions.sort(key=lambda x: x.description)
     assert decisions[0].description == "Create accessibility checklist"
     assert decisions[1].description == "Define MVP features"
 
+def test_get_decisions_and_responsible_by_project(app_ctx):
+    decisions_with_responsibles = DecisionDataHandler.get_decisions_and_responsible_by_project(1)
+    decisions = [dr[0] for dr in decisions_with_responsibles]
+    responsibles = [dr[1] for dr in decisions_with_responsibles]
+
+    assert len(decisions) == 2
+    decisions.sort(key=lambda x: x.description)
+    assert decisions[0].description == "Create accessibility checklist"
+    assert decisions[1].description == "Define MVP features"
+
+    assert len(responsibles) == len(decisions)
+    responsibles.sort()
+    assert responsibles[0] == "alice"
+    assert responsibles[1] == "carol"
 
 def test_create_decision(app_ctx):
     dueDate = datetime.now() + timedelta(days=7)
@@ -89,3 +103,14 @@ def test_get_not_found_decision(app_ctx):
 def test_get_not_found_decision_by_responsible(app_ctx):
     decisions = DecisionDataHandler.get_decision_by_responsible(25)
     assert len(decisions) == 0
+
+def test_get_decisions_and_responsible_by_meeting(app_ctx):
+    decisions_with_responsibles = DecisionDataHandler.get_decisions_and_responsible_by_meeting(1)
+    decisions = [dr[0] for dr in decisions_with_responsibles]
+    responsibles = [dr[1] for dr in decisions_with_responsibles]
+
+    assert len(decisions) == 1
+    assert decisions[0].description == "Define MVP features"
+
+    assert len(responsibles) == len(decisions)
+    assert responsibles[0] == "alice"

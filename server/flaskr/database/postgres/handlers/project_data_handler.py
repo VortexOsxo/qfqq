@@ -4,14 +4,15 @@ from flaskr.models import Project
 
 class ProjectDataHandler:
     @classmethod
-    def create_project(cls, title: str, goals: str, supervisorId: int) -> bool:
+    def create_project(cls, title: str, goals: str, supervisorId: int) -> Project | None:
         try:
             with get_db_access() as conn:
                 cur = conn.cursor()
                 query = f"INSERT INTO projects (title, goals, supervisorId) values (%s, %s, %s) RETURNING id, nb"
                 params = (title, goals, supervisorId)
                 cur.execute(query, params)
-                id, nb = cur.fetchone()
+                if (result := cur.fetchone()) is None: return
+                id, nb = result
                 return Project(id, nb, *params)
         except:
             pass

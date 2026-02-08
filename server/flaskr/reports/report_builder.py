@@ -12,6 +12,8 @@ from reportlab.lib.enums import TA_LEFT, TA_RIGHT
 from reportlab.lib.colors import Color, lightgrey
 from reportlab.pdfbase.pdfmetrics import stringWidth
 
+from flaskr.models import DecisionStatus
+
 decisions = [
     {
         "N": 1,
@@ -114,10 +116,13 @@ class ReportBuilder:
             bottomMargin=margin,
         )
         return self
+    
+    def add_element(self, element):
+        self.elements.append(element)
 
     def header(self, title: str, subtitle: str = None, date: str = None):
         title = Paragraph(title, title_style_big)
-        date = Paragraph(
+        date_text = Paragraph(
             f"Date: {date}",
             ParagraphStyle(
                 "DateStyle",
@@ -133,12 +138,12 @@ class ReportBuilder:
             if date is None:
                 self.elements.append(subtitle)
             else:
-                title_row = Table([[subtitle, date]], colWidths=["50%", "50%"])
+                title_row = Table([[subtitle, date_text]], colWidths=["50%", "50%"])
                 title_row.setStyle(row_table_style)
                 self.elements.append(title_row)
 
         elif date is not None:
-            title_row = Table([[title, date]], colWidths=["50%", "50%"])
+            title_row = Table([[title, date_text]], colWidths=["50%", "50%"])
             title_row.setStyle(row_table_style)
             self.elements.append(title_row)
 
@@ -180,28 +185,51 @@ class ReportBuilder:
             self.elements.append(table)
         return self
 
-    def column(self, label, values):
+    def text_column(self, label, values):
         label_paragraph = Paragraph(label, table_header_style)
         value_paragraphs = [Paragraph(str(value), body_style) for value in values]
         data = [[label_paragraph]] + [[vp] for vp in value_paragraphs]
         table = Table(data, colWidths=["100%"])
         table.setStyle(content_table_style)
-        self.elements.append(table)
-        return self
+        return table
 
-    def row(self, label, values):
+    def text_row(self, label, values):
         label_paragraph = Paragraph(f"{label}: ", table_header_style)
         label_width = stringWidth(f"{label}: ", table_header_style.fontName, table_header_style.fontSize)
 
         value_paragraphs = Paragraph(", ".join(values), body_style)
-        
+
         data = [[label_paragraph] + [value_paragraphs]]
-        
+
         table = Table(data, [label_width+3, "100%"])
         table.setStyle(content_table_style)
-        
-        self.elements.append(table)
-        return self
+        return table
+
+    def decisions_table(self, decisions, lang):
+        cols = ["5%", "15%", "30%", "15%", "20%", "15%"]
+        headers = (
+            ["N", "Action", "Responsable", "Date due", "Statut", "Date de fin"]
+            if lang == "fr"
+            else ["N", "Action", "Responsible", "Due Date", "Status", "Completed Date"]
+        )
+        self.table_header(headers, cols)
+
+        values = [
+            [
+                str(decision.number),
+                decision.description,
+                responsible_name,
+                decision.dueDate.strftime("%Y-%m-%d"),
+                DecisionStatus.as_string(decision.status, lang),
+                (
+                    decision.completedDate.strftime("%Y-%m-%d")
+                    if decision.completedDate
+                    else " "
+                ),
+            ]
+            for decision, responsible_name in decisions
+        ]
+        self.table_content(values, cols)
 
     def build(self, reset=True):
         self.doc.build(self.elements)

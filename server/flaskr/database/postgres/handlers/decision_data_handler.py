@@ -62,14 +62,28 @@ class DecisionDataHandler:
         return Decision(*decisions[0]) if decisions else None
 
     @classmethod
-    def get_decision_by_project(cls, projectId: int):
+    def get_decisions_by_project(cls, projectId: int):
         query = "SELECT * from decisionsComplete WHERE projectId = %s;"
 
         decisions = read_query(query, (projectId,))
         return [Decision(*d) for d in decisions]
+    
+    @classmethod
+    def get_decisions_and_responsible_by_project(cls, projectId: int):
+        query = "SELECT dc.*, u.username from decisionsComplete dc JOIN users u ON u.id = dc.responsibleId WHERE projectId = %s"
+
+        decisions = read_query(query, (projectId,))
+        return [(Decision(*d[:-1]), d[-1]) for d in decisions]
 
     @classmethod
     def get_decision_by_responsible(cls, responsibleId: int):
         query = "SELECT * from decisionsComplete WHERE responsibleId = %s;"
         decisions = read_query(query, (responsibleId,))
         return [Decision(*d) for d in decisions]
+    
+    @classmethod
+    def get_decisions_and_responsible_by_meeting(cls, meetingId: int):
+        query = "SELECT dc.*, u.username from decisionsComplete dc JOIN users u ON u.id = dc.responsibleId WHERE dc.meetingId = %s"
+
+        decisions = read_query(query, (meetingId,))
+        return [(Decision(*d[:-1]), d[-1]) for d in decisions]
