@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
+import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/templates/button_template.dart';
 import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
@@ -35,37 +37,57 @@ class AgendaViewPage extends ConsumerWidget {
   ) {
     final loc = S.of(context);
     if (agenda == null) {
-      return Center(child: Text(loc.projectNotFound));
+      return Center(
+        child: Text(loc.projectNotFound),
+      ); // TODO: meetingAgendaNotFound
     }
 
-    return Center(
+    return Padding(
+      padding: const EdgeInsets.all(32),
       child: Column(
         children: [
           _buildTopCard(context, ref, agenda),
-          Padding(
-            padding: EdgeInsets.all(8),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(loc.agendaViewGoals(agenda.goals ?? '')),
-            ),
-          ),
-          Spacer(),
-          _buildReportViewer(context),
-          Spacer(),
-          Center(
+
+          const SizedBox(height: 16),
+
+          Expanded(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                buildNavButtonTemplate(
-                  context,
-                  loc.commonModify,
-                  '/agenda',
-                  extra: agenda,
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: SizedBox(
+                    width: 150,
+                    child: _buildMeetingInfo(context, ref, agenda),
+                  ),
                 ),
-                buildNavButtonTemplate(
-                  context,
-                  loc.commonStart,
-                  '/meeting-in-progress/${agenda.id}',
+
+                const SizedBox(width: 16),
+
+                Expanded(
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          buildNavButtonTemplate(
+                            context,
+                            loc.commonModify,
+                            '/agenda',
+                            extra: agenda,
+                          ),
+                          buildNavButtonTemplate(
+                            context,
+                            loc.commonStart,
+                            '/meeting-in-progress/${agenda.id}',
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+                      Expanded(child: _buildReportViewer(context)),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -81,7 +103,7 @@ class AgendaViewPage extends ConsumerWidget {
     final pdfUrl =
         'http://localhost:5000/meeting-agendas/$agendaId/reports?lang=${locale.languageCode}';
 
-    return SizedBox(height: 400, child: PdfViewerWidget(pdfUrl: pdfUrl));
+    return PdfViewerWidget(pdfUrl: pdfUrl);
   }
 
   Widget _buildTopCard(
@@ -95,36 +117,134 @@ class AgendaViewPage extends ConsumerWidget {
             ? ref.watch(projectProviderById(agenda.projectId!))
             : null;
 
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(agenda.meetingLocation ?? loc.commonNoLocationSet),
-                Text(
-                  agenda.meetingDate != null
-                      ? formatDate(context, agenda.meetingDate)
-                      : loc.commonNoDateSet,
-                ),
-              ],
-            ),
-            Text(
-              agenda.title,
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
+    final theme = Theme.of(context);
 
-            Text(
-              project != null
-                  ? loc.commonProjectWithTitle(project.title)
-                  : loc.commonNoProject,
+    return Padding(
+      padding: EdgeInsets.all(8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            agenda.title,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
+              color: theme.primaryColor,
             ),
-          ],
-        ),
+          ),
+
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                '${loc.commonProject}: ',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              Text(
+                project?.title ?? '',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: theme.primaryColor,
+                ),
+              ),
+              const SizedBox(width: 6),
+              IconButton(
+                onPressed: () => context.go('/project/${agenda.projectId}'),
+                icon: Icon(
+                  Icons.open_in_new,
+                  size: 24,
+                  color: theme.primaryColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
+    );
+  }
+
+  Widget _buildMeetingInfo(
+    BuildContext context,
+    WidgetRef ref,
+    MeetingAgenda agenda,
+  ) {
+    final loc = S.of(context);
+
+    final animator =
+        agenda.animatorId != null
+            ? ref.watch(userByIdProvider(agenda.animatorId!))
+            : null;
+
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _detailText('${loc.attributeGoals}: '),
+          Text(agenda.goals ?? loc.commonNoGoalsSet),
+          const SizedBox(height: 8),
+          _detailText('${loc.attributeLocation}: '),
+          Text(agenda.meetingLocation ?? loc.commonNoDateSet),
+          const SizedBox(height: 8),
+          _detailText('${loc.attributeDate}: '),
+          Text(
+            agenda.meetingDate != null
+                ? formatDate(context, agenda.meetingDate)
+                : loc.commonNoDateSet,
+          ),
+          const SizedBox(height: 8),
+          _detailText('${loc.attributeAnimator}: '),
+          Text(animator?.username ?? loc.commonNoAnimatorSet),
+          const SizedBox(height: 8),
+          _detailText('${loc.attributeThemes}: '),
+          _buildThemes(context, agenda),
+          const SizedBox(height: 8),
+          _detailText('${loc.attributeParticipants}: '),
+          _buildParticipants(context, ref, agenda),
+        ],
+      ),
+    );
+  }
+
+  Widget _detailText(String text) {
+    return Text(text, style: TextStyle(fontWeight: FontWeight.bold));
+  }
+
+  Widget _buildThemes(BuildContext context, MeetingAgenda agenda) {
+    final loc = S.of(context);
+    if (agenda.themes.isEmpty) {
+      return Text(loc.attributeNoThemes);
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: agenda.themes
+          .map((theme) => Text('• $theme'))
+          .toList(),
+    );
+  }
+
+  Widget _buildParticipants(
+    BuildContext context,
+    WidgetRef ref,
+    MeetingAgenda agenda,
+  ) {
+    final loc = S.of(context);
+    if (agenda.participantsIds.isEmpty) {
+      return Text(loc.attributeNoParticipants);
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: agenda.participantsIds
+          .map((participantId) {
+              final participant = ref.watch(userByIdProvider(participantId));
+              return Text('• ${participant?.username ?? loc.commonUnknown}');
+          }).toList(),
     );
   }
 }
