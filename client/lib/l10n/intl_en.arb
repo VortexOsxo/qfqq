@@ -8,6 +8,15 @@
   "selectDateMinuteLabel": "MM",
   "selectDateInvalidHourMinute": "Please enter a valid hour (0-23) and minute (0-59).",
   
+  "attributeGoals": "Goals",
+  "attributeLocation": "Location",
+  "attributeDate": "Date",
+  "attributeAnimator": "Animator",
+  "attributeThemes": "Themes",
+  "attributeParticipants": "Participants",
+  "attributeNoThemes": "No Themes",
+  "attributeNoParticipants": "No Participants",
+
   "agendaPageActualName": "Redaction Date",
   "agendaPageTitle": "Meeting Title",
   "agendaPageGoals": "Goals of the meeting",
@@ -50,8 +59,6 @@
   "agendaListStatusFilter": "Status: {status}",
   "agendaListAnyProject": "Any Project",
   "agendaListProjectFilter": "Project: {project}",
-  
-  "agendaViewGoals": "Goals: {goals}",
   
   "authServiceInvalidCredentials": "Invalid email or password.",
   "authServiceUnknownAccount": "Account not found.",
@@ -143,6 +150,7 @@
   "commonCreate": "Create",
   "commonSearch": "Search",
   "commonRetry": "Retry",
+  "commonUnknown": "Unknown",
   "commonOk": "OK",
   "commonAdd": "Add",
   "commonBack": "Back",
@@ -153,14 +161,18 @@
   "commonStart": "Start",
   "commonModify": "Modify",
   "commonAction": "Action",
+
+  "commonNoGoalsSet": "No goals set",
   "commonNoDateSet": "No date set",
   "commonNoLocationSet": "No location set",
   "commonNoAnimatorSet": "No animator set",
   "commonNoProjectSet": "No project set",
   "commonNoDueDate": "No due date",
   "commonNoReunionDate": "No reunion date",
+
+  "commonProject": "Project",
   "commonNoProject": "No project",
-  "commonProjectWithTitle": "Project: {title}",
+  "commonMeeting": "Meeting",
   "commonSelectDate": "Select Date",
   "commonTapToSelectDate": "Tap to select date",
   "commonTooltipHome": "Home",

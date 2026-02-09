@@ -118,7 +118,7 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
       ...projects.map(
         (project) => DropdownMenuEntry<int?>(
           value: project.id,
-          label: S.of(context).commonProjectWithTitle(project.title),
+          label: '${S.of(context).commonProject}: ${project.title}',
         ),
       ),
     ]);
