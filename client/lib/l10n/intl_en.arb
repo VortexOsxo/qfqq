@@ -123,6 +123,8 @@
   "meetingInProgressDueDate": "Due date",
   "meetingInProgressDueDateSelected": "Due date: {date}",
   
+  "meetingNotFound": "Meeting not found",
+
   "decisionsListPageTitle": "Decisions",
   "decisionsListPageEmpty": "No decisions found",
 
@@ -142,6 +144,12 @@
   "decisionStatusTaskDescription": "Task Description",
   "decisionStatusApproved": "Approved",
   "decisionStatusToBeValidated": "To Be Validated",
+  
+  "decisionViewPageTitle": "Decision Details",
+  "decisionNotFound": "Decision not found",
+  "decisionViewPageCompletedDate": "Completed Date",
+  "decisionViewPageMeeting": "Meeting",
+  "decisionViewPageGoToAgenda": "Go to Agenda",
   
   "commonCancel": "Cancel",
   "commonSave": "Save",

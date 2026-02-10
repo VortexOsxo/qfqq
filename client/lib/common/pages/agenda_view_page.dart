@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
-import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
-import 'package:qfqq/common/providers/projects_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/templates/button_template.dart';
 import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
-import 'package:qfqq/common/utils/is_id_valid.dart';
+import 'package:qfqq/common/widgets/details_attribute_widget.dart';
 import 'package:qfqq/common/widgets/pdf_viewer_widget.dart';
+import 'package:qfqq/common/widgets/projects/project_title_link_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class AgendaViewPage extends ConsumerWidget {
@@ -38,8 +36,8 @@ class AgendaViewPage extends ConsumerWidget {
     final loc = S.of(context);
     if (agenda == null) {
       return Center(
-        child: Text(loc.projectNotFound),
-      ); // TODO: meetingAgendaNotFound
+        child: Text(loc.meetingNotFound),
+      );
     }
 
     return Padding(
@@ -111,12 +109,6 @@ class AgendaViewPage extends ConsumerWidget {
     WidgetRef ref,
     MeetingAgenda agenda,
   ) {
-    final loc = S.of(context);
-    Project? project =
-        isIdValid(agenda.projectId)
-            ? ref.watch(projectProviderById(agenda.projectId!))
-            : null;
-
     final theme = Theme.of(context);
 
     return Padding(
@@ -133,36 +125,7 @@ class AgendaViewPage extends ConsumerWidget {
             ),
           ),
 
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                '${loc.commonProject}: ',
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
-              Text(
-                project?.title ?? '',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: theme.primaryColor,
-                ),
-              ),
-              const SizedBox(width: 6),
-              IconButton(
-                onPressed: () => context.go('/project/${agenda.projectId}'),
-                icon: Icon(
-                  Icons.open_in_new,
-                  size: 24,
-                  color: theme.primaryColor,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
+          ProjectTitleLinkWidget(projectId: agenda.projectId ?? 0),
         ],
       ),
     );
@@ -184,22 +147,24 @@ class AgendaViewPage extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _detailText('${loc.attributeGoals}: '),
-          Text(agenda.goals ?? loc.commonNoGoalsSet),
-          const SizedBox(height: 8),
-          _detailText('${loc.attributeLocation}: '),
-          Text(agenda.meetingLocation ?? loc.commonNoDateSet),
-          const SizedBox(height: 8),
-          _detailText('${loc.attributeDate}: '),
-          Text(
-            agenda.meetingDate != null
+          DetailsAttributeWidget(
+            label: loc.attributeGoals,
+            value: agenda.goals ?? loc.commonNoGoalsSet,
+          ),
+          DetailsAttributeWidget(
+            label: loc.attributeLocation,
+            value:agenda.meetingLocation ?? loc.commonNoDateSet,
+          ),
+          DetailsAttributeWidget(
+            label: loc.attributeDate,
+            value:agenda.meetingDate != null
                 ? formatDate(context, agenda.meetingDate)
                 : loc.commonNoDateSet,
           ),
-          const SizedBox(height: 8),
-          _detailText('${loc.attributeAnimator}: '),
-          Text(animator?.username ?? loc.commonNoAnimatorSet),
-          const SizedBox(height: 8),
+          DetailsAttributeWidget(
+            label:loc.attributeAnimator,
+            value:animator?.username ?? loc.commonNoAnimatorSet,
+          ),
           _detailText('${loc.attributeThemes}: '),
           _buildThemes(context, agenda),
           const SizedBox(height: 8),
