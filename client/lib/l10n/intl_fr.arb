@@ -123,6 +123,8 @@
   "meetingInProgressDueDate": "Date d’échéance",
   "meetingInProgressDueDateSelected": "Date d’échéance : {date}",
   
+  "meetingNotFound": "Réunion introuvable",
+  
   "decisionsListPageTitle": "Décisions",
   "decisionsListPageEmpty": "Aucune décision trouvée",
 
@@ -142,6 +144,12 @@
   "decisionStatusTaskDescription": "Description de la tâche",
   "decisionStatusApproved": "Approuvé",
   "decisionStatusToBeValidated": "À valider",
+  
+  "decisionViewPageTitle": "Détails de la décision",
+  "decisionNotFound": "Décision introuvable",
+  "decisionViewPageCompletedDate": "Date de fin",
+  "decisionViewPageMeeting": "Réunion",
+  "decisionViewPageGoToAgenda": "Voir l'ordre du jour",
   
   "commonCancel": "Annuler",
   "commonSave": "Enregistrer",

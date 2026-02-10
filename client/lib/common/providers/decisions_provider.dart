@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/providers/server_url.dart';
 import 'package:qfqq/common/services/auth_service.dart';
@@ -22,3 +23,9 @@ final decisionsFetcherProvider = StateNotifierProvider<
     ref.read(authStateProvider.notifier),
   ),
 );
+
+final decisionByIdProvider = Provider.family<Decision?, int>((ref, id) {
+  final state = ref.watch(decisionsFetcherProvider);
+  if (!state.isLoaded) return null;
+  return state.data!.firstWhereOrNull((d) => d.id == id);
+});

@@ -4,6 +4,7 @@ import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/pages/agenda_modification_page.dart';
 import 'package:qfqq/common/pages/agenda_view_page.dart';
 import 'package:qfqq/common/pages/decisions_list_page.dart';
+import 'package:qfqq/common/pages/decision_view_page.dart';
 import 'package:qfqq/common/pages/home_page.dart';
 import 'package:qfqq/common/pages/login_page.dart';
 import 'package:qfqq/common/pages/meeting_in_progress_page.dart';
@@ -38,6 +39,13 @@ final GoRouter desktopRouter = GoRouter(
     GoRoute(
       path: '/decisions',
       builder: (context, state) => const DecisionsListPage(),
+    ),
+    GoRoute(
+      path: '/decisions/:id',
+      builder: (context, state) {
+        final id = state.pathParameters['id']!;
+        return DecisionViewPage(decisionId: int.tryParse(id) ?? 0);
+      },
     ),
     GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
     GoRoute(path: '/signup', builder: (context, state) => const SignupPage()),
