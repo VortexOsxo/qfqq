@@ -11,6 +11,7 @@ import 'package:qfqq/common/templates/card_template.dart';
 import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
+import 'package:qfqq/common/widgets/agendas/meeting_status_chip.dart';
 import 'package:qfqq/common/widgets/default_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -205,7 +206,7 @@ class AgendasListPage extends ConsumerWidget {
                   SizedBox(width: 16),
                   Expanded(child: Text(agenda.number.toString())),
                   Expanded(child: Text(agenda.title)),
-                  Expanded(child: _buildStatusChip(context, agenda.status)),
+                  Expanded(child: MeetingStatusChip(status: agenda.status)),
                   Expanded(
                     child: Text(
                       agenda.meetingDate != null
@@ -256,45 +257,5 @@ class AgendasListPage extends ConsumerWidget {
       ],
     );
     return buildContentListCardTemplate(cardContent);
-  }
-
-  Widget _buildStatusChip(BuildContext context, MeetingAgendaStatus status) {
-    Color color;
-    String label;
-
-    switch (status) {
-      case MeetingAgendaStatus.draft:
-        color = Colors.orange;
-        label = S.of(context).agendaStatusDraft;
-        break;
-      case MeetingAgendaStatus.planned:
-        color = Colors.blue;
-        label = S.of(context).agendaStatusPlanned;
-        break;
-      case MeetingAgendaStatus.completed:
-        color = Colors.green;
-        label = S.of(context).agendaStatusCompleted;
-        break;
-    }
-
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        decoration: BoxDecoration(
-          color: color.withAlpha(26),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: color,
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ),
-    );
   }
 }

@@ -5,6 +5,7 @@ import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
+import 'package:qfqq/common/widgets/agendas/meeting_status_chip.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_control.dart';
 import 'package:qfqq/common/widgets/details_attribute_widget.dart';
 import 'package:qfqq/common/widgets/pdf_viewer_widget.dart';
@@ -90,13 +91,19 @@ class AgendaViewPage extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            agenda.title,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 24,
-              color: theme.primaryColor,
-            ),
+          Row(
+            children: [
+              Text(
+                agenda.title,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                  color: theme.primaryColor,
+                ),
+              ),
+              SizedBox(width:16),
+              MeetingStatusChip(status: agenda.status)
+            ],
           ),
 
           ProjectTitleLinkWidget(projectId: agenda.projectId ?? 0),
