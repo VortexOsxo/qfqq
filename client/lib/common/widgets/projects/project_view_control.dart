@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/providers/project_view_content_provider.dart';
+import 'package:qfqq/generated/l10n.dart';
 
 class ProjectViewControl extends ConsumerWidget {
   final Project project;
@@ -17,11 +18,12 @@ class ProjectViewControl extends ConsumerWidget {
 
     final content = ref.watch(projectViewContentProvider);
 
+    final loc = S.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         TextButton(
-          child: Text('Modify'),
+          child: Text(loc.commonModify),
           onPressed: () => context.go('/project/creation', extra: project),
         ),
         SizedBox(child: Divider()),
@@ -31,7 +33,7 @@ class ProjectViewControl extends ConsumerWidget {
             foregroundColor:
                 content == 'decisions' ? Colors.blueAccent : Colors.black,
           ),
-          child: Text('Decisions'),
+          child: Text(loc.commonObjectDecisions),
         ),
         TextButton(
           onPressed: () => changeContent('reports'),
@@ -39,7 +41,7 @@ class ProjectViewControl extends ConsumerWidget {
             foregroundColor:
                 content == 'reports' ? Colors.blueAccent : Colors.black,
           ),
-          child: Text('Reports'),
+          child: Text(loc.commonObjectReports),
         ),
       ],
     );

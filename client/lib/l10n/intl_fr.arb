@@ -195,6 +195,9 @@
   "commonFormsEnterParticipants": "Veuillez sélectionner au moins un participant",
   "commonFormsEnterProject": "Veuillez sélectionner un projet",
 
+  "commonObjectDecisions": "Décisions",
+  "commonObjectReports": "Rapports",
+
   "widgetProjectLabel": "Projet",
   "widgetUserLabel": "Utilisateur",
   

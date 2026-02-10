@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
-import 'package:qfqq/common/templates/button_template.dart';
 import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
+import 'package:qfqq/common/widgets/agendas/meeting_view_control.dart';
 import 'package:qfqq/common/widgets/details_attribute_widget.dart';
 import 'package:qfqq/common/widgets/pdf_viewer_widget.dart';
 import 'package:qfqq/common/widgets/projects/project_title_link_widget.dart';
@@ -35,9 +35,7 @@ class AgendaViewPage extends ConsumerWidget {
   ) {
     final loc = S.of(context);
     if (agenda == null) {
-      return Center(
-        child: Text(loc.meetingNotFound),
-      );
+      return Center(child: Text(loc.meetingNotFound));
     }
 
     return Padding(
@@ -62,31 +60,7 @@ class AgendaViewPage extends ConsumerWidget {
 
                 const SizedBox(width: 16),
 
-                Expanded(
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          buildNavButtonTemplate(
-                            context,
-                            loc.commonModify,
-                            '/agenda',
-                            extra: agenda,
-                          ),
-                          buildNavButtonTemplate(
-                            context,
-                            loc.commonStart,
-                            '/meeting-in-progress/${agenda.id}',
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 16),
-                      Expanded(child: _buildReportViewer(context)),
-                    ],
-                  ),
-                ),
+                Expanded(child: _buildReportViewer(context)),
               ],
             ),
           ),
@@ -136,6 +110,22 @@ class AgendaViewPage extends ConsumerWidget {
     WidgetRef ref,
     MeetingAgenda agenda,
   ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(child: _buildDetails(context, ref, agenda)),
+        const SizedBox(height: 16),
+        Center(child: MeetingViewControl(meeting: agenda)),
+      ],
+    );
+  }
+
+  Widget _buildDetails(
+    BuildContext context,
+    WidgetRef ref,
+    MeetingAgenda agenda,
+  ) {
     final loc = S.of(context);
 
     final animator =
@@ -153,17 +143,18 @@ class AgendaViewPage extends ConsumerWidget {
           ),
           DetailsAttributeWidget(
             label: loc.attributeLocation,
-            value:agenda.meetingLocation ?? loc.commonNoDateSet,
+            value: agenda.meetingLocation ?? loc.commonNoDateSet,
           ),
           DetailsAttributeWidget(
             label: loc.attributeDate,
-            value:agenda.meetingDate != null
-                ? formatDate(context, agenda.meetingDate)
-                : loc.commonNoDateSet,
+            value:
+                agenda.meetingDate != null
+                    ? formatDate(context, agenda.meetingDate)
+                    : loc.commonNoDateSet,
           ),
           DetailsAttributeWidget(
-            label:loc.attributeAnimator,
-            value:animator?.username ?? loc.commonNoAnimatorSet,
+            label: loc.attributeAnimator,
+            value: animator?.username ?? loc.commonNoAnimatorSet,
           ),
           _detailText('${loc.attributeThemes}: '),
           _buildThemes(context, agenda),
@@ -187,9 +178,7 @@ class AgendaViewPage extends ConsumerWidget {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: agenda.themes
-          .map((theme) => Text('• $theme'))
-          .toList(),
+      children: agenda.themes.map((theme) => Text('• $theme')).toList(),
     );
   }
 
@@ -205,10 +194,10 @@ class AgendaViewPage extends ConsumerWidget {
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: agenda.participantsIds
-          .map((participantId) {
-              final participant = ref.watch(userByIdProvider(participantId));
-              return Text('• ${participant?.username ?? loc.commonUnknown}');
+      children:
+          agenda.participantsIds.map((participantId) {
+            final participant = ref.watch(userByIdProvider(participantId));
+            return Text('• ${participant?.username ?? loc.commonUnknown}');
           }).toList(),
     );
   }
