@@ -18,7 +18,7 @@ def create_app(config_name='development'):
         app.config["DATABASE_URL"] = "postgresql://postgres:user@localhost:5432/qfqq_test"
         app.config["TESTING"] = True
     else:
-        app.config["DATABASE_URL"] = os.environ.get("postgres_uri")
+        app.config["DATABASE_URL"] = os.environ.get("DB_URL")
 
     register_blueprints(app)
     init_db(app)

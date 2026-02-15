@@ -4,10 +4,13 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+region = 'us-east-1'
 
 class Boto():
     def __init__(self):
-        self.session, self.ec2 = self.create_session()
+        self.session = self.create_session()
+        self.ec2 = self.session.resource("ec2", region_name=region)
+        self.rds = boto3.client("rds", region_name=region)
 
     def create_session(self):
         session = boto3.Session(
@@ -15,7 +18,6 @@ class Boto():
             aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
             region_name="us-east-1",
         )
-        ec2 = session.resource("ec2")
-        return session, ec2
+        return session
 
 boto = Boto()

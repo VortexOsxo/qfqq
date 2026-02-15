@@ -1,3 +1,5 @@
+import os
+
 from src.boto import boto
 from src.security_group_manager import security_group_manager
 
@@ -16,9 +18,11 @@ class InstanceManager():
             MaxCount=1,
             InstanceType="t3.small",
             SecurityGroupIds=[backend_sg.id],
-            UserData="""#!/bin/bash
+            UserData=f"""#!/bin/bash
 apt update -y
 apt upgrade -y
+
+export DATABASE_URL="{os.getenv("DB_URL")}"
 
 cd /home/ubuntu
 git clone https://github.com/VortexOsxo/qfqq.git
