@@ -81,8 +81,6 @@
   "loginPageLinkSignup": "Pas de compte ? S'inscrire",
   
   "homePageTitle": "Accueil",
-  "homePageCreateAgenda": "Créer un ordre du jour",
-  "homePageCreateProject": "Créer un projet",
   "homePageResponsabilities": "Responsabilités",
   "homePageFutureMeetings": "Réunions à venir",
 
@@ -203,5 +201,8 @@
   
   "errorGeneric": "Une erreur s'est produite. Veuillez réessayer.",
   "errorNetwork": "Erreur réseau. Veuillez vérifier votre connexion.",
-  "errorUnknown": "Une erreur inconnue s'est produite."
+  "errorUnknown": "Une erreur inconnue s'est produite.",
+
+  "buttonCreateAgenda": "Créer un ordre du jour",
+  "buttonCreateProject": "Créer un projet"
 }

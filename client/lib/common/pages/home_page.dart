@@ -20,12 +20,12 @@ class HomePage extends StatelessWidget {
           children: [
             buildNavButtonTemplate(
               context,
-              S.of(context).homePageCreateAgenda,
+              S.of(context).buttonCreateAgenda,
               '/agenda',
             ),
             buildNavButtonTemplate(
               context,
-              S.of(context).homePageCreateProject,
+              S.of(context).buttonCreateProject,
               '/project/creation',
             ),
           ],

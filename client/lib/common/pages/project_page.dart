@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
 import 'package:qfqq/common/templates/page_template.dart';
+import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/widgets/default_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -25,7 +26,7 @@ final filteredProjectProvider = Provider<List<Project>>((ref) {
 class ProjectPage extends ConsumerWidget {
   const ProjectPage({super.key});
 
-@override
+  @override
   Widget build(BuildContext context, WidgetRef ref) {
     final loc = S.of(context);
 
@@ -63,20 +64,33 @@ class ProjectPage extends ConsumerWidget {
     );
 
     return Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: DefaultTextField(
-              onChanged:
-                  (value) =>
-                      ref.read(projectSearchQueryProvider.notifier).state =
-                          value,
-              hintText: S.of(context).projectPageSearchHint,
-            ),
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 6,
+                child: DefaultTextField(
+                  onChanged:
+                      (value) =>
+                          ref.read(projectSearchQueryProvider.notifier).state =
+                              value,
+                  hintText: S.of(context).projectPageSearchHint,
+                ),
+              ),
+              Expanded(flex: 1, child: SizedBox()),
+              ElevatedButton(
+                onPressed: () => context.go('/project/creation'),
+                style: squareButtonStyle(context),
+                child: Text(S.of(context).buttonCreateProject),
+              ),
+            ],
           ),
-          SizedBox(height: 16),
-          Expanded(child: projectLists),
-        ],
-      );
+        ),
+        SizedBox(height: 16),
+        Expanded(child: projectLists),
+      ],
+    );
   }
 }
