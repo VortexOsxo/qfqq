@@ -9,6 +9,7 @@ import 'package:qfqq/common/providers/projects_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/templates/card_template.dart';
 import 'package:qfqq/common/templates/page_template.dart';
+import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_status_chip.dart';
@@ -16,7 +17,9 @@ import 'package:qfqq/common/widgets/default_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 final agendaSearchQueryProvider = StateProvider<String>((ref) => '');
-final agendaStatusQueryProvider = StateProvider<MeetingAgendaStatus?>((ref) => null);
+final agendaStatusQueryProvider = StateProvider<MeetingAgendaStatus?>(
+  (ref) => null,
+);
 final agendaProjectQueryProvider = StateProvider<int?>((ref) => null);
 
 final filteredAgendaProvider = Provider<List<MeetingAgenda>>((ref) {
@@ -72,11 +75,25 @@ class AgendasListPage extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DefaultTextField(
-            onChanged:
-                (value) =>
-                    ref.read(agendaSearchQueryProvider.notifier).state = value,
-            hintText: S.of(context).commonSearch,
+          Row(
+            children: [
+              Expanded(
+                flex: 6,
+                child: DefaultTextField(
+                  onChanged:
+                      (value) =>
+                          ref.read(agendaSearchQueryProvider.notifier).state =
+                              value,
+                  hintText: S.of(context).commonSearch,
+                ),
+              ),
+              Expanded(flex: 1, child: SizedBox()),
+              ElevatedButton(
+                onPressed: () => context.go('/agenda'),
+                style: squareButtonStyle(context),
+                child: Text(S.of(context).buttonCreateAgenda),
+              ),
+            ],
           ),
           SizedBox(height: 8),
           Row(
@@ -177,7 +194,10 @@ class AgendasListPage extends ConsumerWidget {
             Expanded(child: Text(S.of(context).agendaListAnimator)),
             Expanded(child: Text(S.of(context).agendaListProject)),
             Expanded(
-              child: Align(alignment: Alignment.center, child: Text(S.of(context).commonAction)),
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(S.of(context).commonAction),
+              ),
             ),
             SizedBox(width: 16),
           ],
@@ -215,11 +235,15 @@ class AgendasListPage extends ConsumerWidget {
                     ),
                   ),
                   Expanded(
-                    child: Text(agenda.meetingLocation ?? loc.commonNoLocationSet),
+                    child: Text(
+                      agenda.meetingLocation ?? loc.commonNoLocationSet,
+                    ),
                   ),
                   Expanded(
                     child: Text(
-                      animator != null ? animator.username : loc.commonNoAnimatorSet,
+                      animator != null
+                          ? animator.username
+                          : loc.commonNoAnimatorSet,
                     ),
                   ),
                   Expanded(

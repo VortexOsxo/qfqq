@@ -81,8 +81,6 @@
   "loginPageLinkSignup": "Don't have an account? Sign Up",
   
   "homePageTitle": "Home",
-  "homePageCreateAgenda": "Create Meeting Agenda",
-  "homePageCreateProject": "Create a Project",
   "homePageResponsabilities": "Responsabilities",
   "homePageFutureMeetings": "Future Meetings",
 
@@ -203,5 +201,8 @@
   
   "errorGeneric": "An error occurred. Please try again.",
   "errorNetwork": "Network error. Please check your connection.",
-  "errorUnknown": "An unknown error occurred."
+  "errorUnknown": "An unknown error occurred.",
+
+  "buttonCreateAgenda": "Create Meeting Agenda",
+  "buttonCreateProject": "Create a Project"
 }
