@@ -120,7 +120,13 @@
   "meetingInProgressProject": "Project",
   "meetingInProgressDueDate": "Due date",
   "meetingInProgressDueDateSelected": "Due date: {date}",
-  
+
+  "meetingViewContentDraftCorrectErrors": "To mark the meeting as planned, please resolve the following issues:",
+  "meetingViewContentDraftMarkPlanned": "Mark this meeting as planned to make it visible to your team.",
+  "meetingViewContentMarkAsPlan": "Mark as planned",
+
+  "meetingViewControlPlan": "Plan",
+
   "meetingNotFound": "Meeting not found",
 
   "decisionsListPageTitle": "Decisions",

@@ -110,3 +110,10 @@ def test_get_meeting_with_participants_names(app_ctx):
     assert len(participants) == 2
     assert "bob" in participants
     assert "dave" in participants
+
+def test_update_meeting_status(app_ctx):
+    result = MeetingDataHandler.update_meeting_status(3, 'planned')
+    assert result
+
+    meeting = MeetingDataHandler.get_meeting_agenda(3)
+    assert meeting.status == 'planned'

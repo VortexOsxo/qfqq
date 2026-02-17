@@ -6,9 +6,9 @@ import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_status_chip.dart';
+import 'package:qfqq/common/widgets/agendas/meeting_view_content.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_control.dart';
 import 'package:qfqq/common/widgets/details_attribute_widget.dart';
-import 'package:qfqq/common/widgets/pdf_viewer_widget.dart';
 import 'package:qfqq/common/widgets/projects/project_title_link_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -61,22 +61,13 @@ class AgendaViewPage extends ConsumerWidget {
 
                 const SizedBox(width: 16),
 
-                Expanded(child: _buildReportViewer(context)),
+                Expanded(child: MeetingViewContent(meeting: agenda)),
               ],
             ),
           ),
         ],
       ),
     );
-  }
-
-  Widget _buildReportViewer(BuildContext context) {
-    final Locale locale = Localizations.localeOf(context);
-
-    final pdfUrl =
-        'http://localhost:5000/meeting-agendas/$agendaId/reports?lang=${locale.languageCode}';
-
-    return PdfViewerWidget(pdfUrl: pdfUrl);
   }
 
   Widget _buildTopCard(
@@ -101,8 +92,8 @@ class AgendaViewPage extends ConsumerWidget {
                   color: theme.primaryColor,
                 ),
               ),
-              SizedBox(width:16),
-              MeetingStatusChip(status: agenda.status)
+              SizedBox(width: 16),
+              MeetingStatusChip(status: agenda.status),
             ],
           ),
 

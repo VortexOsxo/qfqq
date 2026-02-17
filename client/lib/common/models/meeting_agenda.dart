@@ -34,15 +34,6 @@ class MeetingAgenda {
       status = MeetingAgendaStatus.draft,
       redactionDate = DateTime.now();
 
-  @override
-  bool operator ==(Object other) {
-    if (other is! MeetingAgenda) return false;
-    return id == other.id;
-  }
-
-  @override
-  int get hashCode => id.hashCode;
-
   MeetingAgenda.fromJson(dynamic data)
     : id = data['id'],
       number = data['number'],
