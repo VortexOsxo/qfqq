@@ -89,6 +89,7 @@ class _ProjectModificationState extends ConsumerState<ProjectModificationPage> {
                 hintText: loc.projectCreationPageGoalsHint,
                 onChanged: (value) => widget.project.goals = value,
                 error: errors.goalsError,
+                maxLines: 5,
               ),
               const SizedBox(height: 20),
 

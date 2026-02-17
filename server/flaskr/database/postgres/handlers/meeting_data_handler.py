@@ -1,5 +1,5 @@
 from flaskr.models import MeetingAgendaStatus, MeetingAgenda
-from ..postgres import get_db_access, read_query
+from ..postgres import get_db_access, read_query, write_query
 from datetime import datetime
 
 
@@ -121,6 +121,17 @@ class MeetingDataHandler:
             query = "INSERT INTO meetingsThemes (meetingId, theme) VALUES (%s, %s)"
             params = [(meetingId, theme) for theme in themes]
             cur.executemany(query, params)
+
+    @classmethod
+    def update_meeting_status(cls, meetingId: int, status: str):
+        query = "UPDATE meetings SET status = %s WHERE id = %s;"
+        params = (status, meetingId)
+        try:
+            write_query(query, params)
+            return True
+        except Exception as e:
+            print(e)
+            return False
 
     @classmethod
     def get_meeting_agendas(cls) -> list[MeetingAgenda]:

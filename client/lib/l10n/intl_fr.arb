@@ -121,6 +121,12 @@
   "meetingInProgressDueDate": "Date d’échéance",
   "meetingInProgressDueDateSelected": "Date d’échéance : {date}",
   
+  "meetingViewContentDraftCorrectErrors": "Pour marquer la réunion comme planifiée, veuillez corriger les erreurs suivantes :",
+  "meetingViewContentDraftMarkPlanned": "Marquez cette réunion comme planifiée pour la rendre visible à votre équipe.",
+  "meetingViewContentMarkAsPlan": "Marquer comme planifiée",
+
+  "meetingViewControlPlan": "Planifier",
+
   "meetingNotFound": "Réunion introuvable",
   
   "decisionsListPageTitle": "Décisions",

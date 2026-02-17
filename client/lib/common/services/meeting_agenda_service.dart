@@ -50,7 +50,22 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
     return true;
   }
 
-  MeetingAgenda? getMeetingAgendaById(String id) {
+  // TODO: Handle error
+  Future<bool> updateMeetingAgendaStatus(
+    int meetingId,
+    MeetingAgendaStatus status,
+  ) async {
+    final response = await http.patch(
+      Uri.parse('$_apiUrl/meeting-agendas/$meetingId/status'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'status': status.name}),
+    );
+    if (response.statusCode != 204) return false;
+    _loadMeetingAgendas(); // TODO: don't load every meeting agenda
+    return true;
+  }
+
+  MeetingAgenda? getMeetingAgendaById(int id) {
     return state.firstWhere((agenda) => agenda.id == id);
   }
 

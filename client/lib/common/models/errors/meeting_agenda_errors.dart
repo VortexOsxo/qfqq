@@ -37,4 +37,19 @@ class MeetingAgendaErrors {
         themesError != null ||
         projectError != null;
   }
+
+  List<String> getErrorsMessages() {
+    return [
+      titleError,
+      goalsError,
+      statusError,
+      redactionDateError,
+      meetingDateError,
+      meetingLocationError,
+      animatorError,
+      participantsError,
+      themesError,
+      projectError,
+    ].whereType<String>().toList();
+  }
 }

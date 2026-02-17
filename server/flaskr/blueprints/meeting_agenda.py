@@ -104,6 +104,24 @@ def get_meeting_agenda(id: str):
         return jsonify({"error": "Meeting agenda not found"}), 404
     return jsonify(meeting_agenda.to_dict()), 200
 
+@meeting_agendas_bp.patch("/<string:id>/status")
+def patch_meeting_agenda_status(id: str):
+    data = request.get_json()
+    
+    status_validator = EnumValidator("status", MeetingAgendaStatus)
+    if not status_validator.validate(data):
+        return jsonify({"error": "Invalid Status"})
+    
+    # TODO: Add validation for meeting
+    # Idea: lets have sets of validator that take the object (Meeting agenda as input) and can be reused
+    # and lets construct the object from the input directly
+    status = data.get("status", "")
+
+    result = MeetingDataHandler.update_meeting_status(id, status)
+    if not result:
+        return jsonify({"error": "Meeting agenda not found"}), 404
+    return '', 204
+
 @meeting_agendas_bp.route("/<int:id>/reports")
 def get_meeting_report(id: int):
     meeting, participants = MeetingDataHandler.get_meeting_with_participants(id)

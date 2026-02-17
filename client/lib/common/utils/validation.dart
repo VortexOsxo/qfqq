@@ -5,7 +5,7 @@ import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 bool stringValidator(String? value) {
-    return value != null && value.trim().isNotEmpty;
+  return value != null && value.trim().isNotEmpty;
 }
 
 bool idValidator(int? id) {
@@ -24,21 +24,23 @@ ProjectErrors validateProject(Project project) {
       stringValidator(project.goals) ? null : loc.commonFormsEnterGoals;
 
   errors.supervisorError =
-      idValidator(project.supervisorId)
-          ? null
-          : loc.commonFormsEnterSupervisor;
+      idValidator(project.supervisorId) ? null : loc.commonFormsEnterSupervisor;
 
   return errors;
 }
 
-MeetingAgendaErrors validateMeetingAgenda(MeetingAgenda agenda) {
+MeetingAgendaErrors validateMeetingAgenda(
+  MeetingAgenda agenda, {
+  MeetingAgendaStatus? wantedStatus,
+}) {
   var errors = MeetingAgendaErrors();
   final loc = S.current;
 
   errors.titleError =
       stringValidator(agenda.title) ? null : loc.commonFormsEnterTitle;
 
-  if (agenda.status == MeetingAgendaStatus.draft) {
+  wantedStatus ??= agenda.status;
+  if (wantedStatus == MeetingAgendaStatus.draft) {
     return errors;
   }
 
