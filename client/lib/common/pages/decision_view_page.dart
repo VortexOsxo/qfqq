@@ -118,7 +118,7 @@ class DecisionViewPage extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         DetailsAttributeWidget(
-          label: loc.decisionListStatus,
+          label: loc.attributeStatus,
           value: getDecisionStatusName(decision.status),
         ),
         DetailsAttributeWidget(

@@ -1,4 +1,4 @@
-enum MeetingAgendaStatus { draft, planned, completed }
+enum MeetingAgendaStatus { draft, planned, ongoing, completed }
 
 class MeetingAgenda {
   final int id;

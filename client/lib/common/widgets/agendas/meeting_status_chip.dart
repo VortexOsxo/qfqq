@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
+import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class MeetingStatusChip extends StatelessWidget {
@@ -9,23 +10,7 @@ class MeetingStatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color color;
-    String label;
-
-    switch (status) {
-      case MeetingAgendaStatus.draft:
-        color = Colors.orange;
-        label = S.of(context).agendaStatusDraft;
-        break;
-      case MeetingAgendaStatus.planned:
-        color = Colors.blue;
-        label = S.of(context).agendaStatusPlanned;
-        break;
-      case MeetingAgendaStatus.completed:
-        color = Colors.green;
-        label = S.of(context).agendaStatusCompleted;
-        break;
-    }
+    var statusUIData = getMeetingAgendaStatusUI(S.of(context), status);
 
     return Align(
       alignment: Alignment.centerLeft,
@@ -33,15 +18,15 @@ class MeetingStatusChip extends StatelessWidget {
         width: 80,
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-          color: color.withAlpha(26),
+          color: statusUIData.color.withAlpha(26),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color),
+          border: Border.all(color: statusUIData.color),
         ),
         child: Center(
           child: Text(
-            label,
+            statusUIData.label,
             style: TextStyle(
-              color: color,
+              color: statusUIData.color,
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),

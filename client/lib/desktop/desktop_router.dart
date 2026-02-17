@@ -7,7 +7,6 @@ import 'package:qfqq/common/pages/decisions_list_page.dart';
 import 'package:qfqq/common/pages/decision_view_page.dart';
 import 'package:qfqq/common/pages/home_page.dart';
 import 'package:qfqq/common/pages/login_page.dart';
-import 'package:qfqq/common/pages/meeting_in_progress_page.dart';
 import 'package:qfqq/common/pages/project_modification_page.dart';
 import 'package:qfqq/common/pages/project_page.dart';
 import 'package:qfqq/common/pages/project_view_page.dart';
@@ -66,13 +65,6 @@ final GoRouter desktopRouter = GoRouter(
       builder: (context, state) {
         final id = state.pathParameters['id']!;
         return ProjectViewPage(projectId: int.tryParse(id) ?? 0);
-      },
-    ),
-    GoRoute(
-      path: '/meeting-in-progress/:id',
-      builder: (context, state) {
-        final id = state.pathParameters['id']!;
-        return MeetingInProgressPage(id: int.tryParse(id) ?? 0);
       },
     ),
   ],

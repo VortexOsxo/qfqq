@@ -16,6 +16,7 @@
   "attributeParticipants": "Participants",
   "attributeNoThemes": "Aucun thème",
   "attributeNoParticipants": "Aucun participant",
+  "attributeStatus": "Statut",
 
   "agendaPageActualName": "Date de rédaction",
   "agendaPageTitle": "Titre de la réunion",
@@ -48,7 +49,6 @@
   
   "agendaListNumber": "Id",
   "agendaListTitle": "Titre",
-  "agendaListStatus": "Statut",
   "agendaListDate": "Date",
   "agendaListLocation": "Lieu",
   "agendaListAnimator": "Animateur",
@@ -86,6 +86,7 @@
 
   "agendaStatusDraft": "Brouillon",
   "agendaStatusPlanned": "Planifié",
+  "agendaStatusOngoing": "En cours",
   "agendaStatusCompleted": "Terminé",
 
   "agendasListPageTitle": "Ordres du jour",
@@ -126,6 +127,7 @@
   "meetingViewContentMarkAsPlan": "Marquer comme planifiée",
 
   "meetingViewControlPlan": "Planifier",
+  "meetingViewControlTerminate": "Terminer la réunion",
 
   "meetingNotFound": "Réunion introuvable",
   
@@ -134,7 +136,6 @@
 
   "decisionListNumber": "Id",
   "decisionListDescription": "Description",
-  "decisionListStatus": "Statut",
   "decisionListDueDate": "Date d'échéance",
   "decisionListResponsible": "Responsable",
   "decisionListProject": "Projet",

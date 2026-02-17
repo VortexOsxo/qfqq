@@ -166,7 +166,7 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
             SizedBox(width: 16),
             Expanded(child: Text(loc.decisionListNumber)),
             Expanded(child: Text(loc.decisionListDescription)),
-            Expanded(child: Text(loc.decisionListStatus)),
+            Expanded(child: Text(loc.attributeStatus)),
             Expanded(child: Text(loc.decisionListDueDate)),
             Expanded(child: Text(loc.decisionListResponsible)),
             Expanded(child: Text(loc.decisionListProject)),
