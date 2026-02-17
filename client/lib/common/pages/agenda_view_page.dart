@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
-import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_status_chip.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_content.dart';
@@ -18,15 +17,8 @@ class AgendaViewPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final loc = S.of(context);
-    String title = loc.agendaPageTitleAppBar;
-
     MeetingAgenda? agenda = ref.watch(meetingAgendaByIdProvider(agendaId));
-    return buildPageTemplate(
-      context,
-      _buildContent(context, ref, agenda),
-      title,
-    );
+    return _buildContent(context, ref, agenda);
   }
 
   Widget _buildContent(

@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
-import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/widgets/default_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -28,11 +27,7 @@ class ProjectPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final loc = S.of(context);
-
-    String title = loc.projectPageTitle;
-    Widget content = _buildProjectsListAsync(context, ref);
-    return buildPageTemplate(context, content, title);
+    return _buildProjectsListAsync(context, ref);
   }
 
   Widget _buildProjectsListAsync(BuildContext context, WidgetRef ref) {

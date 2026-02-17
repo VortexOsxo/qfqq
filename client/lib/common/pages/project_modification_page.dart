@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/errors/project_errors.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
-import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/utils/validation.dart';
 import 'package:qfqq/common/widgets/reusables/form_filled_button.dart';
 import 'package:qfqq/common/widgets/reusables/form_outlined_button.dart';
@@ -66,9 +65,7 @@ class _ProjectModificationState extends ConsumerState<ProjectModificationPage> {
   Widget build(BuildContext context) {
     final loc = S.of(context);
 
-    final title = loc.projectModificationPageTitle;
-
-    final content = Center(
+    return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 800),
         child: Padding(
@@ -121,7 +118,5 @@ class _ProjectModificationState extends ConsumerState<ProjectModificationPage> {
         ),
       ),
     );
-
-    return buildPageTemplate(context, content, title);
   }
 }

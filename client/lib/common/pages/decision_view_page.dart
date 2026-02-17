@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/decision.dart';
 import 'package:qfqq/common/providers/decisions_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
-import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/widgets/details_attribute_widget.dart';
@@ -21,21 +20,12 @@ class DecisionViewPage extends ConsumerWidget {
     final loc = S.of(context);
     final decision = ref.watch(decisionByIdProvider(decisionId));
 
-    String title = loc.decisionViewPageTitle;
 
     if (decision == null) {
-      return buildPageTemplate(
-        context,
-        Center(child: Text(loc.decisionNotFound)),
-        title,
-      );
+      return Center(child: Text(loc.decisionNotFound));
     }
 
-    return buildPageTemplate(
-      context,
-      _buildContent(context, ref, decision),
-      title,
-    );
+    return _buildContent(context, ref, decision);
   }
 
   Widget _buildContent(BuildContext context, WidgetRef ref, Decision decision) {

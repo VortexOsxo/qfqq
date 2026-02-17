@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
-import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/widgets/projects/project_content_widget.dart';
 import 'package:qfqq/common/widgets/projects/project_view_control.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -15,18 +14,13 @@ class ProjectViewPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final loc = S.of(context);
-    String title = loc.projectViewPageTitle;
 
     final project = ref.watch(projectProviderById(projectId));
     if (project == null) {
-      return buildPageTemplate(
-        context,
-        Center(child: Text(loc.projectNotFound)),
-        title,
-      );
+      return Center(child: Text(loc.projectNotFound));
     }
 
-    Widget content = Center(
+    return Center(
       child: Column(
         children: [
           buildInfoCard(context, ref, project),
@@ -37,8 +31,6 @@ class ProjectViewPage extends ConsumerWidget {
         ],
       ),
     );
-
-    return buildPageTemplate(context, content, title);
   }
 
   Widget buildInfoCard(BuildContext context, WidgetRef ref, Project project) {

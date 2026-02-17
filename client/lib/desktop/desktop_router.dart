@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/project.dart';
@@ -13,59 +14,121 @@ import 'package:qfqq/common/pages/project_view_page.dart';
 import 'package:qfqq/common/pages/signup_page.dart';
 import 'package:qfqq/common/pages/agenda_list_page.dart';
 
+import 'package:qfqq/common/widgets/scaffolds/default_page_scaffold.dart';
+import 'package:qfqq/generated/l10n.dart';
+
+NoTransitionPage _noTransition(Widget child) => NoTransitionPage(child: child);
+
 final GoRouter desktopRouter = GoRouter(
   initialLocation: '/login',
   routes: [
-    GoRoute(path: '/', builder: (context, state) => const HomePage()),
-    GoRoute(
-      path: '/agenda',
-      builder: (context, state) {
-        final agenda = state.extra as MeetingAgenda?;
-        return AgendaModificationPage(agendaToModify: agenda);
-      },
+    ShellRoute(
+      builder: (context, state, child) => defaultPageScaffold(
+        context,
+        child,
+        title: _getTitleForRoute(context, state),
+      ),
+      routes: [
+        GoRoute(
+          path: '/',
+          pageBuilder: (context, state) => _noTransition(const HomePage()),
+        ),
+        GoRoute(
+          path: '/agenda',
+          pageBuilder: (context, state) {
+            final agenda = state.extra as MeetingAgenda?;
+            return _noTransition(
+              AgendaModificationPage(agendaToModify: agenda),
+            );
+          },
+        ),
+        GoRoute(
+          path: '/agendas',
+          pageBuilder:
+              (context, state) => _noTransition(const AgendasListPage()),
+        ),
+        GoRoute(
+          path: '/agendas/:id',
+          pageBuilder: (context, state) {
+            final id = state.pathParameters['id']!;
+            return _noTransition(
+              AgendaViewPage(agendaId: int.tryParse(id) ?? 0),
+            );
+          },
+        ),
+        GoRoute(
+          path: '/decisions',
+          pageBuilder:
+              (context, state) => _noTransition(const DecisionsListPage()),
+        ),
+        GoRoute(
+          path: '/decisions/:id',
+          pageBuilder: (context, state) {
+            final id = state.pathParameters['id']!;
+            return _noTransition(
+              DecisionViewPage(decisionId: int.tryParse(id) ?? 0),
+            );
+          },
+        ),
+        GoRoute(
+          path: '/projects',
+          pageBuilder: (context, state) => _noTransition(const ProjectPage()),
+        ),
+        GoRoute(
+          path: '/project/creation',
+          pageBuilder: (context, state) {
+            final project = state.extra as Project?;
+            return _noTransition(
+              ProjectModificationPage(projectToModify: project),
+            );
+          },
+        ),
+        GoRoute(
+          path: '/project/:id',
+          pageBuilder: (context, state) {
+            final id = state.pathParameters['id']!;
+            return _noTransition(
+              ProjectViewPage(projectId: int.tryParse(id) ?? 0),
+            );
+          },
+        ),
+      ],
     ),
-    GoRoute(
-      path: '/agendas',
-      builder: (context, state) => const AgendasListPage(),
-    ),
-    GoRoute(
-      path: '/agendas/:id',
-      builder: (context, state) {
-        final id = state.pathParameters['id']!;
-        return AgendaViewPage(agendaId: int.tryParse(id) ?? 0);
-      },
-    ),
-    GoRoute(
-      path: '/decisions',
-      builder: (context, state) => const DecisionsListPage(),
-    ),
-    GoRoute(
-      path: '/decisions/:id',
-      builder: (context, state) {
-        final id = state.pathParameters['id']!;
-        return DecisionViewPage(decisionId: int.tryParse(id) ?? 0);
-      },
-    ),
+
     GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
     GoRoute(path: '/signup', builder: (context, state) => const SignupPage()),
-    GoRoute(
-      path: '/projects',
-      builder: (context, state) => const ProjectPage(),
-    ),
-    GoRoute(
-      path: '/project/creation',
-
-      builder: (context, state) {
-        final project = state.extra as Project?;
-        return ProjectModificationPage(projectToModify: project);
-      },
-    ),
-    GoRoute(
-      path: '/project/:id',
-      builder: (context, state) {
-        final id = state.pathParameters['id']!;
-        return ProjectViewPage(projectId: int.tryParse(id) ?? 0);
-      },
-    ),
   ],
 );
+
+String? _getTitleForRoute(BuildContext context, GoRouterState state) {
+  final loc = S.of(context);
+  final fullPath = state.fullPath;
+  
+  if (fullPath == null) return null;
+
+  switch (fullPath) {
+    case '/':
+      return loc.homePageTitle;
+    case '/agenda':
+      final agenda = state.extra as MeetingAgenda?;
+      return agenda == null 
+          ? '${loc.agendaPageTitleAppBar} - Create' 
+          : '${loc.agendaPageTitleAppBar} - Update';
+    case '/agendas':
+      return loc.agendasListPageTitle;
+    case '/agendas/:id':
+      return loc.agendaPageTitleAppBar;
+    case '/decisions':
+      return loc.decisionsListPageTitle;
+    case '/decisions/:id':
+      return loc.decisionViewPageTitle;
+    case '/projects':
+      return loc.projectPageTitle;
+    case '/project/creation':
+      return loc.projectModificationPageTitle;
+    case '/project/:id':
+      return loc.projectViewPageTitle;
+    default:
+      return null;
+  }
+}

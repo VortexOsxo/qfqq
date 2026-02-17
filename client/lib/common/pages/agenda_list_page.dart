@@ -1,5 +1,4 @@
 import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,7 +7,6 @@ import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/templates/card_template.dart';
-import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
@@ -60,14 +58,12 @@ class AgendasListPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final agendas = ref.watch(filteredAgendaProvider);
 
-    String title = S.of(context).agendasListPageTitle;
-    Widget content = Column(
+    return Column(
       children: [
         _buildSearchAndFilterSection(context, ref),
         Expanded(child: _buildAgendasList(context, ref, agendas)),
       ],
     );
-    return buildPageTemplate(context, content, title);
   }
 
   Widget _buildSearchAndFilterSection(BuildContext context, WidgetRef ref) {

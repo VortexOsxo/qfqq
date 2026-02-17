@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/templates/button_template.dart';
-import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/widgets/agendas/agenda_future_widget.dart';
 import 'package:qfqq/common/widgets/decisions/decision_responsabilities_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -11,8 +10,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String title = S.of(context).homePageTitle;
-    Widget content = Column(
+    return Column(
       children: [
         Expanded(child: buildMainContent(context)),
         Row(
@@ -32,7 +30,6 @@ class HomePage extends StatelessWidget {
         ),
       ],
     );
-    return buildPageTemplate(context, content, title);
   }
 
   Widget buildMainContent(BuildContext context) {

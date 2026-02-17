@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/errors/meeting_agenda_errors.dart';
 import 'package:qfqq/common/models/user.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
-import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/modals/select_date.dart';
 import 'package:qfqq/common/utils/validation.dart';
@@ -21,7 +20,7 @@ import 'package:qfqq/common/models/meeting_agenda.dart';
 class AgendaModificationPage extends ConsumerStatefulWidget {
   final MeetingAgenda agenda;
   final bool isNewAgenda;
-
+  
   AgendaModificationPage({super.key, MeetingAgenda? agendaToModify})
     : agenda = agendaToModify ?? MeetingAgenda.empty(),
       isNewAgenda = agendaToModify == null;
@@ -135,11 +134,6 @@ class _AgendaModificationPageState
 
     final loc = S.of(context);
     final isEditing = !widget.isNewAgenda;
-
-    String title =
-        isEditing
-            ? '${loc.agendaPageTitleAppBar} - Update'
-            : loc.agendaPageTitleAppBar;
 
     Widget content = SingleChildScrollView(
       child: Center(
@@ -398,6 +392,6 @@ class _AgendaModificationPageState
       ),
     );
 
-    return buildPageTemplate(context, content, title);
+    return content;
   }
 }
