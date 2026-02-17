@@ -6,6 +6,7 @@ from datetime import datetime
 class MeetingAgendaStatus(Enum):
     draft = 'draft'
     planned = 'planned'
+    ongoing = 'ongoing'
     completed = 'completed'
 
 @dataclass(slots=True)

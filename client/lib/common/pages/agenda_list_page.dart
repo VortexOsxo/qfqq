@@ -11,6 +11,7 @@ import 'package:qfqq/common/templates/card_template.dart';
 import 'package:qfqq/common/templates/page_template.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
+import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_status_chip.dart';
 import 'package:qfqq/common/widgets/default_text_field.dart';
@@ -109,6 +110,12 @@ class AgendasListPage extends ConsumerWidget {
   }
 
   Widget _buildStatusFilterDropdown(BuildContext context, WidgetRef ref) {
+    String getStatusLabel(MeetingAgendaStatus status) {
+      var loc = S.of(context);
+      var ui = getMeetingAgendaStatusUI(loc, status);
+      return '${loc.attributeStatus}: ${ui.label}';
+    }
+
     final List<DropdownMenuEntry<MeetingAgendaStatus?>> menuEntries =
         UnmodifiableListView([
           DropdownMenuEntry<MeetingAgendaStatus?>(
@@ -118,7 +125,7 @@ class AgendasListPage extends ConsumerWidget {
           ...MeetingAgendaStatus.values.map(
             (status) => DropdownMenuEntry<MeetingAgendaStatus?>(
               value: status,
-              label: 'Status: ${status.name}',
+              label: getStatusLabel(status),
             ),
           ),
         ]);
@@ -181,6 +188,18 @@ class AgendasListPage extends ConsumerWidget {
       return buildContentListCardTemplate(cardContent);
     }
 
+    void startMeeting(agenda) async {
+      final meetingsService = ref.read(meetingAgendaServiceProvider);
+
+      await meetingsService.updateMeetingAgendaStatus(
+        agenda.id,
+        MeetingAgendaStatus.ongoing,
+      );
+      if (context.mounted) {
+        context.go('/agendas/${agenda.id}');
+      }
+    }
+
     Widget cardContent = Column(
       children: [
         Row(
@@ -188,7 +207,7 @@ class AgendasListPage extends ConsumerWidget {
             SizedBox(width: 16),
             Expanded(child: Text(S.of(context).agendaListNumber)),
             Expanded(child: Text(S.of(context).agendaListTitle)),
-            Expanded(child: Text(S.of(context).agendaListStatus)),
+            Expanded(child: Text(S.of(context).attributeStatus)),
             Expanded(child: Text(S.of(context).agendaListDate)),
             Expanded(child: Text(S.of(context).agendaListLocation)),
             Expanded(child: Text(S.of(context).agendaListAnimator)),
@@ -264,9 +283,7 @@ class AgendasListPage extends ConsumerWidget {
                           onPressed:
                               agenda.status != MeetingAgendaStatus.planned
                                   ? null
-                                  : () => context.go(
-                                    '/meeting-in-progress/${agenda.id}',
-                                  ),
+                                  : () => startMeeting(agenda),
                           child: Text(loc.agendaListStart),
                         ),
                       ],

@@ -9,7 +9,7 @@ decisionsAssistants CASCADE;
 DROP TYPE IF EXISTS meetingStatus,
 decisionStatus CASCADE;
 
-CREATE TYPE meetingStatus AS ENUM ('draft', 'planned', 'completed');
+CREATE TYPE meetingStatus AS ENUM ('draft', 'planned', 'ongoing', 'completed');
 
 CREATE TYPE decisionStatus AS ENUM (
   'inProgress',

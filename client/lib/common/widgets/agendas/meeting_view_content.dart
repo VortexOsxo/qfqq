@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/errors/meeting_agenda_errors.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
+import 'package:qfqq/common/widgets/agendas/meeting_view_content_ongoing.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/utils/validation.dart';
 import 'package:qfqq/common/widgets/pdf_viewer_widget.dart';
@@ -13,14 +14,16 @@ class MeetingViewContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (meeting.status == MeetingAgendaStatus.draft) {
-      return _draftContent(context, ref);
-    } else if (meeting.status == MeetingAgendaStatus.planned) {
-      return SizedBox();
-    } else if (meeting.status == MeetingAgendaStatus.completed) {
-      return _completedContent(context);
+    switch (meeting.status) {
+      case MeetingAgendaStatus.draft:
+        return _draftContent(context, ref);
+      case MeetingAgendaStatus.planned:
+        return SizedBox();
+      case MeetingAgendaStatus.ongoing:
+        return MeetingViewContentOngoing(meeting: meeting);
+      case MeetingAgendaStatus.completed:
+        return _completedContent(context);
     }
-    return SizedBox.shrink();
   }
 
   Widget _draftContent(BuildContext context, WidgetRef ref) {

@@ -14,10 +14,14 @@ class MeetingViewControl extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     List<TextButton> buttons = [];
 
-    if (meeting.status == MeetingAgendaStatus.draft) {
-      buttons = draftButtons(context, ref);
-    } else if (meeting.status == MeetingAgendaStatus.planned) {
-      buttons = plannedButtons(context);
+    switch (meeting.status) {
+      case MeetingAgendaStatus.draft:
+        buttons = draftButtons(context, ref);
+      case MeetingAgendaStatus.planned:
+        buttons = plannedButtons(context, ref);
+      case MeetingAgendaStatus.ongoing:
+        buttons = ongoingButtons(context, ref);
+      case MeetingAgendaStatus.completed:
     }
 
     return Column(
@@ -54,8 +58,10 @@ class MeetingViewControl extends ConsumerWidget {
     ];
   }
 
-  List<TextButton> plannedButtons(BuildContext context) {
+  List<TextButton> plannedButtons(BuildContext context, WidgetRef ref) {
     final loc = S.of(context);
+
+    final meetingsService = ref.read(meetingAgendaServiceProvider);
 
     return [
       TextButton(
@@ -64,7 +70,28 @@ class MeetingViewControl extends ConsumerWidget {
       ),
       TextButton(
         child: Text(loc.commonStart),
-        onPressed: () => context.go('/meeting-in-progress/${meeting.id}'),
+        onPressed:
+            () => meetingsService.updateMeetingAgendaStatus(
+              meeting.id,
+              MeetingAgendaStatus.ongoing,
+            ),
+      ),
+    ];
+  }
+
+    List<TextButton> ongoingButtons(BuildContext context, WidgetRef ref) {
+    final loc = S.of(context);
+
+    final meetingsService = ref.read(meetingAgendaServiceProvider);
+
+    return [
+      TextButton(
+        child: Text(loc.meetingViewControlTerminate),
+        onPressed:
+            () => meetingsService.updateMeetingAgendaStatus(
+              meeting.id,
+              MeetingAgendaStatus.completed,
+            ),
       ),
     ];
   }

@@ -16,6 +16,7 @@
   "attributeParticipants": "Participants",
   "attributeNoThemes": "No Themes",
   "attributeNoParticipants": "No Participants",
+  "attributeStatus": "Status",
 
   "agendaPageActualName": "Redaction Date",
   "agendaPageTitle": "Meeting Title",
@@ -48,7 +49,6 @@
   
   "agendaListNumber": "Id",
   "agendaListTitle": "Title",
-  "agendaListStatus": "Status",
   "agendaListDate": "Date",
   "agendaListLocation": "Location",
   "agendaListAnimator": "Animator",
@@ -86,6 +86,7 @@
 
   "agendaStatusDraft": "Draft",
   "agendaStatusPlanned": "Planned",
+  "agendaStatusOngoing": "In Progress",
   "agendaStatusCompleted": "Completed",
 
   "agendasListPageTitle": "Meeting Agendas",
@@ -126,6 +127,7 @@
   "meetingViewContentMarkAsPlan": "Mark as planned",
 
   "meetingViewControlPlan": "Plan",
+  "meetingViewControlTerminate": "End meeting",
 
   "meetingNotFound": "Meeting not found",
 
@@ -134,7 +136,6 @@
 
   "decisionListNumber": "Id",
   "decisionListDescription": "Description",
-  "decisionListStatus": "Status",
   "decisionListDueDate": "Due Date",
   "decisionListResponsible": "Responsible",
   "decisionListProject": "Project",
