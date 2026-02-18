@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:qfqq/common/widgets/decisions/decisions_list_widget.dart';
-import 'package:qfqq/generated/l10n.dart';
 
 
 class DecisionsListPage extends StatelessWidget {

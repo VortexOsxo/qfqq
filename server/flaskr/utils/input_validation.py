@@ -17,7 +17,8 @@ class InputError(Enum):
     ValueMustBeAList = 5
     ListMustBeNonEmpty = 6
     InvalidType = 7
-
+    EmailMustBeUnique = 8
+    InvalidLogin = 9
 
 class InputValidator(ABC):
     """The InputValidator class represent the logic to define a type of input, such as name, email, string, etc. and the logic to validate said input."""

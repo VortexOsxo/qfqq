@@ -32,17 +32,10 @@ class _SignupPageState extends ConsumerState<SignupPage> {
           signupEmail,
           signupPassword,
         );
-        
-        if (accountError.usernameError != null) {
-          setState(() => signupError = accountError.usernameError!);
-        }
-        else if (accountError.emailError != null) {
-          setState(() => signupError = accountError.emailError!);
-        }
-        else if (accountError.passwordError != null) {
-          setState(() => signupError = accountError.passwordError!);
-        }
-        else {
+        final e = accountError.getFirstError();
+        if (e != null) {
+          setState(() => signupError = e);
+        } else {
           ref.read(routerProvider).go('/');
         }
       } catch (e) {

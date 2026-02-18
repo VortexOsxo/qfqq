@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 @dataclass(slots=True)
 class User:
-    id: str | int
+    id: int
     username: str
     passwordHash: str
     email: str
