@@ -18,6 +18,10 @@
   "attributeNoParticipants": "Aucun participant",
   "attributeStatus": "Statut",
 
+  "attributeUsername": "Nom d'utilisateur",
+  "attributeEmail": "Email",
+  "attributePassword": "Mot de passe",
+
   "agendaPageActualName": "Date de rédaction",
   "agendaPageTitle": "Titre de la réunion",
   "agendaPageGoals": "Objectifs de la réunion",
@@ -68,15 +72,10 @@
   "authServicePasswordError": "Mot de passe trop faible ou invalide.",
   
   "signupPageTitle": "Inscription",
-  "signupPageLabelEmail": "Email",
-  "signupPageLabelUsername": "Nom d'utilisateur",
-  "signupPageLabelPassword": "Mot de passe",
   "signupPageButtonSignup": "S'inscrire",
   "signupPageLinkLogin": "Déjà un compte ? Se connecter",
   
   "loginPageTitle": "Connexion",
-  "loginPageLabelEmail": "Email",
-  "loginPageLabelPassword": "Mot de passe",
   "loginPageButtonLogin": "Se connecter",
   "loginPageLinkSignup": "Pas de compte ? S'inscrire",
   
@@ -176,6 +175,7 @@
   "commonStart": "Démarrer",
   "commonModify": "Modifier",
   "commonAction": "Action",
+  "commonProfile": "Profil",
 
   "commonNoGoalsSet": "Auncun objectif défini",
   "commonNoDateSet": "Aucune date définie",

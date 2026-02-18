@@ -18,6 +18,10 @@
   "attributeNoParticipants": "No Participants",
   "attributeStatus": "Status",
 
+  "attributeUsername": "Username",
+  "attributeEmail": "Email",
+  "attributePassword": "Password",
+
   "agendaPageActualName": "Redaction Date",
   "agendaPageTitle": "Meeting Title",
   "agendaPageGoals": "Goals of the meeting",
@@ -67,15 +71,10 @@
   "authServicePasswordError": "Password is too weak or invalid.",
   
   "signupPageTitle": "Sign Up",
-  "signupPageLabelEmail": "Email",
-  "signupPageLabelUsername": "Username",
-  "signupPageLabelPassword": "Password",
   "signupPageButtonSignup": "Sign Up",
   "signupPageLinkLogin": "Already have an account? Login",
   
   "loginPageTitle": "Login",
-  "loginPageLabelEmail": "Email",
-  "loginPageLabelPassword": "Password",
   "loginPageButtonLogin": "Login",
   "loginPageLinkSignup": "Don't have an account? Sign Up",
   
@@ -175,6 +174,7 @@
   "commonStart": "Start",
   "commonModify": "Modify",
   "commonAction": "Action",
+  "commonProfile": "Profile",
 
   "commonNoGoalsSet": "No goals set",
   "commonNoDateSet": "No date set",

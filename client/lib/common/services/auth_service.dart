@@ -11,11 +11,11 @@ final authStateProvider = StateNotifierProvider<AuthService, AuthState>(
 
 class AuthState {
   final String sessionId;
-  final String? email = null;
-  final String? username = null;
+  final String? email;
+  final String? username;
 
   bool get isAuthenticated => sessionId.isNotEmpty;
-  AuthState({String? sessionId, String? email, String? username})
+  AuthState({String? sessionId, this.email, this.username})
     : sessionId = sessionId ?? "";
 
   AuthState copyWith({String? sessionId, String? email, String? username}) {
@@ -71,11 +71,15 @@ class AuthService extends StateNotifier<AuthState> {
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 201) {
-      _onSuccessfulAuth(data['session_token'], data['username'], data['email']);
+      _onSuccessfulAuth(data['session_token'], data['email'], data['username']);
       return AccountError();
     }
     // TODO: Improve error messages to be more descriptive
     return AccountError.fromJson(data);
+  }
+
+  void logout() {
+    state = AuthState();
   }
 
   // TODO: Handle successful auth

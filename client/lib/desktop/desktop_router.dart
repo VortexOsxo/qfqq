@@ -133,6 +133,8 @@ String? _getTitleForRoute(BuildContext context, GoRouterState state) {
       return loc.projectModificationPageTitle;
     case '/project/:id':
       return loc.projectViewPageTitle;
+    case '/profile':
+      return loc.profilePageTitle;
     default:
       return null;
   }
