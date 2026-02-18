@@ -14,31 +14,17 @@ class AccountError {
   });
 
   String? getFirstError() {
-    if (usernameError != null) {
-      return usernameError;
-    } else if (emailError != null) {
-      return emailError;
-    } else if (passwordError != null) {
-      return passwordError;
-    } else if (authError != null) {
-      return authError;
-    }
-    return null;
+    return usernameError ?? emailError ?? passwordError ?? authError;
   }
 
   static AccountError fromJson(dynamic data) {
     final loc = S.current;
 
-    int? usernameErrorCode = data['username'];
-    int? emailErrorCode = data['email'];
-    int? passwordErrorCode = data['password'];
-    int? authErrorCode = data['auth'];
-
     return AccountError(
-      usernameError: usernameErrorCode != null ? loc.authServiceUsernameError : null,
-      emailError: emailErrorCode != null ? loc.authServiceEmailError : null,
-      passwordError: passwordErrorCode != null ? loc.authServicePasswordError : null,
-      authError: authErrorCode != null ? loc.authServiceInvalidCredentials : null,
+      usernameError: data['username'] != null ? loc.authServiceUsernameError : null,
+      emailError: data['email'] != null ? loc.authServiceEmailError : null,
+      passwordError: data['password'] != null ? loc.authServicePasswordError : null,
+      authError: data['auth'] != null ? loc.authServiceInvalidCredentials : null,
     );
   }
 }

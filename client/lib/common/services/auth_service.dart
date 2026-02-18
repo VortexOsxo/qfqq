@@ -79,6 +79,7 @@ class AuthService extends StateNotifier<AuthState> {
   }
 
   void logout() {
+    // TODO: Clear loaded data on disconnection
     state = AuthState();
   }
 

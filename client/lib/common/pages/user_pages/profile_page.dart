@@ -50,7 +50,6 @@ class ProfilePage extends ConsumerWidget {
 
   Widget _buildTopCard(BuildContext context, WidgetRef ref) {
     final loc = S.of(context);
-    final theme = Theme.of(context);
 
     void logout() {
       var authService = ref.read(authStateProvider.notifier);
@@ -68,14 +67,14 @@ class ProfilePage extends ConsumerWidget {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 24,
-              color: theme.primaryColor,
+              color: Theme.of(context).primaryColor,
             ),
           ),
         ),
         ElevatedButton(
           onPressed: logout,
           style: squareButtonStyle(context),
-          child: Text(S.of(context).profilePageLogout),
+          child: Text(loc.profilePageLogout),
         ),
       ],
     );
