@@ -47,11 +47,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           child: ListView(
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: loc.loginPageLabelEmail),
+                decoration: InputDecoration(labelText: loc.attributeEmail),
                 onSaved: (val) => email = val ?? '',
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: loc.loginPageLabelPassword),
+                decoration: InputDecoration(labelText: loc.attributePassword),
                 obscureText: true,
                 onSaved: (val) => password = val ?? '',
               ),

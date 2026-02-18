@@ -57,15 +57,15 @@ class _SignupPageState extends ConsumerState<SignupPage> {
           child: ListView(
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: loc.signupPageLabelEmail),
+                decoration: InputDecoration(labelText: loc.attributeEmail),
                 onSaved: (val) => signupEmail = val ?? '',
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: loc.signupPageLabelUsername),
+                decoration: InputDecoration(labelText: loc.attributeUsername),
                 onSaved: (val) => signupUsername = val ?? '',
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: loc.signupPageLabelPassword),
+                decoration: InputDecoration(labelText: loc.attributePassword),
                 obscureText: true,
                 onSaved: (val) => signupPassword = val ?? '',
               ),
