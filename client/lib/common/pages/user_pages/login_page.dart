@@ -22,10 +22,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   void _submit() async {
     setState(() => error = '');
     _formKey.currentState?.save();
+
     final authService = ref.read(authStateProvider.notifier);
-    final result = await authService.login(email, password);
-    if (result.isNotEmpty) {
-      setState(() => error = result);
+    final errors = await authService.login(email, password);
+    String? e = errors.getFirstError();
+
+    if (e != null) {
+      setState(() => error = e);
     } else {
       ref.read(routerProvider).go('/');
     }

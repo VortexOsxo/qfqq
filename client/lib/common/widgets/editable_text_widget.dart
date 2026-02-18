@@ -5,10 +5,10 @@ class EditableTextWidget extends StatefulWidget {
   final ValueChanged<String> onSave;
 
   const EditableTextWidget({
-    Key? key,
+    super.key,
     required this.initialValue,
     required this.onSave,
-  }) : super(key: key);
+  });
 
   @override
   State<EditableTextWidget> createState() => _EditableTextWidgetState();

@@ -7,11 +7,12 @@ import 'package:qfqq/common/pages/agenda_view_page.dart';
 import 'package:qfqq/common/pages/decisions_list_page.dart';
 import 'package:qfqq/common/pages/decision_view_page.dart';
 import 'package:qfqq/common/pages/home_page.dart';
-import 'package:qfqq/common/pages/login_page.dart';
+import 'package:qfqq/common/pages/user_pages/login_page.dart';
 import 'package:qfqq/common/pages/project_modification_page.dart';
 import 'package:qfqq/common/pages/project_page.dart';
 import 'package:qfqq/common/pages/project_view_page.dart';
-import 'package:qfqq/common/pages/signup_page.dart';
+import 'package:qfqq/common/pages/user_pages/profile_page.dart';
+import 'package:qfqq/common/pages/user_pages/signup_page.dart';
 import 'package:qfqq/common/pages/agenda_list_page.dart';
 
 import 'package:qfqq/common/widgets/scaffolds/default_page_scaffold.dart';
@@ -92,6 +93,10 @@ final GoRouter desktopRouter = GoRouter(
             );
           },
         ),
+        GoRoute(
+          path: '/profile',
+          pageBuilder: (context, state) => _noTransition(const ProfilePage()),
+        )
       ],
     ),
 

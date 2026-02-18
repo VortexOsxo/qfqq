@@ -4,7 +4,6 @@ import 'package:qfqq/common/models/errors/account_error.dart';
 import 'dart:convert';
 import 'package:qfqq/common/providers/server_url.dart';
 import 'package:qfqq/common/utils/events/event_notifier.dart';
-import 'package:qfqq/generated/l10n.dart';
 
 final authStateProvider = StateNotifierProvider<AuthService, AuthState>(
   (ref) => AuthService(ref),
@@ -12,12 +11,19 @@ final authStateProvider = StateNotifierProvider<AuthService, AuthState>(
 
 class AuthState {
   final String sessionId;
+  final String? email = null;
+  final String? username = null;
+
   bool get isAuthenticated => sessionId.isNotEmpty;
-  AuthState({String? sessionId, String? email})
+  AuthState({String? sessionId, String? email, String? username})
     : sessionId = sessionId ?? "";
 
-  AuthState copyWith({String? sessionId, String? email}) {
-    return AuthState(sessionId: sessionId ?? this.sessionId);
+  AuthState copyWith({String? sessionId, String? email, String? username}) {
+    return AuthState(
+      sessionId: sessionId ?? this.sessionId,
+      email: email ?? this.email,
+      username: username ?? this.username,
+    );
   }
 }
 
@@ -33,7 +39,7 @@ class AuthService extends StateNotifier<AuthState> {
     return state.sessionId;
   }
 
-  Future<String> login(String email, String password) async {
+  Future<AccountError> login(String email, String password) async {
     final response = await http.post(
       Uri.parse('$_apiUrl/auth/login'),
       headers: {'Content-Type': 'application/json'},
@@ -42,17 +48,10 @@ class AuthService extends StateNotifier<AuthState> {
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      _onSuccessfulAuth(data['session_token'] ?? "", email);
-      return "";
+      _onSuccessfulAuth(data['session_token'], data['email'], data['username']);
+      return AccountError();
     }
-
-    int errorCode = data['error'] ?? 0;
-    if (errorCode == 1) {
-      return S.current.authServiceInvalidCredentials;
-    } else if (errorCode == 2) {
-      return S.current.authServiceUnknownAccount;
-    }
-    return S.current.authServiceUnknownError;
+    return AccountError.fromJson(data);
   }
 
   Future<AccountError> signup(
@@ -71,26 +70,17 @@ class AuthService extends StateNotifier<AuthState> {
     );
     final data = jsonDecode(response.body);
 
-    if (response.statusCode == 200) {
-      _onSuccessfulAuth(data['sessionId'], username);
+    if (response.statusCode == 201) {
+      _onSuccessfulAuth(data['session_token'], data['username'], data['email']);
       return AccountError();
     }
-
-    final loc = S.current;
-
     // TODO: Improve error messages to be more descriptive
-    return AccountError(
-      usernameError:
-          data['usernameError'] == 1 ? loc.authServiceUsernameError : null,
-      emailError: data['emailError'] == 1 ? loc.authServiceEmailError : null,
-      passwordError:
-          data['passwordError'] == 1 ? loc.authServicePasswordError : null,
-    );
+    return AccountError.fromJson(data);
   }
 
   // TODO: Handle successful auth
-  _onSuccessfulAuth(String sessionId, String email) {
-    state = AuthState(sessionId: sessionId, email: email);
+  _onSuccessfulAuth(String sessionId, String email, String username) {
+    state = AuthState(sessionId: sessionId, email: email, username: username);
     connectionNotifier.notify(email);
   }
 

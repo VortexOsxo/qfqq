@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 from flaskr.database import UserDataHandler
 from flaskr.errors import AuthError
-from flaskr.utils import verify_missing_inputs, StringValidator, EmailValidator
+from flaskr.utils import get_inputs_errors, InputError, StringValidator, EmailValidator
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -38,11 +38,11 @@ def signup():
         StringValidator("username"),
         # TODO: Add proper password validator
         StringValidator("password"),
-        EmailValidator("email")
+        EmailValidator("email"),
     ]
-    missings = verify_missing_inputs(data, required_fields)
-    if missings:
-        return jsonify({"error": f'Missing fields: {", ".join(missings)}'}), 400
+    errors = get_inputs_errors(data, required_fields)
+    if errors:
+        return jsonify(errors), 400
 
     username = data.get("username")
     email = data.get("email")
@@ -52,8 +52,15 @@ def signup():
         username, email, generate_password_hash(password)
     )
     if user is None:
-        return jsonify({"emailError": AuthError.emailAlreadyExists.value}), 400
-    return jsonify(user.to_dict()), 201
+        return jsonify({"email": InputError.EmailMustBeUnique.value}), 400
+
+    token = jwt.encode(
+        {"user_id": str(user.id), "exp": datetime.utcnow() + timedelta(hours=3)},
+        current_app.config["SECRET_KEY"],
+        algorithm="HS256",
+    )
+
+    return jsonify({"session_token": token} | user.to_dict()), 201
 
 
 @auth_bp.route("/login", methods=(["POST"]))
@@ -63,21 +70,19 @@ def login():
     required_fields = [
         # TODO: Add proper password validator
         StringValidator("password"),
-        EmailValidator("email")
+        EmailValidator("email"),
     ]
-    missings = verify_missing_inputs(data, required_fields)
-    if missings:
-        return jsonify({"error": f'Missing fields: {", ".join(missings)}'}), 400
+    errors = get_inputs_errors(data, required_fields)
+    if errors:
+        return jsonify(errors), 400
 
     email = data.get("email")
     password = data.get("password")
 
     user = UserDataHandler.get_user_by_email(email)
 
-    if user is None:
-        return jsonify({"error": AuthError.userNotFound.value}), 401
-    elif not check_password_hash(user.passwordHash, password):
-        return jsonify({"error": AuthError.wrongPassword.value}), 401
+    if user is None or not check_password_hash(user.passwordHash, password):
+        return jsonify({"auth": InputError.InvalidLogin.value}), 401
 
     token = jwt.encode(
         {"user_id": str(user.id), "exp": datetime.utcnow() + timedelta(hours=3)},
@@ -85,7 +90,8 @@ def login():
         algorithm="HS256",
     )
 
-    return jsonify({"session_token": token}), 200
+    return jsonify({"session_token": token} | user.to_dict()), 200
+
 
 def login_required(view):
     @functools.wraps(view)

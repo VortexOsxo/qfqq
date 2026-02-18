@@ -61,7 +61,6 @@
   "agendaListProjectFilter": "Project: {project}",
   
   "authServiceInvalidCredentials": "Invalid email or password.",
-  "authServiceUnknownAccount": "Account not found.",
   "authServiceUnknownError": "An unknown error occurred during authentication.",
   "authServiceUsernameError": "Username is invalid or already taken.",
   "authServiceEmailError": "Email is invalid or already registered.",
@@ -156,6 +155,8 @@
   "decisionViewPageMeeting": "Meeting",
   "decisionViewPageGoToAgenda": "Go to Agenda",
   
+  "profilePageTitle": "Profile",
+
   "commonCancel": "Cancel",
   "commonSave": "Save",
   "commonDelete": "Delete",
