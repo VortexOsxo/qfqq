@@ -65,7 +65,6 @@
   "agendaListProjectFilter": "Projet : {project}",
   
   "authServiceInvalidCredentials": "Email ou mot de passe invalide.",
-  "authServiceUnknownAccount": "Compte introuvable.",
   "authServiceUnknownError": "Une erreur inconnue est survenue lors de l'authentification.",
   "authServiceUsernameError": "Nom d'utilisateur invalide ou déjà pris.",
   "authServiceEmailError": "Email invalide ou déjà enregistré.",
