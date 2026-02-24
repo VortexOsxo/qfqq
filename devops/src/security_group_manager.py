@@ -1,15 +1,15 @@
 import botocore.exceptions
 from src.boto import boto
+import os
 
 ssh_debug_permissions = (
     {
         "IpProtocol": "tcp",
         "FromPort": 22,
         "ToPort": 22,
-        "IpRanges": [{"CidrIp": "0.0.0.0/0"}],  # TODO: Use select ips
+        "IpRanges": [{"CidrIp": f"{os.getenv('LOCAL_IP')}/32"}],
     },
 )
-
 
 class SecurityGroupManager:
     def __init__(self):

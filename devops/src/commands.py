@@ -1,5 +1,3 @@
-import os
-
 DEFAULT_COMMANDS = """#!/bin/bash
 apt update -y
 apt upgrade -y
@@ -28,14 +26,14 @@ chown ubuntu:ubuntu .env
 echo "DB_URL=$DB_URL" >> .env
 """
 
-INSTALL_PYTHON_AND_RUN_SERVER_COMMANDS = f"""
+INSTALL_PYTHON_AND_RUN_SERVER_COMMANDS = """
 apt install -y python3 python3-pip python3-venv
 python3 -m venv venv
 source venv/bin/activate
 
 pip install -r requirements.txt
 pip install gunicorn
-venv/bin/gunicorn --workers 4 --bind 0.0.0.0:8000 --access-logfile access.log --error-logfile error.log "flaskr:create_app()" &
+nohup venv/bin/gunicorn --workers 4 --bind 0.0.0.0:8000 --access-logfile access.log --error-logfile error.log "flaskr:create_app()" &
 """
 
 
