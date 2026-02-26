@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/user.dart';
-import 'package:http/http.dart' as http;
+import 'package:qfqq/common/services/qfqq_http_client.dart';
 
 class UsersService extends StateNotifier<List<User>> {
-  final String _apiUrl;
+  final QfqqHttpClient http;
 
-  UsersService(String apiUrl) : _apiUrl = apiUrl, super([]) {
+  UsersService(this.http) : super([]) {
     _loadUsers();
   }
 
@@ -17,7 +17,7 @@ class UsersService extends StateNotifier<List<User>> {
 
   Future<List<User>> getUsers() async {
     final response = await http.get(
-      Uri.parse('$_apiUrl/users'),
+      http.getUri("/users"),
       headers: {'Content-Type': 'application/json'},
     );
 

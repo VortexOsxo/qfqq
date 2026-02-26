@@ -12,10 +12,12 @@ from flaskr.utils import (
     verify_missing_inputs,
 )
 from flaskr.reports import MeetingReportBuilder
+from flaskr.utils.login_required import login_required
 
 meeting_agendas_bp = Blueprint(
     "meeting_agendas", __name__, url_prefix="/meeting-agendas"
 )
+meeting_agendas_bp.before_request(login_required)
 
 # TODO: Have a unified way to get and object such as a method agenda from the query body, we can then pass that object to the different method, instead
 # of having to pass each parameter separatedly

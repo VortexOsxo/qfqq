@@ -30,6 +30,7 @@ class AuthState {
 class AuthService extends StateNotifier<AuthState> {
   late String _apiUrl;
   final EventNotifier<String> connectionNotifier = EventNotifier<String>();
+  final EventNotifier<String> disconnectionNotifier = EventNotifier<String>();
 
   AuthService(Ref ref) : super(AuthState()) {
     _apiUrl = ref.read(serverUrlProvider);
@@ -81,15 +82,12 @@ class AuthService extends StateNotifier<AuthState> {
   void logout() {
     // TODO: Clear loaded data on disconnection
     state = AuthState();
+    connectionNotifier.notify("");
   }
 
   // TODO: Handle successful auth
   _onSuccessfulAuth(String sessionId, String email, String username) {
     state = AuthState(sessionId: sessionId, email: email, username: username);
     connectionNotifier.notify(email);
-  }
-
-  Map<String, String> addAuthHeader(Map<String, String> headers) {
-    return {...headers, 'Authorization': 'Bearer ${state.sessionId}'};
   }
 }
