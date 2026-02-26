@@ -2,15 +2,14 @@ from datetime import datetime
 from flask import Blueprint, jsonify, request, g
 
 from flaskr.models import DecisionStatus
-from flaskr.blueprints.auth import login_required
 from flaskr.database import DecisionDataHandler
 from flaskr.utils import verify_missing_inputs, UserIdValidator, StringValidator, MeetingIdValidator
+from flaskr.utils.login_required import login_required
 
 decisions_bp = Blueprint("decisions", __name__, url_prefix="/decisions")
-
+decisions_bp.before_request(login_required)
 
 @decisions_bp.route("", methods=["POST"])
-@login_required
 def create_decision():
     data = request.get_json()
     required_fields = [StringValidator("description"), UserIdValidator("responsibleId"), MeetingIdValidator("meetingId")]

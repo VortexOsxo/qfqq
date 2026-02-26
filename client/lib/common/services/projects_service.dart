@@ -1,20 +1,20 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
 import 'package:qfqq/common/models/errors/project_errors.dart';
 import 'dart:convert';
 import 'package:qfqq/common/models/project.dart';
+import 'package:qfqq/common/services/qfqq_http_client.dart';
 
 class ProjectsService extends StateNotifier<List<Project>> {
-  final String _apiUrl;
+  final QfqqHttpClient _http;
 
-  ProjectsService(String apiUrl) : _apiUrl = apiUrl, super([]) {
+  ProjectsService(this._http) : super([]) {
     _loadProjects();
   }
 
   // TODO: Add feedback
   Future<ProjectErrors> createProject(Project project) async {
-    final response = await http.post(
-      Uri.parse('$_apiUrl/projects'),
+    final response = await _http.post(
+      _http.getUri('projects'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(project.toJson()),
     );
@@ -29,8 +29,8 @@ class ProjectsService extends StateNotifier<List<Project>> {
   }
 
   Future<ProjectErrors> updateProject(Project project) async {
-    final response = await http.put(
-      Uri.parse('$_apiUrl/projects'),
+    final response = await _http.put(
+      _http.getUri('projects'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(project.toJson()),
     );
@@ -51,8 +51,8 @@ class ProjectsService extends StateNotifier<List<Project>> {
   }
 
   Future<List<Project>> getProjects() async {
-    final response = await http.get(
-      Uri.parse('$_apiUrl/projects'),
+    final response = await _http.get(
+      _http.getUri('projects'),
       headers: {'Content-Type': 'application/json'},
     );
 

@@ -1,10 +1,12 @@
 from flask import Blueprint, jsonify
 
 from flaskr.database import UserDataHandler
+from flaskr.utils.login_required import login_required
 
 users_bp = Blueprint('users', __name__, url_prefix='/users')
+users_bp.before_request(login_required)
 
-@users_bp.route('', methods=(['GET']))
+@users_bp.route('', methods=['GET'])
 def get_users():
     users = UserDataHandler.get_users()
     return jsonify([user.to_dict() for user in users]), 200

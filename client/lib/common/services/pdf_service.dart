@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 class PdfService {
+  // TODO: Use proper url and download at the proper place
   Future<void> downloadPdfToDownloads(String url) async {
     final response = await http.get(Uri.parse(url));
 

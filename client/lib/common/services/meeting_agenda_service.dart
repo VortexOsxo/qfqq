@@ -1,23 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:qfqq/common/models/meeting_agenda.dart';
-import 'package:qfqq/common/services/auth_service.dart';
+import 'package:qfqq/common/services/qfqq_http_client.dart';
 
 class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
-  final String _apiUrl;
-  final AuthService _authService;
+  final QfqqHttpClient _http;
 
-  MeetingAgendaService(String apiUrl, AuthService authService)
-    : _apiUrl = apiUrl,
-      _authService = authService,
-      super([]) {
+  MeetingAgendaService(this._http) : super([]) {
     _loadMeetingAgendas();
   }
 
   Future<bool> createMeetingAgenda(MeetingAgenda agenda) async {
-    final response = await http.post(
-      Uri.parse('$_apiUrl/meeting-agendas'),
+    final response = await _http.post(
+      _http.getUri('meeting-agendas'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(agenda),
     );
@@ -28,9 +23,9 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
   }
 
   Future<List<MeetingAgenda>> getMeetingAgendas([String queryArgs = ""]) async {
-    final response = await http.get(
-      Uri.parse('$_apiUrl/meeting-agendas/?$queryArgs'),
-      headers: _authService.addAuthHeader({'Content-Type': 'application/json'}),
+    final response = await _http.get(
+      _http.getUri('meeting-agendas/?$queryArgs'),
+      headers: {'Content-Type': 'application/json'},
     );
 
     if (response.statusCode != 200) return [];
@@ -40,8 +35,8 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
   }
 
   Future<bool> updateMeetingAgenda(MeetingAgenda agenda) async {
-    final response = await http.put(
-      Uri.parse('$_apiUrl/meeting-agendas'),
+    final response = await _http.put(
+      _http.getUri('meeting-agendas'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(agenda),
     );
@@ -55,8 +50,8 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
     int meetingId,
     MeetingAgendaStatus status,
   ) async {
-    final response = await http.patch(
-      Uri.parse('$_apiUrl/meeting-agendas/$meetingId/status'),
+    final response = await _http.patch(
+      _http.getUri('meeting-agendas/$meetingId/status'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'status': status.name}),
     );
