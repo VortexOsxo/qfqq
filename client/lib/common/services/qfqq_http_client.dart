@@ -1,24 +1,20 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:qfqq/common/providers/server_url.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 
 var qfqqHttpClientProvider = Provider(
-  (ref) => QfqqHttpClient(
-    ref.read(authStateProvider.notifier),
-    ref.read(serverUrlProvider),
-  ),
+  (ref) => QfqqHttpClient(ref.read(authStateProvider.notifier)),
 );
+
+const _version = String.fromEnvironment("VERSION");
 
 class QfqqHttpClient extends http.BaseClient {
   final http.Client _inner = http.Client();
-  final String _apiUrl;
+  static const String _apiUrl = String.fromEnvironment("API_URL");
 
   String? token;
 
-  QfqqHttpClient(AuthService authService, String apiUrl)
-    : _apiUrl = apiUrl,
-      token = authService.getSessionId() {
+  QfqqHttpClient(AuthService authService) : token = authService.getSessionId() {
     _initSubscription(authService);
   }
 
@@ -31,6 +27,7 @@ class QfqqHttpClient extends http.BaseClient {
     if (token != null) {
       request.headers['Authorization'] = 'Bearer $token';
     }
+    request.headers['QfqqVersion'] = _version;
 
     return _inner.send(request);
   }

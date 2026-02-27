@@ -4,7 +4,7 @@ from flask import Blueprint, jsonify, request, g
 from flaskr.models import DecisionStatus
 from flaskr.database import DecisionDataHandler
 from flaskr.utils import verify_missing_inputs, UserIdValidator, StringValidator, MeetingIdValidator
-from flaskr.utils.login_required import login_required
+from flaskr.blueprints.before_request import login_required
 
 decisions_bp = Blueprint("decisions", __name__, url_prefix="/decisions")
 decisions_bp.before_request(login_required)

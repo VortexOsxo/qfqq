@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify, request, send_file
 from flaskr.database import ProjectDataHandler, DecisionDataHandler
 from flaskr.utils import get_inputs_errors, StringValidator, UserIdValidator, InputValidator
 from flaskr.reports import ProjectReportBuilder
-from flaskr.utils.login_required import login_required
+from flaskr.blueprints.before_request import login_required
 
 projects_bp = Blueprint("projects", __name__, url_prefix="/projects")
 projects_bp.before_request(login_required)

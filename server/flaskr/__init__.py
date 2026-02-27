@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from flask import Flask
 
 from .database import init_db
-from .blueprints import register_blueprints
+from .blueprints import register_blueprints, get_api_version
 
 def create_app(config_name='development'):
     load_dotenv()
@@ -21,6 +21,7 @@ def create_app(config_name='development'):
         app.config["DATABASE_URL"] = os.environ.get("DB_URL")
 
     register_blueprints(app)
+    app.before_request(get_api_version)
     init_db(app)
 
     return app
