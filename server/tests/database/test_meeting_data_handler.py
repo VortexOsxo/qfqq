@@ -3,14 +3,14 @@ from flaskr.database import MeetingDataHandler
 from flaskr.models import MeetingAgenda
 
 
-def test_get_all_meeting_agendas(app_ctx):
+def test_get_all_meeting_agendas(app):
     meetings = MeetingDataHandler.get_meeting_agendas()
 
     assert len(meetings) == 3
     assert all(isinstance(m, MeetingAgenda) for m in meetings)
 
 
-def test_get_meeting_agenda_by_id(app_ctx):
+def test_get_meeting_agenda_by_id(app):
     meeting = MeetingDataHandler.get_meeting_agenda(1)
 
     assert isinstance(meeting, MeetingAgenda)
@@ -29,7 +29,7 @@ def test_get_meeting_agenda_by_id(app_ctx):
     assert meeting.participantsIds == [1, 3]
 
 
-def test_get_meeting_agenda_with_themes(app_ctx):
+def test_get_meeting_agenda_with_themes(app):
     meeting = MeetingDataHandler.get_meeting_agenda(1)
 
     assert meeting.themes is not None
@@ -37,7 +37,7 @@ def test_get_meeting_agenda_with_themes(app_ctx):
     assert "Timeline" in meeting.themes
 
 
-def test_get_meetings_by_participant_alice(app_ctx):
+def test_get_meetings_by_participant_alice(app):
     meetings = MeetingDataHandler.get_meetings_by_participant(1)
 
     assert len(meetings) == 2
@@ -48,7 +48,7 @@ def test_get_meetings_by_participant_alice(app_ctx):
     assert "Design Sync" in titles
 
 
-def test_create_meeting_with_participants_and_themes(app_ctx):
+def test_create_meeting_with_participants_and_themes(app):
     meeting = MeetingDataHandler.create_meeting_agenda(
         title="Q1 Planning",
         goals="Plan Q1 initiatives",
@@ -69,7 +69,7 @@ def test_create_meeting_with_participants_and_themes(app_ctx):
     assert meeting.themes == ["Budget", "Timeline"]
 
 
-def test_get_newly_created_meeting(app_ctx):
+def test_get_newly_created_meeting(app):
     created_meeting = MeetingDataHandler.create_meeting_agenda(
         title="Retrospective",
         goals="Discuss what went well and what to improve",
@@ -92,17 +92,17 @@ def test_get_newly_created_meeting(app_ctx):
     assert len(fetched_meeting.participantsIds) == 3
 
 
-def test_get_not_found_meeting(app_ctx):
+def test_get_not_found_meeting(app):
     meeting = MeetingDataHandler.get_meeting_agenda(5)
     assert meeting is None
 
 
-def test_get_not_found_meeting_by_participant(app_ctx):
+def test_get_not_found_meeting_by_participant(app):
     meetings = MeetingDataHandler.get_meetings_by_participant(10)
     assert len(meetings) == 0
 
 
-def test_get_meeting_with_participants_names(app_ctx):
+def test_get_meeting_with_participants_names(app):
     meeting, participants = MeetingDataHandler.get_meeting_with_participants(2)
 
     assert meeting.title == "Sprint Review"
@@ -111,7 +111,7 @@ def test_get_meeting_with_participants_names(app_ctx):
     assert "bob" in participants
     assert "dave" in participants
 
-def test_update_meeting_status(app_ctx):
+def test_update_meeting_status(app):
     result = MeetingDataHandler.update_meeting_status(3, 'planned')
     assert result
 

@@ -10,17 +10,18 @@ def app():
     with app.app_context():
         create_db()
         fill_db()
+        yield app
 
-    yield app
+@pytest.fixture()
+def client(app):
+    return app.test_client()
 
 
-@pytest.fixture
-def app_ctx(app):
-    with app.app_context():
-        yield
-
+@pytest.fixture()
+def runner(app):
+    return app.test_cli_runner()
 
 @pytest.fixture(autouse=True)
-def reset_db(app_ctx):
+def reset_db(app):
     fill_db()
     yield
