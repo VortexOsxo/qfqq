@@ -26,3 +26,15 @@ def login_required():
         return jsonify({"error": AuthError.mustBeLoggedIn.value}), 401
 
     g.user_id = data["user_id"]
+
+SUPPORTED_VERSIONS = ['beta']
+
+def get_api_version():
+    if request.method == "OPTIONS":
+        return
+    
+    version = request.headers.get("QfqqVersion", "")
+    if version not in SUPPORTED_VERSIONS:
+        return jsonify({"error": "Unsuported API Version"}), 400
+    
+    g.version = version

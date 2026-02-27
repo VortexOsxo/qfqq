@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify
 
 from flaskr.database import UserDataHandler
-from flaskr.utils.login_required import login_required
+from flaskr.blueprints.before_request import login_required
 
 users_bp = Blueprint('users', __name__, url_prefix='/users')
 users_bp.before_request(login_required)
