@@ -22,13 +22,16 @@ class QfqqHttpClient extends http.BaseClient {
     return Uri.parse('$_apiUrl/$route');
   }
 
+  void addHeaders(Map<String,String> headers) {
+    if (token != null) {
+      headers['Authorization'] = 'Bearer $token';
+    }
+    headers['QfqqVersion'] = _version;
+  }
+
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) {
-    if (token != null) {
-      request.headers['Authorization'] = 'Bearer $token';
-    }
-    request.headers['QfqqVersion'] = _version;
-
+    addHeaders(request.headers);
     return _inner.send(request);
   }
 

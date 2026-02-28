@@ -72,10 +72,7 @@ class MeetingViewContent extends ConsumerWidget {
   Widget _completedContent(BuildContext context) {
     final Locale locale = Localizations.localeOf(context);
 
-    // TODO: Fix url
-    final pdfUrl =
-        'http://localhost:5000/meeting-agendas/${meeting.id}/reports?lang=${locale.languageCode}';
-
+    final pdfUrl = 'meeting-agendas/${meeting.id}/reports?lang=${locale.languageCode}';
     return PdfViewerWidget(pdfUrl: pdfUrl);
   }
 }

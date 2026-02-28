@@ -36,8 +36,7 @@ class ProjectContentWidget extends ConsumerWidget {
   Widget buildReportViewer(BuildContext context) {
     final Locale locale = Localizations.localeOf(context);
 
-    final pdfUrl = 'http://localhost:5000/projects/$projectId/reports?lang=${locale.languageCode}';
-
+    final pdfUrl = 'projects/$projectId/reports?lang=${locale.languageCode}';
     return PdfViewerWidget(pdfUrl: pdfUrl);
   }
 }
