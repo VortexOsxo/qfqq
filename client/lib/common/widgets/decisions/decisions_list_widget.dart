@@ -7,9 +7,11 @@ import 'package:qfqq/common/providers/decisions_provider.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/templates/card_template.dart';
+import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/widgets/default_text_field.dart';
+import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class DecisionsListWidget extends ConsumerStatefulWidget {
@@ -171,7 +173,7 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
             Expanded(flex: 3, child: Text(loc.decisionListResponsible)),
             Expanded(flex: 3, child: Text(loc.decisionListProject)),
             Expanded(
-              flex: 3,
+              flex: 2,
               child: Align(
                 alignment: Alignment.center,
                 child: Text(S.of(context).commonAction),
@@ -189,10 +191,6 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
             itemBuilder: (context, index) {
               final loc = S.of(context);
               final decision = decisions[index];
-              final project =
-                  isIdValid(decision.projectId)
-                      ? ref.watch(projectProviderById(decision.projectId!))
-                      : null;
               final responsible =
                   isIdValid(decision.responsibleId)
                       ? ref.watch(userByIdProvider(decision.responsibleId!))
@@ -226,21 +224,20 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
                   ),
                   Expanded(
                     flex: 3,
-                    child: Text(
-                      project != null ? project.title : loc.commonNoProjectSet,
+                    child: ProjectClickableTextWidget(
+                      projectId: decision.projectId,
                     ),
                   ),
                   Expanded(
-                    flex: 3,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextButton(
-                          child: Text(loc.agendaListView),
-                          onPressed:
-                              () => context.go('/decisions/${decision.id}'),
-                        ),
-                      ],
+                    flex: 2,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: TextButton(
+                        style: inplaceTextButtonStyle(context),
+                        child: Text(loc.agendaListView),
+                        onPressed:
+                            () => context.go('/decisions/${decision.id}'),
+                      ),
                     ),
                   ),
                   SizedBox(width: 16),

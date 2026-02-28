@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// Buttons
+
 ButtonStyle squareButtonStyle(BuildContext context) {
   final theme = Theme.of(context);
 
@@ -11,4 +13,8 @@ ButtonStyle squareButtonStyle(BuildContext context) {
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
     textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
   );
+}
+
+ButtonStyle inplaceTextButtonStyle(BuildContext context) {
+  return TextButton.styleFrom(padding: EdgeInsets.zero);
 }
