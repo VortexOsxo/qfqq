@@ -184,31 +184,20 @@ class AgendasListPage extends ConsumerWidget {
       return buildContentListCardTemplate(cardContent);
     }
 
-    void startMeeting(agenda) async {
-      final meetingsService = ref.read(meetingAgendaServiceProvider);
-
-      await meetingsService.updateMeetingAgendaStatus(
-        agenda.id,
-        MeetingAgendaStatus.ongoing,
-      );
-      if (context.mounted) {
-        context.go('/agendas/${agenda.id}');
-      }
-    }
-
     Widget cardContent = Column(
       children: [
         Row(
           children: [
             SizedBox(width: 16),
-            Expanded(child: Text(S.of(context).agendaListNumber)),
-            Expanded(child: Text(S.of(context).agendaListTitle)),
-            Expanded(child: Text(S.of(context).attributeStatus)),
-            Expanded(child: Text(S.of(context).agendaListDate)),
-            Expanded(child: Text(S.of(context).agendaListLocation)),
-            Expanded(child: Text(S.of(context).agendaListAnimator)),
-            Expanded(child: Text(S.of(context).agendaListProject)),
+            Expanded(flex: 1, child: Text(S.of(context).agendaListNumber)),
+            Expanded(flex: 3, child: Text(S.of(context).agendaListTitle)),
+            Expanded(flex: 3, child: Text(S.of(context).attributeStatus)),
+            Expanded(flex: 3, child: Text(S.of(context).agendaListDate)),
+            Expanded(flex: 3, child: Text(S.of(context).agendaListLocation)),
+            Expanded(flex: 3, child: Text(S.of(context).agendaListAnimator)),
+            Expanded(flex: 3, child: Text(S.of(context).agendaListProject)),
             Expanded(
+              flex: 3,
               child: Align(
                 alignment: Alignment.center,
                 child: Text(S.of(context).commonAction),
@@ -239,10 +228,14 @@ class AgendasListPage extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   SizedBox(width: 16),
-                  Expanded(child: Text(agenda.number.toString())),
-                  Expanded(child: Text(agenda.title)),
-                  Expanded(child: MeetingStatusChip(status: agenda.status)),
+                  Expanded(flex: 1, child: Text(agenda.number.toString())),
+                  Expanded(flex: 3, child: Text(agenda.title)),
                   Expanded(
+                    flex: 3,
+                    child: MeetingStatusChip(status: agenda.status),
+                  ),
+                  Expanded(
+                    flex: 3,
                     child: Text(
                       agenda.meetingDate != null
                           ? formatDate(context, agenda.meetingDate)
@@ -250,11 +243,13 @@ class AgendasListPage extends ConsumerWidget {
                     ),
                   ),
                   Expanded(
+                    flex: 3,
                     child: Text(
                       agenda.meetingLocation ?? loc.commonNoLocationSet,
                     ),
                   ),
                   Expanded(
+                    flex: 3,
                     child: Text(
                       animator != null
                           ? animator.username
@@ -262,27 +257,16 @@ class AgendasListPage extends ConsumerWidget {
                     ),
                   ),
                   Expanded(
+                    flex: 3,
                     child: Text(
                       project != null ? project.title : loc.commonNoProjectSet,
                     ),
                   ),
                   Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextButton(
-                          child: Text(loc.agendaListView),
-                          onPressed: () => context.go('/agendas/${agenda.id}'),
-                        ),
-                        SizedBox(width: 8),
-                        TextButton(
-                          onPressed:
-                              agenda.status != MeetingAgendaStatus.planned
-                                  ? null
-                                  : () => startMeeting(agenda),
-                          child: Text(loc.agendaListStart),
-                        ),
-                      ],
+                    flex: 3,
+                    child: TextButton(
+                      child: Text(loc.agendaListView),
+                      onPressed: () => context.go('/agendas/${agenda.id}'),
                     ),
                   ),
                   SizedBox(width: 16),
