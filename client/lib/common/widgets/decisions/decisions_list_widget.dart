@@ -11,6 +11,7 @@ import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/widgets/default_text_field.dart';
+import 'package:qfqq/common/widgets/empty_list_widget.dart';
 import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -144,20 +145,8 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
   ) {
     final loc = S.of(context);
     if (decisions.isEmpty) {
-      Widget cardContent = Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.list_alt, size: 64, color: Colors.grey),
-            const SizedBox(height: 16),
-            Text(
-              S.of(context).decisionsListPageEmpty,
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(color: Colors.grey),
-            ),
-          ],
-        ),
+      Widget cardContent = EmptyListWidget(
+        text: S.of(context).decisionsListPageEmpty,
       );
       return buildContentListCardTemplate(cardContent);
     }

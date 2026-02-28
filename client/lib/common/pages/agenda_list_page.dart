@@ -13,6 +13,7 @@ import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_status_chip.dart';
 import 'package:qfqq/common/widgets/default_text_field.dart';
+import 'package:qfqq/common/widgets/empty_list_widget.dart';
 import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -167,20 +168,8 @@ class AgendasListPage extends ConsumerWidget {
     List<MeetingAgenda> agendas,
   ) {
     if (agendas.isEmpty) {
-      Widget cardContent = Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.list_alt, size: 64, color: Colors.grey),
-            const SizedBox(height: 16),
-            Text(
-              S.of(context).agendasListPageEmpty,
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(color: Colors.grey),
-            ),
-          ],
-        ),
+      Widget cardContent = EmptyListWidget(
+        text: S.of(context).agendasListPageEmpty,
       );
       return buildContentListCardTemplate(cardContent);
     }
