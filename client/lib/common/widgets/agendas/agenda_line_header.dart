@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
+import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class AgendaLineHeader extends ConsumerWidget {
@@ -31,6 +32,7 @@ class AgendaLineHeader extends ConsumerWidget {
           ),
           SizedBox(width: 8),
           TextButton(
+            style: inplaceTextButtonStyle(context),
             child: Text(loc.commonView),
             onPressed: () => context.go('/agendas/${agenda.id}'),
           ),

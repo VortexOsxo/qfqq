@@ -13,6 +13,7 @@ import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_status_chip.dart';
 import 'package:qfqq/common/widgets/default_text_field.dart';
+import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 final agendaSearchQueryProvider = StateProvider<String>((ref) => '');
@@ -197,7 +198,7 @@ class AgendasListPage extends ConsumerWidget {
             Expanded(flex: 3, child: Text(S.of(context).agendaListAnimator)),
             Expanded(flex: 3, child: Text(S.of(context).agendaListProject)),
             Expanded(
-              flex: 3,
+              flex: 2,
               child: Align(
                 alignment: Alignment.center,
                 child: Text(S.of(context).commonAction),
@@ -215,10 +216,6 @@ class AgendasListPage extends ConsumerWidget {
             itemBuilder: (context, index) {
               final loc = S.of(context);
               final agenda = agendas[index];
-              final project =
-                  isIdValid(agenda.projectId)
-                      ? ref.watch(projectProviderById(agenda.projectId!))
-                      : null;
               final animator =
                   isIdValid(agenda.animatorId)
                       ? ref.watch(userByIdProvider(agenda.animatorId!))
@@ -258,15 +255,19 @@ class AgendasListPage extends ConsumerWidget {
                   ),
                   Expanded(
                     flex: 3,
-                    child: Text(
-                      project != null ? project.title : loc.commonNoProjectSet,
+                    child: ProjectClickableTextWidget(
+                      projectId: agenda.projectId,
                     ),
                   ),
                   Expanded(
-                    flex: 3,
-                    child: TextButton(
+                    flex: 2,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: TextButton(
+                      style: inplaceTextButtonStyle(context),
                       child: Text(loc.agendaListView),
                       onPressed: () => context.go('/agendas/${agenda.id}'),
+                    ),
                     ),
                   ),
                   SizedBox(width: 16),
