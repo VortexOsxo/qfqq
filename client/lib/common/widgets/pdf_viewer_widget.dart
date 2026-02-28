@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pdfrx/pdfrx.dart';
 import 'package:qfqq/common/services/pdf_service.dart';
+import 'package:qfqq/common/services/qfqq_http_client.dart';
 
-class PdfViewerWidget extends StatefulWidget {
+class PdfViewerWidget extends ConsumerStatefulWidget {
   final String pdfUrl;
 
   const PdfViewerWidget({super.key, required this.pdfUrl});
 
   @override
-  State<StatefulWidget> createState() {
+  ConsumerState<ConsumerStatefulWidget> createState() {
     return _PdfViewerState();
   }
 }
 
-class _PdfViewerState extends State<PdfViewerWidget> {
+class _PdfViewerState extends ConsumerState<PdfViewerWidget> {
   final PdfViewerController _controller = PdfViewerController();
 
   @override
@@ -47,9 +49,14 @@ class _PdfViewerState extends State<PdfViewerWidget> {
       },
     );
 
+    final QfqqHttpClient client = ref.read(qfqqHttpClientProvider);
+    final headers = <String, String>{};
+    client.addHeaders(headers);
+
     final viewer = PdfViewer.uri(
-      Uri.parse(widget.pdfUrl),
+      client.getUri(widget.pdfUrl),
       controller: _controller,
+      headers: headers,
     );
 
     return Stack(
