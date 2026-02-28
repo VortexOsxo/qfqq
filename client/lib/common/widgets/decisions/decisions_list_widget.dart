@@ -164,13 +164,14 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
         Row(
           children: [
             SizedBox(width: 16),
-            Expanded(child: Text(loc.decisionListNumber)),
-            Expanded(child: Text(loc.decisionListDescription)),
-            Expanded(child: Text(loc.attributeStatus)),
-            Expanded(child: Text(loc.decisionListDueDate)),
-            Expanded(child: Text(loc.decisionListResponsible)),
-            Expanded(child: Text(loc.decisionListProject)),
+            Expanded(flex: 1, child: Text(loc.decisionListNumber)),
+            Expanded(flex: 3, child: Text(loc.decisionListDescription)),
+            Expanded(flex: 3, child: Text(loc.attributeStatus)),
+            Expanded(flex: 3, child: Text(loc.decisionListDueDate)),
+            Expanded(flex: 3, child: Text(loc.decisionListResponsible)),
+            Expanded(flex: 3, child: Text(loc.decisionListProject)),
             Expanded(
+              flex: 3,
               child: Align(
                 alignment: Alignment.center,
                 child: Text(S.of(context).commonAction),
@@ -197,15 +198,18 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
                       ? ref.watch(userByIdProvider(decision.responsibleId!))
                       : null;
 
-
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   SizedBox(width: 16),
-                  Expanded(child: Text(decision.number.toString())),
-                  Expanded(child: Text(decision.description)),
-                  Expanded(child: Text(getDecisionStatusName(decision.status))),
+                  Expanded(flex: 1, child: Text(decision.number.toString())),
+                  Expanded(flex: 3, child: Text(decision.description)),
                   Expanded(
+                    flex: 3,
+                    child: Text(getDecisionStatusName(decision.status)),
+                  ),
+                  Expanded(
+                    flex: 3,
                     child: Text(
                       decision.dueDate != null
                           ? formatDate(context, decision.dueDate)
@@ -213,6 +217,7 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
                     ),
                   ),
                   Expanded(
+                    flex: 3,
                     child: Text(
                       responsible != null
                           ? responsible.username
@@ -220,11 +225,13 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
                     ),
                   ),
                   Expanded(
+                    flex: 3,
                     child: Text(
                       project != null ? project.title : loc.commonNoProjectSet,
                     ),
                   ),
                   Expanded(
+                    flex: 3,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

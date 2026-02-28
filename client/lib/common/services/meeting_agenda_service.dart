@@ -1,13 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:convert';
 import 'package:qfqq/common/models/meeting_agenda.dart';
+import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
 
 class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
   final QfqqHttpClient _http;
 
-  MeetingAgendaService(this._http) : super([]) {
-    _loadMeetingAgendas();
+  MeetingAgendaService(this._http, AuthService auth) : super([]) {
+    auth.connectionNotifier.subscribe((p0) => _loadMeetingAgendas());
   }
 
   Future<bool> createMeetingAgenda(MeetingAgenda agenda) async {
