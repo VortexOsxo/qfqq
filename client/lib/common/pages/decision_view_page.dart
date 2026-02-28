@@ -80,7 +80,7 @@ class DecisionViewPage extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            '${loc.decisionListNumber}: ${decision.number}',
+            '${loc.attributeNumber}: ${decision.number}',
             style: theme.textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: theme.primaryColor,

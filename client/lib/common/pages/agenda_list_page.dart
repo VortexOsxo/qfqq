@@ -190,7 +190,7 @@ class AgendasListPage extends ConsumerWidget {
         Row(
           children: [
             SizedBox(width: 16),
-            Expanded(flex: 1, child: Text(S.of(context).agendaListNumber)),
+            Expanded(flex: 1, child: Text(S.of(context).attributeNumber)),
             Expanded(flex: 3, child: Text(S.of(context).agendaListTitle)),
             Expanded(flex: 3, child: Text(S.of(context).attributeStatus)),
             Expanded(flex: 3, child: Text(S.of(context).agendaListDate)),
