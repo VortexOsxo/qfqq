@@ -8,6 +8,7 @@ import 'package:qfqq/common/widgets/agendas/meeting_status_chip.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_content.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_control.dart';
 import 'package:qfqq/common/widgets/details_attribute_widget.dart';
+import 'package:qfqq/common/widgets/details_list_widget.dart';
 import 'package:qfqq/common/widgets/projects/project_title_link_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -146,49 +147,25 @@ class AgendaViewPage extends ConsumerWidget {
             label: loc.attributeAnimator,
             value: animator?.username ?? loc.commonNoAnimatorSet,
           ),
-          _detailText('${loc.attributeThemes}: '),
-          _buildThemes(context, agenda),
+          DetailsListWidget(
+            label: loc.attributeThemes,
+            emptyLabel: loc.attributeNoThemes,
+            values: agenda.themes,
+          ),
           const SizedBox(height: 8),
-          _detailText('${loc.attributeParticipants}: '),
-          _buildParticipants(context, ref, agenda),
+          DetailsListWidget(
+            label: loc.attributeParticipants,
+            emptyLabel: loc.attributeNoParticipants,
+            values:
+                agenda.participantsIds.map((participantId) {
+                  final participant = ref.watch(
+                    userByIdProvider(participantId),
+                  );
+                  return participant?.username ?? loc.commonUnknown;
+                }).toList(),
+          ),
         ],
       ),
-    );
-  }
-
-  Widget _detailText(String text) {
-    return Text(text, style: TextStyle(fontWeight: FontWeight.bold));
-  }
-
-  Widget _buildThemes(BuildContext context, MeetingAgenda agenda) {
-    final loc = S.of(context);
-    if (agenda.themes.isEmpty) {
-      return Text(loc.attributeNoThemes);
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: agenda.themes.map((theme) => Text('• $theme')).toList(),
-    );
-  }
-
-  Widget _buildParticipants(
-    BuildContext context,
-    WidgetRef ref,
-    MeetingAgenda agenda,
-  ) {
-    final loc = S.of(context);
-    if (agenda.participantsIds.isEmpty) {
-      return Text(loc.attributeNoParticipants);
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children:
-          agenda.participantsIds.map((participantId) {
-            final participant = ref.watch(userByIdProvider(participantId));
-            return Text('• ${participant?.username ?? loc.commonUnknown}');
-          }).toList(),
     );
   }
 }
