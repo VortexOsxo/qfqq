@@ -43,7 +43,7 @@ def verify_missing_inputs(data: Input, validators: list[InputValidator]) -> list
     ]
 
 
-def get_inputs_errors(data: Input, validators: list[InputValidator]) -> dict[str, int]:
+def get_inputs_errors(data: Input, validators: list[InputValidator]) -> dict[str, InputError]:
     results = [
         (validator.field_name, validator.validate(data)) for validator in validators
     ]

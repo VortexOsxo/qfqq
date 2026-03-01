@@ -31,7 +31,7 @@ def signup():
         username, email, generate_password_hash(password)
     )
     if user is None:
-        return jsonify({"email": InputError.EmailMustBeUnique.value}), 400
+        return jsonify({"email": InputError.EmailMustBeUnique}), 400
 
     token = jwt.encode(
         {"user_id": str(user.id), "exp": datetime.utcnow() + timedelta(hours=3)},
@@ -61,7 +61,7 @@ def login():
     user = UserDataHandler.get_user_by_email(email)
 
     if user is None or not check_password_hash(user.passwordHash, password):
-        return jsonify({"auth": InputError.InvalidLogin.value}), 401
+        return jsonify({"auth": InputError.InvalidLogin}), 401
 
     token = jwt.encode(
         {"user_id": str(user.id), "exp": datetime.utcnow() + timedelta(hours=3)},
