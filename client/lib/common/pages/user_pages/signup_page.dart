@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/providers/router_provider.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/generated/l10n.dart';
 import 'package:qfqq/common/widgets/common_app_bar.dart';
 
@@ -50,37 +51,56 @@ class _SignupPageState extends ConsumerState<SignupPage> {
 
     return Scaffold(
       appBar: CommonAppBar(title: loc.signupPageTitle, showHomeButton: false),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _signupFormKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                decoration: InputDecoration(labelText: loc.attributeEmail),
-                onSaved: (val) => signupEmail = val ?? '',
+      body: Center(
+        child: SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 500),
+            child: Form(
+              key: _signupFormKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    decoration: InputDecoration(labelText: loc.attributeEmail),
+                    onSaved: (val) => signupEmail = val ?? '',
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: loc.attributeUsername,
+                    ),
+                    onSaved: (val) => signupUsername = val ?? '',
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: loc.attributePassword,
+                    ),
+                    obscureText: true,
+                    onSaved: (val) => signupPassword = val ?? '',
+                  ),
+                  const SizedBox(height: 16),
+                  if (signupError.isNotEmpty)
+                    Text(
+                      signupError,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: ElevatedButton(
+                      style: squareButtonStyle(context),
+                      onPressed: _submitSignup,
+                      child: Text(loc.signupPageButtonSignup),
+                    ),
+                  ),
+                  SizedBox(height: 32),
+                  Align(
+                    alignment: Alignment.center,
+                    child: TextButton(
+                      onPressed: () => context.go('/login'),
+                      child: Text(loc.signupPageLinkLogin),
+                    ),
+                  ),
+                ],
               ),
-              TextFormField(
-                decoration: InputDecoration(labelText: loc.attributeUsername),
-                onSaved: (val) => signupUsername = val ?? '',
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: loc.attributePassword),
-                obscureText: true,
-                onSaved: (val) => signupPassword = val ?? '',
-              ),
-              const SizedBox(height: 16),
-              if (signupError.isNotEmpty)
-                Text(signupError, style: const TextStyle(color: Colors.red)),
-              ElevatedButton(
-                onPressed: _submitSignup,
-                child: Text(loc.signupPageButtonSignup),
-              ),
-              TextButton(
-                onPressed: () => context.go('/login'),
-                child: Text(loc.signupPageLinkLogin),
-              ),
-            ],
+            ),
           ),
         ),
       ),

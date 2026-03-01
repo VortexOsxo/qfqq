@@ -78,7 +78,8 @@
   "loginPageTitle": "Connexion",
   "loginPageButtonLogin": "Se connecter",
   "loginPageLinkSignup": "Pas de compte ? S'inscrire",
-  
+  "loginPageForgottenPasswordLink": "Mot de passe oublié ? Cliquez ici pour le réinitialiser.",
+
   "homePageTitle": "Accueil",
   "homePageResponsabilities": "Responsabilités",
   "homePageFutureMeetings": "Réunions à venir",
