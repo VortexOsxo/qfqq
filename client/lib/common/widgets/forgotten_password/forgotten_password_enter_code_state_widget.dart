@@ -50,7 +50,10 @@ class ForgottenPasswordEnterCodeStateWidget extends ConsumerWidget {
           child: Text(loc.forgottenPasswordPageConfirm),
         ),
         TextButton(
-          onPressed: () => context.go('/login'),
+          onPressed: () {
+            ref.read(forgottenPasswordStateProvider.notifier).reset();
+            context.go('/forgotten-password');
+          },
           child: Text(loc.forgottenPasswordPageResendCodeLink),
         ),
         SizedBox(height: 8),

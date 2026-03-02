@@ -5,7 +5,6 @@ import 'package:qfqq/common/providers/router_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/services/forgotten_password_service.dart';
 import 'package:qfqq/common/theme/styles.dart';
-import 'package:qfqq/common/widgets/common_app_bar.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -40,53 +39,41 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget build(BuildContext context) {
     final loc = S.of(context);
 
-    return Scaffold(
-      appBar: CommonAppBar(title: loc.loginPageTitle, showHomeButton: false),
-      body: Center(
-        child: SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 500),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    decoration: InputDecoration(labelText: loc.attributeEmail),
-                    onSaved: (val) => email = val ?? '',
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: loc.attributePassword,
-                    ),
-                    obscureText: true,
-                    onSaved: (val) => password = val ?? '',
-                  ),
-                  const SizedBox(height: 16),
-                  if (error.isNotEmpty)
-                    Text(error, style: const TextStyle(color: Colors.red)),
-                  ElevatedButton(
-                    style: squareButtonStyle(context),
-                    onPressed: _submit,
-                    child: Text(loc.loginPageButtonLogin),
-                  ),
-                  const SizedBox(height: 32),
-                  TextButton(
-                    onPressed: () => context.go('/signup'),
-                    child: Text(loc.loginPageLinkSignup),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      ref.read(forgottenPasswordStateProvider.notifier).reset();
-                      context.go('/forgotten-password');
-                    },
-                    child: Text(loc.loginPageForgottenPasswordLink),
-                  ),
-                ],
-              ),
-            ),
+    return Form(
+      key: _formKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextFormField(
+            decoration: InputDecoration(labelText: loc.attributeEmail),
+            onSaved: (val) => email = val ?? '',
           ),
-        ),
+          TextFormField(
+            decoration: InputDecoration(labelText: loc.attributePassword),
+            obscureText: true,
+            onSaved: (val) => password = val ?? '',
+          ),
+          const SizedBox(height: 16),
+          if (error.isNotEmpty)
+            Text(error, style: const TextStyle(color: Colors.red)),
+          ElevatedButton(
+            style: squareButtonStyle(context),
+            onPressed: _submit,
+            child: Text(loc.loginPageButtonLogin),
+          ),
+          const SizedBox(height: 32),
+          TextButton(
+            onPressed: () => context.go('/signup'),
+            child: Text(loc.loginPageLinkSignup),
+          ),
+          TextButton(
+            onPressed: () {
+              ref.read(forgottenPasswordStateProvider.notifier).reset();
+              context.go('/forgotten-password');
+            },
+            child: Text(loc.loginPageForgottenPasswordLink),
+          ),
+        ],
       ),
     );
   }

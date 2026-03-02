@@ -15,6 +15,7 @@ import 'package:qfqq/common/pages/project_view_page.dart';
 import 'package:qfqq/common/pages/user_pages/profile_page.dart';
 import 'package:qfqq/common/pages/user_pages/signup_page.dart';
 import 'package:qfqq/common/pages/agenda_list_page.dart';
+import 'package:qfqq/common/widgets/scaffolds/auth_page_scaffold.dart';
 
 import 'package:qfqq/common/widgets/scaffolds/default_page_scaffold.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -25,11 +26,12 @@ final GoRouter desktopRouter = GoRouter(
   initialLocation: '/login',
   routes: [
     ShellRoute(
-      builder: (context, state, child) => defaultPageScaffold(
-        context,
-        child,
-        title: _getTitleForRoute(context, state),
-      ),
+      builder:
+          (context, state, child) => defaultPageScaffold(
+            context,
+            child,
+            title: _getTitleForRoute(context, state),
+          ),
       routes: [
         GoRoute(
           path: '/',
@@ -97,20 +99,39 @@ final GoRouter desktopRouter = GoRouter(
         GoRoute(
           path: '/profile',
           pageBuilder: (context, state) => _noTransition(const ProfilePage()),
-        )
+        ),
       ],
     ),
 
-    GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
-    GoRoute(path: '/signup', builder: (context, state) => const SignupPage()),
-    GoRoute(path: '/forgotten-password', builder: (context, state) => const ForgottenPasswordPage()),
+    ShellRoute(
+      builder:
+          (context, state, child) => authPageScaffold(
+            context,
+            child,
+            title: _getTitleForRoute(context, state),
+          ),
+      routes: [
+        GoRoute(
+          path: '/login',
+          pageBuilder: (context, state) => _noTransition(const LoginPage()),
+        ),
+        GoRoute(
+          path: '/signup',
+          pageBuilder: (context, state) => _noTransition(const SignupPage()),
+        ),
+        GoRoute(
+          path: '/forgotten-password',
+          pageBuilder: (context, state) => _noTransition(const ForgottenPasswordPage()),
+        ),
+      ],
+    ),
   ],
 );
 
 String? _getTitleForRoute(BuildContext context, GoRouterState state) {
   final loc = S.of(context);
   final fullPath = state.fullPath;
-  
+
   if (fullPath == null) return null;
 
   switch (fullPath) {
@@ -118,8 +139,8 @@ String? _getTitleForRoute(BuildContext context, GoRouterState state) {
       return loc.homePageTitle;
     case '/agenda':
       final agenda = state.extra as MeetingAgenda?;
-      return agenda == null 
-          ? '${loc.agendaPageTitleAppBar} - Create' 
+      return agenda == null
+          ? '${loc.agendaPageTitleAppBar} - Create'
           : '${loc.agendaPageTitleAppBar} - Update';
     case '/agendas':
       return loc.agendasListPageTitle;
@@ -137,6 +158,12 @@ String? _getTitleForRoute(BuildContext context, GoRouterState state) {
       return loc.projectViewPageTitle;
     case '/profile':
       return loc.profilePageTitle;
+    case 'login':
+      return loc.loginPageTitle;
+    case 'signup':
+      return loc.signupPageTitle;
+    case '/forgotten-password':
+      return loc.forgottenPasswordPageTitle;
     default:
       return null;
   }
