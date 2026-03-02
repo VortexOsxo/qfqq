@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/models/states/auth_state.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/widgets/details_attribute_widget.dart';
@@ -14,7 +15,7 @@ class ProfilePage extends ConsumerWidget {
     final authState = ref.watch(authStateProvider);
 
     if (authState.username == null || authState.email == null) {
-      return SizedBox.shrink();
+      return SizedBox.shrink(); // TODO: Had an explaition message and allow to 'disconnect' and go to login page
     }
 
     return Padding(
@@ -32,7 +33,7 @@ class ProfilePage extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.all(8),
                   child: SizedBox(
-                    width: 150,
+                    width: 300,
                     child: _buildAccountInfo(context, ref, authState),
                   ),
                 ),

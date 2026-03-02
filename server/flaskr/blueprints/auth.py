@@ -5,6 +5,7 @@ import jwt
 
 from flaskr.database import UserDataHandler
 from flaskr.utils import get_inputs_errors, InputError, StringValidator, EmailValidator
+from flaskr.services.reset_password_service import ResetPasswordService
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -71,3 +72,59 @@ def login():
 
     return jsonify({"session_token": token} | user.to_dict()), 200
 
+
+@auth_bp.post("forgotten-password/request-code")
+def request_code():
+    data = request.get_json()
+
+    validator = EmailValidator("email")
+
+    email_error = validator.validate(data)
+    if email_error != InputError.NoError:
+        return jsonify({"email": email_error.value}), 400
+
+    email = data["email"]
+    user = UserDataHandler.get_user_by_email(email)
+    if user is None:
+        return jsonify({"email": InputError.EmailNotFound})
+
+    result = ResetPasswordService.reset_password(email)
+    return ("", 204) if result else (jsonify({"error": InputError.UnknownError}), 400)
+
+
+@auth_bp.post("forgotten-password/validate-code")
+def validate_code():
+    data = request.get_json()
+
+    required_fields = [EmailValidator("email"), StringValidator("code")]
+    errors = get_inputs_errors(data, required_fields)
+    if errors:
+        return jsonify(errors), 400
+
+    email, code = data["email"], data["code"]
+
+    result = ResetPasswordService.is_code_valid(email, code)
+    return ("", 204) if result else (jsonify({"error": InputError.UnknownError}), 400)
+
+
+@auth_bp.post("forgotten-password/update")
+def update():
+    data = request.get_json()
+
+    required_fields = [
+        EmailValidator("email"),
+        StringValidator("code"),
+        StringValidator("password"),
+    ]
+    errors = get_inputs_errors(data, required_fields)
+    if errors:
+        return jsonify(errors), 400
+
+    email, code, password = data["email"], data["code"], data["password"]
+
+    result = ResetPasswordService.is_code_valid(email, code)
+    if not result:
+        return jsonify({"error": InputError.UnknownError}), 400
+
+    ResetPasswordService.update_password(email, password)
+    return "", 204

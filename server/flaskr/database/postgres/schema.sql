@@ -4,7 +4,9 @@ meetings,
 meetingsThemes,
 meetingsParticipants,
 decisions,
-decisionsAssistants CASCADE;
+decisionsAssistants,
+passwordRequests
+CASCADE;
 
 DROP TYPE IF EXISTS meetingStatus,
 decisionStatus CASCADE;
@@ -131,3 +133,11 @@ FROM
       decisionId
   ) da ON da.decisionId = d.id
   JOIN meetings m on m.id = d.meetingId;
+
+CREATE TABLE
+  passwordRequests (
+    email TEXT REFERENCES users (email),
+    code TEXT,
+    date TEXT,
+    PRIMARY KEY (email)
+  );

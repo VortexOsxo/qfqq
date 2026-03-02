@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/providers/router_provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/services/forgotten_password_service.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/widgets/common_app_bar.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -75,7 +76,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     child: Text(loc.loginPageLinkSignup),
                   ),
                   TextButton(
-                    onPressed: () => context.go('/forgoten-password'),
+                    onPressed: () {
+                      ref.read(forgottenPasswordStateProvider.notifier).reset();
+                      context.go('/forgotten-password');
+                    },
                     child: Text(loc.loginPageForgottenPasswordLink),
                   ),
                 ],

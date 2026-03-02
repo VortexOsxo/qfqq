@@ -15,6 +15,15 @@ ButtonStyle squareButtonStyle(BuildContext context) {
   );
 }
 
+ButtonStyle squareButtonStyleSmall(BuildContext context) {
+  return squareButtonStyle(context).copyWith(
+    padding: WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: 16, vertical: 12)),
+    textStyle: WidgetStateProperty.all(
+      TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+    ),
+  );
+}
+
 ButtonStyle inplaceTextButtonStyle(BuildContext context) {
   return TextButton.styleFrom(padding: EdgeInsets.zero);
 }
