@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/mobile/mobile_router.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:qfqq/generated/l10n.dart';
+import 'package:qfqq/common/providers/locale_provider.dart';
 
-class MobileApp extends StatelessWidget {
+class MobileApp extends ConsumerWidget {
   const MobileApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
       routerConfig: mobileRouter,
+      locale: ref.watch(localeProvider),
       localizationsDelegates: const [
         S.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -17,19 +20,6 @@ class MobileApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: S.delegate.supportedLocales,
-      localeListResolutionCallback: (locales, supportedLocales) {
-        if (locales != null) {
-          for (var locale in locales) {
-            if (locale.languageCode == 'en') {
-              return const Locale('en');
-            }
-            if (locale.languageCode == 'fr') {
-              return const Locale('fr');
-            }
-          }
-        }
-        return const Locale('fr');
-      },
     );
   }
 }

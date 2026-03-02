@@ -5,6 +5,8 @@ import 'package:qfqq/desktop/desktop_router.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:qfqq/generated/l10n.dart';
 import 'package:qfqq/common/theme/theme.dart';
+import 'package:qfqq/common/providers/locale_provider.dart';
+
 class DesktopApp extends ConsumerWidget {
   const DesktopApp({super.key});
 
@@ -15,6 +17,7 @@ class DesktopApp extends ConsumerWidget {
 
     return MaterialApp.router(
       routerConfig: desktopRouter,
+      locale: ref.watch(localeProvider),
       localizationsDelegates: const [
         S.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -22,19 +25,6 @@ class DesktopApp extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: S.delegate.supportedLocales,
-      localeListResolutionCallback: (locales, supportedLocales) {
-        if (locales != null) {
-          for (var locale in locales) {
-            if (locale.languageCode == 'en') {
-              return const Locale('fr');
-            }
-            if (locale.languageCode == 'fr') {
-              return const Locale('fr');
-            }
-          }
-        }
-        return const Locale('fr');
-      },
       theme: lightTheme,
       //darkTheme: darkTheme,
       //themeMode: ThemeMode.system,

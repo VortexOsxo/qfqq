@@ -158,6 +158,7 @@
   
   "profilePageTitle": "Profil",
   "profilePageLogout": "Déconnexion",
+  "profilePageLanguage": "Langue",
 
   "forgottenPasswordPageTitle": "Mot de passe oublié",
   "forgottenPasswordPageEnterEmail": "Saisissez l'adresse e-mail de votre compte",

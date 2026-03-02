@@ -6,6 +6,7 @@ import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/widgets/details_attribute_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
+import 'package:qfqq/common/providers/locale_provider.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
@@ -100,8 +101,46 @@ class ProfilePage extends ConsumerWidget {
             label: loc.attributeEmail,
             value: authState.email!,
           ),
+          const SizedBox(height: 16),
+          _buildLanguageSelector(context, ref, loc),
         ],
       ),
+    );
+  }
+
+  Widget _buildLanguageSelector(BuildContext context, WidgetRef ref, S loc) {
+    final currentLocale = ref.watch(localeProvider);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          loc.profilePageLanguage,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
+        const SizedBox(height: 8),
+        DropdownButton<Locale>(
+          value: currentLocale,
+          isExpanded: true,
+          items: const [
+            DropdownMenuItem(
+              value: Locale('en'),
+              child: Text('English'),
+            ),
+            DropdownMenuItem(
+              value: Locale('fr'),
+              child: Text('Français'),
+            ),
+          ],
+          onChanged: (newLocale) {
+            if (newLocale != null) {
+              ref.read(localeProvider.notifier).setLocale(newLocale);
+            }
+          },
+        ),
+      ],
     );
   }
 }

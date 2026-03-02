@@ -158,6 +158,7 @@
   
   "profilePageTitle": "Profile",
   "profilePageLogout": "Logout",
+  "profilePageLanguage": "Language",
 
   "forgottenPasswordPageTitle": "Forgotten Password",
   "forgottenPasswordPageEnterEmail": "Enter the email of your account",
