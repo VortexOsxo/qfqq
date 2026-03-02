@@ -9,6 +9,7 @@ Input: TypeAlias = dict[str, (str | int)]
 
 
 class InputError(Enum):
+    UnknownError = -1
     NoError = 0
     RequiredField = 1
     EmailFormatInvalid = 2
@@ -19,6 +20,7 @@ class InputError(Enum):
     InvalidType = 7
     EmailMustBeUnique = 8
     InvalidLogin = 9
+    EmailNotFound = 10
 
 class InputValidator(ABC):
     """The InputValidator class represent the logic to define a type of input, such as name, email, string, etc. and the logic to validate said input."""
@@ -43,12 +45,12 @@ def verify_missing_inputs(data: Input, validators: list[InputValidator]) -> list
     ]
 
 
-def get_inputs_errors(data: Input, validators: list[InputValidator]) -> dict[str, int]:
+def get_inputs_errors(data: Input, validators: list[InputValidator]) -> dict[str, InputError]:
     results = [
         (validator.field_name, validator.validate(data)) for validator in validators
     ]
     return {
-        field_name: error.value
+        field_name: error
         for (field_name, error) in results
         if error != InputError.NoError
     }

@@ -78,7 +78,8 @@
   "loginPageTitle": "Connexion",
   "loginPageButtonLogin": "Se connecter",
   "loginPageLinkSignup": "Pas de compte ? S'inscrire",
-  
+  "loginPageForgottenPasswordLink": "Mot de passe oublié ? Cliquez ici pour le réinitialiser.",
+
   "homePageTitle": "Accueil",
   "homePageResponsabilities": "Responsabilités",
   "homePageFutureMeetings": "Réunions à venir",
@@ -158,6 +159,20 @@
   "profilePageTitle": "Profil",
   "profilePageLogout": "Déconnexion",
 
+  "forgottenPasswordPageTitle": "Mot de passe oublié",
+  "forgottenPasswordPageEnterEmail": "Saisissez l'adresse e-mail de votre compte",
+  "forgottenPasswordPageResetPassword": "Réinitialiser le mot de passe",
+  "forgottenPasswordPageLoginLink": "Retour à la page de connexion",
+  "forgottenPasswordPageResetCodeSent": "Un code de réinitialisation a été envoyé à votre email:",
+  "forgottenPasswordPageEnterCode": "Entrez le code à 6 chiffres ci-dessous pour réinitialiser votre mot de passe",
+  "forgottenPasswordPageEnterCodeHint": "Entrez le code",
+  "forgottenPasswordPageConfirm": "Confirmez",
+  "forgottenPasswordPageInvalidCode": "Le code est invalide",
+  "forgottenPasswordPageExpiredWindow": "Le délai de réinitialisation du mot de passe est expiré",
+  "forgottenPasswordPageEnterNewPassword": "Entrez un nouveau mot de passe",
+  "forgottenPasswordPageConfirmNewPassword": "Confirmez votre nouveau mot de passe",
+  "forgottenPasswordPageResendCodeLink": "Vous n’avez pas reçu le code ? Renvoyer",
+
   "commonCancel": "Annuler",
   "commonSave": "Enregistrer",
   "commonDelete": "Supprimer",
@@ -203,6 +218,8 @@
   "commonFormsEnterAnimator": "Veuillez sélectionner un animateur",
   "commonFormsEnterParticipants": "Veuillez sélectionner au moins un participant",
   "commonFormsEnterProject": "Veuillez sélectionner un projet",
+  "commonFormsEnterPassword": "Veuillez saisir un mot de passe",
+  "commonFormsPasswordsDoNotMatch": "Les mots de passe ne correspondent pas",
 
   "commonObjectDecisions": "Décisions",
   "commonObjectReports": "Rapports",

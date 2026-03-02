@@ -18,12 +18,12 @@ def login_required():
         )
 
     if token is None:
-        return jsonify({"error": AuthError.mustBeLoggedIn.value}), 401
+        return jsonify({"error": AuthError.mustBeLoggedIn}), 401
 
     try:
         data = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])
     except Exception:
-        return jsonify({"error": AuthError.mustBeLoggedIn.value}), 401
+        return jsonify({"error": AuthError.mustBeLoggedIn}), 401
 
     g.user_id = data["user_id"]
 

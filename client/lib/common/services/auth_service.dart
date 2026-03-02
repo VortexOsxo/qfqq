@@ -1,30 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:qfqq/common/models/errors/account_error.dart';
+import 'package:qfqq/common/models/states/auth_state.dart';
 import 'dart:convert';
 import 'package:qfqq/common/utils/events/event_notifier.dart';
 
 final authStateProvider = StateNotifierProvider<AuthService, AuthState>(
-  (ref) => AuthService(ref),
+  (_) => AuthService(),
 );
-
-class AuthState {
-  final String sessionId;
-  final String? email;
-  final String? username;
-
-  bool get isAuthenticated => sessionId.isNotEmpty;
-  AuthState({String? sessionId, this.email, this.username})
-    : sessionId = sessionId ?? "";
-
-  AuthState copyWith({String? sessionId, String? email, String? username}) {
-    return AuthState(
-      sessionId: sessionId ?? this.sessionId,
-      email: email ?? this.email,
-      username: username ?? this.username,
-    );
-  }
-}
 
 const _version = String.fromEnvironment("VERSION");
 
@@ -33,7 +16,7 @@ class AuthService extends StateNotifier<AuthState> {
   final EventNotifier<String> connectionNotifier = EventNotifier<String>();
   final EventNotifier<String> disconnectionNotifier = EventNotifier<String>();
 
-  AuthService(Ref ref) : super(AuthState());
+  AuthService() : super(AuthState());
 
   String getSessionId() {
     return state.sessionId;

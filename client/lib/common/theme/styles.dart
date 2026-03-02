@@ -14,7 +14,3 @@ ButtonStyle squareButtonStyle(BuildContext context) {
     textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
   );
 }
-
-ButtonStyle inplaceTextButtonStyle(BuildContext context) {
-  return TextButton.styleFrom(padding: EdgeInsets.zero);
-}

@@ -1,4 +1,4 @@
-from ..postgres import read_query, get_db_access
+from ..postgres import read_query, write_query, get_db_access
 from flaskr.models import User
 
 
@@ -38,3 +38,9 @@ class UserDataHandler:
         params = (email,)
         users = read_query(query, params)
         return User(*users[0]) if users else None
+
+    @classmethod
+    def update_user_password(cls, email: str, newPasswordHash: str):
+        query = "UPDATE users SET passwordHash = %s WHERE email = %s"
+        params = (newPasswordHash, email)
+        write_query(query, params)

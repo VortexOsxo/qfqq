@@ -78,6 +78,7 @@
   "loginPageTitle": "Login",
   "loginPageButtonLogin": "Login",
   "loginPageLinkSignup": "Don't have an account? Sign Up",
+  "loginPageForgottenPasswordLink": "Forgot your password? Click here to reset it.",
   
   "homePageTitle": "Home",
   "homePageResponsabilities": "Responsabilities",
@@ -158,6 +159,20 @@
   "profilePageTitle": "Profile",
   "profilePageLogout": "Logout",
 
+  "forgottenPasswordPageTitle": "Forgotten Password",
+  "forgottenPasswordPageEnterEmail": "Enter the email of your account",
+  "forgottenPasswordPageResetPassword": "Reset password",
+  "forgottenPasswordPageLoginLink": "Go back to login page",
+  "forgottenPasswordPageResetCodeSent": "A reset code has been sent to your email:",
+  "forgottenPasswordPageEnterCode": "Enter the 6-character code below to reset your password",
+  "forgottenPasswordPageEnterCodeHint": "Enter the code",
+  "forgottenPasswordPageConfirm": "Confirm",
+  "forgottenPasswordPageInvalidCode": "The code is invalid",
+  "forgottenPasswordPageExpiredWindow": "The password reset code has expired",
+  "forgottenPasswordPageEnterNewPassword": "Enter a new password",
+  "forgottenPasswordPageConfirmNewPassword": "Confirm your new password",
+  "forgottenPasswordPageResendCodeLink": "Didn’t receive the code? Resend",
+
   "commonCancel": "Cancel",
   "commonSave": "Save",
   "commonDelete": "Delete",
@@ -203,6 +218,8 @@
   "commonFormsEnterAnimator": "Please select an animator",
   "commonFormsEnterParticipants": "Please select at least one participant",
   "commonFormsEnterProject": "Please select a project",
+  "commonFormsEnterPassword": "Please enter a password",
+  "commonFormsPasswordsDoNotMatch": "The passwords do not match",
 
   "commonObjectDecisions": "Decisions",
   "commonObjectReports": "Reports",
