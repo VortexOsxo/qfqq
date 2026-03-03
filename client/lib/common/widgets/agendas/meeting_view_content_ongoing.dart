@@ -4,6 +4,7 @@ import 'package:qfqq/common/models/decision.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/user.dart';
 import 'package:qfqq/common/providers/decisions_provider.dart';
+import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/selection_text_fields/user_text_field.dart';
@@ -29,10 +30,17 @@ class _MeetingViewContentOngoing
   Widget build(BuildContext context) {
     final decisionsService = ref.read(decisionsServiceProvider);
     final loc = S.of(context);
+    final decisionsState = ref.watch(decisionsFetcherProvider);
 
     if (decision.meetingId == null && isIdValid(widget.meeting.id)) {
       decision.meetingId = widget.meeting.id;
     }
+
+    final meetingDecisions = decisionsState.isLoaded
+        ? decisionsState.data!
+            .where((d) => d.meetingId == widget.meeting.id)
+            .toList()
+        : <Decision>[];
 
     return Center(
       child: Column(
@@ -92,17 +100,50 @@ class _MeetingViewContentOngoing
             ),
           ),
           ElevatedButton(
-            onPressed: () {
-              decisionsService.createDecision(decision);
+            onPressed: () async {
+              await decisionsService.createDecision(decision);
               _resetCounter++;
               setState(
                 () =>
                     decision =
                         Decision.empty()..projectId = widget.meeting.projectId,
               );
+              ref.read(decisionsFetcherProvider.notifier).loadData();
             },
             child: Text(loc.meetingInProgressCreateButton),
           ),
+          if (meetingDecisions.isNotEmpty)
+            Expanded(
+              child: ListView.builder(
+                itemCount: meetingDecisions.length,
+                itemBuilder: (context, index) {
+                  final revIndex = meetingDecisions.length - 1 - index;
+                  final decision = meetingDecisions[revIndex];
+                  final responsible = decision.responsibleId != null ? ref.watch(userByIdProvider(decision.responsibleId!)) : null;
+                  return ListTile(
+                    title: Text(decision.description),
+                    subtitle: Row(
+                      children: [
+                        if (responsible != null)
+                          Expanded(
+                            child: Text(
+                              '${loc.decisionListResponsible}: ${responsible.username}',
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        if (decision.dueDate != null)
+                          Expanded(
+                            child: Text(
+                              '${loc.decisionListDueDate}: ${decision.dueDate!.toIso8601String().split('T').first}',
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
         ],
       ),
     );
