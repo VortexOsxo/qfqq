@@ -9,11 +9,11 @@ from datetime import datetime, timedelta
 
 class ResetPasswordService:
     @staticmethod
-    def reset_password(email: str) -> bool:
+    def reset_password(email: str, lang: str = 'fr') -> bool:
         letters_and_digits = string.ascii_letters + string.digits
         code = "".join([random.choice(letters_and_digits) for _ in range(6)])
 
-        lost_password_email = EmailDrafter.create_reset_password_email(email, code)
+        lost_password_email = EmailDrafter.create_reset_password_email(email, code, lang)
         result = EmailSender.send_email(lost_password_email)
         if not result:
             return False

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify, current_app, g
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime, timedelta
 import jwt
@@ -88,7 +88,7 @@ def request_code():
     if user is None:
         return jsonify({"email": InputError.EmailNotFound})
 
-    result = ResetPasswordService.reset_password(email)
+    result = ResetPasswordService.reset_password(email, g.language)
     return ("", 204) if result else (jsonify({"error": InputError.UnknownError}), 400)
 
 

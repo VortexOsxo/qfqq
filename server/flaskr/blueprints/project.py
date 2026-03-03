@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, send_file
+from flask import Blueprint, jsonify, request, send_file, g
 
 from flaskr.database import ProjectDataHandler, DecisionDataHandler
 from flaskr.utils import get_inputs_errors, StringValidator, UserIdValidator, InputValidator
@@ -48,8 +48,7 @@ def get_project_report(id: int):
 
     decisions = DecisionDataHandler.get_decisions_and_responsible_by_project(project.id)
 
-    lang = request.args.get('lang', 'fr')
-    buffer = ProjectReportBuilder(project, decisions, lang).build()
+    buffer = ProjectReportBuilder(project, decisions, g.language).build()
     return send_file(
         buffer,
         mimetype="application/pdf",
