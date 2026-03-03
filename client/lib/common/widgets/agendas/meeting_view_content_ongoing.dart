@@ -20,8 +20,10 @@ class MeetingViewContentOngoing extends ConsumerStatefulWidget {
       _MeetingViewContentOngoing();
 }
 
-class _MeetingViewContentOngoing extends ConsumerState<MeetingViewContentOngoing> {
+class _MeetingViewContentOngoing
+    extends ConsumerState<MeetingViewContentOngoing> {
   Decision decision = Decision.empty();
+  late int _resetCounter = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -38,14 +40,43 @@ class _MeetingViewContentOngoing extends ConsumerState<MeetingViewContentOngoing
           Text(loc.meetingInProgressTakeDecision),
           Padding(
             padding: EdgeInsets.all(8),
-            child: DefaultTextField(
-              onChanged: (String desc) => decision.description = desc,
-              hintText: loc.meetingInProgressDecision,
+            child: Row(
+              children: [
+                Expanded(
+                  child: DefaultTextField(
+                    key: ValueKey(_resetCounter),
+                    onChanged: (String desc) => decision.description = desc,
+                    hintText: loc.meetingInProgressDecision,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    final picked = await showDatePicker(
+                      context: context,
+                      initialDate: decision.dueDate ?? DateTime.now(),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime(2100),
+                    );
+
+                    if (picked != null) {
+                      decision.dueDate = picked;
+                    }
+                  },
+                  child: Text(
+                    decision.dueDate == null
+                        ? loc.meetingInProgressDueDate
+                        : loc.meetingInProgressDueDateSelected(
+                          decision.dueDate!.toIso8601String().split('T').first,
+                        ),
+                  ),
+                ),
+              ],
             ),
           ),
           Padding(
             padding: EdgeInsets.all(8),
             child: UserTextField(
+              key: ValueKey(_resetCounter),
               label: loc.meetingInProgressResponsible,
               onSelected: (User u) => decision.responsibleId = u.id,
             ),
@@ -53,42 +84,21 @@ class _MeetingViewContentOngoing extends ConsumerState<MeetingViewContentOngoing
           Padding(
             padding: EdgeInsets.all(8),
             child: UsersTextField(
+              key: ValueKey(_resetCounter),
               onChanged:
                   (List<User> u) =>
                       decision.assistantsIds = u.map((u) => u.id).toList(),
               label: loc.meetingInProgressParticipants,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: TextButton(
-              onPressed: () async {
-                final picked = await showDatePicker(
-                  context: context,
-                  initialDate: decision.dueDate ?? DateTime.now(),
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime(2100),
-                );
-
-                if (picked != null) {
-                  decision.dueDate = picked;
-                }
-              },
-              child: Text(
-                decision.dueDate == null
-                    ? loc.meetingInProgressDueDate
-                    : loc.meetingInProgressDueDateSelected(
-                      decision.dueDate!.toIso8601String().split('T').first,
-                    ),
-              ),
-            ),
-          ),
           ElevatedButton(
             onPressed: () {
               decisionsService.createDecision(decision);
+              _resetCounter++;
               setState(
                 () =>
-                    decision = Decision.empty()..projectId = widget.meeting.projectId,
+                    decision =
+                        Decision.empty()..projectId = widget.meeting.projectId,
               );
             },
             child: Text(loc.meetingInProgressCreateButton),
