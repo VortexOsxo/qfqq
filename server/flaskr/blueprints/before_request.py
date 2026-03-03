@@ -38,3 +38,6 @@ def get_api_version():
         return jsonify({"error": "Unsuported API Version"}), 400
     
     g.version = version
+
+def get_language():
+    g.language = request.headers.get("Accept-Language", "fr")

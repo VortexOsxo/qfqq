@@ -5,7 +5,7 @@ from flask import Flask
 from flask.json.provider import DefaultJSONProvider 
 
 from .database import init_db
-from .blueprints import register_blueprints, get_api_version
+from .blueprints import register_blueprints, get_api_version, get_language
 
 class EnumJSONProvider(DefaultJSONProvider):
     def default(self, obj):
@@ -30,6 +30,7 @@ def create_app(config_name='development'):
 
     register_blueprints(app)
     app.before_request(get_api_version)
+    app.before_request(get_language)
     init_db(app)
 
     return app

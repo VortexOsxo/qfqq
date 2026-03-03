@@ -2,22 +2,20 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/states/forgotten_password_state.dart';
-import 'package:http/http.dart' as http;
+import 'package:qfqq/common/services/qfqq_http_client.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 final forgottenPasswordStateProvider =
     StateNotifierProvider<ForgottenPasswordService, ForgottenPasswordState>(
-      (_) => ForgottenPasswordService(),
+      (ref) => ForgottenPasswordService(ref.read(qfqqHttpClientProvider)),
     );
 
-const _version = String.fromEnvironment("VERSION");
-
 class ForgottenPasswordService extends StateNotifier<ForgottenPasswordState> {
-  static const String _apiUrl = String.fromEnvironment("API_URL");
+  final QfqqHttpClient _httpClient;
   String? password;
   String? confirmedPassword;
 
-  ForgottenPasswordService() : super(ForgottenPasswordState.enterEmail());
+  ForgottenPasswordService(this._httpClient) : super(ForgottenPasswordState.enterEmail());
 
   void setPassword(String password) {
     this.password = password;
@@ -41,9 +39,9 @@ class ForgottenPasswordService extends StateNotifier<ForgottenPasswordState> {
 
   Future<void> requestCode() async {
     state = state.copyWith(isLoading: true);
-    final response = await http.post(
-      Uri.parse('$_apiUrl/auth/forgotten-password/request-code'),
-      headers: {'Content-Type': 'application/json', 'QfqqVersion': _version},
+    final response = await _httpClient.post(
+      _httpClient.getUri('auth/forgotten-password/request-code'),
+      headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': state.email}),
     );
     if (response.statusCode == 204) {
@@ -74,9 +72,9 @@ class ForgottenPasswordService extends StateNotifier<ForgottenPasswordState> {
 
   Future<void> validateCode() async {
     state = state.copyWith(isLoading: true);
-    final response = await http.post(
-      Uri.parse('$_apiUrl/auth/forgotten-password/validate-code'),
-      headers: {'Content-Type': 'application/json', 'QfqqVersion': _version},
+    final response = await _httpClient.post(
+      _httpClient.getUri('auth/forgotten-password/validate-code'),
+      headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': state.email, 'code': state.code}),
     );
 
@@ -102,9 +100,9 @@ class ForgottenPasswordService extends StateNotifier<ForgottenPasswordState> {
     }
 
     state = state.copyWith(isLoading: true);
-    final response = await http.post(
-      Uri.parse('$_apiUrl/auth/forgotten-password/update'),
-      headers: {'Content-Type': 'application/json', 'QfqqVersion': _version},
+    final response = await _httpClient.post(
+      _httpClient.getUri('auth/forgotten-password/update'),
+      headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'email': state.email,
         'code': state.code,

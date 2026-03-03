@@ -9,12 +9,24 @@ class LocaleNotifier extends Notifier<Locale> {
   @override
   Locale build() {
     _loadLocale();
-    
-    final platformLanguageCode = ui.PlatformDispatcher.instance.locale.languageCode;
+
+    final platformLanguageCode =
+        ui.PlatformDispatcher.instance.locale.languageCode;
     if (platformLanguageCode == 'en') {
       return const Locale('en');
     }
-    return const Locale('fr'); 
+    return const Locale('fr');
+  }
+
+  Future<void> setLocale(Locale locale) async {
+    if (state == locale) return;
+    state = locale;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_localeKey, locale.languageCode);
+  }
+
+  String getLocaleCode() {
+    return state.languageCode;
   }
 
   Future<void> _loadLocale() async {
@@ -25,13 +37,6 @@ class LocaleNotifier extends Notifier<Locale> {
         state = Locale(languageCode);
       }
     }
-  }
-
-  Future<void> setLocale(Locale locale) async {
-    if (state == locale) return;
-    state = locale;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_localeKey, locale.languageCode);
   }
 }
 

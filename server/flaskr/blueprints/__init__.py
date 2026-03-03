@@ -3,7 +3,7 @@ from .user import users_bp
 from .meeting_agenda import meeting_agendas_bp
 from .decision import decisions_bp
 from .project import projects_bp
-from .before_request import get_api_version
+from .before_request import get_api_version, get_language
 
 def register_blueprints(app):
     app.register_blueprint(auth_bp)
@@ -13,4 +13,4 @@ def register_blueprints(app):
     app.register_blueprint(projects_bp)
 
 
-__all__ = ["register_blueprints", "get_api_version"]
+__all__ = ["register_blueprints", "get_api_version", "get_language"]
