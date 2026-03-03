@@ -140,8 +140,8 @@ String? _getTitleForRoute(BuildContext context, GoRouterState state) {
     case '/agenda':
       final agenda = state.extra as MeetingAgenda?;
       return agenda == null
-          ? '${loc.agendaPageTitleAppBar} - Create'
-          : '${loc.agendaPageTitleAppBar} - Update';
+          ? '${loc.agendaPageTitleAppBar} - ${loc.commonCreate}'
+          : '${loc.agendaPageTitleAppBar} - ${loc.commonUpdate}';
     case '/agendas':
       return loc.agendasListPageTitle;
     case '/agendas/:id':

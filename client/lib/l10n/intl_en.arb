@@ -179,6 +179,7 @@
   "commonDelete": "Delete",
   "commonEdit": "Edit",
   "commonCreate": "Create",
+  "commonUpdate": "Update",
   "commonSearch": "Search",
   "commonRetry": "Retry",
   "commonUnknown": "Unknown",
