@@ -11,9 +11,9 @@ import 'package:qfqq/common/widgets/reusables/chip_list.dart';
 import 'package:qfqq/common/widgets/reusables/form_filled_button.dart';
 import 'package:qfqq/common/widgets/reusables/form_outlined_button.dart';
 import 'package:qfqq/common/widgets/reusables/modification_text_field.dart';
-import 'package:qfqq/common/widgets/reusables/project_text_field.dart';
-import 'package:qfqq/common/widgets/reusables/user_text_field.dart';
-import 'package:qfqq/common/widgets/reusables/users_text_field.dart';
+import 'package:qfqq/common/widgets/reusables/selection_text_fields/project_text_field.dart';
+import 'package:qfqq/common/widgets/reusables/selection_text_fields/user_text_field.dart';
+import 'package:qfqq/common/widgets/reusables/selection_text_fields/users_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 

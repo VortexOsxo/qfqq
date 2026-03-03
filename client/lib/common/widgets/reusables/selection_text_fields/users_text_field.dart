@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/user.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/widgets/reusables/chip_list.dart';
-import 'package:qfqq/common/widgets/reusables/user_text_field.dart';
+import 'package:qfqq/common/widgets/reusables/selection_text_fields/user_text_field.dart';
 
 class UsersTextField extends ConsumerStatefulWidget {
   final String label;
@@ -69,6 +69,7 @@ class _UsersTextFieldState extends ConsumerState<UsersTextField> {
               child: UserTextField(
                 label: widget.label,
                 onSelected: _onUserSelected,
+                resetOnSelect: true,
                 error: widget.error,
               ),
             ),

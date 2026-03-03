@@ -8,7 +8,7 @@ import 'package:qfqq/common/utils/validation.dart';
 import 'package:qfqq/common/widgets/reusables/form_filled_button.dart';
 import 'package:qfqq/common/widgets/reusables/form_outlined_button.dart';
 import 'package:qfqq/common/widgets/reusables/modification_text_field.dart';
-import 'package:qfqq/common/widgets/reusables/user_text_field.dart';
+import 'package:qfqq/common/widgets/reusables/selection_text_fields/user_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class ProjectModificationPage extends ConsumerStatefulWidget {
