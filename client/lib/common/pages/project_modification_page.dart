@@ -7,7 +7,7 @@ import 'package:qfqq/common/providers/projects_provider.dart';
 import 'package:qfqq/common/utils/validation.dart';
 import 'package:qfqq/common/widgets/reusables/form_filled_button.dart';
 import 'package:qfqq/common/widgets/reusables/form_outlined_button.dart';
-import 'package:qfqq/common/widgets/reusables/modification_text_field.dart';
+import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/selection_text_fields/user_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -73,7 +73,7 @@ class _ProjectModificationState extends ConsumerState<ProjectModificationPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ModificationTextField(
+              DefaultTextField(
                 initialValue: widget.project.title,
                 hintText: loc.projectCreationPageTitleHint,
                 onChanged: (value) => widget.project.title = value,
@@ -81,7 +81,7 @@ class _ProjectModificationState extends ConsumerState<ProjectModificationPage> {
               ),
               const SizedBox(height: 20),
 
-              ModificationTextField(
+              DefaultTextField(
                 initialValue: widget.project.goals,
                 hintText: loc.projectCreationPageGoalsHint,
                 onChanged: (value) => widget.project.goals = value,

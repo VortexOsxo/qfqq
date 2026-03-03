@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-class ModificationTextField extends StatelessWidget {
-  final String initialValue;
-  final String hintText;
+class DefaultTextField extends StatelessWidget {
+  final String? initialValue;
+  final String? hintText;
   final ValueChanged<String>? onChanged;
   final int maxLines;
   final String? error;
 
-  const ModificationTextField({
+  const DefaultTextField({
     super.key,
-    required this.initialValue,
-    required this.hintText,
-    required this.onChanged,
+    this.initialValue,
+    this.hintText,
+    this.onChanged,
     this.maxLines = 1,
     this.error,
   });

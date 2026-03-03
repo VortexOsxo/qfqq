@@ -5,7 +5,7 @@ import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/user.dart';
 import 'package:qfqq/common/providers/decisions_provider.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
-import 'package:qfqq/common/widgets/default_text_field.dart';
+import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/selection_text_fields/user_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/selection_text_fields/users_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';

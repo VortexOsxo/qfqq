@@ -10,9 +10,9 @@ import 'package:qfqq/common/templates/card_template.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
-import 'package:qfqq/common/widgets/default_text_field.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
 import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
+import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class DecisionsListWidget extends ConsumerStatefulWidget {
@@ -95,11 +95,7 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           DefaultTextField(
-            onChanged: (value) {
-              setState(() {
-                _searchQuery = value;
-              });
-            },
+            onChanged: (value) => setState(() => _searchQuery = value),
             hintText: S.of(context).commonSearch,
           ),
           SizedBox(height: 8),

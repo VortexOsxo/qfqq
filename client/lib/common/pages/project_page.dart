@@ -7,8 +7,8 @@ import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/templates/card_template.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
-import 'package:qfqq/common/widgets/default_text_field.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
+import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 final projectSearchQueryProvider = StateProvider<String>((ref) => '');
@@ -136,8 +136,7 @@ class ProjectPage extends ConsumerWidget {
                       child: TextButton(
                         style: inplaceTextButtonStyle(context),
                         child: Text(loc.agendaListView),
-                        onPressed:
-                            () => context.go('/project/${project.id}'),
+                        onPressed: () => context.go('/project/${project.id}'),
                       ),
                     ),
                   ),

@@ -10,7 +10,7 @@ import 'package:qfqq/common/utils/validation.dart';
 import 'package:qfqq/common/widgets/reusables/chip_list.dart';
 import 'package:qfqq/common/widgets/reusables/form_filled_button.dart';
 import 'package:qfqq/common/widgets/reusables/form_outlined_button.dart';
-import 'package:qfqq/common/widgets/reusables/modification_text_field.dart';
+import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/selection_text_fields/project_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/selection_text_fields/user_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/selection_text_fields/users_text_field.dart';
@@ -146,7 +146,7 @@ class _AgendaModificationPageState
               children: [
                 // Title and Goals
                 _buildLabel(loc.agendaPageTitle),
-                ModificationTextField(
+                DefaultTextField(
                   initialValue: widget.agenda.title,
                   hintText: loc.agendaPageTitleHint,
                   onChanged: (value) => widget.agenda.title = value,
@@ -155,7 +155,7 @@ class _AgendaModificationPageState
                 const SizedBox(height: 20),
 
                 _buildLabel(loc.agendaPageGoals),
-                ModificationTextField(
+                DefaultTextField(
                   initialValue: widget.agenda.goals ?? '',
                   hintText: loc.agendaPageGoalsHint,
                   onChanged: (value) => widget.agenda.goals = value,
@@ -232,7 +232,7 @@ class _AgendaModificationPageState
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                           const SizedBox(height: 8),
-                          ModificationTextField(
+                          DefaultTextField(
                             initialValue: widget.agenda.meetingLocation ?? '',
                             hintText: loc.agendaPageLocationHint,
                             onChanged:
