@@ -58,33 +58,16 @@ class _UsersTextFieldState extends ConsumerState<UsersTextField> {
   @override
   Widget build(BuildContext context) {
     var users = ref.watch(usersProvider);
-    
+
     _initializeUsers(users);
 
     return Column(
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: UserTextField(
-                label: widget.label,
-                onSelected: _onUserSelected,
-                resetOnSelect: true,
-                error: widget.error,
-              ),
-            ),
-            const SizedBox(width: 12),
-            FilledButton( // TODO: Deal with that button :(
-              onPressed: () {},
-              style: FilledButton.styleFrom(
-                minimumSize: const Size(52, 52),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Icon(Icons.add),
-            ),
-          ],
+        UserTextField(
+          label: widget.label,
+          onSelected: _onUserSelected,
+          resetOnSelect: true,
+          error: widget.error,
         ),
         ChipList<User>(
           items: _users,
