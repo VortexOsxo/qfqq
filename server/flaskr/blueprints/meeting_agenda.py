@@ -83,7 +83,7 @@ def create_meeting_agenda():
         # TODO: Handle concurrent update reflects that could cause conflicts ?
         if not "id" in data:
             return jsonify({"error": "Missing/Invalid fields: id"}), 400
-        MeetingDataHandler.update_meeting_agenda(id=data["id"], **kwargs)
+        MeetingDataHandler.update_meeting_agenda(meetingId=data["id"], **kwargs)
         return "", 204
     return "", 405
 
