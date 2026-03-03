@@ -19,6 +19,7 @@
   "attributeNoThemes": "Aucun thème",
   "attributeNoParticipants": "Aucun participant",
   "attributeStatus": "Statut",
+  "attributeProject": "Projet",
 
   "attributeUsername": "Nom d'utilisateur",
   "attributeEmail": "Email",
@@ -45,7 +46,7 @@
   "agendaPageThemeHint": "Ajouter un sujet de discussion",
   "agendaPageDateTime": "Date & Heure",
   "agendaPageLocationLabel": "Lieu",
-  "agendaPageFacilitator": "Facilitateur",
+  "agendaPageFacilitator": "Animateur",
   "agendaPageProjectLabel": "Projet",
   "agendaPageParticipantsLabel": "Participants",
   "agendaPageSelectProject": "Sélectionner un projet",

@@ -14,6 +14,7 @@ import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_status_chip.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
 import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
+import 'package:qfqq/common/widgets/reusables/default_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -127,13 +128,13 @@ class AgendasListPage extends ConsumerWidget {
             ),
           ),
         ]);
-    return DropdownMenu<MeetingAgendaStatus?>(
-      width: 200,
+
+    return DefaultDropdownMenu<MeetingAgendaStatus?>(
+      entries: menuEntries,
       initialSelection: ref.read(agendaStatusQueryProvider),
       onSelected: (MeetingAgendaStatus? value) {
         ref.read(agendaStatusQueryProvider.notifier).state = value;
       },
-      dropdownMenuEntries: menuEntries,
     );
   }
 
@@ -148,17 +149,16 @@ class AgendasListPage extends ConsumerWidget {
       ...projects.map(
         (project) => DropdownMenuEntry<int?>(
           value: project.id,
-          label: 'Project: ${project.title}',
+          label: '${S.of(context).attributeProject}: ${project.title}',
         ),
       ),
     ]);
-    return DropdownMenu<int?>(
-      width: 200,
+    return DefaultDropdownMenu<int?>(
+      entries: menuEntries,
       initialSelection: ref.read(agendaProjectQueryProvider),
       onSelected: (int? value) {
         ref.read(agendaProjectQueryProvider.notifier).state = value;
       },
-      dropdownMenuEntries: menuEntries,
     );
   }
 
@@ -253,10 +253,10 @@ class AgendasListPage extends ConsumerWidget {
                     child: Align(
                       alignment: Alignment.center,
                       child: TextButton(
-                      style: inplaceTextButtonStyle(context),
-                      child: Text(loc.agendaListView),
-                      onPressed: () => context.go('/agendas/${agenda.id}'),
-                    ),
+                        style: inplaceTextButtonStyle(context),
+                        child: Text(loc.agendaListView),
+                        onPressed: () => context.go('/agendas/${agenda.id}'),
+                      ),
                     ),
                   ),
                   SizedBox(width: 16),
