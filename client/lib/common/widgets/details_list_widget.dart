@@ -23,7 +23,7 @@ class DetailsListWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('$label: ', style: TextStyle(fontWeight: FontWeight.bold)),
+        Text(label, style: TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: 4),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,

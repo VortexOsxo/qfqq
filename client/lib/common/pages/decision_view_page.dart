@@ -7,6 +7,7 @@ import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/widgets/details_attribute_widget.dart';
+import 'package:qfqq/common/widgets/details_list_widget.dart';
 import 'package:qfqq/common/widgets/projects/project_title_link_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -19,7 +20,6 @@ class DecisionViewPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final loc = S.of(context);
     final decision = ref.watch(decisionByIdProvider(decisionId));
-
 
     if (decision == null) {
       return Center(child: Text(loc.decisionNotFound));
@@ -132,13 +132,19 @@ class DecisionViewPage extends ConsumerWidget {
           label: loc.decisionListResponsible,
           value: responsible?.username ?? loc.decisionListNoResponsibleSet,
         ),
+        DetailsListWidget(
+          label: loc.attributeAssitants,
+          emptyLabel: loc.attributeNoAssitants,
+          values:
+              decision.assistantsIds.map((participantId) {
+                final participant = ref.watch(userByIdProvider(participantId));
+                return participant?.username ?? loc.commonUnknown;
+              }).toList(),
+        ),
         if (isIdValid(decision.meetingId)) ...[
           Text(
             loc.decisionViewPageMeeting,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.grey,
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
           TextButton(
@@ -160,23 +166,6 @@ class DecisionViewPage extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-        ],
-        if (decision.assistantsIds.isNotEmpty) ...[
-          Text(
-            loc.attributeParticipants, // TODO: use proper label
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.grey,
-            ),
-          ),
-          const SizedBox(height: 4),
-          ...decision.assistantsIds.map((id) {
-            final user = ref.watch(userByIdProvider(id));
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: Text(user?.username ?? loc.commonUnknown),
-            );
-          }),
         ],
       ],
     );
