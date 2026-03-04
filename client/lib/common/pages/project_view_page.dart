@@ -26,7 +26,7 @@ class ProjectViewPage extends ConsumerWidget {
           buildInfoCard(context, ref, project),
           SizedBox(height: 16),
           Expanded(
-            child: ProjectContentWidget(projectId: projectId)
+            child: ProjectContentWidget(project: project)
           ),
         ],
       ),

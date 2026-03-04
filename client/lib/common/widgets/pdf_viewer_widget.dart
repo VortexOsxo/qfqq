@@ -6,8 +6,9 @@ import 'package:qfqq/common/services/qfqq_http_client.dart';
 
 class PdfViewerWidget extends ConsumerStatefulWidget {
   final String pdfUrl;
+  final String pdfName;
 
-  const PdfViewerWidget({super.key, required this.pdfUrl});
+  const PdfViewerWidget({super.key, required this.pdfUrl, required this.pdfName});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
@@ -23,7 +24,7 @@ class _PdfViewerState extends ConsumerState<PdfViewerWidget> {
     final downloadButton = IconButton(
       icon: const Icon(Icons.download),
       onPressed: () async {
-        await ref.read(pdfServiceProvider).downloadPdfToDownloads(widget.pdfUrl);
+        await ref.read(pdfServiceProvider).downloadPdfToDownloads(widget.pdfUrl, widget.pdfName);
       },
     );
 

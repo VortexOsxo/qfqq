@@ -1,30 +1,40 @@
 import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
 
-
-var pdfServiceProvider = Provider<PdfService>((ref) => PdfService(ref.read(qfqqHttpClientProvider)));
+var pdfServiceProvider = Provider<PdfService>(
+  (ref) => PdfService(ref.read(qfqqHttpClientProvider)),
+);
 
 class PdfService {
   final QfqqHttpClient _client;
 
   PdfService(this._client);
 
-  // TODO: Use proper url and download at the proper place
-  Future<void> downloadPdfToDownloads(String url) async {
+  Future<void> downloadPdfToDownloads(String url, String name) async {
     final response = await _client.get(_client.getUri(url));
 
     if (response.statusCode != 200) {
-      throw Exception('Failed to download PDF');
+      return; // TODO: Show error message
     }
 
-    final downloadsDir = await getDownloadsDirectory();
-    if (downloadsDir == null) {
-      throw Exception('Downloads directory not available');
+    final result = await FilePicker.platform.saveFile(
+      fileName: _formatPdfName(name),
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+
+    if (result == null) {
+      return;
     }
 
-    final file = File('${downloadsDir.path}/report.pdf');
+    final file = File(result);
     await file.writeAsBytes(response.bodyBytes);
+  }
+
+  String _formatPdfName(String name) {
+    name = name.replaceAll(RegExp(r' '), '-');
+    return '$name.pdf';
   }
 }
