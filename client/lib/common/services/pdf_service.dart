@@ -1,11 +1,19 @@
 import 'dart:io';
-import 'package:http/http.dart' as http;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:qfqq/common/services/qfqq_http_client.dart';
+
+
+var pdfServiceProvider = Provider<PdfService>((ref) => PdfService(ref.read(qfqqHttpClientProvider)));
 
 class PdfService {
+  final QfqqHttpClient _client;
+
+  PdfService(this._client);
+
   // TODO: Use proper url and download at the proper place
   Future<void> downloadPdfToDownloads(String url) async {
-    final response = await http.get(Uri.parse(url));
+    final response = await _client.get(_client.getUri(url));
 
     if (response.statusCode != 200) {
       throw Exception('Failed to download PDF');

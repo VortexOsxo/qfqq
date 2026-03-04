@@ -24,6 +24,7 @@ class QfqqHttpClient extends http.BaseClient {
     _initSubscription(authService);
   }
 
+  //TODO: Can we move this inside of the send method, so it does it automatically ?
   Uri getUri(String route) {
     return Uri.parse('$_apiUrl/$route');
   }

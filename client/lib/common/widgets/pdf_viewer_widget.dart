@@ -23,7 +23,7 @@ class _PdfViewerState extends ConsumerState<PdfViewerWidget> {
     final downloadButton = IconButton(
       icon: const Icon(Icons.download),
       onPressed: () async {
-        await PdfService().downloadPdfToDownloads(widget.pdfUrl);
+        await ref.read(pdfServiceProvider).downloadPdfToDownloads(widget.pdfUrl);
       },
     );
 
