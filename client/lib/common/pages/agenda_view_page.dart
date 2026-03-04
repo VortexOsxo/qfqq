@@ -47,7 +47,7 @@ class AgendaViewPage extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.all(8),
                   child: SizedBox(
-                    width: 150,
+                    width: 250,
                     child: _buildMeetingInfo(context, ref, agenda),
                   ),
                 ),
@@ -78,15 +78,13 @@ class AgendaViewPage extends ConsumerWidget {
           Row(
             children: [
               Text(
-                agenda.title,
+                '${agenda.number}: ${agenda.title}',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 24,
                   color: theme.primaryColor,
                 ),
               ),
-              SizedBox(width: 16),
-              MeetingStatusChip(status: agenda.status),
             ],
           ),
 
@@ -105,6 +103,7 @@ class AgendaViewPage extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        MeetingStatusChip(status: agenda.status),
         Flexible(child: _buildDetails(context, ref, agenda)),
         const SizedBox(height: 16),
         Center(child: MeetingViewControl(meeting: agenda)),
