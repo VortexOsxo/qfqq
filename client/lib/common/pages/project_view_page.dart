@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
+import 'package:qfqq/common/widgets/details_attribute_widget.dart';
 import 'package:qfqq/common/widgets/projects/project_content_widget.dart';
 import 'package:qfqq/common/widgets/projects/project_view_control.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -20,64 +21,97 @@ class ProjectViewPage extends ConsumerWidget {
       return Center(child: Text(loc.projectNotFound));
     }
 
-    return Center(
+    return Padding(
+      padding: const EdgeInsets.all(32),
       child: Column(
         children: [
-          buildInfoCard(context, ref, project),
-          SizedBox(height: 16),
+          _buildTopCard(context, ref, project),
+          const SizedBox(height: 16),
+
           Expanded(
-            child: ProjectContentWidget(project: project)
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: SizedBox(
+                    width: 250,
+                    child: _buildMeetingInfo(context, ref, project),
+                  ),
+                ),
+
+                const SizedBox(width: 16),
+
+                // buildInfoCard(context, ref, project),
+                // SizedBox(height: 16),
+                Expanded(child: ProjectContentWidget(project: project)),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget buildInfoCard(BuildContext context, WidgetRef ref, Project project) {
-    final supervisor = ref.watch(userByIdProvider(project.supervisorId));
-
-    final leftCard = Expanded(
-      flex: 2,
-      child: Card(child: ProjectViewControl(project: project)),
+  Widget _buildMeetingInfo(
+    BuildContext context,
+    WidgetRef ref,
+    Project project,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(child: _buildDetails(context, ref, project)),
+        const SizedBox(height: 16),
+        Center(child: Card(child: ProjectViewControl(project: project))),
+      ],
     );
+  }
 
-    final middleCard = Expanded(
-      flex: 4,
-      child: Card(
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildTopCard(BuildContext context, WidgetRef ref, Project project) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: EdgeInsets.all(8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
             children: [
               Text(
                 '${project.number}: ${project.title}',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                  color: theme.primaryColor,
+                ),
               ),
-              Text(project.goals),
             ],
           ),
-        ),
-      )
+        ],
+      ),
     );
+  }
 
-    final rightCard = Expanded(
-      flex: 2,
-      child: Card(
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Text('${S.of(context).projectSupervisor}: ${supervisor?.username}'),
-        ),
-      )
-    );
+  Widget _buildDetails(BuildContext context, WidgetRef ref, Project project) {
+    final loc = S.of(context);
 
-    final space = Expanded(flex: 1, child: SizedBox());
+    final supervisor = ref.watch(userByIdProvider(project.supervisorId));
 
-    return Padding(
-      padding: EdgeInsets.only(left: 16, right: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return SingleChildScrollView(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [leftCard, space, middleCard, space, rightCard],
+        children: [
+          DetailsAttributeWidget(
+            label: loc.attributeGoals,
+            value: project.goals,
+          ),
+          DetailsAttributeWidget(
+            label: loc.projectSupervisor,
+            value: supervisor?.username ?? '',
+          ),
+        ],
       ),
     );
   }

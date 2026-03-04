@@ -18,16 +18,9 @@ class AgendaViewPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    MeetingAgenda? agenda = ref.watch(meetingAgendaByIdProvider(agendaId));
-    return _buildContent(context, ref, agenda);
-  }
-
-  Widget _buildContent(
-    BuildContext context,
-    WidgetRef ref,
-    MeetingAgenda? agenda,
-  ) {
     final loc = S.of(context);
+
+    final agenda = ref.watch(meetingAgendaByIdProvider(agendaId));
     if (agenda == null) {
       return Center(child: Text(loc.meetingNotFound));
     }
@@ -37,7 +30,6 @@ class AgendaViewPage extends ConsumerWidget {
       child: Column(
         children: [
           _buildTopCard(context, ref, agenda),
-
           const SizedBox(height: 16),
 
           Expanded(
