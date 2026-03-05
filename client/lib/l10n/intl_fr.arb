@@ -43,7 +43,7 @@
   "agendaPageSaveAgenda": "Enregistrer l'ordre du jour",
   "agendaPageAddButton": "Ajouter",
   "agendaPageTitleHint": "Entrez le titre de la réunion",
-  "agendaPageGoalsHint": "Qu'est-ce que vous voulez accomplir ?",
+  "agendaPageGoalsHint": "Que voulons-nous accomplir ensemble, concrètement? (objectif)\nMon objectif est-il SMART, c’est-à-dire Spécifiques (précis), Mesurables, Atteignables, Réalistes et Temporels (date due).",
   "agendaPageLocationHint": "Salle ou lien",
   "agendaPageThemeHint": "Ajouter un sujet de discussion",
   "agendaPageDateTime": "Date & Heure",
