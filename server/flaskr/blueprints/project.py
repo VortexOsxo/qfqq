@@ -1,27 +1,16 @@
 from flask import Blueprint, jsonify, request, send_file, g
 
 from flaskr.database import ProjectDataHandler, DecisionDataHandler
-from flaskr.utils import get_inputs_errors, StringValidator, UserIdValidator, InputValidator
 from flaskr.reports import ProjectReportBuilder
 from flaskr.blueprints.before_request import login_required
+from flaskr.services.inputs import input_middleware, CreateProjectBuilder
 
 projects_bp = Blueprint("projects", __name__, url_prefix="/projects")
 projects_bp.before_request(login_required)
 
 @projects_bp.route("", methods=["POST", "PUT"])
-def create_project():
-    data = request.get_json()
-    required_fields: list[InputValidator] = [StringValidator("title"), StringValidator("goals"), UserIdValidator("supervisorId")]
-    errors = get_inputs_errors(data, required_fields)
-    if len(errors):
-        return jsonify(errors), 400
-
-    kwargs = {
-        "title": data["title"],
-        "goals": data.get("goals", ""),
-        "supervisorId": data["supervisorId"],
-    }
-
+@input_middleware(CreateProjectBuilder())
+def create_project(**kwargs):
     if request.method == 'POST':
         project = ProjectDataHandler.create_project(**kwargs)
         if project is None:
@@ -31,6 +20,7 @@ def create_project():
 
     elif request.method == 'PUT':
         # TODO: Handle concurrent update reflects that could cause conflicts ?
+        data = request.get_json()
         if not "id" in data or not "number" in data:
             return jsonify({"error": "Missing/Invalid fields: id or number"}), 400
         ProjectDataHandler.update_project(data['id'], data['number'], **kwargs)
