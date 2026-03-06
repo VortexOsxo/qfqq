@@ -3,20 +3,16 @@ from flask import Blueprint, jsonify, request, g
 
 from flaskr.models import DecisionStatus
 from flaskr.database import DecisionDataHandler
-from flaskr.utils import verify_missing_inputs, UserIdValidator, StringValidator, MeetingIdValidator
+from flaskr.services.inputs import input_middleware, CreateProjectBuilder
 from flaskr.blueprints.before_request import login_required
 
 decisions_bp = Blueprint("decisions", __name__, url_prefix="/decisions")
 decisions_bp.before_request(login_required)
 
 @decisions_bp.route("", methods=["POST"])
-def create_decision():
+@input_middleware(CreateProjectBuilder())
+def create_decision(description, responsibleId, meetingId):
     data = request.get_json()
-    required_fields = [StringValidator("description"), UserIdValidator("responsibleId"), MeetingIdValidator("meetingId")]
-
-    missings = verify_missing_inputs(data, required_fields)
-    if missings:
-        return jsonify({"error": f'Missing fields: {", ".join(missings)}'}), 400
 
     # TODO: Refactor those status
     if "status" not in data:
@@ -35,13 +31,13 @@ def create_decision():
         return jsonify({"error": f"Invalid data format: {str(e)}"}), 400
 
     DecisionDataHandler.create_decision(
-        description=data["description"],
+        description=description,
         status=data["status"],
         dueDate=dueDate,
-        responsibleId=data["responsibleId"],
+        responsibleId=responsibleId,
         initialDate=initialDate,
         assistantsIds=data.get("assistantsIds", None),
-        meetingId=data.get("meetingId", None),
+        meetingId=meetingId,
     )
     return jsonify({"message": "Meeting agenda created successfully"}), 201
 

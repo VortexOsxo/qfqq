@@ -1,69 +1,26 @@
 from abc import ABC, abstractmethod
-from enum import Enum
+from typing import Callable, Optional
 import re
 
+from flaskr.errors import InputError
 from flaskr.database import UserDataHandler, ProjectDataHandler, MeetingDataHandler
-from typing import TypeAlias, Callable, Optional, Type
 
-Input: TypeAlias = dict[str, (str | int)]
-
-
-class InputError(Enum):
-    UnknownError = -1
-    NoError = 0
-    RequiredField = 1
-    EmailFormatInvalid = 2
-    ObjectIdNotFound = 3
-    EnumMemberNotFound = 4
-    ValueMustBeAList = 5
-    ListMustBeNonEmpty = 6
-    InvalidType = 7
-    EmailMustBeUnique = 8
-    InvalidLogin = 9
-    EmailNotFound = 10
 
 class InputValidator(ABC):
     """The InputValidator class represent the logic to define a type of input, such as name, email, string, etc. and the logic to validate said input."""
 
-    def __init__(self, field_name: str):
-        self.field_name = field_name
-
     @abstractmethod
-    def validate(self, data: Input) -> InputError:
+    def validate(self, value) -> InputError:
         pass
 
 
-def verify_missing_inputs(data: Input, validators: list[InputValidator]) -> list[str]:
-    """
-    Verify that the data has all the needed fields and their validity.
-    Return the list of missings/invalid field.
-    """
-    return [
-        validator.field_name
-        for validator in validators
-        if validator.validate(data) != InputError.NoError
-    ]
-
-
-def get_inputs_errors(data: Input, validators: list[InputValidator]) -> dict[str, InputError]:
-    results = [
-        (validator.field_name, validator.validate(data)) for validator in validators
-    ]
-    return {
-        field_name: error
-        for (field_name, error) in results
-        if error != InputError.NoError
-    }
-
-
 class StringValidator(InputValidator):
-    def validate(self, data: Input) -> InputError:
-        value = data.get(self.field_name, "")
+    def validate(self, value) -> InputError:
         if not isinstance(value, str):
             return InputError.InvalidType
         return (
             InputError.NoError
-            if value and value.strip() != ""
+            if value is not None and value.strip() != ""
             else InputError.RequiredField
         )
 
@@ -72,10 +29,10 @@ class StringValidator(InputValidator):
 class EmailValidator(StringValidator):
     EmailRegex = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
 
-    def validate(self, data: Input) -> InputError:
-        if (error := super().validate(data)) != InputError.NoError:
+    def validate(self, value) -> InputError:
+        if (error := super().validate(value)) != InputError.NoError:
             return error
-        value = str(data.get(self.field_name, ""))
+
         return (
             InputError.NoError
             if re.match(self.EmailRegex, value) is not None
@@ -86,8 +43,7 @@ class EmailValidator(StringValidator):
 class _ObjectIdValidator(InputValidator):
     dataHandler: Callable[[int], Optional[object]]
 
-    def validate(self, data: Input) -> InputError:
-        id = data.get(self.field_name, None)
+    def validate(self, id) -> InputError:
         if not isinstance(id, int):
             return InputError.InvalidType
         if id <= 0:
@@ -114,13 +70,11 @@ class MeetingIdValidator(_ObjectIdValidator):
 
 # TODO: Test it :)
 class EnumValidator(InputValidator):
-    def __init__(self, field_name: str, enum: Type[Enum]):
-        super().__init__(field_name)
+    def __init__(self, enum):
         self.enum = enum
 
-    def validate(self, data: Input) -> InputError:
-        value = data.get(self.field_name, "")
-        if value == "":
+    def validate(self, value) -> InputError:
+        if value is None or value == "":
             return InputError.RequiredField
 
         return (
@@ -131,12 +85,10 @@ class EnumValidator(InputValidator):
 
 
 class ListValidator(InputValidator):
-    def __init__(self, field_name: str, can_be_empty: bool = True):
-        super().__init__(field_name)
+    def __init__(self, can_be_empty: bool = True):
         self.can_be_empty = can_be_empty
 
-    def validate(self, data: Input) -> InputError:
-        l = data.get(self.field_name, [])
+    def validate(self, l) -> InputError:
         if not isinstance(l, list):
             return InputError.ValueMustBeAList
 

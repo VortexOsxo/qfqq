@@ -1,33 +1,19 @@
-from flask import Blueprint, request, jsonify, current_app, g
+from flask import Blueprint, jsonify, current_app, g
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime, timedelta
 import jwt
 
 from flaskr.database import UserDataHandler
-from flaskr.utils import get_inputs_errors, InputError, StringValidator, EmailValidator
 from flaskr.services.reset_password_service import ResetPasswordService
+from flaskr.services.inputs import input_middleware, SignupBuilder, LoginBuilder, LambdaBuilder, StringValidator, EmailValidator
+from flaskr.errors import InputError
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 
 @auth_bp.route("/signup", methods=(["POST"]))
-def signup():
-    data = request.get_json()
-
-    required_fields = [
-        StringValidator("username"),
-        # TODO: Add proper password validator
-        StringValidator("password"),
-        EmailValidator("email"),
-    ]
-    errors = get_inputs_errors(data, required_fields)
-    if errors:
-        return jsonify(errors), 400
-
-    username = data.get("username")
-    email = data.get("email")
-    password = data.get("password")
-
+@input_middleware(SignupBuilder())
+def signup(username, email, password):
     user = UserDataHandler.create_user(
         username, email, generate_password_hash(password)
     )
@@ -44,21 +30,8 @@ def signup():
 
 
 @auth_bp.route("/login", methods=(["POST"]))
-def login():
-    data = request.get_json()
-
-    required_fields = [
-        # TODO: Add proper password validator
-        StringValidator("password"),
-        EmailValidator("email"),
-    ]
-    errors = get_inputs_errors(data, required_fields)
-    if errors:
-        return jsonify(errors), 400
-
-    email = data.get("email")
-    password = data.get("password")
-
+@input_middleware(LoginBuilder())
+def login(email, password):
     user = UserDataHandler.get_user_by_email(email)
 
     if user is None or not check_password_hash(user.passwordHash, password):
@@ -74,16 +47,8 @@ def login():
 
 
 @auth_bp.post("forgotten-password/request-code")
-def request_code():
-    data = request.get_json()
-
-    validator = EmailValidator("email")
-
-    email_error = validator.validate(data)
-    if email_error != InputError.NoError:
-        return jsonify({"email": email_error.value}), 400
-
-    email = data["email"]
+@input_middleware(LambdaBuilder(("email", EmailValidator())))
+def request_code(email):
     user = UserDataHandler.get_user_by_email(email)
     if user is None:
         return jsonify({"email": InputError.EmailNotFound})
@@ -93,35 +58,23 @@ def request_code():
 
 
 @auth_bp.post("forgotten-password/validate-code")
-def validate_code():
-    data = request.get_json()
-
-    required_fields = [EmailValidator("email"), StringValidator("code")]
-    errors = get_inputs_errors(data, required_fields)
-    if errors:
-        return jsonify(errors), 400
-
-    email, code = data["email"], data["code"]
-
+@input_middleware(
+    LambdaBuilder(("email", EmailValidator()), ("code", StringValidator()))
+)
+def validate_code(email, code):
     result = ResetPasswordService.is_code_valid(email, code)
     return ("", 204) if result else (jsonify({"error": InputError.UnknownError}), 400)
 
 
 @auth_bp.post("forgotten-password/update")
-def update():
-    data = request.get_json()
-
-    required_fields = [
-        EmailValidator("email"),
-        StringValidator("code"),
-        StringValidator("password"),
-    ]
-    errors = get_inputs_errors(data, required_fields)
-    if errors:
-        return jsonify(errors), 400
-
-    email, code, password = data["email"], data["code"], data["password"]
-
+@input_middleware(
+    LambdaBuilder(
+        ("email", EmailValidator()),
+        ("code", StringValidator()),
+        ("password", StringValidator),
+    )
+)
+def update(email, code, password):
     result = ResetPasswordService.is_code_valid(email, code)
     if not result:
         return jsonify({"error": InputError.UnknownError}), 400

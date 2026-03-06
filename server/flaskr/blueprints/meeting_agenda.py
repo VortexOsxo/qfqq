@@ -3,14 +3,7 @@ from flask import Blueprint, request, jsonify, g, send_file
 
 from flaskr.models import MeetingAgendaStatus
 from flaskr.database import MeetingDataHandler, DecisionDataHandler
-from flaskr.utils import (
-    StringValidator,
-    EnumValidator,
-    UserIdValidator,
-    ListValidator,
-    ProjectIdValidator,
-    verify_missing_inputs,
-)
+from flaskr.services.inputs import input_middleware, LambdaBuilder, CreateMeetingAgendaBuilder, EnumValidator
 from flaskr.reports import MeetingReportBuilder
 from flaskr.blueprints.before_request import login_required
 
@@ -23,35 +16,9 @@ meeting_agendas_bp.before_request(login_required)
 # of having to pass each parameter separatedly
 
 @meeting_agendas_bp.route("", methods=["POST", "PUT"])
+@input_middleware(CreateMeetingAgendaBuilder())
 def create_meeting_agenda():
     data = request.get_json()
-
-    status = (
-        MeetingAgendaStatus.planned
-        if data.get("status", "") == MeetingAgendaStatus.planned.value
-        else MeetingAgendaStatus.draft
-    )
-
-    required_fields = [
-        StringValidator("title"),
-        StringValidator("redactionDate"), # TODO: DateValidator ?
-    ]
-
-    if status == MeetingAgendaStatus.planned:
-        required_fields.extend([
-            StringValidator("goals"),
-            EnumValidator("status", MeetingAgendaStatus),
-            StringValidator("meetingDate"),
-            StringValidator("meetingLocation"),
-            UserIdValidator("animatorId"),
-            ListValidator("participantsIds"),
-            ListValidator("themes"),
-            ProjectIdValidator("projectId")
-        ])
-
-    missings = verify_missing_inputs(data, required_fields)
-    if missings:
-        return jsonify({"error": f'Missing/Invalid fields: {", ".join(missings)}'}), 400
 
     try:
         redactionDate = datetime.fromisoformat(data["redactionDate"])
@@ -66,7 +33,7 @@ def create_meeting_agenda():
     kwargs = {
         'title': data["title"],
         'goals': data.get("goals", ""),
-        'status': status,
+        'status': data.get("status"),
         'redactionDate': redactionDate,
         'meetingDate': meetingDate,
         'meetingLocation': data["meetingLocation"] if "meetingLocation" in data else None,
@@ -107,18 +74,8 @@ def get_meeting_agenda(id: str):
     return jsonify(meeting_agenda.to_dict()), 200
 
 @meeting_agendas_bp.patch("/<string:id>/status")
-def patch_meeting_agenda_status(id: str):
-    data = request.get_json()
-    
-    status_validator = EnumValidator("status", MeetingAgendaStatus)
-    if not status_validator.validate(data):
-        return jsonify({"error": "Invalid Status"})
-    
-    # TODO: Add validation for meeting
-    # Idea: lets have sets of validator that take the object (Meeting agenda as input) and can be reused
-    # and lets construct the object from the input directly
-    status = data.get("status", "")
-
+@input_middleware(LambdaBuilder(("status", EnumValidator(MeetingAgendaStatus))))
+def patch_meeting_agenda_status(status, id: str):
     result = MeetingDataHandler.update_meeting_status(id, status)
     if not result:
         return jsonify({"error": "Meeting agenda not found"}), 404
