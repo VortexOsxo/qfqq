@@ -66,7 +66,7 @@ class MeetingAgenda {
       if (meetingLocation != null) 'meetingLocation': meetingLocation,
       if (animatorId != null) 'animatorId': animatorId,
       if (participantsIds.isNotEmpty) 'participantsIds': participantsIds,
-      if (themes.isNotEmpty) 'themes': themes,
+      'themes': themes,
       if (projectId != null) 'projectId': projectId,
     };
   }

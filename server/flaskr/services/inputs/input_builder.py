@@ -74,26 +74,25 @@ class CreateMeetingAgendaBuilder(InputBuilder):
     def build(self, data):
         from flaskr.models import MeetingAgendaStatus
 
-        self.is_draft = data.get("status") == MeetingAgendaStatus.planned.value
-        super().build(data)
+        self.is_draft = data.get("status") == MeetingAgendaStatus.draft.value
+        return super().build(data)
 
     def get_fields_validators(self):
         from flaskr.models import MeetingAgendaStatus
 
         validators = [
             ("title", StringValidator()),
-            ("redactionDate", StringValidator()),  # TODO: DateValidator ?
+            ("status", EnumValidator(MeetingAgendaStatus)),
         ]
         if not self.is_draft:
             validators.extend(
                 [
                     ("goals", StringValidator()),
-                    ("status", EnumValidator(MeetingAgendaStatus)),
-                    ("meetingDate", StringValidator()),
+                    ("meetingDate", DateValidator()),
                     ("meetingLocation", StringValidator()),
                     ("animatorId", UserIdValidator()),
                     ("participantsIds", ListValidator()),
-                    ("themes", ListValidator()),
+                    ("themes", ListValidator(can_be_empty=True)),
                     ("projectId", ProjectIdValidator()),
                 ]
             )
