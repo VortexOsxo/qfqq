@@ -12,29 +12,21 @@ meeting_agendas_bp = Blueprint(
 )
 meeting_agendas_bp.before_request(login_required)
 
-# TODO: Have a unified way to get and object such as a method agenda from the query body, we can then pass that object to the different method, instead
-# of having to pass each parameter separatedly
 
 @meeting_agendas_bp.route("", methods=["POST", "PUT"])
 @input_middleware(CreateMeetingAgendaBuilder())
-def create_meeting_agenda():
+def create_meeting_agenda(**obj):
     data = request.get_json()
 
-    try:
-        redactionDate = datetime.fromisoformat(data["redactionDate"])
-        meetingDate = (
-            datetime.fromisoformat(data["meetingDate"])
-            if "meetingDate" in data
-            else None
-        )
-    except Exception as e:
-        return jsonify({"error": f"Invalid data format: {str(e)}"}), 400
+    meetingDate = (
+        datetime.fromisoformat(data["meetingDate"]) if "meetingDate" in data else None
+    )
 
     kwargs = {
         'title': data["title"],
         'goals': data.get("goals", ""),
         'status': data.get("status"),
-        'redactionDate': redactionDate,
+        'redactionDate': datetime.now(),
         'meetingDate': meetingDate,
         'meetingLocation': data["meetingLocation"] if "meetingLocation" in data else None,
         'animatorId': data["animatorId"] if "animatorId" in data else None,
