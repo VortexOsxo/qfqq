@@ -13,3 +13,4 @@ class InputError(Enum):
     EmailMustBeUnique = 8
     InvalidLogin = 9
     EmailNotFound = 10
+    InvalidDateFormat = 11

@@ -14,6 +14,16 @@ class InputValidator(ABC):
         pass
 
 
+class OptionalInputValidator(InputValidator):
+    def __init__(self, validator):
+        self.validator = validator
+
+    def validate(self, value):
+        if value is None:
+            return InputError.NoError
+        return self.validator.validate(value)
+
+
 class StringValidator(InputValidator):
     def validate(self, value) -> InputError:
         if not isinstance(value, str):
@@ -37,6 +47,17 @@ class EmailValidator(StringValidator):
             InputError.NoError
             if re.match(self.EmailRegex, value) is not None
             else InputError.EmailFormatInvalid
+        )
+
+
+class DateValidator(InputValidator):
+    def validate(self, value) -> InputError:
+        from flaskr.utils.time import string_to_time
+
+        return (
+            InputError.InvalidDateFormat
+            if string_to_time(value) is None
+            else InputError.NoError
         )
 
 
