@@ -63,6 +63,7 @@ class CreateDecisionBuilder(InputBuilder):
             ("description", StringValidator()),
             ("responsibleId", UserIdValidator()),
             ("meetingId", MeetingIdValidator()),
+            ("dueDate", DateValidator()),
         )
 
 

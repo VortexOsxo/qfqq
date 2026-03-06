@@ -3,15 +3,15 @@ from flask import Blueprint, jsonify, request, g
 
 from flaskr.models import DecisionStatus
 from flaskr.database import DecisionDataHandler
-from flaskr.services.inputs import input_middleware, CreateProjectBuilder
+from flaskr.services.inputs import input_middleware, CreateDecisionBuilder
 from flaskr.blueprints.before_request import login_required
 
 decisions_bp = Blueprint("decisions", __name__, url_prefix="/decisions")
 decisions_bp.before_request(login_required)
 
 @decisions_bp.route("", methods=["POST"])
-@input_middleware(CreateProjectBuilder())
-def create_decision(description, responsibleId, meetingId):
+@input_middleware(CreateDecisionBuilder())
+def create_decision(description, responsibleId, meetingId, dueDate):
     data = request.get_json()
 
     # TODO: Refactor those status
@@ -20,22 +20,14 @@ def create_decision(description, responsibleId, meetingId):
     elif data["status"] not in DecisionStatus.__members__:
         data["status"] = DecisionStatus.inProgress
 
-    try:
-        dueDate = datetime.fromisoformat(data["dueDate"]) if "dueDate" in data else None
-        initialDate = (
-            datetime.fromisoformat(data["initialDate"])
-            if "initialDate" in data
-            else datetime.now()
-        )
-    except Exception as e:
-        return jsonify({"error": f"Invalid data format: {str(e)}"}), 400
+    dueDate = datetime.fromisoformat(dueDate) if dueDate is not None else None
 
     DecisionDataHandler.create_decision(
         description=description,
         status=data["status"],
         dueDate=dueDate,
         responsibleId=responsibleId,
-        initialDate=initialDate,
+        initialDate=datetime.now(),
         assistantsIds=data.get("assistantsIds", None),
         meetingId=meetingId,
     )
