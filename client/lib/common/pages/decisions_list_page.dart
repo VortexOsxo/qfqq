@@ -7,6 +7,6 @@ class DecisionsListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecisionsListWidget(refetch:true);
+    return DecisionsListWidget();
   }
 }

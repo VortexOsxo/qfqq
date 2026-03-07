@@ -50,11 +50,9 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
     );
     if (response.statusCode != 204) return false;
 
-    state = state.map((e) {
-      if (e.id != meetingId) return e;
-      e.status = status;
-      return e;
-    }).toList();
+    state = state.map(
+      (e) => (e.id != meetingId) ? e : e.fromStatus(status)
+    ).toList();
     return true;
   }
 

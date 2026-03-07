@@ -8,10 +8,10 @@ class DecisionsService extends StateNotifier<List<Decision>> {
   final QfqqHttpClient _http;
 
   DecisionsService(this._http, AuthService auth) : super([]) {
-    auth.connectionNotifier.subscribe((_) => loadDecisions());
+    auth.connectionNotifier.subscribe((_) => _loadDecisions());
   }
 
-  Future<void> loadDecisions() async {
+  Future<void> _loadDecisions() async {
     final response = await _http.get(
       _http.getUri('decisions/'),
       headers: {'Content-Type': 'application/json'},

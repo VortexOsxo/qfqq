@@ -26,6 +26,23 @@ class MeetingAgenda {
     this.goals = '',
   });
 
+  MeetingAgenda fromStatus(MeetingAgendaStatus newStatus) {
+    return MeetingAgenda(
+        id: id,
+        number: number,
+        title: title,
+        goals: goals,
+        redactionDate: redactionDate,
+        status: newStatus,
+      )
+      ..meetingDate = meetingDate
+      ..meetingLocation = meetingLocation
+      ..animatorId = animatorId
+      ..projectId = projectId
+      ..participantsIds = List<int>.from(participantsIds)
+      ..themes = List<String>.from(themes);
+  }
+
   MeetingAgenda.empty()
     : id = 0,
       number = 0,
