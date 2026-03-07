@@ -9,8 +9,8 @@ class UserDataHandler:
             with get_db_access() as conn:
                 cur = conn.cursor()
 
-                query = f"INSERT INTO users (username, email, passwordHash) values (%s, %s, %s) RETURNING id;"
-                params = (username, email, passwordHash)
+                query = f"INSERT INTO users (username, passwordHash, email) values (%s, %s, %s) RETURNING id;"
+                params = (username, passwordHash, email)
                 cur.execute(query, params)
                 userId = cur.fetchone()[0]
             
