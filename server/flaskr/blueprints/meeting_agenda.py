@@ -36,8 +36,9 @@ def create_meeting_agenda(**obj):
     }
 
     if request.method == "POST":
-        MeetingDataHandler.create_meeting_agenda(**kwargs)
-        return "", 201
+        meeting = MeetingDataHandler.create_meeting_agenda(**kwargs)
+        return (jsonify(meeting.to_dict()), 201) if meeting is not None else ("", 400)
+
     elif request.method == "PUT":
         # TODO: Handle concurrent update reflects that could cause conflicts ?
         if not "id" in data:

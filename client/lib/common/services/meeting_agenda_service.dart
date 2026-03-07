@@ -18,10 +18,13 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
       body: jsonEncode(agenda),
     );
 
-    if (response.statusCode != 201) return false;
+    dynamic data = jsonDecode(response.body);
 
-    await _loadMeetingAgendas();
-    return true;
+    if (response.statusCode == 201) {
+      state = [...state, MeetingAgenda.fromJson(data)];
+      return true;
+    }
+    return false;
   }
 
   Future<bool> updateMeetingAgenda(MeetingAgenda agenda) async {

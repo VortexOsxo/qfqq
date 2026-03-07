@@ -8,10 +8,10 @@ class DecisionsService extends StateNotifier<List<Decision>> {
   final QfqqHttpClient _http;
 
   DecisionsService(this._http, AuthService auth) : super([]) {
-    auth.connectionNotifier.subscribe((_) => loadData());
+    auth.connectionNotifier.subscribe((_) => loadDecisions());
   }
 
-  Future<void> loadData() async {
+  Future<void> loadDecisions() async {
     final response = await _http.get(
       _http.getUri('decisions/'),
       headers: {'Content-Type': 'application/json'},
@@ -30,10 +30,11 @@ class DecisionsService extends StateNotifier<List<Decision>> {
       body: jsonEncode(decision),
     );
 
-    if (response.statusCode != 201) return false;
-
-    // Reload to get server-assigned id/number
-    await loadData();
-    return true;
+    if (response.statusCode == 201) {
+      dynamic data = jsonDecode(response.body);
+      state = [...state, Decision.fromJson(data)];
+      return true;
+    }
+    return false;
   }
 }

@@ -42,7 +42,7 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(decisionsProvider.notifier).loadData();
+      ref.read(decisionsProvider.notifier).loadDecisions();
     });
   }
 
