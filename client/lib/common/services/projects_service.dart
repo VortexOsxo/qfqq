@@ -1,17 +1,17 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qfqq/common/models/errors/project_errors.dart';
 import 'dart:convert';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/project.dart';
+import 'package:qfqq/common/models/errors/project_errors.dart';
+import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
 
 class ProjectsService extends StateNotifier<List<Project>> {
   final QfqqHttpClient _http;
 
-  ProjectsService(this._http) : super([]) {
-    _loadProjects();
+  ProjectsService(this._http, AuthService auth) : super([]) {
+    auth.connectionNotifier.subscribe((_) => _loadProjects());
   }
 
-  // TODO: Add feedback
   Future<ProjectErrors> createProject(Project project) async {
     final response = await _http.post(
       _http.getUri('projects'),
@@ -36,8 +36,7 @@ class ProjectsService extends StateNotifier<List<Project>> {
     );
 
     if (response.statusCode == 204) {
-      final projects = state;
-      state = projects.map((e) => e.id != project.id ? e : project).toList();
+      state = state.map((e) => e.id != project.id ? e : project).toList();
       return ProjectErrors();
     }
 
@@ -46,11 +45,6 @@ class ProjectsService extends StateNotifier<List<Project>> {
   }
 
   Future<void> _loadProjects() async {
-    final projects = await getProjects();
-    state = projects;
-  }
-
-  Future<List<Project>> getProjects() async {
     final response = await _http.get(
       _http.getUri('projects'),
       headers: {'Content-Type': 'application/json'},
@@ -58,9 +52,7 @@ class ProjectsService extends StateNotifier<List<Project>> {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
-      return data.map(Project.fromJson).toList();
-    } else {
-      throw Exception('Failed to fetch projects: ${response.statusCode}');
+      state = data.map(Project.fromJson).toList();
     }
   }
 }

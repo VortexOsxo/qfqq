@@ -30,17 +30,15 @@ class _MeetingViewContentOngoing
   Widget build(BuildContext context) {
     final decisionsService = ref.read(decisionsServiceProvider);
     final loc = S.of(context);
-    final decisionsState = ref.watch(decisionsFetcherProvider);
+    final decisions = ref.watch(decisionsProvider);
 
     if (decision.meetingId == null && isIdValid(widget.meeting.id)) {
       decision.meetingId = widget.meeting.id;
     }
 
-    final meetingDecisions = decisionsState.isLoaded
-        ? decisionsState.data!
-            .where((d) => d.meetingId == widget.meeting.id)
-            .toList()
-        : <Decision>[];
+    final meetingDecisions = decisions
+        .where((d) => d.meetingId == widget.meeting.id)
+        .toList();
 
     return Center(
       child: Column(
@@ -108,7 +106,6 @@ class _MeetingViewContentOngoing
                     decision =
                         Decision.empty()..projectId = widget.meeting.projectId,
               );
-              ref.read(decisionsFetcherProvider.notifier).loadData();
             },
             child: Text(loc.meetingInProgressCreateButton),
           ),
