@@ -17,14 +17,12 @@ import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class DecisionsListWidget extends ConsumerStatefulWidget {
-  final bool refetch;
   final bool isProjectFilterEnabled;
 
   final bool Function(Decision)? filterFunction;
 
   const DecisionsListWidget({
     super.key,
-    this.refetch = true,
     this.isProjectFilterEnabled = true,
     this.filterFunction,
   });
@@ -34,17 +32,8 @@ class DecisionsListWidget extends ConsumerStatefulWidget {
 }
 
 class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
-  // Local state for filters
   String _searchQuery = '';
   int? _selectedProjectId;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(decisionsProvider.notifier).loadDecisions();
-    });
-  }
 
   List<Decision> _getFilteredDecisions() {
     var decisions = ref.watch(decisionsProvider);
