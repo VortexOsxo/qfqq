@@ -22,7 +22,7 @@ def create_decision(description, responsibleId, meetingId, dueDate):
 
     dueDate = datetime.fromisoformat(dueDate) if dueDate is not None else None
 
-    DecisionDataHandler.create_decision(
+    decision = DecisionDataHandler.create_decision(
         description=description,
         status=data["status"],
         dueDate=dueDate,
@@ -31,7 +31,7 @@ def create_decision(description, responsibleId, meetingId, dueDate):
         assistantsIds=data.get("assistantsIds", None),
         meetingId=meetingId,
     )
-    return "", 201
+    return (jsonify(decision.to_dict()), 201) if decision is not None else ("", 400)
 
 
 @decisions_bp.route("/", methods=["GET"])
