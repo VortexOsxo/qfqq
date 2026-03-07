@@ -1,5 +1,5 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:convert';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
@@ -8,7 +8,7 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
   final QfqqHttpClient _http;
 
   MeetingAgendaService(this._http, AuthService auth) : super([]) {
-    auth.connectionNotifier.subscribe((p0) => _loadMeetingAgendas());
+    auth.connectionNotifier.subscribe((_) => _loadMeetingAgendas());
   }
 
   Future<bool> createMeetingAgenda(MeetingAgenda agenda) async {
@@ -18,21 +18,13 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
       body: jsonEncode(agenda),
     );
 
-    if (response.statusCode != 201) return false;
-    _loadMeetingAgendas();
-    return true;
-  }
+    dynamic data = jsonDecode(response.body);
 
-  Future<List<MeetingAgenda>> getMeetingAgendas([String queryArgs = ""]) async {
-    final response = await _http.get(
-      _http.getUri('meeting-agendas/?$queryArgs'),
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    if (response.statusCode != 200) return [];
-
-    final List<dynamic> data = jsonDecode(response.body);
-    return data.map(MeetingAgenda.fromJson).toList();
+    if (response.statusCode == 201) {
+      state = [...state, MeetingAgenda.fromJson(data)];
+      return true;
+    }
+    return false;
   }
 
   Future<bool> updateMeetingAgenda(MeetingAgenda agenda) async {
@@ -42,11 +34,11 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
       body: jsonEncode(agenda),
     );
     if (response.statusCode != 200) return false;
-    _loadMeetingAgendas();
+
+    state = state.map((e) => e.id != agenda.id ? e : agenda).toList();
     return true;
   }
 
-  // TODO: Handle error
   Future<bool> updateMeetingAgendaStatus(
     int meetingId,
     MeetingAgendaStatus status,
@@ -57,16 +49,24 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
       body: jsonEncode({'status': status.name}),
     );
     if (response.statusCode != 204) return false;
-    _loadMeetingAgendas(); // TODO: don't load every meeting agenda
+
+    state = state.map((e) {
+      if (e.id != meetingId) return e;
+      e.status = status;
+      return e;
+    }).toList();
     return true;
   }
 
-  MeetingAgenda? getMeetingAgendaById(int id) {
-    return state.firstWhere((agenda) => agenda.id == id);
-  }
-
   Future<void> _loadMeetingAgendas() async {
-    final meetingAgendas = await getMeetingAgendas();
-    state = meetingAgendas;
+    final response = await _http.get(
+      _http.getUri('meeting-agendas/'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode != 200) return;
+
+    final List<dynamic> data = jsonDecode(response.body);
+    state = data.map(MeetingAgenda.fromJson).toList();
   }
 }

@@ -1,11 +1,27 @@
-import 'package:qfqq/common/models/decision.dart';
 import 'dart:convert';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qfqq/common/models/decision.dart';
+import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
 
-class DecisionsService {
+class DecisionsService extends StateNotifier<List<Decision>> {
   final QfqqHttpClient _http;
 
-  DecisionsService(this._http);
+  DecisionsService(this._http, AuthService auth) : super([]) {
+    auth.connectionNotifier.subscribe((_) => loadDecisions());
+  }
+
+  Future<void> loadDecisions() async {
+    final response = await _http.get(
+      _http.getUri('decisions/'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode != 200) return;
+
+    final List<dynamic> data = jsonDecode(response.body);
+    state = data.map((item) => Decision.fromJson(item)).toList();
+  }
 
   Future<bool> createDecision(Decision decision) async {
     final response = await _http.post(
@@ -14,18 +30,11 @@ class DecisionsService {
       body: jsonEncode(decision),
     );
 
-    return response.statusCode == 201;
-  }
-
-  Future<List<Decision>> getDecisions([String queryArgs = ""]) async {
-    final response = await _http.get(
-      _http.getUri('decisions/?$queryArgs'),
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    if (response.statusCode != 200) return [];
-
-    final List<dynamic> data = jsonDecode(response.body);
-    return data.map((item) => Decision.fromJson(item)).toList();
+    if (response.statusCode == 201) {
+      dynamic data = jsonDecode(response.body);
+      state = [...state, Decision.fromJson(data)];
+      return true;
+    }
+    return false;
   }
 }
