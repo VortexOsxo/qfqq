@@ -31,7 +31,7 @@ class AuthService extends StateNotifier<AuthState> {
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      _onSuccessfulAuth(data['session_token'], data['email'], data['username']);
+      _onSuccessfulAuth(data['id'], data['session_token'], data['email'], data['username']);
       return AccountError();
     }
     return AccountError.fromJson(data);
@@ -54,7 +54,7 @@ class AuthService extends StateNotifier<AuthState> {
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 201) {
-      _onSuccessfulAuth(data['session_token'], data['email'], data['username']);
+      _onSuccessfulAuth(data['id'], data['session_token'], data['email'], data['username']);
       return AccountError();
     }
     // TODO: Improve error messages to be more descriptive
@@ -67,9 +67,8 @@ class AuthService extends StateNotifier<AuthState> {
     disconnectionNotifier.notify("");
   }
 
-  // TODO: Handle successful auth
-  _onSuccessfulAuth(String sessionId, String email, String username) {
-    state = AuthState(sessionId: sessionId, email: email, username: username);
+  _onSuccessfulAuth(int userId, String sessionId, String email, String username) {
+    state = AuthState(userId: userId, sessionId: sessionId, email: email, username: username);
     connectionNotifier.notify(email);
   }
 }
