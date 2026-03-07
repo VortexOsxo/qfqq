@@ -7,7 +7,7 @@ def test_reset_password_create_and_send_email(monkeypatch):
         return True
 
     
-    def fake_draft(email, _):
+    def fake_draft(email, _, __):
         assert email == "bob@example.com"
 
     monkeypatch.setattr(EmailSender, "send_email", fake_send)
@@ -22,7 +22,7 @@ def test_reset_password_create_different_codes(monkeypatch):
         return True
 
     codes = set()
-    def fake_draft(_, code):
+    def fake_draft(_, code, __):
         codes.add(code)
 
     monkeypatch.setattr(EmailSender, "send_email", fake_send)
@@ -41,7 +41,7 @@ def test_reset_password_create_valid_code_for_proper_email(monkeypatch):
         return True
 
     codes = []
-    def fake_draft(_, code):
+    def fake_draft(_, code, __):
         codes.append(code)
 
     monkeypatch.setattr(EmailSender, "send_email", fake_send)
@@ -61,7 +61,7 @@ def test_reset_password_should_not_work_for_unknown_email(monkeypatch):
         return True
 
     codes = []
-    def fake_draft(_, code):
+    def fake_draft(_, code, __):
         codes.append(code)
 
     monkeypatch.setattr(EmailSender, "send_email", fake_send)
@@ -82,7 +82,7 @@ def test_reset_password_old_code_should_become_invalid(monkeypatch):
         return True
 
     codes = []
-    def fake_draft(_, code):
+    def fake_draft(_, code, __):
         codes.append(code)
 
     monkeypatch.setattr(EmailSender, "send_email", fake_send)
@@ -111,7 +111,7 @@ def test_reset_password_should_invalidate_code_after_15_mins(monkeypatch):
         return True
 
     codes = []
-    def fake_draft(_, code):
+    def fake_draft(_, code, __):
         codes.append(code)
 
     from flaskr.services.emails import EmailSender, EmailDrafter
