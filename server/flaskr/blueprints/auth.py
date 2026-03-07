@@ -71,7 +71,7 @@ def validate_code(email, code):
     LambdaBuilder(
         ("email", EmailValidator()),
         ("code", StringValidator()),
-        ("password", StringValidator),
+        ("password", StringValidator()),
     )
 )
 def update(email, code, password):

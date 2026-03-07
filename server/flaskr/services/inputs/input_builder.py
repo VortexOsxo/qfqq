@@ -3,16 +3,17 @@ from abc import ABC, abstractmethod
 from flaskr.errors import InputError
 from flaskr.services.inputs.input_validator import *
 
+# TODO: pass facotries instead of instances so each request as its own unique instance instead of sharing it with other request
 
 class InputBuilder(ABC):
     @abstractmethod
     def get_fields_validators(self):
         pass
 
-    def build(self, data):
+    def build(self, data, *args):
         errors = {}
         values = {}
-        for field, validator in self.get_fields_validators():
+        for field, validator in self.get_fields_validators(*args):
             value = data.get(field)
             error = validator.validate(value)
             if error != InputError.NoError:
@@ -68,23 +69,20 @@ class CreateDecisionBuilder(InputBuilder):
 
 
 class CreateMeetingAgendaBuilder(InputBuilder):
-    def __init__(self):
-        self.is_draft = True
-
     def build(self, data):
         from flaskr.models import MeetingAgendaStatus
 
-        self.is_draft = data.get("status") == MeetingAgendaStatus.draft.value
-        return super().build(data)
+        is_draft = data.get("status") == MeetingAgendaStatus.draft.value
+        return super().build(data, is_draft)
 
-    def get_fields_validators(self):
+    def get_fields_validators(self, is_draft):
         from flaskr.models import MeetingAgendaStatus
 
         validators = [
             ("title", StringValidator()),
             ("status", EnumValidator(MeetingAgendaStatus)),
         ]
-        if not self.is_draft:
+        if not is_draft:
             validators.extend(
                 [
                     ("goals", StringValidator()),

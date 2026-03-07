@@ -31,7 +31,7 @@ def create_decision(description, responsibleId, meetingId, dueDate):
         assistantsIds=data.get("assistantsIds", None),
         meetingId=meetingId,
     )
-    return jsonify({"message": "Meeting agenda created successfully"}), 201
+    return "", 201
 
 
 @decisions_bp.route("/", methods=["GET"])
