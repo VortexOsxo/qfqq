@@ -40,6 +40,20 @@ def test_create_meeting_ongoing_success(client):
     response = client.post("/meeting-agendas", json=payload, headers=headers)
     assert response.status_code == 201
 
+def test_create_meeting_ongoing_no_project_success(client):
+    headers = get_auth_headers(client)
+    payload = {
+        "title": "Test Meeting",
+        "status": "ongoing",
+        "goals": "Discuss X",
+        "meetingDate": "2026-03-07T15:37:06",
+        "meetingLocation": "Room A",
+        "animatorId": 1,
+        "participantsIds": [1, 2],
+        "themes": [],
+    }
+    response = client.post("/meeting-agendas", json=payload, headers=headers)
+    assert response.status_code == 201
 
 def test_create_meeting_ongoing_missing_goals(client):
     headers = get_auth_headers(client)
@@ -110,6 +124,22 @@ def test_create_meeting_ongoing_invalid_project(client):
     assert response.status_code == 400
     assert "projectId" in response.get_json()
 
+def test_create_meeting_ongoing_not_found_project(client):
+    headers = get_auth_headers(client)
+    payload = {
+        "title": "Test Meeting",
+        "status": "ongoing",
+        "goals": "Discuss X",
+        "meetingDate": "2026-03-07T15:37:06",
+        "meetingLocation": "Room A",
+        "animatorId": 1,
+        "participantsIds": [1],
+        "themes": ["Tech"],
+        "projectId": 125,
+    }
+    response = client.post("/meeting-agendas", json=payload, headers=headers)
+    assert response.status_code == 400
+    assert "projectId" in response.get_json()
 
 def test_create_meeting_invalid_status(client):
     headers = get_auth_headers(client)

@@ -63,8 +63,5 @@ MeetingAgendaErrors validateMeetingAgenda(
           ? null
           : loc.commonFormsEnterParticipants;
 
-  errors.projectError =
-      idValidator(agenda.projectId) ? null : loc.commonFormsEnterProject;
-
   return errors;
 }

@@ -66,6 +66,7 @@
   "agendaListAnyStatus": "Any Status",
   "agendaListStatusFilter": "Status: {status}",
   "agendaListAnyProject": "Any Project",
+  "agendaListNoProject": "No project",
   "agendaListProjectFilter": "Project: {project}",
   
   "authServiceInvalidCredentials": "Invalid email or password.",

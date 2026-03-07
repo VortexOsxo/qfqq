@@ -47,7 +47,10 @@ final filteredAgendaProvider = Provider<List<MeetingAgenda>>((ref) {
   }
 
   final projectId = ref.watch(agendaProjectQueryProvider);
-  if (isIdValid(projectId)) {
+  if (projectId == -1) {
+    agendas = agendas.where((agenda) => !isIdValid(agenda.projectId)).toList();
+  }
+  else if (isIdValid(projectId)) {
     agendas = agendas.where((agenda) => agenda.projectId == projectId).toList();
   }
 
@@ -146,6 +149,11 @@ class AgendasListPage extends ConsumerWidget {
         value: null,
         label: S.of(context).agendaListAnyProject,
       ),
+      DropdownMenuEntry<int?>(
+        value: -1,
+        label: S.of(context).agendaListNoProject,
+      ),
+
       ...projects.map(
         (project) => DropdownMenuEntry<int?>(
           value: project.id,

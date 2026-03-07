@@ -91,7 +91,7 @@ class CreateMeetingAgendaBuilder(InputBuilder):
                     ("animatorId", UserIdValidator()),
                     ("participantsIds", ListValidator()),
                     ("themes", ListValidator(can_be_empty=True)),
-                    ("projectId", ProjectIdValidator()),
+                    ("projectId", OptionalInputValidator(ProjectIdValidator())),
                 ]
             )
         return validators
