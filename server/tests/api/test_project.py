@@ -97,7 +97,7 @@ def test_create_project_missing_supervisor_not_found(client):
     payload = {
         "title": "Test Project",
         "goals": "Testing goals",
-        "supervisorId": -1
+        "supervisorId": 999
     }
     response = client.post("/projects", json=payload, headers=headers)
     assert response.status_code == 400

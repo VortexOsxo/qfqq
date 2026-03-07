@@ -26,13 +26,11 @@ class OptionalInputValidator(InputValidator):
 
 class StringValidator(InputValidator):
     def validate(self, value) -> InputError:
+        if value is None:
+            return InputError.RequiredField
         if not isinstance(value, str):
             return InputError.InvalidType
-        return (
-            InputError.NoError
-            if value is not None and value.strip() != ""
-            else InputError.RequiredField
-        )
+        return InputError.NoError if value.strip() != "" else InputError.RequiredField
 
 
 # TODO: Improve email validation
