@@ -42,15 +42,12 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(decisionsFetcherProvider.notifier).loadData();
+      ref.read(decisionsProvider.notifier).loadData();
     });
   }
 
   List<Decision> _getFilteredDecisions() {
-    var decisionsFetcher = ref.watch(decisionsFetcherProvider);
-
-    if (!decisionsFetcher.isLoaded) return const [];
-    var decisions = decisionsFetcher.data!;
+    var decisions = ref.watch(decisionsProvider);
 
     if (_searchQuery.isNotEmpty) {
       decisions =

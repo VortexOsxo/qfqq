@@ -1,10 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/providers/decisions_provider.dart';
-import 'package:qfqq/common/providers/fetcher_providers.dart';
+import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
+import 'package:qfqq/common/providers/projects_provider.dart';
+import 'package:qfqq/common/providers/users_provider.dart';
 
 final initializationProvider = Provider<int>((ref) {
-  ref.read(decisionsResponsabilitiesFetcherProvider.notifier);
-  ref.read(decisionsFetcherProvider.notifier);
-  ref.read(userMeetingsFetcherService.notifier);
+  ref.read(decisionsProvider.notifier);
+  ref.read(projectsProvider.notifier);
+  ref.read(usersProvider.notifier);
+  ref.read(meetingsAgendasProvider.notifier);
   return 0;
 });
