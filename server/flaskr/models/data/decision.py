@@ -6,32 +6,20 @@ from datetime import datetime
 class DecisionStatus(Enum):
     inProgress = "inProgress"
     cancelled = "cancelled"
-    pending = "pending"
     completed = "completed"
-    taskDescription = "taskDescription"
-    approved = "approved"
-    toBeValidated = "toBeValidated"
 
     @staticmethod
     def as_string(value: str, lang="fr"):
         fr_reprs = {
             "inProgress": "En cours",
             "cancelled": "Annulé",
-            "pending": "En attente",
             "completed": "Terminé",
-            "taskDescription": "Description de la tâche",
-            "approved": "Approuvé",
-            "toBeValidated": "À valider",
         }
 
         en_reprs = {
             "inProgress": "In progress",
             "cancelled": "Cancelled",
-            "pending": "Pending",
             "completed": "Completed",
-            "taskDescription": "Task description",
-            "approved": "Approved",
-            "toBeValidated": "To be validated",
         }
 
         if lang == "fr":

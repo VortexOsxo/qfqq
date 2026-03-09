@@ -50,7 +50,7 @@ INSERT INTO meetingsParticipants (meetingId, userId) VALUES
 INSERT INTO decisions (description, status, initialDate, dueDate, completedDate, responsibleId, meetingId) VALUES
   ('Define MVP features', 'inProgress', '2025-11-10', '2025-12-01', NULL, (SELECT id FROM users WHERE username='alice'), (SELECT id FROM meetings WHERE title='Apollo Kickoff')),
   ('Fix login bug', 'completed', '2025-12-06', '2025-12-10', '2025-12-09', (SELECT id FROM users WHERE username='dave'), (SELECT id FROM meetings WHERE title='Sprint Review')),
-  ('Create accessibility checklist', 'pending', '2026-01-10', '2026-02-01', NULL, (SELECT id FROM users WHERE username='carol'), (SELECT id FROM meetings WHERE title='Design Sync'));
+  ('Create accessibility checklist', 'cancelled', '2026-01-10', '2026-02-01', NULL, (SELECT id FROM users WHERE username='carol'), (SELECT id FROM meetings WHERE title='Design Sync'));
 
 -- Decision assistants
 INSERT INTO decisionsAssistants (decisionId, userId) VALUES

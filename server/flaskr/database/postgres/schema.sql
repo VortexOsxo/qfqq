@@ -13,15 +13,7 @@ decisionStatus CASCADE;
 
 CREATE TYPE meetingStatus AS ENUM ('draft', 'planned', 'ongoing', 'completed');
 
-CREATE TYPE decisionStatus AS ENUM (
-  'inProgress',
-  'cancelled',
-  'pending',
-  'completed',
-  'taskDescription',
-  'approved',
-  'toBeValidated'
-);
+CREATE TYPE decisionStatus AS ENUM ('inProgress', 'cancelled', 'completed');
 
 CREATE TABLE
   users (

@@ -13,18 +13,13 @@ decisions_bp.before_request(login_required)
 @input_middleware(CreateDecisionBuilder())
 def create_decision(description, responsibleId, meetingId, dueDate):
     data = request.get_json()
-
-    # TODO: Refactor those status
-    if "status" not in data:
-        data["status"] = DecisionStatus.toBeValidated
-    elif data["status"] not in DecisionStatus.__members__:
-        data["status"] = DecisionStatus.inProgress
+    data["status"] = DecisionStatus.inProgress
 
     dueDate = datetime.fromisoformat(dueDate) if dueDate is not None else None
 
     decision = DecisionDataHandler.create_decision(
         description=description,
-        status=data["status"],
+        status=DecisionStatus.inProgress,
         dueDate=dueDate,
         responsibleId=responsibleId,
         initialDate=datetime.now(),
