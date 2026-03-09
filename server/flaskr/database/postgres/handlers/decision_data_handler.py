@@ -1,7 +1,7 @@
 from datetime import datetime
 from flaskr.models import Decision
 from ..postgres import read_query, get_db_access
-
+from flaskr.utils.time import time_now_to_string
 
 class DecisionDataHandler:
     @classmethod
@@ -87,3 +87,21 @@ class DecisionDataHandler:
 
         decisions = read_query(query, (meetingId,))
         return [(Decision(*d[:-1]), d[-1]) for d in decisions]
+    
+    @classmethod
+    def complete_decision(cls, id: int):
+        query = "UPDATE decisions SET status = %s, completedDate = %s WHERE id = %s;"
+        params = ('completed',time_now_to_string(), id)
+        with get_db_access() as conn:
+            cur = conn.cursor()
+            cur.execute(query, params)
+            return cur.rowcount == 1
+
+    @classmethod
+    def cancel_decision(cls, id: int):
+        query = "UPDATE decisions SET status = %s WHERE id = %s;"
+        params = ('cancelled', id)
+        with get_db_access() as conn:
+            cur = conn.cursor()
+            cur.execute(query, params)
+            return cur.rowcount == 1
