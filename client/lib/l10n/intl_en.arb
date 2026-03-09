@@ -179,6 +179,8 @@
   "forgottenPasswordPageResendCodeLink": "Didn’t receive the code? Resend",
 
   "commonCancel": "Cancel",
+  "commonConfirm": "Confirm",
+  "commonClose": "Close",
   "commonSave": "Save",
   "commonDelete": "Delete",
   "commonEdit": "Edit",
@@ -236,6 +238,11 @@
   "errorGeneric": "An error occurred. Please try again.",
   "errorNetwork": "Network error. Please check your connection.",
   "errorUnknown": "An unknown error occurred.",
+
+  "unsavedChangesTitle": "Unsaved Changes",
+  "unsavedChangesMessage": "You have unsaved changes. If you leave now, your changes will be lost.",
+  "unsavedChangesDiscard": "Discard Changes",
+  "unsavedChangesKeepEditing": "Keep Editing",
 
   "buttonCreateAgenda": "Create Meeting Agenda",
   "buttonCreateProject": "Create a Project"
