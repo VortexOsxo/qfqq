@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:qfqq/common/models/decision.dart';
 import 'package:qfqq/common/theme/styles.dart';
+import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class DecisionLineHeader extends StatelessWidget {
@@ -18,7 +19,7 @@ class DecisionLineHeader extends StatelessWidget {
             ? DateFormat.yMMMd().format(decision.dueDate!)
             : loc.commonNoDueDate;
 
-    final statusText = getDecisionStatusName(decision.status);
+    final statusText = getDecisionStatusUI(S.of(context), decision.status).label;
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
