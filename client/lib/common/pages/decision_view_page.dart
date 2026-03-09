@@ -6,6 +6,8 @@ import 'package:qfqq/common/providers/decisions_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
+import 'package:qfqq/common/utils/get_status_ui.dart';
+import 'package:qfqq/common/widgets/status_chip.dart';
 import 'package:qfqq/common/widgets/details_attribute_widget.dart';
 import 'package:qfqq/common/widgets/details_list_widget.dart';
 import 'package:qfqq/common/widgets/projects/project_title_link_widget.dart';
@@ -107,10 +109,8 @@ class DecisionViewPage extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        DetailsAttributeWidget(
-          label: loc.attributeStatus,
-          value: getDecisionStatusName(decision.status),
-        ),
+        StatusChip(statusUIData: getDecisionStatusUI(S.of(context), decision.status)),
+        const SizedBox(height: 12),
         DetailsAttributeWidget(
           label: loc.attributeDate,
           value: formatDate(context, decision.initialDate),

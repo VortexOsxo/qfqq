@@ -11,7 +11,7 @@ import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
-import 'package:qfqq/common/widgets/agendas/meeting_status_chip.dart';
+import 'package:qfqq/common/widgets/status_chip.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
 import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
 import 'package:qfqq/common/widgets/reusables/default_dropdown_menu.dart';
@@ -226,7 +226,7 @@ class AgendasListPage extends ConsumerWidget {
                   Expanded(flex: 3, child: Text(agenda.title)),
                   Expanded(
                     flex: 3,
-                    child: MeetingStatusChip(status: agenda.status),
+                    child: StatusChip(statusUIData: getMeetingAgendaStatusUI(S.of(context), agenda.status)),
                   ),
                   Expanded(
                     flex: 3,

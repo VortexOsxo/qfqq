@@ -5,7 +5,8 @@ import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
-import 'package:qfqq/common/widgets/agendas/meeting_status_chip.dart';
+import 'package:qfqq/common/utils/get_status_ui.dart';
+import 'package:qfqq/common/widgets/status_chip.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_content.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_control.dart';
 import 'package:qfqq/common/widgets/details_attribute_widget.dart';
@@ -97,7 +98,7 @@ class AgendaViewPage extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        MeetingStatusChip(status: agenda.status),
+        StatusChip(statusUIData: getMeetingAgendaStatusUI(S.of(context), agenda.status)),
         Flexible(child: _buildDetails(context, ref, agenda)),
         const SizedBox(height: 16),
         Center(child: MeetingViewControl(meeting: agenda)),

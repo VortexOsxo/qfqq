@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qfqq/common/models/decision.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -19,5 +20,16 @@ StatusUIData getMeetingAgendaStatusUI(S loc, MeetingAgendaStatus status) {
       return StatusUIData(loc.agendaStatusOngoing, Colors.red);
     case MeetingAgendaStatus.completed:
       return StatusUIData(loc.agendaStatusCompleted, Colors.green);
+  }
+}
+
+StatusUIData getDecisionStatusUI(S loc, DecisionStatus status) {
+  switch (status) {
+    case DecisionStatus.inProgress:
+      return StatusUIData(loc.decisionStatusInProgress, Colors.blue);
+    case DecisionStatus.cancelled:
+      return StatusUIData(loc.decisionStatusCancelled, Colors.red);
+    case DecisionStatus.completed:
+      return StatusUIData(loc.decisionStatusCompleted, Colors.green);
   }
 }

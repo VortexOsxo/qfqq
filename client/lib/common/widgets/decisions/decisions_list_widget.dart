@@ -9,6 +9,7 @@ import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/templates/card_template.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
+import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
 import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
@@ -175,7 +176,7 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
                   Expanded(flex: 3, child: Text(decision.description)),
                   Expanded(
                     flex: 3,
-                    child: Text(getDecisionStatusName(decision.status)),
+                    child: Text(getDecisionStatusUI(S.of(context), decision.status).label),
                   ),
                   Expanded(
                     flex: 3,
