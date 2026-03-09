@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/templates/navigation_guard.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/pages/agenda_modification_page.dart';
@@ -39,6 +40,7 @@ final GoRouter desktopRouter = GoRouter(
         ),
         GoRoute(
           path: '/agenda',
+          onExit: (context, state) => activeNavigationGuard?.call(context) ?? Future.value(true),
           pageBuilder: (context, state) {
             final agenda = state.extra as MeetingAgenda?;
             return _noTransition(
@@ -80,6 +82,7 @@ final GoRouter desktopRouter = GoRouter(
         ),
         GoRoute(
           path: '/project/creation',
+          onExit: (context, state) => activeNavigationGuard?.call(context) ?? Future.value(true),
           pageBuilder: (context, state) {
             final project = state.extra as Project?;
             return _noTransition(
