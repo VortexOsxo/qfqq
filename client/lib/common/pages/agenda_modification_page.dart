@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/templates/navigation_guard.dart';
 import 'package:qfqq/common/models/errors/meeting_agenda_errors.dart';
+import 'package:qfqq/common/services/modal_service.dart';
 import 'package:qfqq/common/models/user.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
@@ -35,11 +37,28 @@ class _AgendaModificationPageState
   MeetingAgendaErrors errors = MeetingAgendaErrors();
   bool isSending = false;
   late final TextEditingController _themeController;
+  late MeetingAgenda originalAgenda;
+
+  Future<bool> shouldPop(BuildContext ctx) async {
+    if (originalAgenda == widget.agenda) {
+      return true;
+    }
+    final loc = S.of(ctx);
+    return await ModalService.showConfirmation(
+      ctx,
+      title: loc.unsavedChangesTitle,
+      message: loc.unsavedChangesMessage,
+      confirmLabel: loc.unsavedChangesDiscard,
+      cancelLabel: loc.unsavedChangesKeepEditing,
+    );
+  }
 
   @override
   void initState() {
     super.initState();
     _themeController = TextEditingController();
+    originalAgenda = widget.agenda.copy();
+    activeNavigationGuard = shouldPop;
   }
 
   Future<void> _handleDateTimeSelection() async {
@@ -93,6 +112,7 @@ class _AgendaModificationPageState
 
   @override
   void dispose() {
+    activeNavigationGuard = null;
     _themeController.dispose();
     super.dispose();
   }
@@ -120,6 +140,7 @@ class _AgendaModificationPageState
       return;
     }
 
+    activeNavigationGuard = null;
     context.go(
       widget.isNewAgenda ? '/agendas' : '/agendas/${widget.agenda.id}',
     );

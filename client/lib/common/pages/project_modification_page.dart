@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/errors/project_errors.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
+import 'package:qfqq/common/services/modal_service.dart';
+import 'package:qfqq/common/templates/navigation_guard.dart';
 import 'package:qfqq/common/utils/validation.dart';
 import 'package:qfqq/common/widgets/reusables/form_filled_button.dart';
 import 'package:qfqq/common/widgets/reusables/form_outlined_button.dart';
@@ -27,6 +29,21 @@ class ProjectModificationPage extends ConsumerStatefulWidget {
 class _ProjectModificationState extends ConsumerState<ProjectModificationPage> {
   ProjectErrors errors = ProjectErrors();
   bool isSending = false;
+  late Project originalProject;
+
+  Future<bool> shouldPop(BuildContext context) async {
+    if (originalProject == widget.project) {
+      return true;
+    }
+    final loc = S.of(context);
+    return await ModalService.showConfirmation(
+      context,
+      title: loc.unsavedChangesTitle,
+      message: loc.unsavedChangesMessage,
+      confirmLabel: loc.unsavedChangesDiscard,
+      cancelLabel: loc.unsavedChangesKeepEditing,
+    );
+  }
 
   Future<void> updateProject() async {
     var projectsError = validateProject(widget.project);
@@ -56,9 +73,23 @@ class _ProjectModificationState extends ConsumerState<ProjectModificationPage> {
       return;
     }
 
+    activeNavigationGuard = null;
     context.go(
       widget.isNewProject ? '/projects' : '/project/${widget.project.id}',
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    originalProject = widget.project.copy();
+    activeNavigationGuard = shouldPop;
+  }
+
+  @override
+  void dispose() {
+    activeNavigationGuard = null;
+    super.dispose();
   }
 
   @override

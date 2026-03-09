@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 enum MeetingAgendaStatus { draft, planned, ongoing, completed }
 
 class MeetingAgenda {
@@ -34,6 +36,23 @@ class MeetingAgenda {
         goals: goals,
         redactionDate: redactionDate,
         status: newStatus,
+      )
+      ..meetingDate = meetingDate
+      ..meetingLocation = meetingLocation
+      ..animatorId = animatorId
+      ..projectId = projectId
+      ..participantsIds = List<int>.from(participantsIds)
+      ..themes = List<String>.from(themes);
+  }
+
+  MeetingAgenda copy() {
+    return MeetingAgenda(
+        id: id,
+        number: number,
+        title: title,
+        goals: goals,
+        redactionDate: redactionDate,
+        status: status,
       )
       ..meetingDate = meetingDate
       ..meetingLocation = meetingLocation
@@ -87,4 +106,34 @@ class MeetingAgenda {
       if (projectId != null) 'projectId': projectId,
     };
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is MeetingAgenda &&
+           other.id == id &&
+           other.number == number &&
+           other.title == title &&
+           other.goals == goals &&
+           other.status == status &&
+           other.redactionDate == redactionDate &&
+           other.meetingDate == meetingDate &&
+           other.meetingLocation == meetingLocation &&
+           other.animatorId == animatorId &&
+           other.projectId == projectId &&
+           listEquals(other.participantsIds, participantsIds) &&
+           listEquals(other.themes, themes);
+  }
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      number.hashCode ^
+      title.hashCode ^
+      goals.hashCode ^
+      status.hashCode ^
+      redactionDate.hashCode ^
+      meetingDate.hashCode ^
+      meetingLocation.hashCode ^
+      animatorId.hashCode ^
+      projectId.hashCode;
 }
