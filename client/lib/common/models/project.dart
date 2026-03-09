@@ -38,4 +38,32 @@ class Project {
       'supervisorId': supervisorId,
     };
   }
+
+  Project copy() {
+    return Project(
+      id: id,
+      number: number,
+      title: title,
+      goals: goals,
+      supervisorId: supervisorId,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is Project &&
+           other.id == id &&
+           other.number == number &&
+           other.title == title &&
+           other.goals == goals &&
+           other.supervisorId == supervisorId;
+  }
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      number.hashCode ^
+      title.hashCode ^
+      goals.hashCode ^
+      supervisorId.hashCode;
 }
