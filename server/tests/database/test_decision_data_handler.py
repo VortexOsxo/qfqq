@@ -114,3 +114,36 @@ def test_get_decisions_and_responsible_by_meeting(app):
 
     assert len(responsibles) == len(decisions)
     assert responsibles[0] == "alice"
+
+def test_set_status_as_completed(app, monkeypatch):
+    import datetime
+    import flaskr.utils.time as time
+    now = datetime.datetime.now()
+
+    class FakeDateTime:
+        @classmethod
+        def now(cls):
+            return now
+
+    monkeypatch.setattr(time, "datetime", FakeDateTime)
+
+    DecisionDataHandler.complete_decision(1)
+
+    decision = DecisionDataHandler.get_decision(1)
+    assert decision.status == 'completed'
+    assert decision.completedDate == now.date()
+
+def test_set_status_as_completed_not_found(app):
+    result = DecisionDataHandler.complete_decision(999)
+    assert not result
+
+def test_set_status_as_cancelled(app):
+    result = DecisionDataHandler.cancel_decision(1)
+    assert result
+
+    decision = DecisionDataHandler.get_decision(1)
+    assert decision.status == 'cancelled'
+
+def test_set_status_as_cancelled_not_found(app):
+    result = DecisionDataHandler.cancel_decision(999)
+    assert not result

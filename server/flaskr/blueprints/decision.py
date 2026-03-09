@@ -40,3 +40,21 @@ def get_decisions():
         decisions = DecisionDataHandler.get_decisions()
 
     return jsonify([decision.to_dict() for decision in decisions]), 200
+
+@decisions_bp.route("/<int:id>/complete", methods=["PATCH"])
+def complete(id):
+    try:
+        DecisionDataHandler.complete_decision(id)
+        return "", 204
+    except:
+        pass
+    return "", 404
+
+@decisions_bp.route("/<int:id>/cancel", methods=["PATCH"])
+def cancel(id):
+    try:
+        DecisionDataHandler.cancel_decision(id)
+        return "", 204
+    except:
+        pass
+    return "", 404
