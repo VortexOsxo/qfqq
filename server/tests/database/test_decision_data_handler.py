@@ -80,7 +80,7 @@ def test_create_decision(app):
 
     decision = DecisionDataHandler.create_decision(
         description="Update documentation",
-        status="pending",
+        status="inProgress",
         dueDate=dueDate,
         responsibleId=1,
         initialDate=initialDate,
@@ -89,7 +89,7 @@ def test_create_decision(app):
     )
 
     assert decision.description == "Update documentation"
-    assert decision.status == "pending"
+    assert decision.status == "inProgress"
     assert decision.dueDate == dueDate.date()
     assert decision.responsibleId == 1
     assert decision.initialDate == initialDate.date()
