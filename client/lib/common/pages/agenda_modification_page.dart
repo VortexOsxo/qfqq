@@ -24,7 +24,7 @@ class AgendaModificationPage extends ConsumerStatefulWidget {
   final bool isNewAgenda;
   
   AgendaModificationPage({super.key, MeetingAgenda? agendaToModify})
-    : agenda = agendaToModify ?? MeetingAgenda.empty(),
+    : agenda = agendaToModify?.copyWith() ?? MeetingAgenda.empty(),
       isNewAgenda = agendaToModify == null;
 
   @override
@@ -57,7 +57,7 @@ class _AgendaModificationPageState
   void initState() {
     super.initState();
     _themeController = TextEditingController();
-    originalAgenda = widget.agenda.copy();
+    originalAgenda = widget.agenda.copyWith();
     activeNavigationGuard = shouldPop;
   }
 
