@@ -6,8 +6,8 @@ class ModalService {
 
   static Future<bool> showConfirmation(
     BuildContext context, {
-    required title,
-    required message,
+    required String title,
+    required String message,
     String? confirmLabel,
     String? cancelLabel,
   }) async {

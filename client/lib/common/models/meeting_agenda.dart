@@ -28,31 +28,14 @@ class MeetingAgenda {
     this.goals = '',
   });
 
-  MeetingAgenda fromStatus(MeetingAgendaStatus newStatus) {
+  MeetingAgenda copyWith({MeetingAgendaStatus? newStatus}) {
     return MeetingAgenda(
         id: id,
         number: number,
         title: title,
         goals: goals,
         redactionDate: redactionDate,
-        status: newStatus,
-      )
-      ..meetingDate = meetingDate
-      ..meetingLocation = meetingLocation
-      ..animatorId = animatorId
-      ..projectId = projectId
-      ..participantsIds = List<int>.from(participantsIds)
-      ..themes = List<String>.from(themes);
-  }
-
-  MeetingAgenda copy() {
-    return MeetingAgenda(
-        id: id,
-        number: number,
-        title: title,
-        goals: goals,
-        redactionDate: redactionDate,
-        status: status,
+        status: newStatus ?? status,
       )
       ..meetingDate = meetingDate
       ..meetingLocation = meetingLocation

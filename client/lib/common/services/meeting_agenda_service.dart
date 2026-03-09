@@ -51,7 +51,7 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
     if (response.statusCode != 204) return false;
 
     state = state.map(
-      (e) => (e.id != meetingId) ? e : e.fromStatus(status)
+      (e) => (e.id != meetingId) ? e : e.copyWith(newStatus: status)
     ).toList();
     return true;
   }

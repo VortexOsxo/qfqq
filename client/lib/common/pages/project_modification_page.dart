@@ -18,7 +18,7 @@ class ProjectModificationPage extends ConsumerStatefulWidget {
   final bool isNewProject;
 
   ProjectModificationPage({super.key, Project? projectToModify})
-    : project = projectToModify ?? Project.empty(),
+    : project = projectToModify?.copy() ?? Project.empty(),
       isNewProject = projectToModify == null;
 
   @override
