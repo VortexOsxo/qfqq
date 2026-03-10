@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify, request, g
 
 from flaskr.models import DecisionStatus
 from flaskr.database import DecisionDataHandler
-from flaskr.services.inputs import input_middleware, CreateDecisionBuilder
+from flaskr.services.inputs import input_middleware, CreateDecisionBuilder, LambdaBuilder, EnumValidator
 from flaskr.blueprints.before_request import login_required
 
 decisions_bp = Blueprint("decisions", __name__, url_prefix="/decisions")
@@ -41,20 +41,18 @@ def get_decisions():
 
     return jsonify([decision.to_dict() for decision in decisions]), 200
 
-@decisions_bp.route("/<int:id>/complete", methods=["PATCH"])
-def complete(id):
+@decisions_bp.patch("/<string:id>/status")
+@input_middleware(LambdaBuilder(("status", EnumValidator(DecisionStatus))))
+def patch_meeting_agenda_status(status, id: str):
     try:
-        DecisionDataHandler.complete_decision(id)
-        return "", 204
-    except:
-        pass
-    return "", 404
+        result = False
+        if status == 'completed':
+            result = DecisionDataHandler.complete_decision(id)
+        elif status == 'cancelled':
+            result = DecisionDataHandler.cancel_decision(id)
+        if not result:
+            return '', 404
+        return '', 204
+    except: pass
+    return '', 404
 
-@decisions_bp.route("/<int:id>/cancel", methods=["PATCH"])
-def cancel(id):
-    try:
-        DecisionDataHandler.cancel_decision(id)
-        return "", 204
-    except:
-        pass
-    return "", 404

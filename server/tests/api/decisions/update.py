@@ -13,7 +13,7 @@ def get_auth_headers(client, user_id=1):
 def test_complete_decision_success(client):
     headers = get_auth_headers(client)
 
-    response = client.patch("/decisions/1/complete", headers=headers)
+    response = client.patch("/decisions/1/status", headers=headers, json={"status": "completed"})
     assert response.status_code == 204
 
     decision = DecisionDataHandler.get_decision(1)
@@ -23,19 +23,19 @@ def test_complete_decision_success(client):
 
 def test_complete_decision_nonexistent_numeric_id(client):
     headers = get_auth_headers(client)
-    response = client.patch("/decisions/999/complete", headers=headers)
+    response = client.patch("/decisions/999/status", headers=headers, json={"status": "completed"})
     assert response.status_code == 404
 
 
 def test_complete_decision_non_numeric_id(client):
     headers = get_auth_headers(client)
-    response = client.patch("/decisions/abc/complete", headers=headers)
+    response = client.patch("/decisions/abc/status", headers=headers, json={"status": "completed"})
     assert response.status_code == 404
 
 
 def test_cancel_decision_success(client):
     headers = get_auth_headers(client)
-    response = client.patch("/decisions/1/cancel", headers=headers)
+    response = client.patch("/decisions/1/status", headers=headers, json={"status": "cancelled"})
     assert response.status_code == 204
 
     decision = DecisionDataHandler.get_decision(1)
@@ -45,17 +45,17 @@ def test_cancel_decision_success(client):
 def test_cancel_decision_already_cancelled(client):
     headers = get_auth_headers(client)
 
-    response = client.patch("/decisions/3/cancel", headers=headers)
+    response = client.patch("/decisions/3/status", headers=headers, json={"status": "cancelled"})
     assert response.status_code == 204
 
 
 def test_cancel_decision_nonexistent_numeric_id(client):
     headers = get_auth_headers(client)
-    response = client.patch("/decisions/999/cancel", headers=headers)
+    response = client.patch("/decisions/999/status", headers=headers, json={"status": "cancelled"})
     assert response.status_code == 404
 
 
 def test_cancel_decision_non_numeric_id(client):
     headers = get_auth_headers(client)
-    response = client.patch("/decisions/xyz/cancel", headers=headers)
+    response = client.patch("/decisions/xyz/status", headers=headers, json={"status": "cancelled"})
     assert response.status_code == 404
