@@ -72,8 +72,6 @@
   
   "authServiceInvalidCredentials": "Email ou mot de passe invalide.",
   "authServiceUnknownError": "Une erreur inconnue est survenue lors de l'authentification.",
-  "authServiceFirstNameError": "Le prénom est invalide.",
-  "authServiceLastNameError": "Le nom de famille est invalide.",
   "authServiceEmailError": "Email invalide ou déjà enregistré.",
   "authServicePasswordError": "Mot de passe trop faible ou invalide.",
   
@@ -239,8 +237,8 @@
   "widgetProjectLabel": "Projet",
   "widgetUserLabel": "Utilisateur",
   
-  "errorGeneric": "Une erreur s'est produite. Veuillez réessayer.",
-  "errorNetwork": "Erreur réseau. Veuillez vérifier votre connexion.",
+  "errorRequiredField": "Ce champ est obligatoire",
+  "errorNameMaxLength": "Le nom ne peut pas dépasser 50 caractères",
   "errorUnknown": "Une erreur inconnue s'est produite.",
 
   "unsavedChangesTitle": "Modifications non enregistrées",

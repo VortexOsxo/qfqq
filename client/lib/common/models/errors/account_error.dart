@@ -1,3 +1,4 @@
+import 'package:qfqq/common/utils/errors_translation.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class AccountError {
@@ -23,8 +24,8 @@ class AccountError {
     final loc = S.current;
 
     return AccountError(
-      firstNameError: data['firstName'] != null ? loc.authServiceFirstNameError : null,
-      lastNameError: data['lastName'] != null ? loc.authServiceLastNameError : null,
+      firstNameError: translateNameError(data['firstName']),
+      lastNameError: translateNameError(data['lastName']),
       emailError: data['email'] != null ? loc.authServiceEmailError : null,
       passwordError: data['password'] != null ? loc.authServicePasswordError : null,
       authError: data['auth'] != null ? loc.authServiceInvalidCredentials : null,

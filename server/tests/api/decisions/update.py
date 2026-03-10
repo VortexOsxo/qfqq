@@ -1,14 +1,5 @@
-import jwt
 from flaskr.database import DecisionDataHandler
-
-
-def get_auth_headers(client, user_id=1):
-    app = client.application
-    token = jwt.encode(
-        {"user_id": user_id}, app.config["SECRET_KEY"], algorithm="HS256"
-    )
-    return {"Authorization": f"Bearer {token}", "QfqqVersion": "beta"}
-
+from tests.api.utils import get_auth_headers
 
 def test_complete_decision_success(client):
     headers = get_auth_headers(client)

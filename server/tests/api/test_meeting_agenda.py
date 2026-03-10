@@ -1,12 +1,4 @@
-import jwt
-
-
-def get_auth_headers(client, user_id=1):
-    app = client.application
-    token = jwt.encode(
-        {"user_id": user_id}, app.config["SECRET_KEY"], algorithm="HS256"
-    )
-    return {"Authorization": f"Bearer {token}", "QfqqVersion": "beta"}
+from tests.api.utils import get_auth_headers
 
 
 def test_create_meeting_draft_success(client):
@@ -40,6 +32,7 @@ def test_create_meeting_ongoing_success(client):
     response = client.post("/meeting-agendas", json=payload, headers=headers)
     assert response.status_code == 201
 
+
 def test_create_meeting_ongoing_no_project_success(client):
     headers = get_auth_headers(client)
     payload = {
@@ -54,6 +47,7 @@ def test_create_meeting_ongoing_no_project_success(client):
     }
     response = client.post("/meeting-agendas", json=payload, headers=headers)
     assert response.status_code == 201
+
 
 def test_create_meeting_ongoing_missing_goals(client):
     headers = get_auth_headers(client)
@@ -124,6 +118,7 @@ def test_create_meeting_ongoing_invalid_project(client):
     assert response.status_code == 400
     assert "projectId" in response.get_json()
 
+
 def test_create_meeting_ongoing_not_found_project(client):
     headers = get_auth_headers(client)
     payload = {
@@ -140,6 +135,7 @@ def test_create_meeting_ongoing_not_found_project(client):
     response = client.post("/meeting-agendas", json=payload, headers=headers)
     assert response.status_code == 400
     assert "projectId" in response.get_json()
+
 
 def test_create_meeting_invalid_status(client):
     headers = get_auth_headers(client)

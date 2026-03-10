@@ -72,8 +72,6 @@
   
   "authServiceInvalidCredentials": "Invalid email or password.",
   "authServiceUnknownError": "An unknown error occurred during authentication.",
-  "authServiceFirstNameError": "First name is invalid.",
-  "authServiceLastNameError": "Last name is invalid.",
   "authServiceEmailError": "Email is invalid or already registered.",
   "authServicePasswordError": "Password is too weak or invalid.",
   
@@ -238,9 +236,9 @@
 
   "widgetProjectLabel": "Project",
   "widgetUserLabel": "User",
-  
-  "errorGeneric": "An error occurred. Please try again.",
-  "errorNetwork": "Network error. Please check your connection.",
+
+  "errorRequiredField": "This field is required",
+  "errorNameMaxLength": "Names cannot be longer than 50 characters",
   "errorUnknown": "An unknown error occurred.",
 
   "unsavedChangesTitle": "Unsaved Changes",
