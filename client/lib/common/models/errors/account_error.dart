@@ -27,7 +27,7 @@ class AccountError {
       firstNameError: translateNameError(data['firstName']),
       lastNameError: translateNameError(data['lastName']),
       emailError: data['email'] != null ? loc.authServiceEmailError : null,
-      passwordError: data['password'] != null ? loc.authServicePasswordError : null,
+      passwordError: translatePasswordError(data['password']),
       authError: data['auth'] != null ? loc.authServiceInvalidCredentials : null,
     );
   }

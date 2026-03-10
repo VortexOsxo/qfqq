@@ -73,7 +73,6 @@
   "authServiceInvalidCredentials": "Email ou mot de passe invalide.",
   "authServiceUnknownError": "Une erreur inconnue est survenue lors de l'authentification.",
   "authServiceEmailError": "Email invalide ou déjà enregistré.",
-  "authServicePasswordError": "Mot de passe trop faible ou invalide.",
   
   "signupPageTitle": "Inscription",
   "signupPageButtonSignup": "S'inscrire",
@@ -239,6 +238,9 @@
   
   "errorRequiredField": "Ce champ est obligatoire",
   "errorNameMaxLength": "Le nom ne peut pas dépasser 50 caractères",
+  "errorPasswordMaxLength": "Le mot de passe ne peut pas dépasser 100 caractères",
+  "errorPasswordMinLength": "Le mot de passe doit contenir au moins 8 caractères",
+  "errorPasswordInvalidFormat": "Le mot de passe doit contenir au moins une lettre, un chiffre et un caractère spécial",
   "errorUnknown": "Une erreur inconnue s'est produite.",
 
   "unsavedChangesTitle": "Modifications non enregistrées",

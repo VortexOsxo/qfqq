@@ -25,7 +25,8 @@ class OptionalInputValidator(InputValidator):
 
 
 class StringValidator(InputValidator):
-    def __init__(self, max_length=float('inf')):
+    def __init__(self, min_length=0, max_length=float('inf')):
+        self.min_length=min_length
         self.max_length=max_length
 
     def validate(self, value) -> InputError:
@@ -39,7 +40,10 @@ class StringValidator(InputValidator):
             return InputError.RequiredField
         
         if len(value) > self.max_length:
-            return InputError.MaxLengthExceeded 
+            return InputError.MaxLengthExceeded
+        
+        if len(value) < self.min_length:
+            return InputError.MinLengthExceeded
         
         return InputError.NoError
 
@@ -55,9 +59,24 @@ class EmailValidator(StringValidator):
         return (
             InputError.NoError
             if re.match(self.EmailRegex, value) is not None
-            else InputError.EmailFormatInvalid
+            else InputError.InvalidFormat
         )
 
+class PasswordValidator(StringValidator):
+    PasswordRegex = r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+])[A-Za-z\d!@#$%^&*()\-_=+]+$"
+
+    def __init__(self):
+        super().__init__(min_length=8, max_length=100)
+
+    def validate(self, value) -> InputError:
+        if (error := super().validate(value)) != InputError.NoError:
+            return error
+
+        return (
+            InputError.NoError
+            if re.match(self.PasswordRegex, value) is not None
+            else InputError.InvalidFormat
+        )
 
 class DateValidator(InputValidator):
     def validate(self, value) -> InputError:
