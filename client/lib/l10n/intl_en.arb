@@ -73,7 +73,6 @@
   "authServiceInvalidCredentials": "Invalid email or password.",
   "authServiceUnknownError": "An unknown error occurred during authentication.",
   "authServiceEmailError": "Email is invalid or already registered.",
-  "authServicePasswordError": "Password is too weak or invalid.",
   
   "signupPageTitle": "Sign Up",
   "signupPageButtonSignup": "Sign Up",
@@ -238,7 +237,10 @@
   "widgetUserLabel": "User",
 
   "errorRequiredField": "This field is required",
-  "errorNameMaxLength": "Names cannot be longer than 50 characters",
+  "errorNameMaxLength": "Name cannot be longer than 50 characters",
+  "errorPasswordMaxLength": "Password cannot be longer than 100 characters",
+  "errorPasswordMinLength": "Password cannot be shorter than 8 characters",
+  "errorPasswordInvalidFormat": "The password must contain at least one letter, one number, and one special character",
   "errorUnknown": "An unknown error occurred.",
 
   "unsavedChangesTitle": "Unsaved Changes",

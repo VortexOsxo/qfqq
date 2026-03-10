@@ -4,7 +4,7 @@ class InputError(Enum):
     UnknownError = -1
     NoError = 0
     RequiredField = 1
-    EmailFormatInvalid = 2
+    InvalidFormat = 2
     ObjectIdNotFound = 3
     EnumMemberNotFound = 4
     ValueMustBeAList = 5
@@ -15,3 +15,4 @@ class InputError(Enum):
     EmailNotFound = 10
     InvalidDateFormat = 11
     MaxLengthExceeded = 12
+    MinLengthExceeded = 13

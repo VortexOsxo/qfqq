@@ -35,12 +35,11 @@ class LambdaBuilder(InputBuilder):
 
 
 class SignupBuilder(InputBuilder):
-    # TODO: Add proper password validator
     def get_fields_validators(self):
         return (
             ("firstName", StringValidator(max_length=50)),
             ("lastName", StringValidator(max_length=50)),
-            ("password", StringValidator()),
+            ("password", PasswordValidator()),
             ("email", EmailValidator()),
         )
 
