@@ -13,8 +13,6 @@ decisions_bp.before_request(login_required)
 @input_middleware(CreateDecisionBuilder())
 def create_decision(description, responsibleId, meetingId, dueDate):
     data = request.get_json()
-    data["status"] = DecisionStatus.inProgress
-
     dueDate = datetime.fromisoformat(dueDate) if dueDate is not None else None
 
     decision = DecisionDataHandler.create_decision(

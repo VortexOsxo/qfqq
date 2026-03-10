@@ -47,8 +47,7 @@ class Decision {
       'status': status.name,
       'initialDate': initialDate.toIso8601String(),
       if (dueDate != null) 'dueDate': dueDate?.toIso8601String(),
-      if (completedDate != null)
-        'completedDate': completedDate?.toIso8601String(),
+      if (completedDate != null) 'completedDate': completedDate?.toIso8601String(),
       if (isIdValid(responsibleId)) 'responsibleId': responsibleId,
       if (isIdValid(meetingId)) 'meetingId': meetingId,
       'assistantsIds': assistantsIds,
@@ -64,10 +63,7 @@ class Decision {
         (e) => e.toString().split('.').last == data['status'],
       ),
       initialDate = DateTime.parse(data['initialDate']),
-      completedDate =
-          data['completedDate'] != null
-              ? DateTime.parse(data['completedDate'])
-              : null,
+      completedDate = data['completedDate'] != null ? DateTime.parse(data['completedDate']) : null,
       dueDate =
           data['dueDate'] != null ? DateTime.parse(data['dueDate']) : null,
       responsibleId = data['responsibleId'],
