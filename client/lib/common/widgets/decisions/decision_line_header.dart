@@ -19,7 +19,7 @@ class DecisionLineHeader extends StatelessWidget {
             ? DateFormat.yMMMd().format(decision.dueDate!)
             : loc.commonNoDueDate;
 
-    final statusText = getDecisionStatusUI(S.of(context), decision.status).label;
+    final statusText = getDecisionStatusUI(loc, decision.status).label;
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
