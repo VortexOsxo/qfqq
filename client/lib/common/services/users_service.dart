@@ -23,7 +23,8 @@ class UsersService extends StateNotifier<List<User>> {
           .map(
             (item) => User(
               id: item['id'],
-              username: item['username'],
+              firstName: item['firstName'],
+              lastName: item['lastName'],
               email: item['email'],
             ),
           )

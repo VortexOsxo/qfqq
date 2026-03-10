@@ -4,9 +4,10 @@ from dataclasses import dataclass
 @dataclass(slots=True)
 class User:
     id: int
-    username: str
+    firstName: str
+    lastName: str
     passwordHash: str
     email: str
 
     def to_dict(self):
-        return {"id": self.id, "username": self.username, "email": self.email}
+        return {"id": self.id, "firstName": self.firstName, "lastName": self.lastName, "email": self.email}

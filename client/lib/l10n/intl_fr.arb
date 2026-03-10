@@ -23,7 +23,8 @@
   "attributeStatus": "Statut",
   "attributeProject": "Projet",
 
-  "attributeUsername": "Nom d'utilisateur",
+  "attributeFirstName": "Prénom",
+  "attributeLastName": "Nom de famille",
   "attributeEmail": "Email",
   "attributePassword": "Mot de passe",
 
@@ -71,7 +72,8 @@
   
   "authServiceInvalidCredentials": "Email ou mot de passe invalide.",
   "authServiceUnknownError": "Une erreur inconnue est survenue lors de l'authentification.",
-  "authServiceUsernameError": "Nom d'utilisateur invalide ou déjà pris.",
+  "authServiceFirstNameError": "Le prénom est invalide.",
+  "authServiceLastNameError": "Le nom de famille est invalide.",
   "authServiceEmailError": "Email invalide ou déjà enregistré.",
   "authServicePasswordError": "Mot de passe trop faible ou invalide.",
   

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qfqq/common/models/user.dart';
 import 'package:qfqq/common/providers/router_provider.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:go_router/go_router.dart';
@@ -16,9 +17,8 @@ class SignupPage extends ConsumerStatefulWidget {
 class _SignupPageState extends ConsumerState<SignupPage> {
   final _signupFormKey = GlobalKey<FormState>();
 
-  String signupUsername = '';
-  String signupPassword = '';
-  String signupEmail = '';
+  User newUser = User(id: 0, firstName: '', lastName: '', email: '');
+  String newPassword = '';
   String signupError = '';
 
   void _submitSignup() async {
@@ -27,11 +27,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
       _signupFormKey.currentState?.save();
       final authService = ref.read(authStateProvider.notifier);
       try {
-        final accountError = await authService.signup(
-          signupUsername,
-          signupEmail,
-          signupPassword,
-        );
+        final accountError = await authService.signup(newUser, newPassword);
         final e = accountError.getFirstError();
         if (e != null) {
           setState(() => signupError = e);
@@ -54,16 +50,20 @@ class _SignupPageState extends ConsumerState<SignupPage> {
         children: [
           TextFormField(
             decoration: InputDecoration(labelText: loc.attributeEmail),
-            onSaved: (val) => signupEmail = val ?? '',
+            onSaved: (val) => newUser.email = val ?? '',
           ),
           TextFormField(
-            decoration: InputDecoration(labelText: loc.attributeUsername),
-            onSaved: (val) => signupUsername = val ?? '',
+            decoration: InputDecoration(labelText: loc.attributeFirstName),
+            onSaved: (val) => newUser.firstName = val ?? '',
+          ),
+          TextFormField(
+            decoration: InputDecoration(labelText: loc.attributeLastName),
+            onSaved: (val) => newUser.lastName = val ?? '',
           ),
           TextFormField(
             decoration: InputDecoration(labelText: loc.attributePassword),
             obscureText: true,
-            onSaved: (val) => signupPassword = val ?? '',
+            onSaved: (val) => newPassword = val ?? '',
           ),
           const SizedBox(height: 16),
           if (signupError.isNotEmpty)

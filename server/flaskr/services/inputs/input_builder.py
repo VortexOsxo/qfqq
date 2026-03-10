@@ -38,7 +38,8 @@ class SignupBuilder(InputBuilder):
     # TODO: Add proper password validator
     def get_fields_validators(self):
         return (
-            ("username", StringValidator()),
+            ("firstName", StringValidator()),
+            ("lastName", StringValidator()),
             ("password", StringValidator()),
             ("email", EmailValidator()),
         )

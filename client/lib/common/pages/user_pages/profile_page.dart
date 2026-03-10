@@ -15,7 +15,7 @@ class ProfilePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authStateProvider);
 
-    if (authState.username == null || authState.email == null) {
+    if (!authState.isAuthenticated) {
       return SizedBox.shrink(); // TODO: Had an explaition message and allow to 'disconnect' and go to login page
     }
 
@@ -94,8 +94,12 @@ class ProfilePage extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           DetailsAttributeWidget(
-            label: loc.attributeUsername,
-            value: authState.username!,
+            label: loc.attributeFirstName,
+            value: authState.firstName ?? '',
+          ),
+          DetailsAttributeWidget(
+            label: loc.attributeLastName,
+            value: authState.lastName ?? '', // TODO: Add error message if null ?
           ),
           DetailsAttributeWidget(
             label: loc.attributeEmail,

@@ -155,7 +155,7 @@ class MeetingDataHandler:
         COALESCE(p.participantsNames, '{}') AS participantsNames
         FROM meetingsComplete mc
         LEFT JOIN LATERAL (
-        SELECT array_agg(u.username ORDER BY u.username) AS participantsNames
+        SELECT array_agg(u.firstName || ' ' || u.lastName ORDER BY u.lastName, u.firstName) AS participantsNames
         FROM users u
         WHERE u.id = ANY(mc.participantsIds)
         ) p ON TRUE

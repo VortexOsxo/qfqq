@@ -61,7 +61,7 @@ class _UserTextFieldState extends ConsumerState<UserTextField> {
             .where(
               (user) =>
                   user.email.toLowerCase().contains(key) ||
-                  user.username.toLowerCase().contains(key),
+                  user.displayName.toLowerCase().contains(key),
             )
             .toList();
       },
@@ -74,7 +74,7 @@ class _UserTextFieldState extends ConsumerState<UserTextField> {
 
       optionsViewBuilder: defaultOptionsViewBuilder<User>(
         (user, callback) => ListTile(
-          title: Text(user.username),
+          title: Text(user.displayName),
           subtitle: Text(user.email),
           onTap: callback,
         ),
@@ -98,5 +98,5 @@ class _UserTextFieldState extends ConsumerState<UserTextField> {
   }
 
   static String _displayStringForOption(User user) =>
-      '${user.username} - ${user.email}';
+      '${user.displayName} - ${user.email}';
 }

@@ -109,7 +109,7 @@ class ProjectViewPage extends ConsumerWidget {
           ),
           DetailsAttributeWidget(
             label: loc.projectSupervisor,
-            value: supervisor?.username ?? '',
+            value: supervisor?.displayName ?? '',
           ),
         ],
       ),

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:qfqq/common/models/errors/account_error.dart';
 import 'package:qfqq/common/models/states/auth_state.dart';
+import 'package:qfqq/common/models/user.dart';
 import 'dart:convert';
 import 'package:qfqq/common/utils/events/event_notifier.dart';
 
@@ -31,30 +32,27 @@ class AuthService extends StateNotifier<AuthState> {
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      _onSuccessfulAuth(data['id'], data['session_token'], data['email'], data['username']);
+      _onSuccessfulAuth(data['id'], data['session_token'], data['email'], data['firstName'], data['lastName']);
       return AccountError();
     }
     return AccountError.fromJson(data);
   }
 
-  Future<AccountError> signup(
-    String username,
-    String email,
-    String password,
-  ) async {
+  Future<AccountError> signup(User user, String password) async {
     final response = await http.post(
       Uri.parse('$_apiUrl/auth/signup'),
       headers: {'Content-Type': 'application/json', 'QfqqVersion': _version},
       body: jsonEncode({
-        'username': username,
-        'email': email,
+        'firstName': user.firstName,
+        'lastName': user.lastName,
+        'email': user.email,
         'password': password,
       }),
     );
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 201) {
-      _onSuccessfulAuth(data['id'], data['session_token'], data['email'], data['username']);
+      _onSuccessfulAuth(data['id'], data['session_token'], data['email'], data['firstName'], data['lastName']);
       return AccountError();
     }
     // TODO: Improve error messages to be more descriptive
@@ -67,8 +65,8 @@ class AuthService extends StateNotifier<AuthState> {
     disconnectionNotifier.notify("");
   }
 
-  _onSuccessfulAuth(int userId, String sessionId, String email, String username) {
-    state = AuthState(userId: userId, sessionId: sessionId, email: email, username: username);
+  _onSuccessfulAuth(int userId, String sessionId, String email, String firstName, String lastName) {
+    state = AuthState(userId: userId, sessionId: sessionId, email: email, firstName: firstName, lastName: lastName);
     connectionNotifier.notify(email);
   }
 }

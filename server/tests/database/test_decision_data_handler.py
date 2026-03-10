@@ -71,8 +71,8 @@ def test_get_decisions_and_responsible_by_project(app):
 
     assert len(responsibles) == len(decisions)
     responsibles.sort()
-    assert responsibles[0] == "alice"
-    assert responsibles[1] == "carol"
+    assert responsibles[0] == "Alice Smith"
+    assert responsibles[1] == "Carol Davis"
 
 def test_create_decision(app):
     dueDate = datetime.now() + timedelta(days=7)
@@ -113,7 +113,7 @@ def test_get_decisions_and_responsible_by_meeting(app):
     assert decisions[0].description == "Define MVP features"
 
     assert len(responsibles) == len(decisions)
-    assert responsibles[0] == "alice"
+    assert responsibles[0] == "Alice Smith"
 
 def test_set_status_as_completed(app, monkeypatch):
     import datetime
