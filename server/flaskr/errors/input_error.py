@@ -14,3 +14,4 @@ class InputError(Enum):
     InvalidLogin = 9
     EmailNotFound = 10
     InvalidDateFormat = 11
+    MaxLengthExceeded = 12

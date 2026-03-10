@@ -25,12 +25,23 @@ class OptionalInputValidator(InputValidator):
 
 
 class StringValidator(InputValidator):
+    def __init__(self, max_length=float('inf')):
+        self.max_length=max_length
+
     def validate(self, value) -> InputError:
         if value is None:
             return InputError.RequiredField
+        
         if not isinstance(value, str):
             return InputError.InvalidType
-        return InputError.NoError if value.strip() != "" else InputError.RequiredField
+        
+        if value.strip() == "":
+            return InputError.RequiredField
+        
+        if len(value) > self.max_length:
+            return InputError.MaxLengthExceeded 
+        
+        return InputError.NoError
 
 
 # TODO: Improve email validation
