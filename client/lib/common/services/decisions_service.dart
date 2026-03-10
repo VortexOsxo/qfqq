@@ -37,4 +37,37 @@ class DecisionsService extends StateNotifier<List<Decision>> {
     }
     return false;
   }
+
+  Future<bool> updateDecisionStatus(
+    int decisionId,
+    DecisionStatus status,
+  ) async {
+    final response = await _http.patch(
+      _http.getUri('decisions/$decisionId/status'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'status': status.name}),
+    );
+    if (response.statusCode != 204) return false;
+
+    Decision update(Decision decision) {
+      if (decision.id != decisionId) {
+        return decision;
+      }
+
+      decision = decision.copyWith(newStatus: status);
+      if (status == DecisionStatus.completed) {
+        decision.completedDate = DateTime.now().copyWith(
+          hour: 0,
+          minute: 0,
+          second: 0,
+          millisecond: 0,
+          microsecond: 0,
+        );
+      }
+      return decision;
+    }
+
+    state = state.map(update).toList();
+    return true;
+  }
 }
