@@ -31,6 +31,9 @@ class DecisionViewPage extends ConsumerWidget {
   }
 
   Widget _buildContent(BuildContext context, WidgetRef ref, Decision decision) {
+    final decisionsService = ref.read(decisionsServiceProvider);
+    final loc = S.of(context);
+
     return Padding(
       padding: const EdgeInsets.all(32),
       child: Column(
@@ -61,6 +64,42 @@ class DecisionViewPage extends ConsumerWidget {
                         decision.description,
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
+                      Spacer(),
+                      if (decision.status == DecisionStatus.inProgress) ...[
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            TextButton.icon(
+                              onPressed:
+                                  () => decisionsService.updateDecisionStatus(
+                                    decision.id,
+                                    DecisionStatus.completed,
+                                  ),
+                              icon: const Icon(
+                                Icons.check_circle_outline,
+                                size: 18,
+                              ),
+                              label: Text(loc.decisionViewPageMarkAsCompleted),
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.green,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            TextButton.icon(
+                              onPressed:
+                                  () => decisionsService.updateDecisionStatus(
+                                    decision.id,
+                                    DecisionStatus.cancelled,
+                                  ),
+                              icon: const Icon(Icons.cancel_outlined, size: 18),
+                              label: Text(loc.decisionViewPageMarkAsCancelled),
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.red,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ],
                   ),
                 ),

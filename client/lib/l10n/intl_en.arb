@@ -159,6 +159,8 @@
   "decisionViewPageCompletedDate": "Completed Date",
   "decisionViewPageMeeting": "Meeting",
   "decisionViewPageGoToAgenda": "Go to Agenda",
+  "decisionViewPageMarkAsCompleted": "Mark as completed",
+  "decisionViewPageMarkAsCancelled": "Mark as cancelled",
   
   "profilePageTitle": "Profile",
   "profilePageLogout": "Logout",
