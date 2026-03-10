@@ -190,7 +190,7 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
                     flex: 3,
                     child: Text(
                       responsible != null
-                          ? responsible.username
+                          ? responsible.displayName
                           : loc.decisionListNoResponsibleSet,
                     ),
                   ),

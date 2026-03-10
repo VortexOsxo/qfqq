@@ -246,7 +246,7 @@ class AgendasListPage extends ConsumerWidget {
                     flex: 3,
                     child: Text(
                       animator != null
-                          ? animator.username
+                          ? animator.displayName
                           : loc.commonNoAnimatorSet,
                     ),
                   ),

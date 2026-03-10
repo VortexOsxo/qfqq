@@ -169,7 +169,7 @@ class DecisionViewPage extends ConsumerWidget {
         ],
         DetailsAttributeWidget(
           label: loc.decisionListResponsible,
-          value: responsible?.username ?? loc.decisionListNoResponsibleSet,
+          value: responsible?.displayName ?? loc.decisionListNoResponsibleSet,
         ),
         DetailsListWidget(
           label: loc.attributeAssitants,
@@ -177,7 +177,7 @@ class DecisionViewPage extends ConsumerWidget {
           values:
               decision.assistantsIds.map((participantId) {
                 final participant = ref.watch(userByIdProvider(participantId));
-                return participant?.username ?? loc.commonUnknown;
+                return participant?.displayName ?? loc.commonUnknown;
               }).toList(),
         ),
         if (isIdValid(decision.meetingId)) ...[

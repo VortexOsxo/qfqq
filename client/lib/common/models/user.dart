@@ -1,7 +1,15 @@
 class User {
   final int id;
-  final String username;
-  final String email;
+  String firstName;
+  String lastName;
+  String email;
 
-  const User({required this.id, required this.username, required this.email});
+  String get displayName => '$firstName $lastName';
+
+  User({
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+  });
 }

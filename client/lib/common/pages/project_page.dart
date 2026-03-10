@@ -125,7 +125,7 @@ class ProjectPage extends ConsumerWidget {
                     flex: 3,
                     child: Text(
                       supervisor != null
-                          ? supervisor.username
+                          ? supervisor.displayName
                           : loc.commonNoSupervisorSet,
                     ),
                   ),

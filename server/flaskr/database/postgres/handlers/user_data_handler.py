@@ -4,13 +4,13 @@ from flaskr.models import User
 
 class UserDataHandler:
     @classmethod
-    def create_user(cls, username: str, email: str, passwordHash: str) -> User:
+    def create_user(cls, firstName: str, lastName: str, email: str, passwordHash: str) -> User:
         try:
             with get_db_access() as conn:
                 cur = conn.cursor()
 
-                query = f"INSERT INTO users (username, passwordHash, email) values (%s, %s, %s) RETURNING id;"
-                params = (username, passwordHash, email)
+                query = f"INSERT INTO users (firstName, lastName, passwordHash, email) values (%s, %s, %s, %s) RETURNING id;"
+                params = (firstName, lastName, passwordHash, email)
                 cur.execute(query, params)
                 userId = cur.fetchone()[0]
             

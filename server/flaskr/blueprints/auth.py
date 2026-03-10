@@ -13,9 +13,9 @@ auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 @auth_bp.route("/signup", methods=(["POST"]))
 @input_middleware(SignupBuilder())
-def signup(username, email, password):
+def signup(firstName, lastName, email, password):
     user = UserDataHandler.create_user(
-        username, email, generate_password_hash(password)
+        firstName, lastName, email, generate_password_hash(password)
     )
     if user is None:
         return jsonify({"email": InputError.EmailMustBeUnique}), 400

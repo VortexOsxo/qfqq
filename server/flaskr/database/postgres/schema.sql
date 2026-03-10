@@ -18,7 +18,8 @@ CREATE TYPE decisionStatus AS ENUM ('inProgress', 'cancelled', 'completed');
 CREATE TABLE
   users (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    username TEXT NOT NULL,
+    firstName TEXT NOT NULL,
+    lastName TEXT NOT NULL,
     passwordHash TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL
   );

@@ -139,7 +139,7 @@ class AgendaViewPage extends ConsumerWidget {
           ),
           DetailsAttributeWidget(
             label: loc.attributeAnimator,
-            value: animator?.username ?? loc.commonNoAnimatorSet,
+            value: animator?.displayName ?? loc.commonNoAnimatorSet,
           ),
           DetailsListWidget(
             label: loc.attributeThemes,
@@ -155,7 +155,7 @@ class AgendaViewPage extends ConsumerWidget {
                   final participant = ref.watch(
                     userByIdProvider(participantId),
                   );
-                  return participant?.username ?? loc.commonUnknown;
+                  return participant?.displayName ?? loc.commonUnknown;
                 }).toList(),
           ),
         ],

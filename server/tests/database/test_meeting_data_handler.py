@@ -108,8 +108,8 @@ def test_get_meeting_with_participants_names(app):
     assert meeting.title == "Sprint Review"
 
     assert len(participants) == 2
-    assert "bob" in participants
-    assert "dave" in participants
+    assert "Bob Jones" in participants
+    assert "Dave Wilson" in participants
 
 def test_update_meeting_status(app):
     result = MeetingDataHandler.update_meeting_status(3, 'planned')

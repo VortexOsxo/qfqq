@@ -124,7 +124,7 @@ class _MeetingViewContentOngoing
                         if (responsible != null)
                           Expanded(
                             child: Text(
-                              '${loc.decisionListResponsible}: ${responsible.username}',
+                              '${loc.decisionListResponsible}: ${responsible.displayName}',
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),

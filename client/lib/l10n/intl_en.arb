@@ -23,7 +23,8 @@
   "attributeStatus": "Status",
   "attributeProject": "Project",
 
-  "attributeUsername": "Username",
+  "attributeFirstName": "First Name",
+  "attributeLastName": "Last Name",
   "attributeEmail": "Email",
   "attributePassword": "Password",
 
@@ -71,7 +72,8 @@
   
   "authServiceInvalidCredentials": "Invalid email or password.",
   "authServiceUnknownError": "An unknown error occurred during authentication.",
-  "authServiceUsernameError": "Username is invalid or already taken.",
+  "authServiceFirstNameError": "First name is invalid.",
+  "authServiceLastNameError": "Last name is invalid.",
   "authServiceEmailError": "Email is invalid or already registered.",
   "authServicePasswordError": "Password is too weak or invalid.",
   

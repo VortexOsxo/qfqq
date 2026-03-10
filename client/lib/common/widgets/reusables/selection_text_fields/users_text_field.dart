@@ -53,7 +53,7 @@ class _UsersTextFieldState extends ConsumerState<UsersTextField> {
   }
 
   static String _displayStringForOption(User user) =>
-      '${user.username} - ${user.email}';
+      '${user.displayName} - ${user.email}';
 
   @override
   Widget build(BuildContext context) {
