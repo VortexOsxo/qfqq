@@ -9,6 +9,10 @@ def validator():
 def test_password_valid(validator):
     assert validator.validate("StrongPass1!") == InputError.NoError
     assert validator.validate("V3ry$ecureP@ssword") == InputError.NoError
+    assert validator.validate("StrongPassword1~") == InputError.NoError
+    assert validator.validate("[Strong,.Password1~]}{") == InputError.NoError
+    assert validator.validate("StrongPass1!😍") == InputError.NoError
+    assert validator.validate("StrongPass1!ط") == InputError.NoError
 
 def test_password_below_minimum_size(validator):
     assert validator.validate("Pass1!") == InputError.MinLengthExceeded
@@ -20,8 +24,6 @@ def test_password_above_maximum_size(validator):
 
 def test_password_without_special_character(validator):
     assert validator.validate("Password123") == InputError.InvalidFormat
-    assert validator.validate("Password123~") == InputError.InvalidFormat
-    assert validator.validate("Password123.") == InputError.InvalidFormat
 
 def test_password_without_number(validator):
     assert validator.validate("Password!@#") == InputError.InvalidFormat
@@ -29,9 +31,6 @@ def test_password_without_number(validator):
 
 def test_password_without_letter(validator):
     assert validator.validate("12345678!@#") == InputError.InvalidFormat
-
-def test_password_with_weird_unallowed_special_character(validator):
-    assert validator.validate("StrongPass1!~`") == InputError.InvalidFormat
 
 def test_password_empty_or_none(validator):
     assert validator.validate("") == InputError.RequiredField

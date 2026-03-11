@@ -39,15 +39,13 @@ class _SignupPageState extends ConsumerState<SignupPage> {
       }
 
       final authService = ref.read(authStateProvider.notifier);
-      try {
-        final accountError = await authService.signup(newUser, newPassword);
-        if (accountError.getFirstError() != null) {
-          setState(() => error = accountError);
-        } else {
-          ref.read(routerProvider).go('/');
-        }
-      } catch (e) {
-        setState(() => error = AccountError(authError: e.toString()));
+      final accountError = await authService.signup(newUser, newPassword);
+      if (!mounted) return;
+
+      if (accountError.getFirstError() != null) {
+        setState(() => error = accountError);
+      } else {
+        ref.read(routerProvider).go('/');
       }
     }
   }

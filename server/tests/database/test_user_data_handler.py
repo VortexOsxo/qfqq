@@ -17,8 +17,8 @@ def test_create_user(app):
     assert user.passwordHash == "12345"
 
 
-def test_create_user_invalid_email(app):
-    user = UserDataHandler.create_user("Alice", "Smith", "alice@example.com", "12345")
+def test_create_user_duplicate_email(app):
+    user = UserDataHandler.create_user("Alice", "Smith", "alice@example.com", "StrongPassword!")
 
     assert user is None
 
