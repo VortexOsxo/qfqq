@@ -20,12 +20,24 @@ class _SignupPageState extends ConsumerState<SignupPage> {
 
   User newUser = User(id: 0, firstName: '', lastName: '', email: '');
   String newPassword = '';
+  String confirmPassword = ''; 
   AccountError error = AccountError();
 
   void _submitSignup() async {
     setState(() => error = AccountError());
     if (_signupFormKey.currentState?.validate() ?? false) {
       _signupFormKey.currentState?.save();
+
+      if (newPassword != confirmPassword) {
+        setState(
+          () =>
+              error = AccountError(
+                passwordError: S.of(context).commonFormsPasswordsDoNotMatch,
+              )
+        );
+        return;
+      }
+
       final authService = ref.read(authStateProvider.notifier);
       try {
         final accountError = await authService.signup(newUser, newPassword);
@@ -55,6 +67,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
             ),
             onSaved: (val) => newUser.email = val ?? '',
           ),
+          const SizedBox(height: 8),
           TextFormField(
             decoration: InputDecoration(
               labelText: loc.attributeFirstName,
@@ -62,6 +75,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
             ),
             onSaved: (val) => newUser.firstName = val ?? '',
           ),
+          const SizedBox(height: 8),
           TextFormField(
             decoration: InputDecoration(
               labelText: loc.attributeLastName,
@@ -69,6 +83,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
             ),
             onSaved: (val) => newUser.lastName = val ?? '',
           ),
+          const SizedBox(height: 8),
           TextFormField(
             decoration: InputDecoration(
               labelText: loc.attributePassword,
@@ -76,6 +91,15 @@ class _SignupPageState extends ConsumerState<SignupPage> {
             ),
             obscureText: true,
             onSaved: (val) => newPassword = val ?? '',
+          ),
+          const SizedBox(height: 8),
+          TextFormField(
+            decoration: InputDecoration(
+              labelText: loc.signUpPageConfirmPassword,
+              errorText: error.passwordError,
+            ),
+            obscureText: true,
+            onSaved: (val) => confirmPassword = val ?? '',
           ),
           const SizedBox(height: 16),
           if (error.authError != null)

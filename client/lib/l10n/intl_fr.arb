@@ -77,7 +77,8 @@
   "signupPageTitle": "Inscription",
   "signupPageButtonSignup": "S'inscrire",
   "signupPageLinkLogin": "Déjà un compte ? Se connecter",
-  
+  "signUpPageConfirmPassword": "Confirmez le mot de passe",
+
   "loginPageTitle": "Connexion",
   "loginPageButtonLogin": "Se connecter",
   "loginPageLinkSignup": "Pas de compte ? S'inscrire",

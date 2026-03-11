@@ -77,7 +77,7 @@
   "signupPageTitle": "Sign Up",
   "signupPageButtonSignup": "Sign Up",
   "signupPageLinkLogin": "Already have an account? Login",
-  
+  "signUpPageConfirmPassword": "Confirm password",
   "loginPageTitle": "Login",
   "loginPageButtonLogin": "Login",
   "loginPageLinkSignup": "Don't have an account? Sign Up",
