@@ -63,7 +63,7 @@ class EmailValidator(StringValidator):
         )
 
 class PasswordValidator(StringValidator):
-    PasswordRegex = r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+])[A-Za-z\d!@#$%^&*()\-_=+]+$"
+    PasswordRegex = r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[^\w\s])\S+$"
 
     def __init__(self):
         super().__init__(min_length=8, max_length=100)
