@@ -1,5 +1,7 @@
+import 'package:qfqq/common/models/errors/decision_errors.dart';
 import 'package:qfqq/common/models/errors/meeting_agenda_errors.dart';
 import 'package:qfqq/common/models/errors/project_errors.dart';
+import 'package:qfqq/common/models/decision.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -62,6 +64,22 @@ MeetingAgendaErrors validateMeetingAgenda(
       agenda.participantsIds.isNotEmpty
           ? null
           : loc.commonFormsEnterParticipants;
+
+  return errors;
+}
+
+DecisionErrors validateDecision(Decision decision) {
+  var errors = DecisionErrors();
+  final loc = S.current;
+
+  errors.descriptionError =
+      stringValidator(decision.description) ? null : loc.commonFormsEnterDescription;
+
+  errors.responsibleError =
+      idValidator(decision.responsibleId) ? null : loc.commonFormsEnterResponsible;
+
+  errors.dueDateError =
+      decision.dueDate != null ? null : loc.commonFormsEnterDueDate;
 
   return errors;
 }

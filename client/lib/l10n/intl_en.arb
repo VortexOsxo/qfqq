@@ -227,6 +227,9 @@
   "commonFormsEnterAnimator": "Please select an animator",
   "commonFormsEnterParticipants": "Please select at least one participant",
   "commonFormsEnterProject": "Please select a project",
+  "commonFormsEnterDescription": "Please enter a description",
+  "commonFormsEnterResponsible": "Please select a responsible",
+  "commonFormsEnterDueDate": "Please select a due date",
   "commonFormsEnterPassword": "Please enter a password",
   "commonFormsPasswordsDoNotMatch": "The passwords do not match",
 
