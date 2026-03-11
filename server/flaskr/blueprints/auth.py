@@ -5,7 +5,7 @@ import jwt
 
 from flaskr.database import UserDataHandler
 from flaskr.services.reset_password_service import ResetPasswordService
-from flaskr.services.inputs import input_middleware, SignupBuilder, LoginBuilder, LambdaBuilder, StringValidator, EmailValidator
+from flaskr.services.inputs import input_middleware, SignupBuilder, LoginBuilder, LambdaBuilder, StringValidator, EmailValidator, PasswordValidator
 from flaskr.errors import InputError
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -71,7 +71,7 @@ def validate_code(email, code):
     LambdaBuilder(
         ("email", EmailValidator()),
         ("code", StringValidator()),
-        ("password", StringValidator()),
+        ("password", PasswordValidator()),
     )
 )
 def update(email, code, password):

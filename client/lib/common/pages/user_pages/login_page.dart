@@ -48,11 +48,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             decoration: InputDecoration(labelText: loc.attributeEmail),
             onSaved: (val) => email = val ?? '',
           ),
+          const SizedBox(height: 8),
           TextFormField(
             decoration: InputDecoration(labelText: loc.attributePassword),
             obscureText: true,
             onSaved: (val) => password = val ?? '',
           ),
+          const SizedBox(height: 8),
           const SizedBox(height: 16),
           if (error.isNotEmpty)
             Text(error, style: const TextStyle(color: Colors.red)),
