@@ -95,15 +95,15 @@ class ProfilePage extends ConsumerWidget {
         children: [
           DetailsAttributeWidget(
             label: loc.attributeFirstName,
-            value: authState.firstName ?? '',
+            value: authState.user?.firstName ?? '',
           ),
           DetailsAttributeWidget(
             label: loc.attributeLastName,
-            value: authState.lastName ?? '', // TODO: Add error message if null ?
+            value: authState.user?.lastName ?? '', // TODO: Add error message if null ?
           ),
           DetailsAttributeWidget(
             label: loc.attributeEmail,
-            value: authState.email!,
+            value: authState.user?.email ?? '',
           ),
           const SizedBox(height: 16),
           _buildLanguageSelector(context, ref, loc),
