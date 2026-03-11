@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/decision.dart';
+import 'package:qfqq/common/models/errors/decision_errors.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/user.dart';
 import 'package:qfqq/common/providers/decisions_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
+import 'package:qfqq/common/utils/validation.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/selection_text_fields/user_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/selection_text_fields/users_text_field.dart';
@@ -91,6 +93,8 @@ class _CreateDecisionForm extends ConsumerStatefulWidget {
 class _CreateDecisionFormState extends ConsumerState<_CreateDecisionForm> {
   late Decision decision;
   int _resetCounter = 0;
+  DecisionErrors errors = DecisionErrors();
+  bool isSending = false;
 
   @override
   void initState() {
@@ -111,12 +115,26 @@ class _CreateDecisionFormState extends ConsumerState<_CreateDecisionForm> {
     final decisionsService = ref.read(decisionsServiceProvider);
 
     void onSubmit() async {
-      await decisionsService.createDecision(decision);
+      var decisionsError = validateDecision(decision);
+      if (decisionsError.hasAny()) {
+        setState(() => errors = decisionsError);
+        return;
+      }
+
+      setState(() => isSending = true);
+      final serverErrors = await decisionsService.createDecision(decision);
       if (!mounted) return;
+      setState(() => isSending = false);
+
+      if (serverErrors.hasAny()) {
+        setState(() => errors = serverErrors);
+        return;
+      }
 
       setState(() {
         _resetCounter++;
         _initDecision();
+        errors = DecisionErrors();
       });
     }
 
@@ -163,24 +181,44 @@ class _CreateDecisionFormState extends ConsumerState<_CreateDecisionForm> {
                   ),
                 ),
                 ElevatedButton.icon(
-                  onPressed: onSubmit,
-                  icon: const Icon(Icons.add, size: 18),
+                  onPressed: isSending ? null : onSubmit,
+                  icon: isSending 
+                      ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2)) 
+                      : const Icon(Icons.add, size: 18),
                   label: Text(loc.meetingInProgressCreateButton),
                   style: squareButtonStyleSmall(context),
                 ),
               ],
             ),
+            if (errors.dueDateError != null)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 110.0),
+                    child: Text(
+                      errors.dueDateError!,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             const SizedBox(height: 16),
             DefaultTextField(
               key: ValueKey('desc_$_resetCounter'),
               onChanged: (String desc) => decision.description = desc,
               hintText: loc.meetingInProgressDecision,
+              error: errors.descriptionError,
             ),
             const SizedBox(height: 12),
             UserTextField(
               key: ValueKey('resp_$_resetCounter'),
               label: loc.meetingInProgressResponsible,
               onSelected: (User u) => decision.responsibleId = u.id,
+              error: errors.responsibleError,
             ),
             const SizedBox(height: 12),
             UsersTextField(

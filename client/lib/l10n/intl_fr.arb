@@ -228,6 +228,9 @@
   "commonFormsEnterAnimator": "Veuillez sélectionner un animateur",
   "commonFormsEnterParticipants": "Veuillez sélectionner au moins un participant",
   "commonFormsEnterProject": "Veuillez sélectionner un projet",
+  "commonFormsEnterDescription": "Veuillez saisir une description",
+  "commonFormsEnterResponsible": "Veuillez sélectionner un responsable",
+  "commonFormsEnterDueDate": "Veuillez sélectionner une date d'échéance",
   "commonFormsEnterPassword": "Veuillez saisir un mot de passe",
   "commonFormsPasswordsDoNotMatch": "Les mots de passe ne correspondent pas",
 

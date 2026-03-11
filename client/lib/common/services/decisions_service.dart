@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/decision.dart';
+import 'package:qfqq/common/models/errors/decision_errors.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
 
@@ -23,19 +24,20 @@ class DecisionsService extends StateNotifier<List<Decision>> {
     state = data.map((item) => Decision.fromJson(item)).toList();
   }
 
-  Future<bool> createDecision(Decision decision) async {
+  Future<DecisionErrors> createDecision(Decision decision) async {
     final response = await _http.post(
       _http.getUri('decisions'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(decision),
     );
 
+    dynamic data = jsonDecode(response.body);
+
     if (response.statusCode == 201) {
-      dynamic data = jsonDecode(response.body);
       state = [...state, Decision.fromJson(data)];
-      return true;
+      return DecisionErrors();
     }
-    return false;
+    return DecisionErrors.fromJson(data);
   }
 
   Future<bool> updateDecisionStatus(
