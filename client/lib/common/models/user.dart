@@ -12,4 +12,10 @@ class User {
     required this.lastName,
     required this.email,
   });
+
+  User.fromJson(dynamic data)
+    : id = data['id'],
+      firstName = data['firstName'],
+      lastName = data['lastName'],
+      email = data['email'];
 }

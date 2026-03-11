@@ -14,7 +14,7 @@ final decisionsProvider = StateNotifierProvider<DecisionsService, List<Decision>
 
 final myResponsibilitiesProvider = Provider<List<Decision>>((ref) {
   final decisions = ref.watch(decisionsProvider);
-  final userId = ref.watch(authStateProvider.select((state) => state.userId));
+  final userId = ref.watch(authStateProvider.select((state) => state.user?.id));
   if (userId == null) return [];
 
   return decisions.where((d) => d.responsibleId == userId).toList();

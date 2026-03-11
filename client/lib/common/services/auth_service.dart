@@ -14,8 +14,8 @@ const _version = String.fromEnvironment("VERSION");
 
 class AuthService extends StateNotifier<AuthState> {
   static const String _apiUrl = String.fromEnvironment("API_URL");
-  final EventNotifier<String> connectionNotifier = EventNotifier<String>();
-  final EventNotifier<String> disconnectionNotifier = EventNotifier<String>();
+  final EventNotifier<AuthState> connectionNotifier = EventNotifier();
+  final EventNotifier<AuthState> disconnectionNotifier = EventNotifier();
 
   AuthService() : super(AuthState());
 
@@ -32,7 +32,7 @@ class AuthService extends StateNotifier<AuthState> {
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      _onSuccessfulAuth(data['id'], data['session_token'], data['email'], data['firstName'], data['lastName']);
+      _onSuccessfulAuth(data['session_token'], User.fromJson(data));
       return AccountError();
     }
     return AccountError.fromJson(data);
@@ -52,7 +52,7 @@ class AuthService extends StateNotifier<AuthState> {
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 201) {
-      _onSuccessfulAuth(data['id'], data['session_token'], data['email'], data['firstName'], data['lastName']);
+      _onSuccessfulAuth(data['session_token'], User.fromJson(data));
       return AccountError();
     }
     // TODO: Improve error messages to be more descriptive
@@ -62,11 +62,11 @@ class AuthService extends StateNotifier<AuthState> {
   void logout() {
     // TODO: Clear loaded data on disconnection
     state = AuthState();
-    disconnectionNotifier.notify("");
+    disconnectionNotifier.notify(state);
   }
 
-  _onSuccessfulAuth(int userId, String sessionId, String email, String firstName, String lastName) {
-    state = AuthState(userId: userId, sessionId: sessionId, email: email, firstName: firstName, lastName: lastName);
-    connectionNotifier.notify(email);
+  _onSuccessfulAuth( String sessionId, User user) {
+    state = AuthState(sessionId: sessionId, user: user);
+    connectionNotifier.notify(state);
   }
 }
