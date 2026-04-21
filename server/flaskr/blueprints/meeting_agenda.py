@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import Blueprint, request, jsonify, g, send_file
 
 from flaskr.models import MeetingAgendaStatus
-from flaskr.database import MeetingDataHandler, DecisionDataHandler
+from flaskr.database import MeetingDataHandler, DecisionDataHandler, UserDataHandler
 from flaskr.services.inputs import input_middleware, LambdaBuilder, CreateMeetingAgendaBuilder, EnumValidator
 from flaskr.reports import MeetingReportBuilder
 from flaskr.blueprints.before_request import login_required
@@ -79,9 +79,13 @@ def get_meeting_report(id: int):
     meeting, participants = MeetingDataHandler.get_meeting_with_participants(id)
     if meeting is None:
         return "No meeting found", 404
+    
+    user = UserDataHandler.get_user_by_id(g.user_id)
+    if user is None:
+        return "Author not found", 400
 
     decisions = DecisionDataHandler.get_decisions_and_responsible_by_meeting(meeting.id)
-    buffer = MeetingReportBuilder(meeting, participants, decisions, g.language).build()
+    buffer = MeetingReportBuilder(meeting, user, participants, decisions, g.language).build()
     return send_file(
         buffer,
         mimetype="application/pdf",
