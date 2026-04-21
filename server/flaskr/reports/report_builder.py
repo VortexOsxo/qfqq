@@ -232,6 +232,33 @@ class ReportBuilder:
         ]
         self.table_content(values, cols)
 
+    def decisions_table_with_meeting_id(self, decisions, lang):
+        cols = ["5%", "5%", "15%", "25%", "15%", "20%", "15%"]
+        headers = (
+            ["N", "M", "Action", "Responsable", "Date due", "Statut", "Date de fin"]
+            if lang == "fr"
+            else ["N", "M", "Action", "Responsible", "Due Date", "Status", "Completed Date"]
+        )
+        self.table_header(headers, cols)
+
+        values = [
+            [
+                str(decision.number),
+                str(decision.meetingId),
+                decision.description,
+                responsible_name,
+                decision.dueDate.strftime("%Y-%m-%d") if decision.dueDate else " ",
+                DecisionStatus.as_string(decision.status, lang),
+                (
+                    decision.completedDate.strftime("%Y-%m-%d")
+                    if decision.completedDate
+                    else " "
+                ),
+            ]
+            for decision, responsible_name in decisions
+        ]
+        self.table_content(values, cols)
+
     def build(self, reset=True):
         self.doc.build(self.elements)
         if reset:

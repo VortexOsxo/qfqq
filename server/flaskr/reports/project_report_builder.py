@@ -22,7 +22,7 @@ class ProjectReportBuilder:
         builder.division()
         builder.spacer(10)
 
-        builder.decisions_table(self.decisions, self.lang)
+        builder.decisions_table_with_meeting_id(self.decisions, self.lang)
 
         builder.build()
         buffer.seek(0)
