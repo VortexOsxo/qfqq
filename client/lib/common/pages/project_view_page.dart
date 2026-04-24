@@ -36,7 +36,7 @@ class ProjectViewPage extends ConsumerWidget {
                   padding: const EdgeInsets.all(8),
                   child: SizedBox(
                     width: 250,
-                    child: _buildMeetingInfo(context, ref, project),
+                    child: _buildProjectInfo(context, ref, project),
                   ),
                 ),
 
@@ -53,7 +53,7 @@ class ProjectViewPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildMeetingInfo(
+  Widget _buildProjectInfo(
     BuildContext context,
     WidgetRef ref,
     Project project,
@@ -64,7 +64,7 @@ class ProjectViewPage extends ConsumerWidget {
       children: [
         Flexible(child: _buildDetails(context, ref, project)),
         const SizedBox(height: 16),
-        Center(child: Card(child: ProjectViewControl(project: project))),
+        Center(child: ProjectViewControl(project: project)),
       ],
     );
   }

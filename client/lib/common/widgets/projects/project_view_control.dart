@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/providers/project_view_content_provider.dart';
+import 'package:qfqq/common/widgets/reusables/tab_selection_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class ProjectViewControl extends ConsumerWidget {
@@ -27,23 +28,27 @@ class ProjectViewControl extends ConsumerWidget {
           onPressed: () => context.go('/project/creation', extra: project),
         ),
         SizedBox(child: Divider()),
-        TextButton(
-          onPressed: () => changeContent('decisions'),
-          style: TextButton.styleFrom(
-            foregroundColor:
-                content == 'decisions' ? Colors.blueAccent : Colors.black,
-          ),
-          child: Text(loc.commonObjectDecisions),
-        ),
-        TextButton(
-          onPressed: () => changeContent('reports'),
-          style: TextButton.styleFrom(
-            foregroundColor:
-                content == 'reports' ? Colors.blueAccent : Colors.black,
-          ),
-          child: Text(loc.commonObjectReports),
+        TabSelectionWidget(
+          initialIndex: _contentToIndex(content),
+          labels: [
+            loc.commonObjectDecisions,
+            loc.commonObjectReports
+          ],
+          axis: Axis.vertical,
+          onTabSelected: (index) {
+            changeContent(_indexToContent(index));
+          },
         ),
       ],
     );
   }
+
+  int _contentToIndex(String content) {
+    return content == 'decisions' ? 0 : 1;
+  }
+
+  String _indexToContent(int index) {
+    return index == 0 ? 'decisions' : 'reports';
+  }
+
 }
