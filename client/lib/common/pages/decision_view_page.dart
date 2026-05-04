@@ -7,6 +7,8 @@ import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
+import 'package:qfqq/common/widgets/reusables/form_filled_button.dart';
+import 'package:qfqq/common/widgets/reusables/form_outlined_button.dart';
 import 'package:qfqq/common/widgets/status_chip.dart';
 import 'package:qfqq/common/widgets/details_attribute_widget.dart';
 import 'package:qfqq/common/widgets/details_list_widget.dart';
@@ -67,37 +69,29 @@ class DecisionViewPage extends ConsumerWidget {
                       Spacer(),
                       if (decision.status == DecisionStatus.inProgress) ...[
                         const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            TextButton.icon(
-                              onPressed:
-                                  () => decisionsService.updateDecisionStatus(
-                                    decision.id,
-                                    DecisionStatus.completed,
-                                  ),
-                              icon: const Icon(
-                                Icons.check_circle_outline,
-                                size: 18,
+                        IntrinsicWidth(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              FormFilledButton(
+                                onPressed:
+                                    () => decisionsService.updateDecisionStatus(
+                                      decision.id,
+                                      DecisionStatus.completed,
+                                    ),
+                                text: loc.decisionViewPageMarkAsCompleted,
                               ),
-                              label: Text(loc.decisionViewPageMarkAsCompleted),
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.green,
+                              const SizedBox(height: 8),
+                              FormOutlinedButton(
+                                onPressed:
+                                    () => decisionsService.updateDecisionStatus(
+                                      decision.id,
+                                      DecisionStatus.cancelled,
+                                    ),
+                                text: loc.decisionViewPageMarkAsCancelled,
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            TextButton.icon(
-                              onPressed:
-                                  () => decisionsService.updateDecisionStatus(
-                                    decision.id,
-                                    DecisionStatus.cancelled,
-                                  ),
-                              icon: const Icon(Icons.cancel_outlined, size: 18),
-                              label: Text(loc.decisionViewPageMarkAsCancelled),
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.red,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ],

@@ -8,7 +8,7 @@ class FormFilledButton extends StatelessWidget {
   const FormFilledButton({
     super.key,
     required this.text,
-    required this.isSending,
+    this.isSending = false,
     this.onPressed,
   });
 
@@ -20,19 +20,12 @@ class FormFilledButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
-      child: SizedBox(
-        width: 150,
-        height: 40,
-        child: Center(
-          child:
-              isSending
-                  ? CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Colors.white,
-                  )
-                  : Text(text),
-        ),
-      ),
+      child: isSending
+          ? const CircularProgressIndicator(
+              strokeWidth: 2,
+              color: Colors.white,
+            )
+          : Text(text),
     );
   }
 }
