@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class SidebarWidget extends StatelessWidget {
@@ -20,47 +22,83 @@ class SidebarWidget extends StatelessWidget {
           _SideBarItem(title: loc.agendasListPageTitle, path: '/agendas'),
           _SideBarItem(title: loc.decisionsListPageTitle, path: '/decisions'),
           _SideBarItem(title: loc.profilePageTitle, path: '/profile'),
+          Spacer(),
+          _LogOutButton()
         ],
       ),
     );
   }
 }
 
-class _SideBarItem extends StatefulWidget {
-  final String title;
-  final String path;
+class HoverTextButton extends StatefulWidget {
+  final String text;
+  final VoidCallback onTap;
 
-  const _SideBarItem({required this.title, required this.path});
+  const HoverTextButton({
+    required this.text,
+    required this.onTap,
+    super.key,
+  });
 
   @override
-  State<StatefulWidget> createState() => _SideBarItemState();
+  State<HoverTextButton> createState() => _HoverTextButtonState();
 }
 
-class _SideBarItemState extends State<_SideBarItem> {
+class _HoverTextButtonState extends State<HoverTextButton> {
   bool _hovering = false;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: MouseRegion(
         onEnter: (_) => setState(() => _hovering = true),
         onExit: (_) => setState(() => _hovering = false),
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
-          onTap: () {
-            context.go(widget.path);
-          },
+          onTap: widget.onTap,
           child: Text(
-            widget.title,
+            widget.text,
             style: TextStyle(
               color: Theme.of(context).colorScheme.onPrimary,
               fontSize: 18,
-              fontWeight: _hovering ? FontWeight.bold : FontWeight.normal,
+              fontWeight:
+                  _hovering ? FontWeight.bold : FontWeight.normal,
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _LogOutButton extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return HoverTextButton(
+      text: S.of(context).profilePageLogout,
+      onTap: () {
+        ref.read(authStateProvider.notifier).logout();
+        context.go('/login');
+      },
+    );
+  }
+}
+
+class _SideBarItem extends StatelessWidget {
+  final String title;
+  final String path;
+
+  const _SideBarItem({
+    required this.title,
+    required this.path,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return HoverTextButton(
+      text: title,
+      onTap: () => context.go(path),
     );
   }
 }
