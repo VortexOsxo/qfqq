@@ -48,6 +48,7 @@
   "agendaPageLocationHint": "Salle ou lien",
   "agendaPageThemeHint": "Ajouter un sujet de discussion",
   "agendaPageDateTime": "Date & Heure",
+  "agendaPageSelectDatePlaceholder": "Sélectionnez une date pour la réunion",
   "agendaPageLocationLabel": "Lieu",
   "agendaPageFacilitator": "Animateur",
   "agendaPageProjectLabel": "Projet",

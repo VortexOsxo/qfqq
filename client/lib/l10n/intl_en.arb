@@ -48,6 +48,7 @@
   "agendaPageLocationHint": "Room or link",
   "agendaPageThemeHint": "Add a discussion topic",
   "agendaPageDateTime": "Date & Time",
+  "agendaPageSelectDatePlaceholder": "Select a date for the meeting",
   "agendaPageLocationLabel": "Location",
   "agendaPageFacilitator": "Facilitator",
   "agendaPageProjectLabel": "Project",
