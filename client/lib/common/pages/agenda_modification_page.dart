@@ -6,9 +6,8 @@ import 'package:qfqq/common/models/errors/meeting_agenda_errors.dart';
 import 'package:qfqq/common/services/modal_service.dart';
 import 'package:qfqq/common/models/user.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
-import 'package:qfqq/common/utils/fromatting.dart';
-import 'package:qfqq/common/utils/modals/select_date.dart';
 import 'package:qfqq/common/utils/validation.dart';
+import 'package:qfqq/common/widgets/agendas/agenda_date_picker.dart';
 import 'package:qfqq/common/widgets/reusables/chip_list.dart';
 import 'package:qfqq/common/widgets/reusables/form_filled_button.dart';
 import 'package:qfqq/common/widgets/reusables/form_outlined_button.dart';
@@ -59,15 +58,6 @@ class _AgendaModificationPageState
     _themeController = TextEditingController();
     originalAgenda = widget.agenda.copyWith();
     activeNavigationGuard = shouldPop;
-  }
-
-  Future<void> _handleDateTimeSelection() async {
-    final DateTime? result = await showDateTimePicker(
-      context,
-      widget.agenda.meetingDate ?? DateTime.now(),
-    );
-    if (result == null) return;
-    setState(() => widget.agenda.meetingDate = result);
   }
 
   void _addTheme() {
@@ -148,11 +138,6 @@ class _AgendaModificationPageState
 
   @override
   Widget build(BuildContext context) {
-    String? formattedDateTime =
-        widget.agenda.meetingDate != null
-            ? formatDate(context, widget.agenda.meetingDate)
-            : null;
-
     final loc = S.of(context);
     final isEditing = !widget.isNewAgenda;
 
@@ -191,57 +176,12 @@ class _AgendaModificationPageState
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      flex: 2,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            loc.agendaPageDateTime,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                          const SizedBox(height: 8),
-                          OutlinedButton.icon(
-                            onPressed: _handleDateTimeSelection,
-                            icon: const Icon(Icons.calendar_today, size: 18),
-                            label: Text(formattedDateTime ?? ''),
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 14,
-                              ),
-                              minimumSize: const Size(double.infinity, 48),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              side:
-                                  errors.meetingDateError != null
-                                      ? BorderSide(
-                                        color:
-                                            Theme.of(context).colorScheme.error,
-                                      )
-                                      : null,
-                              alignment: Alignment.centerLeft,
-                            ),
-                          ),
-                          if (errors.meetingDateError != null)
-                            SizedBox(height: 8),
-                          if (errors.meetingDateError != null)
-                            Row(
-                              children: [
-                                SizedBox(width: 16),
-                                Text(
-                                  errors.meetingDateError!,
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.bodySmall?.copyWith(
-                                    color: Theme.of(context).colorScheme.error,
-                                  ),
-                                ),
-                              ],
-                            ),
-                        ],
-                      ),
+                    AgendaDatePicker(
+                      meetingDate: widget.agenda.meetingDate,
+                      meetingDateError: errors.meetingDateError,
+                      onSelected:
+                          (value) =>
+                              setState(() => widget.agenda.meetingDate = value),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
