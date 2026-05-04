@@ -21,7 +21,6 @@ class SidebarWidget extends StatelessWidget {
           _SideBarItem(title: loc.projectPageTitle, path: '/projects'),
           _SideBarItem(title: loc.agendasListPageTitle, path: '/agendas'),
           _SideBarItem(title: loc.decisionsListPageTitle, path: '/decisions'),
-          _SideBarItem(title: loc.profilePageTitle, path: '/profile'),
           Spacer(),
           _LogOutButton()
         ],
