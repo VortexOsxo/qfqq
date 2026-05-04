@@ -86,6 +86,8 @@
   "homePageTitle": "Home",
   "homePageResponsabilities": "Responsabilities",
   "homePageFutureMeetings": "Future Meetings",
+  "homePageProjectButton": "Define a Project",
+  "homePageMeetingButton": "Prepare Agendas",
 
   "agendaStatusDraft": "Draft",
   "agendaStatusPlanned": "Planned",
