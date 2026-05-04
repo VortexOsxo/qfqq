@@ -87,6 +87,8 @@
   "homePageTitle": "Accueil",
   "homePageResponsabilities": "Responsabilités",
   "homePageFutureMeetings": "Réunions à venir",
+  "homePageProjectButton": "Définir un Projet",
+  "homePageMeetingButton": "Préparer des Ordres du jour",
 
   "agendaStatusDraft": "Brouillon",
   "agendaStatusPlanned": "Planifié",

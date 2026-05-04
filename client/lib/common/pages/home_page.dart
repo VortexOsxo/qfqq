@@ -13,20 +13,27 @@ class HomePage extends StatelessWidget {
     return Column(
       children: [
         Expanded(child: buildMainContent(context)),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            buildNavButtonTemplate(
-              context,
-              S.of(context).buttonCreateAgenda,
-              '/agenda',
-            ),
-            buildNavButtonTemplate(
-              context,
-              S.of(context).buttonCreateProject,
-              '/project/creation',
-            ),
-          ],
+        IntrinsicWidth(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                child: buildNavButtonTemplate(
+                  context,
+                  S.of(context).homePageProjectButton,
+                  '/project/creation',
+                ),
+              ),
+              Expanded(
+                child: buildNavButtonTemplate(
+                  context,
+                  S.of(context).homePageMeetingButton,
+                  '/agenda',
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
