@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/templates/form_template.dart';
 import 'package:qfqq/common/templates/navigation_guard.dart';
 import 'package:qfqq/common/models/errors/meeting_agenda_errors.dart';
 import 'package:qfqq/common/services/modal_service.dart';
 import 'package:qfqq/common/models/user.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/utils/validation.dart';
-import 'package:qfqq/common/widgets/agendas/agenda_date_picker.dart';
-import 'package:qfqq/common/widgets/reusables/chip_list.dart';
+import 'package:qfqq/common/widgets/agendas/inputs/meeting_main_info_input.dart';
+import 'package:qfqq/common/widgets/agendas/inputs/meeting_meta_info_input.dart';
+import 'package:qfqq/common/widgets/agendas/inputs/meeting_people_input.dart';
+import 'package:qfqq/common/widgets/agendas/inputs/meeting_theme_input.dart';
 import 'package:qfqq/common/widgets/reusables/form_filled_button.dart';
 import 'package:qfqq/common/widgets/reusables/form_outlined_button.dart';
-import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
-import 'package:qfqq/common/widgets/reusables/selection_text_fields/project_text_field.dart';
-import 'package:qfqq/common/widgets/reusables/selection_text_fields/user_text_field.dart';
-import 'package:qfqq/common/widgets/reusables/selection_text_fields/users_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 
 class AgendaModificationPage extends ConsumerStatefulWidget {
   final MeetingAgenda agenda;
   final bool isNewAgenda;
-  
+
   AgendaModificationPage({super.key, MeetingAgenda? agendaToModify})
     : agenda = agendaToModify?.copyWith() ?? MeetingAgenda.empty(),
       isNewAgenda = agendaToModify == null;
@@ -35,7 +34,6 @@ class _AgendaModificationPageState
     extends ConsumerState<AgendaModificationPage> {
   MeetingAgendaErrors errors = MeetingAgendaErrors();
   bool isSending = false;
-  late final TextEditingController _themeController;
   late MeetingAgenda originalAgenda;
 
   Future<bool> shouldPop(BuildContext ctx) async {
@@ -55,22 +53,8 @@ class _AgendaModificationPageState
   @override
   void initState() {
     super.initState();
-    _themeController = TextEditingController();
     originalAgenda = widget.agenda.copyWith();
     activeNavigationGuard = shouldPop;
-  }
-
-  void _addTheme() {
-    final theme = _themeController.text.trim();
-    if (theme.isNotEmpty && !widget.agenda.themes.contains(theme)) {
-      widget.agenda.themes.add(theme);
-      setState(() => _themeController.clear());
-    }
-  }
-
-  void _removeTheme(String theme) {
-    widget.agenda.themes.remove(theme);
-    setState(() {});
   }
 
   void _updateParticipants(List<User> users) {
@@ -78,32 +62,9 @@ class _AgendaModificationPageState
     setState(() {});
   }
 
-  Widget _buildLabel(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: Text(
-        text,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontWeight: FontWeight.w500,
-          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: .7),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDivider() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 24.0),
-      child: Divider(
-        color: Theme.of(context).colorScheme.outline.withValues(alpha: .2),
-      ),
-    );
-  }
-
   @override
   void dispose() {
     activeNavigationGuard = null;
-    _themeController.dispose();
     super.dispose();
   }
 
@@ -141,212 +102,107 @@ class _AgendaModificationPageState
     final loc = S.of(context);
     final isEditing = !widget.isNewAgenda;
 
-    Widget content = SingleChildScrollView(
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 800),
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Title and Goals
-                _buildLabel(loc.agendaPageTitle),
-                DefaultTextField(
-                  initialValue: widget.agenda.title,
-                  hintText: loc.agendaPageTitleHint,
-                  onChanged: (value) => widget.agenda.title = value,
-                  error: errors.titleError,
-                ),
-                const SizedBox(height: 20),
-
-                _buildLabel(loc.agendaPageGoals),
-                DefaultTextField(
-                  initialValue: widget.agenda.goals ?? '',
-                  hintText: loc.agendaPageGoalsHint,
-                  onChanged: (value) => widget.agenda.goals = value,
-                  error: errors.goalsError,
-                  maxLines: 3,
-                ),
-
-                _buildDivider(),
-
-                // Date, Time & Location in a grid
-                _buildLabel(loc.agendaPageSectionScheduleLocation),
-                Row(
+    Widget content = PrimaryScrollController(
+      controller: ScrollController(),
+      child: Scrollbar(
+        thumbVisibility: true,
+        child: SingleChildScrollView(
+          primary: true,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 800),
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AgendaDatePicker(
-                      meetingDate: widget.agenda.meetingDate,
-                      meetingDateError: errors.meetingDateError,
-                      onSelected:
-                          (value) =>
-                              setState(() => widget.agenda.meetingDate = value),
+                    MeetingMainInfoInput(
+                      meeting: widget.agenda,
+                      errors: errors,
+                      onTitleChanged:
+                          (value) => setState(() => widget.agenda.title = value),
+                      onGoalsChanged:
+                          (value) => setState(() => widget.agenda.goals = value),
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            loc.agendaPageLocationLabel,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                          const SizedBox(height: 8),
-                          DefaultTextField(
-                            initialValue: widget.agenda.meetingLocation ?? '',
-                            hintText: loc.agendaPageLocationHint,
-                            onChanged:
-                                (value) =>
-                                    widget.agenda.meetingLocation = value,
-                            error: errors.meetingLocationError,
-                          ),
-                        ],
-                      ),
+
+                    buildDivider(context),
+
+                    MeetingMetaInfoInput(
+                      meeting: widget.agenda,
+                      errors: errors,
+                      onDateSelected:
+                          (value) => setState(() => widget.agenda.meetingDate = value),
+                      onLocationSelected:
+                          (value) => setState(() => widget.agenda.meetingLocation = value),
+                      onProjectSelected:
+                          (value) => setState(() => widget.agenda.projectId = value.id),
                     ),
-                  ],
-                ),
 
-                _buildDivider(),
+                    buildDivider(context),
 
-                // Themes
-                _buildLabel(loc.agendaPageSectionThemes),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _themeController,
-                        decoration: InputDecoration(
-                          hintText: loc.agendaPageThemeHint,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 14,
-                          ),
+                    MeetingThemeInput(
+                      meeting: widget.agenda,
+                      errors: errors,
+                      onThemeAdded: (theme) {
+                        widget.agenda.themes.add(theme);
+                        setState(() {});
+                      },
+                      onThemeRemoved: (theme) {
+                        widget.agenda.themes.remove(theme);
+                        setState(() {});
+                      },
+                    ),
+
+                    buildDivider(context),
+
+                    MeetingPeopleInput(
+                      meeting: widget.agenda,
+                      errors: errors,
+                      onAnimatorChanged: (animator) {
+                        setState(() => widget.agenda.animatorId = animator.id);
+                      },
+                      onParticipantsChanged: _updateParticipants
+                    ),
+
+                    const SizedBox(height: 40),
+
+                    // Action Buttons
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        FormOutlinedButton(
+                          text: loc.commonCancel,
+                          onPressed: goBack,
                         ),
-                        onSubmitted: (_) => _addTheme(),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    FilledButton.icon(
-                      onPressed: _addTheme,
-                      icon: const Icon(Icons.add, size: 20),
-                      label: Text(loc.agendaPageAddButton),
-                      style: FilledButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 14,
+
+                        const SizedBox(width: 12),
+                        FormFilledButton(
+                          text:
+                              isEditing
+                                  ? loc.agendaPageUpdateDraft
+                                  : loc.agendaPageSaveDraft,
+                          isSending: isSending,
+                          onPressed:
+                              () => saveAgenda(MeetingAgendaStatus.draft),
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+
+                        const SizedBox(width: 12),
+                        FormFilledButton(
+                          text:
+                              isEditing
+                                  ? loc.agendaPageUpdateAgenda
+                                  : loc.agendaPageSaveAgenda,
+                          isSending: isSending,
+                          onPressed:
+                              () => saveAgenda(MeetingAgendaStatus.planned),
                         ),
-                      ),
+                      ],
                     ),
+
+                    const SizedBox(height: 24),
                   ],
                 ),
-                const SizedBox(height: 12),
-                ChipList<String>(
-                  items: widget.agenda.themes,
-                  displayString: (String theme) => theme,
-                  onDelete: _removeTheme,
-                ),
-
-                _buildDivider(),
-
-                // People
-                _buildLabel(loc.agendaPageSectionPeople),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            loc.agendaPageFacilitator,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                          const SizedBox(height: 8),
-                          UserTextField(
-                            label: loc.agendaPageAnimatorLabel,
-                            initialUserId: widget.agenda.animatorId ?? 0,
-                            onSelected:
-                                (p0) => widget.agenda.animatorId = p0.id,
-                            error: errors.animatorError,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            loc.agendaPageProjectLabel,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                          const SizedBox(height: 8),
-                          ProjectTextField(
-                            label: loc.agendaPageSelectProject,
-                            initialProjectId: widget.agenda.projectId ?? 0,
-                            onSelected:
-                                (project) =>
-                                    widget.agenda.projectId = project.id,
-                            error: errors.projectError,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-
-                _buildLabel(loc.agendaPageParticipantsLabel),
-                UsersTextField(
-                  label: loc.agendaPageAddParticipant,
-                  initialUsersIds: widget.agenda.participantsIds,
-                  onChanged: _updateParticipants,
-                  error: errors.participantsError,
-                ),
-
-                const SizedBox(height: 40),
-
-                // Action Buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    FormOutlinedButton(
-                      text: loc.commonCancel,
-                      onPressed: goBack,
-                    ),
-
-                    const SizedBox(width: 12),
-                    FormFilledButton(
-                      text:
-                          isEditing
-                              ? loc.agendaPageUpdateDraft
-                              : loc.agendaPageSaveDraft,
-                      isSending: isSending,
-                      onPressed: () => saveAgenda(MeetingAgendaStatus.draft),
-                    ),
-
-                    const SizedBox(width: 12),
-                    FormFilledButton(
-                      text:
-                          isEditing
-                              ? loc.agendaPageUpdateAgenda
-                              : loc.agendaPageSaveAgenda,
-                      isSending: isSending,
-                      onPressed: () => saveAgenda(MeetingAgendaStatus.planned),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 24),
-              ],
+              ),
             ),
           ),
         ),

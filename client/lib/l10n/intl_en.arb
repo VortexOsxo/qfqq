@@ -47,7 +47,6 @@
   "agendaPageGoalsHint": "What do we want to accomplish together, concretely? (goal)\nIs my goal SMART, meaning Specific (precise), Measurable, Achievable, Realistic, and Time-bound (due date).",
   "agendaPageLocationHint": "Room or link",
   "agendaPageThemeHint": "Add a discussion topic",
-  "agendaPageDateTime": "Date & Time",
   "agendaPageSelectDatePlaceholder": "Select a date for the meeting",
   "agendaPageLocationLabel": "Location",
   "agendaPageFacilitator": "Facilitator",
@@ -70,7 +69,10 @@
   "agendaListAnyProject": "Any Project",
   "agendaListNoProject": "No project",
   "agendaListProjectFilter": "Project: {project}",
-  
+
+  "agendaNextCreation": "Plan the next meeting",
+  "agendaNextCreationPlan": "Plan",
+
   "authServiceInvalidCredentials": "Invalid email or password.",
   "authServiceUnknownError": "An unknown error occurred during authentication.",
   "authServiceEmailError": "Email is invalid or already registered.",

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/utils/validation.dart';
+import 'package:qfqq/common/widgets/agendas/agenda_next_creation.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class MeetingViewControl extends ConsumerWidget {
@@ -79,12 +80,27 @@ class MeetingViewControl extends ConsumerWidget {
     ];
   }
 
-    List<TextButton> ongoingButtons(BuildContext context, WidgetRef ref) {
+  List<TextButton> ongoingButtons(BuildContext context, WidgetRef ref) {
     final loc = S.of(context);
 
     final meetingsService = ref.read(meetingAgendaServiceProvider);
 
     return [
+      TextButton(
+        child: Text(loc.agendaNextCreation),
+        onPressed: () {
+          var nextMeeting = meeting.copyWith(
+            newStatus: MeetingAgendaStatus.planned,
+          );
+          nextMeeting.meetingDate = null;
+
+          showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (_) => AgendaNextCreation(agenda: nextMeeting),
+          );
+        },
+      ),
       TextButton(
         child: Text(loc.meetingViewControlTerminate),
         onPressed:
