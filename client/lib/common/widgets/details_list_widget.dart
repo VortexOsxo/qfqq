@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:qfqq/generated/l10n.dart';
 
 class DetailsListWidget extends StatelessWidget {
   final String label;
@@ -15,9 +14,8 @@ class DetailsListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loc = S.of(context);
     if (values.isEmpty) {
-      return Text(loc.attributeNoThemes);
+      return Text(emptyLabel);
     }
 
     return Column(
