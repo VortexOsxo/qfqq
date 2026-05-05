@@ -18,11 +18,19 @@ final meetingAgendaByIdProvider = Provider.family<MeetingAgenda?, int>((ref, id)
 });
 
 final myMeetingsProvider = Provider<List<MeetingAgenda>>((ref) {
-  final agendas = ref.watch(meetingsAgendasProvider);
   final userId = ref.watch(authStateProvider.select((state) => state.user?.id));
   if (userId == null) return [];
 
-  return agendas.where((a) => a.participantsIds.contains(userId)).toList();
+  final agendas = ref.watch(meetingsAgendasProvider);
+  return agendas
+      .where(
+        (a) =>
+            (a.animatorId == userId || a.participantsIds.contains(userId)) &&
+            (a.status == MeetingAgendaStatus.planned || a.status == MeetingAgendaStatus.ongoing) &&
+            (a.meetingDate != null && a.meetingDate!.isAfter(DateTime.now().subtract(Duration(days: 1))))
+      )
+      .toList()
+      ..sort((a, b) => a.meetingDate!.compareTo(b.meetingDate!));
 });
 
 final meetingAgendaServiceProvider = Provider<MeetingAgendaService>(

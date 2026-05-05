@@ -17,7 +17,13 @@ final myResponsibilitiesProvider = Provider<List<Decision>>((ref) {
   final userId = ref.watch(authStateProvider.select((state) => state.user?.id));
   if (userId == null) return [];
 
-  return decisions.where((d) => d.responsibleId == userId).toList();
+  return decisions
+      .where(
+        (d) =>
+            d.responsibleId == userId && d.status == DecisionStatus.inProgress,
+      )
+      .toList()
+      ..sort((a, b) => a.dueDate!.compareTo(b.dueDate!));
 });
 
 
