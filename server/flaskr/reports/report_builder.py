@@ -235,7 +235,7 @@ class ReportBuilder:
     def decisions_table_with_meeting_id(self, decisions, lang):
         cols = ["5%", "5%", "15%", "25%", "15%", "20%", "15%"]
         headers = (
-            ["N", "M", "Action", "Responsable", "Date due", "Statut", "Date de fin"]
+            ["N", "R", "Action", "Responsable", "Date due", "Statut", "Date de fin"]
             if lang == "fr"
             else ["N", "M", "Action", "Responsible", "Due Date", "Status", "Completed Date"]
         )
