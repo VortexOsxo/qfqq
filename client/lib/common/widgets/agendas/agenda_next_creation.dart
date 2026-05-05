@@ -28,6 +28,12 @@ class _AgendaNextCreationState extends ConsumerState<AgendaNextCreation> {
   MeetingAgendaErrors errors = MeetingAgendaErrors();
   bool isSending = false;
 
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   void _updateParticipants(List<User> users) {
     widget.agenda.participantsIds = users.map((user) => user.id).toList();
     setState(() {});
