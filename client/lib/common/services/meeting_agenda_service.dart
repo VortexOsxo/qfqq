@@ -33,7 +33,7 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(agenda),
     );
-    if (response.statusCode != 200) return false;
+    if (response.statusCode != 204) return false;
 
     state = state.map((e) => e.id != agenda.id ? e : agenda).toList();
     return true;
