@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:qfqq/common/utils/date.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 Future<DateTime?> showDateTimePicker(BuildContext context, DateTime currentDateTime) async {
@@ -31,7 +32,7 @@ Future<DateTime?> showDateTimePicker(BuildContext context, DateTime currentDateT
                 children: [
                   CalendarDatePicker(
                     initialDate: selectedDate,
-                    firstDate: DateTime.now(),
+                    firstDate: minDate(DateTime.now(), selectedDate),
                     lastDate: DateTime(2100),
                     onDateChanged: (DateTime date) {
                       setState(() {
