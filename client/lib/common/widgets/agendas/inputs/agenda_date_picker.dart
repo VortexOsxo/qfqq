@@ -51,11 +51,11 @@ class AgendaDatePicker extends StatelessWidget {
             alignment: Alignment.centerLeft,
           ),
         ),
-        if (meetingDateError != null) SizedBox(height: 8),
+        if (meetingDateError != null) const SizedBox(height: 8),
         if (meetingDateError != null)
           Row(
             children: [
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               Text(
                 meetingDateError!,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(

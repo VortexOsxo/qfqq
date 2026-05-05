@@ -45,15 +45,11 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class _ProfileLink extends ConsumerStatefulWidget {
+class _ProfileLink extends ConsumerWidget {
+  
   @override
-  ConsumerState<_ProfileLink> createState() => _ProfileLinkState();
-}
-
-class _ProfileLinkState extends ConsumerState<_ProfileLink> {
-  @override
-  Widget build(BuildContext context) {
-    final authState = ref.read(authStateProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authStateProvider);
     if (authState.user == null) {
       return const SizedBox.shrink();
     }
@@ -71,7 +67,7 @@ class _ProfileLinkState extends ConsumerState<_ProfileLink> {
             ),
           ),
           const SizedBox(width: 8),
-          const Icon(Icons.person, color: Colors.white),
+          Icon(Icons.person, color: Theme.of(context).colorScheme.onPrimary),
         ],
       ),
     );
