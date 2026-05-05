@@ -43,14 +43,13 @@ class _MeetingThemeInputState extends State<MeetingThemeInput> {
   void _addTheme() {
     final theme = _themeController.text.trim();
     if (theme.isNotEmpty && !widget.meeting.themes.contains(theme)) {
-      widget.meeting.themes.add(theme);
+      widget.onThemeAdded(theme);
       setState(() => _themeController.clear());
     }
   }
 
   void _removeTheme(String theme) {
-    widget.meeting.themes.remove(theme);
-    setState(() {});
+    widget.onThemeRemoved(theme);
   }
 
   @override
