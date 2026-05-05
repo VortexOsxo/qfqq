@@ -47,7 +47,6 @@
   "agendaPageGoalsHint": "Que voulons-nous accomplir ensemble, concrètement? (objectif)\nMon objectif est-il SMART, c’est-à-dire Spécifiques (précis), Mesurables, Atteignables, Réalistes et Temporels (date due).",
   "agendaPageLocationHint": "Salle ou lien",
   "agendaPageThemeHint": "Ajouter un sujet de discussion",
-  "agendaPageDateTime": "Date & Heure",
   "agendaPageSelectDatePlaceholder": "Sélectionnez une date pour la réunion",
   "agendaPageLocationLabel": "Lieu",
   "agendaPageFacilitator": "Animateur",
@@ -70,6 +69,9 @@
   "agendaListAnyProject": "Tous les projets",
   "agendaListNoProject": "Aucun projet",
   "agendaListProjectFilter": "Projet : {project}",
+
+  "agendaNextCreation": "Planifier la prochaine réunion",
+  "agendaNextCreationPlan": "Planifier",
   
   "authServiceInvalidCredentials": "Email ou mot de passe invalide.",
   "authServiceUnknownError": "Une erreur inconnue est survenue lors de l'authentification.",
