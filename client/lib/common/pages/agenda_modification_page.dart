@@ -30,11 +30,11 @@ class AgendaModificationPage extends ConsumerStatefulWidget {
       _AgendaModificationPageState();
 }
 
-class _AgendaModificationPageState
-    extends ConsumerState<AgendaModificationPage> {
+class _AgendaModificationPageState extends ConsumerState<AgendaModificationPage> {
   MeetingAgendaErrors errors = MeetingAgendaErrors();
   bool isSending = false;
   late MeetingAgenda originalAgenda;
+  late final ScrollController _scrollController;
 
   Future<bool> shouldPop(BuildContext ctx) async {
     if (originalAgenda == widget.agenda) {
@@ -53,6 +53,7 @@ class _AgendaModificationPageState
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     originalAgenda = widget.agenda.copyWith();
     activeNavigationGuard = shouldPop;
   }
@@ -65,6 +66,7 @@ class _AgendaModificationPageState
   @override
   void dispose() {
     activeNavigationGuard = null;
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -103,7 +105,7 @@ class _AgendaModificationPageState
     final isEditing = !widget.isNewAgenda;
 
     Widget content = PrimaryScrollController(
-      controller: ScrollController(),
+      controller: _scrollController,
       child: Scrollbar(
         thumbVisibility: true,
         child: SingleChildScrollView(
