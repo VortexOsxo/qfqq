@@ -55,3 +55,10 @@ def test_reject_unknown_permissions(client):
     )
     assert response.status_code == 400
     assert response.json["permission_name"] == 2
+
+
+# Blocking user without permission
+def test_reject_no_update_permissions_permission(client):
+    headers = get_auth_headers(client, 2)
+    response = client.get("/users/permissions", headers=headers)
+    assert response.status_code == 403
