@@ -83,3 +83,12 @@ def test_signup_last_name_past_limit(client):
     body = response.get_json()
     assert "lastName" in body
     assert body["lastName"] == InputError.MaxLengthExceeded.value
+
+def test_signup_default(client):
+    response = signup(client, firstName='Salut', lastName='Joe', email='salut@gmail.com', password='League028!')
+    assert response.status_code == 201
+
+    body = response.get_json()
+    assert body["firstName"] == 'Salut'
+    assert body["lastName"] == 'Joe'
+    assert body["email"] == 'salut@gmail.com'

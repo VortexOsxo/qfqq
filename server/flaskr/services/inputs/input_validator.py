@@ -47,6 +47,10 @@ class StringValidator(InputValidator):
         
         return InputError.NoError
 
+class BooleanValidator(InputValidator):
+    def validate(self, value):
+        return InputError.NoError if isinstance(value, bool) else InputError.InvalidType
+
 
 # TODO: Improve email validation
 class EmailValidator(StringValidator):
@@ -145,3 +149,14 @@ class ListValidator(InputValidator):
             return InputError.ListMustBeNonEmpty
 
         return InputError.NoError
+
+class PermissionValidator(StringValidator):
+    def validate(self, value):
+        if (error := super().validate(value)) != InputError.NoError:
+            return error
+
+        return (
+            InputError.NoError
+            if value in ['canDelete', 'canWrite', 'canUpdatePermissions']
+            else InputError.InvalidFormat
+        )

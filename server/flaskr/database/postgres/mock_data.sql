@@ -18,6 +18,13 @@ INSERT INTO users (firstName, lastName, passwordHash, email) VALUES
   ('Carol', 'Davis', 'passhash_carol', 'carol@example.com'),
   ('Dave', 'Wilson', 'passhash_dave', 'dave@example.com');
 
+-- User Permissions
+INSERT INTO usersPermissions (userId, canWrite, canDelete, canUpdatePermissions) VALUES
+  ((SELECT id FROM users WHERE email='alice@example.com'), true, true, true),
+  ((SELECT id FROM users WHERE email='bob@example.com'), true, true, false),
+  ((SELECT id FROM users WHERE email='carol@example.com'), true, false, false),
+  ((SELECT id FROM users WHERE email='dave@example.com'), false, false, false);
+
 -- Projects
 INSERT INTO projects (title, goals, supervisorId) VALUES
   ('Apollo', 'Create prototype for feature X', (SELECT id FROM users WHERE email='alice@example.com')),

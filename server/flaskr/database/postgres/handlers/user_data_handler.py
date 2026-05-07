@@ -13,9 +13,13 @@ class UserDataHandler:
                 params = (firstName, lastName, passwordHash, email)
                 cur.execute(query, params)
                 userId = cur.fetchone()[0]
-            
+
+                query = f"INSERT INTO usersPermissions (userId, canDelete, canWrite, canUpdatePermissions) VALUES (%s, %s, %s, %s);"
+                cur.execute(query, (userId, False, False, False))
+
                 return User(userId, *params)
-        except:
+        except Exception as e:
+            # TODO: Logging
             pass
         return None
 
@@ -43,4 +47,21 @@ class UserDataHandler:
     def update_user_password(cls, email: str, newPasswordHash: str):
         query = "UPDATE users SET passwordHash = %s WHERE email = %s"
         params = (newPasswordHash, email)
+        write_query(query, params)
+
+    @classmethod
+    def get_users_permissions(cls):
+        query = "SELECT userId, canWrite, canDelete, canUpdatePermissions FROM usersPermissions;"
+        return read_query(query)
+
+    @classmethod
+    def get_user_permissions(cls, userId: int):
+        query = f"SELECT canWrite, canDelete, canUpdatePermissions FROM usersPermissions WHERE userId = %s;"
+        permissions = read_query(query, (userId,))
+        return permissions[0] if permissions else ((False,) * 3) 
+
+    @classmethod
+    def update_user_permissions(cls, userId: int, permission_name: str, permission_value: bool):
+        query = f"UPDATE usersPermissions SET {permission_name} = %s WHERE userId = %s;"
+        params = (permission_value, userId)
         write_query(query, params)

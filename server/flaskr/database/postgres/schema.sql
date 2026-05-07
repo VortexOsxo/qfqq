@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS users,
+usersPermissions,
 projects,
 meetings,
 meetingsThemes,
@@ -22,6 +23,14 @@ CREATE TABLE
     lastName TEXT NOT NULL,
     passwordHash TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL
+  );
+
+CREATE TABLE
+  usersPermissions (
+    userId INTEGER PRIMARY KEY REFERENCES users (id),
+    canWrite BOOLEAN,
+    canDelete BOOLEAN,
+    canUpdatePermissions BOOLEAN
   );
 
 CREATE TABLE
