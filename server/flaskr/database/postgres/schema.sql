@@ -1,13 +1,13 @@
 DROP TABLE IF EXISTS users,
-usersPermissions,
+roles,
+usersRoles,
 projects,
 meetings,
 meetingsThemes,
 meetingsParticipants,
 decisions,
 decisionsAssistants,
-passwordRequests
-CASCADE;
+passwordRequests CASCADE;
 
 DROP TYPE IF EXISTS meetingStatus,
 decisionStatus CASCADE;
@@ -26,11 +26,19 @@ CREATE TABLE
   );
 
 CREATE TABLE
-  usersPermissions (
-    userId INTEGER PRIMARY KEY REFERENCES users (id),
+  roles (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL,
     canWrite BOOLEAN,
     canDelete BOOLEAN,
     canUpdatePermissions BOOLEAN
+  );
+
+CREATE TABLE
+  usersRoles (
+    userId INTEGER REFERENCES users (id),
+    roleId INTEGER REFERENCES roles (id),
+    PRIMARY KEY (userId, roleId)
   );
 
 CREATE TABLE
@@ -143,3 +151,8 @@ CREATE TABLE
     date TEXT,
     PRIMARY KEY (email)
   );
+
+INSERT INTO
+  roles (name, canWrite, canDelete, canUpdatePermissions)
+VALUES
+  ('default', true, true, true);

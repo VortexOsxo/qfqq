@@ -8,6 +8,8 @@ TRUNCATE TABLE
   meetingsThemes,
   meetings,
   projects,
+  usersRoles,
+  roles,
   users
 RESTART IDENTITY CASCADE;
 
@@ -18,12 +20,26 @@ INSERT INTO users (firstName, lastName, passwordHash, email) VALUES
   ('Carol', 'Davis', 'passhash_carol', 'carol@example.com'),
   ('Dave', 'Wilson', 'passhash_dave', 'dave@example.com');
 
--- User Permissions
-INSERT INTO usersPermissions (userId, canWrite, canDelete, canUpdatePermissions) VALUES
-  ((SELECT id FROM users WHERE email='alice@example.com'), true, true, true),
-  ((SELECT id FROM users WHERE email='bob@example.com'), true, true, false),
-  ((SELECT id FROM users WHERE email='carol@example.com'), true, false, false),
-  ((SELECT id FROM users WHERE email='dave@example.com'), false, false, false);
+--Default Roles
+INSERT INTO
+  roles (name, canWrite, canDelete, canUpdatePermissions)
+VALUES
+  ('default', true, true, true);
+
+-- Roles
+INSERT INTO roles (name, canWrite, canDelete, canUpdatePermissions) VALUES
+  ('Admin', true, true, true),
+  ('Manager', true, true, false),
+  ('Contributor', true, false, false),
+  ('Viewer', false, false, false),
+  ('Unused', false, false, false);
+
+-- Users Roles
+INSERT INTO usersRoles (userId, roleId) VALUES
+  ((SELECT id FROM users WHERE email='alice@example.com'), (SELECT id FROM roles WHERE name='Admin')),
+  ((SELECT id FROM users WHERE email='bob@example.com'), (SELECT id FROM roles WHERE name='Manager')),
+  ((SELECT id FROM users WHERE email='carol@example.com'), (SELECT id FROM roles WHERE name='Contributor')),
+  ((SELECT id FROM users WHERE email='dave@example.com'), (SELECT id FROM roles WHERE name='Viewer'));
 
 -- Projects
 INSERT INTO projects (title, goals, supervisorId) VALUES

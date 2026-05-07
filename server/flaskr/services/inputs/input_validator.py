@@ -3,7 +3,7 @@ from typing import Callable, Optional
 import re
 
 from flaskr.errors import InputError
-from flaskr.database import UserDataHandler, ProjectDataHandler, MeetingDataHandler
+from flaskr.database import UserDataHandler, ProjectDataHandler, MeetingDataHandler, RoleDataHandler
 
 
 class InputValidator(ABC):
@@ -120,6 +120,8 @@ class ProjectIdValidator(_ObjectIdValidator):
 class MeetingIdValidator(_ObjectIdValidator):
     dataHandler = MeetingDataHandler.get_meeting_agenda
 
+class RoleIdValidator(_ObjectIdValidator):
+    dataHandler = RoleDataHandler.get_role
 
 # TODO: Test it :)
 class EnumValidator(InputValidator):

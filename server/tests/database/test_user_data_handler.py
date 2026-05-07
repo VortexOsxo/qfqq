@@ -17,7 +17,7 @@ def test_create_user(app):
     assert user.passwordHash == "12345"
 
     permissions = UserDataHandler.get_user_permissions(user.id)
-    assert permissions == (False,)*3
+    assert permissions == (True,)*3
 
 def test_create_user_duplicate_email(app):
     user = UserDataHandler.create_user("Alice", "Smith", "alice@example.com", "StrongPassword!")
@@ -41,11 +41,11 @@ def test_get_permissions(app):
     permissions_user3 = UserDataHandler.get_user_permissions(3)
     assert permissions_user3 == (True, False, False)
 
-def test_update_permissions(app):
-    UserDataHandler.update_user_permissions(3, 'canDelete', True)
+def test_update_role(app):
+    UserDataHandler.update_user_role(3, 1)
+    permissions = UserDataHandler.get_user_permissions(3)
+    assert permissions == (True, True, True)
+
+    UserDataHandler.update_user_role(3, 3)
     permissions = UserDataHandler.get_user_permissions(3)
     assert permissions == (True, True, False)
-
-    UserDataHandler.update_user_permissions(3, 'canWrite', False)
-    permissions = UserDataHandler.get_user_permissions(3)
-    assert permissions == (False, True, False)

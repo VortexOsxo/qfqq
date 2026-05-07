@@ -14,8 +14,8 @@ class UserDataHandler:
                 cur.execute(query, params)
                 userId = cur.fetchone()[0]
 
-                query = f"INSERT INTO usersPermissions (userId, canDelete, canWrite, canUpdatePermissions) VALUES (%s, %s, %s, %s);"
-                cur.execute(query, (userId, False, False, False))
+                query = f"INSERT INTO usersRoles (userId, roleId) VALUES (%s, %s);"
+                cur.execute(query, (userId, 1))
 
                 return User(userId, *params)
         except Exception as e:
@@ -50,18 +50,46 @@ class UserDataHandler:
         write_query(query, params)
 
     @classmethod
-    def get_users_permissions(cls):
-        query = "SELECT userId, canWrite, canDelete, canUpdatePermissions FROM usersPermissions;"
+    def get_users_role(cls):
+        query = """
+            SELECT ur.userId, r.name FROM roles r
+            JOIN usersRoles ur ON ur.roleId = r.id;
+        """
         return read_query(query)
 
     @classmethod
-    def get_user_permissions(cls, userId: int):
-        query = f"SELECT canWrite, canDelete, canUpdatePermissions FROM usersPermissions WHERE userId = %s;"
+    def update_user_role(cls, userId, roleId):
+        query = "UPDATE usersRoles SET roleId = %s WHERE userId = %s;"
+        try:
+            write_query(query, (roleId, userId))
+            return True
+        except:
+            return False
+
+    @classmethod
+    def get_user_role(cls, userId: int):
+        query = """
+            SELECT r.canWrite, r.canDelete, r.canUpdatePermissions 
+            FROM roles r
+            JOIN usersRoles ur ON ur.roleId = r.id
+            WHERE ur.userId = %s;
+        """
         permissions = read_query(query, (userId,))
         return permissions[0] if permissions else ((False,) * 3) 
 
     @classmethod
-    def update_user_permissions(cls, userId: int, permission_name: str, permission_value: bool):
-        query = f"UPDATE usersPermissions SET {permission_name} = %s WHERE userId = %s;"
-        params = (permission_value, userId)
-        write_query(query, params)
+    def get_users_permissions(cls):
+        query = """
+            SELECT ur.userId, r.canWrite, r.canDelete, r.canUpdatePermissions FROM roles r
+            JOIN usersRoles ur ON ur.roleId = r.id;
+        """
+        return read_query(query)
+
+    @classmethod
+    def get_user_permissions(cls, userId: int):
+        query = """
+            SELECT r.canWrite, r.canDelete, r.canUpdatePermissions FROM roles r
+            JOIN usersRoles ur ON ur.roleId = r.id WHERE userId = %s;
+        """
+        permissions = read_query(query, (userId,))
+        return permissions[0] if permissions else ((False,) * 3) 

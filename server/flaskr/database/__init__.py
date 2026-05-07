@@ -8,6 +8,7 @@ from .postgres import (
     ProjectDataHandler,
     DecisionDataHandler,
     MeetingDataHandler,
+    RoleDataHandler,
 )
 
 

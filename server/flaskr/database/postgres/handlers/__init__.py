@@ -3,3 +3,4 @@ from .project_data_handler import ProjectDataHandler
 from .decision_data_handler import DecisionDataHandler
 from .meeting_data_handler import MeetingDataHandler
 from .password_request_data_handler import PasswordRequestDataHandler
+from .role_data_handler import RoleDataHandler

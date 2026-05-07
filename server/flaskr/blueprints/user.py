@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify
 from flaskr.database import UserDataHandler
 from flaskr.blueprints.before_request import login_required
 from flaskr.blueprints.middlewares import permission_middleware, Permission
-from flaskr.services.inputs import input_middleware, LambdaBuilder, PermissionValidator, BooleanValidator
+from flaskr.services.inputs import input_middleware, LambdaBuilder, RoleIdValidator
 
 users_bp = Blueprint('users', __name__, url_prefix='/users')
 users_bp.before_request(login_required)
@@ -25,14 +25,10 @@ def get_user_permissions(id: str):
     # Returns [False,] * n, if not found
     return list(UserDataHandler.get_user_permissions(id)), 200
 
-@users_bp.patch("/<string:id>/permissions")
+
+@users_bp.patch("/<int:userId>/role")
 @permission_middleware(Permission.CanUpdatePermissions)
-@input_middleware(
-    LambdaBuilder(
-        ("permission_name", PermissionValidator()),
-        ("permission_value", BooleanValidator()),
-    )
-)
-def update_permissions(id: str, permission_name, permission_value):
-    UserDataHandler.update_user_permissions(id, permission_name, permission_value)
+@input_middleware(LambdaBuilder(("roleId", RoleIdValidator())))
+def update_permissions(userId: int, roleId: int):
+    UserDataHandler.update_user_role(userId, roleId)
     return "", 204
