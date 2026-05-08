@@ -226,6 +226,7 @@
   "commonErrorWithContent": "Erreur : {error}",
   
   "commonFormsEnterTitle": "Veuillez saisir un titre",
+  "commonFormsEnterName": "Veuillez saisir un nom",
   "commonFormsEnterGoals": "Veuillez saisir les objectifs",
   "commonFormsEnterSupervisor": "Veuillez sélectionner un superviseur",
   "commonFormsEnterMeetingDate": "Veuillez entrer la date de la réunion",
@@ -258,5 +259,16 @@
   "unsavedChangesKeepEditing": "Continuer la modification",
 
   "buttonCreateAgenda": "Créer un ordre du jour",
-  "buttonCreateProject": "Créer un projet"
+  "buttonCreateProject": "Créer un projet",
+  "buttonCreateRole": "Créer un rôle",
+
+  "roleName": "Nom du rôle",
+  "roleCanWrite": "Peut écrire",
+  "roleCanDelete": "Peut supprimer",
+  "roleCanUpdatePermissions": "Peut modifier les permissions",
+  "rolePermissionWrite": "Écrire",
+  "rolePermissionDelete": "Supprimer",
+  "rolePermissionUpdate": "Modifier les permissions",
+
+  "createRoleFormUniqueName": "Le nom du rôle doit être unique"
 }

@@ -16,3 +16,4 @@ class InputError(Enum):
     InvalidDateFormat = 11
     MaxLengthExceeded = 12
     MinLengthExceeded = 13
+    MustBeUnique = 14

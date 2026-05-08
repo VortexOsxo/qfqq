@@ -225,6 +225,7 @@
   "commonErrorWithContent": "Error: {error}",
   
   "commonFormsEnterTitle": "Please enter a title",
+  "commonFormsEnterName": "Please enter a name",
   "commonFormsEnterGoals": "Please enter the goals",
   "commonFormsEnterSupervisor": "Please select a supervisor",
   "commonFormsEnterMeetingDate": "Please enter the meeting date",
@@ -257,5 +258,16 @@
   "unsavedChangesKeepEditing": "Keep Editing",
 
   "buttonCreateAgenda": "Create Meeting Agenda",
-  "buttonCreateProject": "Create a Project"
+  "buttonCreateProject": "Create a Project",
+  "buttonCreateRole": "Create a Role",
+
+  "roleName": "Role Name",
+  "roleCanWrite": "Can Write",
+  "roleCanDelete": "Can Delete",
+  "roleCanUpdatePermissions": "Can Update Permissions",
+  "rolePermissionWrite": "Write",
+  "rolePermissionDelete": "Delete",
+  "rolePermissionUpdate": "Update Permissions",
+
+  "createRoleFormUniqueName": "Role name must be unique"
 }

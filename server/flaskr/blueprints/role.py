@@ -4,6 +4,7 @@ from flaskr.database import RoleDataHandler
 from flaskr.blueprints.before_request import login_required
 from flaskr.blueprints.middlewares import permission_middleware, Permission
 from flaskr.services.inputs import input_middleware, LambdaBuilder, PermissionValidator, BooleanValidator, StringValidator
+from flaskr.errors.input_error import InputError
 
 roles_bp = Blueprint("roles", __name__, url_prefix="/roles")
 roles_bp.before_request(login_required)
@@ -36,8 +37,8 @@ def get_role(id: int):
     )
 )
 def create_role(name: str, canWrite: bool, canDelete: bool, canUpdatePermissions: bool):
-    role = RoleDataHandler.create_role(name, canWrite, canDelete, canUpdatePermissions)
-    if role is None: return "", 400
+    role = RoleDataHandler.create_role(name.lower(), canWrite, canDelete, canUpdatePermissions)
+    if role is None: return jsonify({"name": InputError.MustBeUnique}), 400
 
     return role.to_dict(), 201
 

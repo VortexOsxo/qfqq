@@ -7,12 +7,14 @@ def test_get_roles_success(client):
 
     assert response.status_code == 200
     roles = response.get_json()
+    print(roles)
     assert isinstance(roles, list)
     assert len(roles) >= 5
 
     assert roles[1]["name"] == "Admin"
     assert roles[1]["canWrite"]
     assert roles[1]["canDelete"]
+    assert False
     assert roles[1]["canUpdatePermissions"]
 
 
