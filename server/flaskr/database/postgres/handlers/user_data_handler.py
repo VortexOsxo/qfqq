@@ -52,10 +52,13 @@ class UserDataHandler:
     @classmethod
     def get_users_role(cls):
         query = """
-            SELECT ur.userId, r.name FROM roles r
+            SELECT ur.userId as userId, r.id as id, r.name FROM roles r
             JOIN usersRoles ur ON ur.roleId = r.id;
         """
-        return read_query(query)
+        return [
+            {"userId": r[0], "roleId": r[1], "roleName": r[2]}
+            for r in read_query(query)
+        ]
 
     @classmethod
     def update_user_role(cls, userId, roleId):

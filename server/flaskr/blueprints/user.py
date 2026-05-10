@@ -19,16 +19,20 @@ def get_users():
 def get_users_permissions():
     return UserDataHandler.get_users_permissions(), 200
 
+@users_bp.get("/roles")
+@permission_middleware(Permission.CanUpdatePermissions)
+def get_users_roles():
+    return UserDataHandler.get_users_role(), 200
+
 @users_bp.get("/<string:id>/permissions")
 @permission_middleware(Permission.CanUpdatePermissions)
 def get_user_permissions(id: str):
-    # Returns [False,] * n, if not found
     return list(UserDataHandler.get_user_permissions(id)), 200
 
 
 @users_bp.patch("/<int:userId>/role")
 @permission_middleware(Permission.CanUpdatePermissions)
 @input_middleware(LambdaBuilder(("roleId", RoleIdValidator())))
-def update_permissions(userId: int, roleId: int):
+def update_permissions(userId: int, roleId: int): 
     UserDataHandler.update_user_role(userId, roleId)
     return "", 204

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/pages/permissions_page.dart';
+import 'package:qfqq/common/pages/roles_page.dart';
 import 'package:qfqq/common/templates/navigation_guard.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/project.dart';
@@ -103,6 +104,10 @@ final GoRouter desktopRouter = GoRouter(
         GoRoute(
           path: '/permissions',
           pageBuilder: (context, state) => _noTransition(const PermissionsPage()),
+        ),
+        GoRoute(
+          path: '/roles',
+          pageBuilder: (context, state) => _noTransition(const RolesPage()),
         ),
         GoRoute(
           path: '/profile',

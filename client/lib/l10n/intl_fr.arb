@@ -219,6 +219,7 @@
 
   "commonProject": "Projet",
   "commonNoProject": "Aucun projet",
+  "commonRole": "Role",
   "commonMeeting": "Réunion",
   "commonSelectDate": "Sélectionner une date",
   "commonTapToSelectDate": "Appuyer pour sélectionner une date",

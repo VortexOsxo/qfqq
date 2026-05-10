@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-defaultFieldViewBuilder(String label, String? error, IconData? icon) {
+defaultFieldViewBuilder(String label, String? error, IconData? icon, {double? height}) {
   return (
     BuildContext context,
     TextEditingController controller,
@@ -13,8 +13,14 @@ defaultFieldViewBuilder(String label, String? error, IconData? icon) {
       decoration: InputDecoration(
         labelText: label,
         errorText: error,
+        constraints: height != null
+            ? BoxConstraints(
+                minHeight: height,
+                maxHeight: height,
+              )
+            : null,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-        prefixIcon: Icon(icon),
+        prefixIcon: icon != null ? Icon(icon) : null,
       ),
     );
   };

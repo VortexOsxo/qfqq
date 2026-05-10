@@ -4,12 +4,21 @@ class DefaultDropdownMenu<T> extends StatelessWidget {
   final List<DropdownMenuEntry<T>> entries;
   final T? initialSelection;
   final void Function(T?)? onSelected;
+  final bool isDense;
+  final EdgeInsetsGeometry? contentPadding;
+  final BoxConstraints? constraints;
+  final TextStyle? textStyle;
+
 
   const DefaultDropdownMenu({
     super.key,
     required this.entries,
     this.initialSelection,
-    this.onSelected
+    this.onSelected,
+    this.isDense = false,
+    this.contentPadding,
+    this.constraints,
+    this.textStyle,
   });
 
   @override
@@ -18,7 +27,11 @@ class DefaultDropdownMenu<T> extends StatelessWidget {
 
     return DropdownMenu(
       width: 200,
+      textStyle: textStyle,
       inputDecorationTheme: InputDecorationTheme(
+        isDense: isDense,
+        contentPadding: contentPadding,
+        constraints: constraints,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),

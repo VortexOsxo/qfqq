@@ -218,6 +218,7 @@
 
   "commonProject": "Project",
   "commonNoProject": "No project",
+  "commonRole": "Rôle",
   "commonMeeting": "Meeting",
   "commonSelectDate": "Select Date",
   "commonTapToSelectDate": "Tap to select date",
