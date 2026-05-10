@@ -172,6 +172,7 @@
   "profilePageLanguage": "Langue",
 
   "forgottenPasswordPageTitle": "Mot de passe oublié",
+  "permissionsPageTitle": "Permissions",
   "forgottenPasswordPageEnterEmail": "Saisissez l'adresse e-mail de votre compte",
   "forgottenPasswordPageResetPassword": "Réinitialiser le mot de passe",
   "forgottenPasswordPageLoginLink": "Retour à la page de connexion",
@@ -220,6 +221,8 @@
   "commonProject": "Projet",
   "commonNoProject": "Aucun projet",
   "commonRole": "Role",
+  "commonRoles": "Rôles",
+  "commonPermissions": "Permissions",
   "commonMeeting": "Réunion",
   "commonSelectDate": "Sélectionner une date",
   "commonTapToSelectDate": "Appuyer pour sélectionner une date",
@@ -262,6 +265,7 @@
   "buttonCreateAgenda": "Créer un ordre du jour",
   "buttonCreateProject": "Créer un projet",
   "buttonCreateRole": "Créer un rôle",
+  "roleNameDefault": "Défaut",
 
   "roleName": "Nom du rôle",
   "roleCanWrite": "Peut écrire",

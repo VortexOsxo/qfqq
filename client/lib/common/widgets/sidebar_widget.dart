@@ -27,10 +27,7 @@ class SidebarWidget extends ConsumerWidget {
           _SideBarItem(title: loc.projectPageTitle, path: '/projects'),
           _SideBarItem(title: loc.agendasListPageTitle, path: '/agendas'),
           _SideBarItem(title: loc.decisionsListPageTitle, path: '/decisions'),
-          if (canUpdatePerms) ...[
-            _SideBarItem(title: 'Permissions', path: '/permissions'),
-            _SideBarItem(title: 'Roles', path: '/roles'),
-          ],
+          if (canUpdatePerms) _SideBarItem(title: loc.permissionsPageTitle, path: '/permissions'),
           Spacer(),
           _LogOutButton()
         ],

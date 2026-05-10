@@ -1,8 +1,13 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/providers/roles_provider.dart';
+import 'package:qfqq/common/providers/users_provider.dart';
+import 'package:qfqq/common/providers/users_roles_provider.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/string.dart';
+import 'package:qfqq/common/widgets/reusables/default_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/role_creation_modal.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -21,36 +26,71 @@ class PermissionsPage extends ConsumerWidget {
     service.deleteRole(roleId);
   }
 
-  void updateRolePermission(WidgetRef ref, int id, String permission, bool value) {
+  void updateRolePermission(
+    WidgetRef ref,
+    int id,
+    String permission,
+    bool value,
+  ) {
     final service = ref.read(rolesProvider.notifier);
     service.updateRole(id, permission, value);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var permissionTable = Card(child: _permissionTable(context, ref));
+    return DefaultTabController(
+      length: 2,
+      child: Padding(
+        padding: EdgeInsetsGeometry.all(16),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TabBar(
+                    isScrollable: true,
+                    tabAlignment: TabAlignment.start,
+                    tabs: [Tab(text: S.of(context).commonPermissions), Tab(text: S.of(context).commonRoles)],
+                  ),
+                ),
 
-    return Padding(
-      padding: EdgeInsetsGeometry.all(16),
-      child: Column(
-        children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (_) => RoleCreationModal(),
-                );
-              },
-              style: squareButtonStyle(context),
-              child: Text(S.of(context).buttonCreateRole),
+                Expanded(child: SizedBox()),
+                ElevatedButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (_) => RoleCreationModal(),
+                    );
+                  },
+                  style: squareButtonStyle(context),
+                  child: Text(S.of(context).buttonCreateRole),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 16),
-          Expanded(child: permissionTable),
-        ],
+            const SizedBox(height: 16),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  Card(
+                    margin: EdgeInsets.zero,
+                    child: SingleChildScrollView(
+                      child: _usersTable(context, ref),
+                    ),
+                  ),
+                  Card(
+                    margin: EdgeInsets.zero,
+                    child: SingleChildScrollView(
+                      child: _permissionTable(context, ref),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -71,17 +111,23 @@ class PermissionsPage extends ConsumerWidget {
           roles.map((role) {
             return DataRow(
               cells: [
-                DataCell(Text(capitalize(role.name))),
+                DataCell(Text(role.id == 1 ? S.of(context).roleNameDefault : capitalize(role.name))),
                 _checkboxDataCell(ref, role.id, role.canWrite, "canWrite"),
                 _checkboxDataCell(ref, role.id, role.canDelete, "canDelete"),
-                _checkboxDataCell(ref, role.id, role.canUpdatePermissions, "canUpdatePermissions"),
+                _checkboxDataCell(
+                  ref,
+                  role.id,
+                  role.canUpdatePermissions,
+                  "canUpdatePermissions",
+                ),
                 DataCell(
                   Row(
                     children: [
-                      if (role.id != 1) IconButton(
-                        onPressed: () => deleteRole(ref, role.id),
-                        icon: Icon(Icons.delete),
-                      ),
+                      if (role.id != 1)
+                        IconButton(
+                          onPressed: () => deleteRole(ref, role.id),
+                          icon: Icon(Icons.delete),
+                        ),
                     ],
                   ),
                 ),
@@ -91,7 +137,11 @@ class PermissionsPage extends ConsumerWidget {
     );
   }
 
-  DataCell _checkboxDataCell(WidgetRef ref, int id, bool currentValue, String permission,
+  DataCell _checkboxDataCell(
+    WidgetRef ref,
+    int id,
+    bool currentValue,
+    String permission,
   ) {
     return DataCell(
       Checkbox(
@@ -100,6 +150,62 @@ class PermissionsPage extends ConsumerWidget {
           updateRolePermission(ref, id, permission, value ?? !currentValue);
         },
       ),
+    );
+  }
+
+  Widget _usersTable(BuildContext context, WidgetRef ref) {
+    final loc = S.of(context);
+    var users = ref.watch(usersProvider);
+    var roles = ref.watch(rolesProvider);
+
+    final List<DropdownMenuEntry<int?>> menuEntries = UnmodifiableListView([
+      ...roles.map(
+        (role) => DropdownMenuEntry<int?>(
+          value: role.id,
+          label: '${S.of(context).commonRole}: ${role.id == 1 ? S.of(context).roleNameDefault : capitalize(role.name)}',
+        ),
+      ),
+    ]);
+
+    return DataTable(
+      columns: [
+        DataColumn(label: Text(loc.attributeFirstName)),
+        DataColumn(label: Text(loc.attributeLastName)),
+        DataColumn(label: Text(loc.attributeEmail)),
+        DataColumn(label: Text('Role')),
+      ],
+      rows:
+          users.map((user) {
+            var userRole = ref.watch(userRoleByIdProvider(user.id));
+            var roleId = userRole?.roleId ?? 0;
+
+            return DataRow(
+              cells: [
+                DataCell(Text(capitalize(user.firstName))),
+                DataCell(Text(capitalize(user.lastName))),
+                DataCell(Text(capitalize(user.email))),
+                DataCell(
+                  DefaultDropdownMenu<int?>(
+                    initialSelection: roleId,
+                    onSelected: (int? newRoleId) {
+                      if (newRoleId == null) return;
+                      ref
+                          .read(usersRolesProvider.notifier)
+                          .updateUserRole(user.id, newRoleId);
+                    },
+                    entries: menuEntries,
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    constraints: const BoxConstraints(maxHeight: 36),
+                    textStyle: const TextStyle(fontSize: 14),
+                  ),
+                ),
+              ],
+            );
+          }).toList(),
     );
   }
 }
