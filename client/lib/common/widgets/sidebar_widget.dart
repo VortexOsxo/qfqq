@@ -4,11 +4,17 @@ import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/generated/l10n.dart';
 
-class SidebarWidget extends StatelessWidget {
+class SidebarWidget extends ConsumerWidget {
   const SidebarWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final canUpdatePerms = ref.watch(
+      authStateProvider.select(
+        (state) => state.permissions?.canUpdatePermissions ?? false,
+      ),
+    );
+
     final loc = S.of(context);
     return Container(
       width: 250,
@@ -21,8 +27,10 @@ class SidebarWidget extends StatelessWidget {
           _SideBarItem(title: loc.projectPageTitle, path: '/projects'),
           _SideBarItem(title: loc.agendasListPageTitle, path: '/agendas'),
           _SideBarItem(title: loc.decisionsListPageTitle, path: '/decisions'),
-          _SideBarItem(title: 'Permissions', path: '/permissions'),
-          _SideBarItem(title: 'Roles', path: '/roles'),
+          if (canUpdatePerms) ...[
+            _SideBarItem(title: 'Permissions', path: '/permissions'),
+            _SideBarItem(title: 'Roles', path: '/roles'),
+          ],
           Spacer(),
           _LogOutButton()
         ],

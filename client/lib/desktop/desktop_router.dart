@@ -101,6 +101,7 @@ final GoRouter desktopRouter = GoRouter(
             );
           },
         ),
+        // TODO: Add redirect
         GoRoute(
           path: '/permissions',
           pageBuilder: (context, state) => _noTransition(const PermissionsPage()),

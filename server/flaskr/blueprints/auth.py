@@ -26,7 +26,20 @@ def signup(firstName, lastName, email, password):
         algorithm="HS256",
     )
 
-    return jsonify({"session_token": token} | user.to_dict()), 201
+    permissions = UserDataHandler.get_user_permissions(userId=user.id)
+
+    return (
+        jsonify(
+            {"session_token": token}
+            | user.to_dict()
+            | {
+                "canWrite": permissions[0],
+                "canDelete": permissions[1],
+                "canUpdatePermissions": permissions[2],
+            }
+        ),
+        201,
+    )
 
 
 @auth_bp.route("/login", methods=(["POST"]))
@@ -43,7 +56,20 @@ def login(email, password):
         algorithm="HS256",
     )
 
-    return jsonify({"session_token": token} | user.to_dict()), 200
+    permissions = UserDataHandler.get_user_permissions(userId=user.id)
+
+    return (
+        jsonify(
+            {"session_token": token}
+            | user.to_dict()
+            | {
+                "canWrite": permissions[0],
+                "canDelete": permissions[1],
+                "canUpdatePermissions": permissions[2],
+            }
+        ),
+        200,
+    )
 
 
 @auth_bp.post("forgotten-password/request-code")

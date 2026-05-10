@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:qfqq/common/models/errors/account_error.dart';
+import 'package:qfqq/common/models/permissions.dart';
 import 'package:qfqq/common/models/states/auth_state.dart';
 import 'package:qfqq/common/models/user.dart';
 import 'dart:convert';
@@ -32,7 +33,7 @@ class AuthService extends StateNotifier<AuthState> {
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      _onSuccessfulAuth(data['session_token'], User.fromJson(data));
+      _onSuccessfulAuth(data['session_token'], User.fromJson(data), Permissions.fromJson(data));
       return AccountError();
     }
     return AccountError.fromJson(data);
@@ -52,7 +53,7 @@ class AuthService extends StateNotifier<AuthState> {
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 201) {
-      _onSuccessfulAuth(data['session_token'], User.fromJson(data));
+      _onSuccessfulAuth(data['session_token'], User.fromJson(data), Permissions.fromJson(data));
       return AccountError();
     }
     // TODO: Improve error messages to be more descriptive
@@ -65,8 +66,8 @@ class AuthService extends StateNotifier<AuthState> {
     disconnectionNotifier.notify(state);
   }
 
-  _onSuccessfulAuth( String sessionId, User user) {
-    state = AuthState(sessionId: sessionId, user: user);
+  _onSuccessfulAuth( String sessionId, User user, Permissions perms) {
+    state = AuthState(sessionId: sessionId, user: user, permissions: perms);
     connectionNotifier.notify(state);
   }
 }
