@@ -147,3 +147,11 @@ def test_set_status_as_cancelled(app):
 def test_set_status_as_cancelled_not_found(app):
     result = DecisionDataHandler.cancel_decision(999)
     assert not result
+
+def test_delete_decision_succes(app):
+    DecisionDataHandler.delete_decision(1)
+    assert DecisionDataHandler.get_decision(1) is None
+
+def test_delete_not_found(app):
+    DecisionDataHandler.delete_decision(99)
+    assert True

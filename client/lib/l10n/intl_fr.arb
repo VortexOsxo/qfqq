@@ -166,6 +166,9 @@
   "decisionViewPageGoToAgenda": "Voir l'ordre du jour",
   "decisionViewPageMarkAsCompleted": "Marquer comme terminée",
   "decisionViewPageMarkAsCancelled": "Marquer comme annulée",
+  "decisionDeleteTitle": "Supprimer la décision ?",
+  "decisionDeleteMessage": "Êtes-vous sûr de vouloir supprimer cette décision ? Cette action est irréversible.",
+  "decisionDeleteConfirm": "Supprimer la décision",
   
   "profilePageTitle": "Profil",
   "profilePageLogout": "Déconnexion",

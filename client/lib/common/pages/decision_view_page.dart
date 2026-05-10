@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/decision.dart';
+import 'package:qfqq/common/models/permissions.dart';
 import 'package:qfqq/common/providers/decisions_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
+import 'package:qfqq/common/services/modal_service.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
+import 'package:qfqq/common/widgets/permission_required.dart';
 import 'package:qfqq/common/widgets/reusables/form_filled_button.dart';
 import 'package:qfqq/common/widgets/reusables/form_outlined_button.dart';
 import 'package:qfqq/common/widgets/status_chip.dart';
@@ -19,6 +22,27 @@ class DecisionViewPage extends ConsumerWidget {
   final int decisionId;
 
   const DecisionViewPage({super.key, required this.decisionId});
+
+  void deleteDecision(BuildContext context, WidgetRef ref) async {
+    var decisionsService = ref.read(decisionsProvider.notifier);
+
+    final loc = S.of(context);
+
+    var result = await ModalService.showConfirmation(
+      context,
+      title: loc.decisionDeleteTitle,
+      message: loc.decisionDeleteMessage,
+      confirmLabel: loc.decisionDeleteConfirm,
+      cancelLabel: loc.commonCancel,
+    );
+
+    if (result) {
+      decisionsService.deleteDecision(decisionId);
+      if (context.mounted) {
+        context.go('/decisions');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -142,7 +166,9 @@ class DecisionViewPage extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        StatusChip(statusUIData: getDecisionStatusUI(S.of(context), decision.status)),
+        StatusChip(
+          statusUIData: getDecisionStatusUI(S.of(context), decision.status),
+        ),
         const SizedBox(height: 12),
         DetailsAttributeWidget(
           label: loc.attributeDate,
@@ -181,10 +207,7 @@ class DecisionViewPage extends ConsumerWidget {
           ),
           const SizedBox(height: 4),
           TextButton(
-            onPressed:
-                () => context.go(
-                  '/agendas/${decision.meetingId}',
-                ), // Assuming this route exists based on AgendaViewPage usage
+            onPressed: () => context.go('/agendas/${decision.meetingId}'),
             style: TextButton.styleFrom(
               padding: EdgeInsets.zero,
               alignment: Alignment.centerLeft,
@@ -200,6 +223,14 @@ class DecisionViewPage extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
         ],
+        Spacer(),
+        PermissionRequired(
+          neededPermissions: Permissions(canDelete: true),
+          child: TextButton(
+            onPressed: () => deleteDecision(context, ref),
+            child: Text(loc.commonDelete),
+          ),
+        ),
       ],
     );
   }

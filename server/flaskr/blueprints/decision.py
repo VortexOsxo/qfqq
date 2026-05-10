@@ -5,6 +5,7 @@ from flaskr.models import DecisionStatus
 from flaskr.database import DecisionDataHandler
 from flaskr.services.inputs import input_middleware, CreateDecisionBuilder, LambdaBuilder, EnumValidator
 from flaskr.blueprints.before_request import login_required
+from flaskr.blueprints.middlewares import permission_middleware, Permission
 
 decisions_bp = Blueprint("decisions", __name__, url_prefix="/decisions")
 decisions_bp.before_request(login_required)
@@ -54,3 +55,11 @@ def patch_meeting_agenda_status(status, id: str):
     except: pass
     return '', 404
 
+@decisions_bp.delete("/<int:id>")
+@permission_middleware(Permission.CanDelete)
+def delete_decision(id):
+    try:
+        DecisionDataHandler.delete_decision(id)
+        return "", 204
+    except:
+        return "", 500

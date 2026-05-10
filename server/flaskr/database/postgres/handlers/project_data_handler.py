@@ -18,7 +18,6 @@ class ProjectDataHandler:
             pass
         return None
 
-
     @classmethod
     def update_project(
         cls, id: int, number: int, title: str, goals: str, supervisorId: int
@@ -37,3 +36,8 @@ class ProjectDataHandler:
         query = f"SELECT * from projects WHERE id = %s LIMIT 1;"
         projects = read_query(query, (id,))
         return Project(*projects[0]) if projects else None
+
+    @classmethod
+    def delete_project_cascade(cls, id: int):
+        query = f"DELETE FROM projects WHERE id = %s;"
+        write_query(query, (id,))

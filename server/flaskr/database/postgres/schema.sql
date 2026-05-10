@@ -61,19 +61,19 @@ CREATE TABLE
     meetingDate DATE,
     meetingLocation TEXT,
     animatorId INTEGER REFERENCES users (id),
-    projectId INTEGER REFERENCES projects (id)
+    projectId INTEGER REFERENCES projects (id) ON DELETE CASCADE
   );
 
 CREATE TABLE
   meetingsThemes (
-    meetingId INTEGER REFERENCES meetings (id),
+    meetingId INTEGER REFERENCES meetings (id) ON DELETE CASCADE,
     theme TEXT NOT NULL,
     PRIMARY KEY (meetingId, theme)
   );
 
 CREATE TABLE
   meetingsParticipants (
-    meetingId INTEGER REFERENCES meetings (id),
+    meetingId INTEGER REFERENCES meetings (id) ON DELETE CASCADE,
     userId INTEGER REFERENCES users (id),
     PRIMARY KEY (meetingId, userId)
   );
@@ -115,12 +115,12 @@ CREATE TABLE
     dueDate DATE,
     completedDate DATE,
     responsibleId INTEGER REFERENCES users (id),
-    meetingId INTEGER REFERENCES meetings (id)
+    meetingId INTEGER REFERENCES meetings (id) ON DELETE CASCADE
   );
 
 CREATE TABLE
   decisionsAssistants (
-    decisionId INTEGER REFERENCES decisions (id),
+    decisionId INTEGER REFERENCES decisions (id) ON DELETE CASCADE,
     userId INTEGER REFERENCES users (id),
     PRIMARY KEY (decisionId, userId)
   );

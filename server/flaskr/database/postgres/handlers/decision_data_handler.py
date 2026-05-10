@@ -1,6 +1,6 @@
 from datetime import datetime
 from flaskr.models import Decision
-from ..postgres import read_query, get_db_access
+from ..postgres import read_query, write_query, get_db_access
 from flaskr.utils.time import time_now_to_string
 
 class DecisionDataHandler:
@@ -105,3 +105,9 @@ class DecisionDataHandler:
             cur = conn.cursor()
             cur.execute(query, params)
             return cur.rowcount == 1
+
+    @classmethod
+    def delete_decision(cls, id: int):
+        query = "DELETE FROM decisions WHERE id = %s;"
+        params = (id,)
+        write_query(query, params)

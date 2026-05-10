@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/models/permissions.dart';
 import 'package:qfqq/common/services/auth_service.dart';
+import 'package:qfqq/common/widgets/permission_required.dart';
 import 'package:qfqq/generated/l10n.dart';
 
-class SidebarWidget extends ConsumerWidget {
+class SidebarWidget extends StatelessWidget {
   const SidebarWidget({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final canUpdatePerms = ref.watch(
-      authStateProvider.select(
-        (state) => state.permissions?.canUpdatePermissions ?? false,
-      ),
-    );
-
+  Widget build(BuildContext context) {
     final loc = S.of(context);
     return Container(
       width: 250,
@@ -27,7 +23,10 @@ class SidebarWidget extends ConsumerWidget {
           _SideBarItem(title: loc.projectPageTitle, path: '/projects'),
           _SideBarItem(title: loc.agendasListPageTitle, path: '/agendas'),
           _SideBarItem(title: loc.decisionsListPageTitle, path: '/decisions'),
-          if (canUpdatePerms) _SideBarItem(title: loc.permissionsPageTitle, path: '/permissions'),
+          PermissionRequired(
+            neededPermissions: Permissions(canUpdatePermissions: true),
+            child: _SideBarItem(title: loc.permissionsPageTitle, path: '/permissions'),
+          ),
           Spacer(),
           _LogOutButton()
         ],
