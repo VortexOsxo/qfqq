@@ -77,7 +77,7 @@ class MeetingViewControl extends ConsumerWidget {
 
     return [
       TextButton(
-        onPressed: () => context.go('/agenda', extra: meeting),
+        onPressed: () => context.go('/agendas/creation', extra: meeting),
         child: Text(loc.commonModify),
       ),
       TextButton(
@@ -101,7 +101,7 @@ class MeetingViewControl extends ConsumerWidget {
     return [
       TextButton(
         child: Text(loc.commonModify),
-        onPressed: () => context.go('/agenda', extra: meeting),
+        onPressed: () => context.go('/agendas/creation', extra: meeting),
       ),
       TextButton(
         child: Text(loc.commonStart),

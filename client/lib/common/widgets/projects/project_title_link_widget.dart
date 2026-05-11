@@ -36,7 +36,7 @@ class ProjectTitleLinkWidget extends ConsumerWidget {
         ),
         const SizedBox(width: 6),
         IconButton(
-          onPressed: () => context.go('/project/$projectId'),
+          onPressed: () => context.go('/projects/$projectId'),
           icon: Icon(
             Icons.open_in_new,
             size: 24,

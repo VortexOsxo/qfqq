@@ -40,7 +40,7 @@ final GoRouter desktopRouter = GoRouter(
           pageBuilder: (context, state) => _noTransition(const HomePage()),
         ),
         GoRoute(
-          path: '/agenda',
+          path: '/agendas/creation',
           onExit: (context, state) => activeNavigationGuard?.call(context) ?? Future.value(true),
           pageBuilder: (context, state) {
             final agenda = state.extra as MeetingAgenda?;
@@ -82,7 +82,7 @@ final GoRouter desktopRouter = GoRouter(
           pageBuilder: (context, state) => _noTransition(const ProjectPage()),
         ),
         GoRoute(
-          path: '/project/creation',
+          path: '/projects/creation',
           onExit: (context, state) => activeNavigationGuard?.call(context) ?? Future.value(true),
           pageBuilder: (context, state) {
             final project = state.extra as Project?;
@@ -92,7 +92,7 @@ final GoRouter desktopRouter = GoRouter(
           },
         ),
         GoRoute(
-          path: '/project/:id',
+          path: '/projects/:id',
           pageBuilder: (context, state) {
             final id = state.pathParameters['id']!;
             return _noTransition(
@@ -146,7 +146,7 @@ String? _getTitleForRoute(BuildContext context, GoRouterState state) {
   switch (fullPath) {
     case '/':
       return loc.homePageTitle;
-    case '/agenda':
+    case '/agendas/creation':
       final agenda = state.extra as MeetingAgenda?;
       return agenda == null
           ? '${loc.agendaPageTitleAppBar} - ${loc.commonCreate}'
@@ -161,18 +161,20 @@ String? _getTitleForRoute(BuildContext context, GoRouterState state) {
       return loc.decisionViewPageTitle;
     case '/projects':
       return loc.projectPageTitle;
-    case '/project/creation':
+    case '/projects/creation':
       return loc.projectModificationPageTitle;
-    case '/project/:id':
+    case '/projects/:id':
       return loc.projectViewPageTitle;
     case '/profile':
       return loc.profilePageTitle;
-    case 'login':
+    case '/login':
       return loc.loginPageTitle;
-    case 'signup':
+    case '/signup':
       return loc.signupPageTitle;
     case '/forgotten-password':
       return loc.forgottenPasswordPageTitle;
+    case '/permissions':
+      return loc.commonPermissions;
     default:
       return null;
   }

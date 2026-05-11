@@ -22,14 +22,14 @@ class HomePage extends StatelessWidget {
                 child: buildNavButtonTemplate(
                   context,
                   S.of(context).homePageProjectButton,
-                  '/project/creation',
+                  '/projects/creation',
                 ),
               ),
               Expanded(
                 child: buildNavButtonTemplate(
                   context,
                   S.of(context).homePageMeetingButton,
-                  '/agenda',
+                  '/agendas/creation',
                 ),
               ),
             ],

@@ -92,7 +92,7 @@ class AgendasListPage extends ConsumerWidget {
               ),
               Expanded(flex: 1, child: SizedBox()),
               ElevatedButton(
-                onPressed: () => context.go('/agenda'),
+                onPressed: () => context.go('/agendas/creation'),
                 style: squareButtonStyle(context),
                 child: Text(S.of(context).buttonCreateAgenda),
               ),
