@@ -6,6 +6,7 @@ from flask.json.provider import DefaultJSONProvider
 
 from .database import init_db
 from .blueprints import register_blueprints, get_api_version, get_language
+from.commands.mock import mock_command
 
 class EnumJSONProvider(DefaultJSONProvider):
     def default(self, obj):
@@ -19,6 +20,7 @@ def create_app(config_name='development'):
     app = Flask(__name__)
     app.json = EnumJSONProvider(app)
 
+    # TODO: Add real secret key
     app.config.from_mapping(
         SECRET_KEY='dev',
     )
@@ -31,6 +33,9 @@ def create_app(config_name='development'):
     register_blueprints(app)
     app.before_request(get_api_version)
     app.before_request(get_language)
+
+
     init_db(app)
+    app.cli.add_command(mock_command)
 
     return app
