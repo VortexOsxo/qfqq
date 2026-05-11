@@ -56,6 +56,9 @@
   "agendaPageUpdateDraft": "Mettre à jour comme brouillon",
   "agendaPageSaveDraft": "Enregistrer comme brouillon",
   "agendaPageUpdateAgenda": "Mettre à jour l'ordre du jour",
+  "agendaDeleteTitle": "Supprimer la réunion ?",
+  "agendaDeleteMessage": "Êtes-vous sûr de vouloir supprimer cette réunion ? Cette action est irréversible.",
+  "agendaDeleteConfirm": "Supprimer la réunion",
   
   "agendaListTitle": "Titre",
   "agendaListDate": "Date",
@@ -116,6 +119,9 @@
   "projectCreationPageCreateProject": "Créer un nouveau projet",
   "projectCreationPageUpdateProject": "Modifier le projet",
   "projectModificationPageTitle": "Création de projet",
+  "projectDeleteTitle": "Supprimer le projet ?",
+  "projectDeleteMessage": "Êtes-vous sûr de vouloir supprimer ce projet ? Cette action est irréversible.",
+  "projectDeleteConfirm": "Supprimer le projet",
   
   "projectViewPageTitle": "Détails du projet",
   "projectPageEmpty": "Aucun projet trouvé",

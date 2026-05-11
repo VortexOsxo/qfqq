@@ -6,6 +6,7 @@ from flaskr.database import MeetingDataHandler, DecisionDataHandler, UserDataHan
 from flaskr.services.inputs import input_middleware, LambdaBuilder, CreateMeetingAgendaBuilder, EnumValidator
 from flaskr.reports import MeetingReportBuilder
 from flaskr.blueprints.before_request import login_required
+from flaskr.blueprints.middlewares import permission_middleware, Permission
 
 meeting_agendas_bp = Blueprint(
     "meeting_agendas", __name__, url_prefix="/meeting-agendas"
@@ -92,3 +93,12 @@ def get_meeting_report(id: int):
         as_attachment=False,
         download_name="report.pdf",
     )
+
+@meeting_agendas_bp.delete("/<int:id>")
+@permission_middleware(Permission.CanDelete)
+def delete_meeting(id):
+    try:
+        MeetingDataHandler.delete_meeting(id)
+        return "", 204
+    except:
+        return "", 500

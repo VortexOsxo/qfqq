@@ -3,6 +3,7 @@ from flask import Blueprint, jsonify, request, send_file, g
 from flaskr.database import ProjectDataHandler, DecisionDataHandler
 from flaskr.reports import ProjectReportBuilder
 from flaskr.blueprints.before_request import login_required
+from flaskr.blueprints.middlewares import permission_middleware, Permission
 from flaskr.services.inputs import input_middleware, CreateProjectBuilder
 
 projects_bp = Blueprint("projects", __name__, url_prefix="/projects")
@@ -45,3 +46,13 @@ def get_project_report(id: int):
         as_attachment=False,
         download_name="report.pdf",
     )
+
+@projects_bp.delete("/<int:id>")
+@permission_middleware(Permission.CanDelete)
+def delete_project(id):
+    try:
+        ProjectDataHandler.delete_project_cascade(id)
+        return "", 204
+    except:
+        return "", 500
+

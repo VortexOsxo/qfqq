@@ -73,7 +73,7 @@ class DecisionsService extends StateNotifier<List<Decision>> {
     return true;
   }
 
-    Future<void> deleteDecision(int decisionId) async {
+  Future<bool> deleteDecision(int decisionId) async {
     final response = await _http.delete(
       _http.getUri('decisions/$decisionId'),
       headers: {'Content-Type': 'application/json'},
@@ -81,6 +81,12 @@ class DecisionsService extends StateNotifier<List<Decision>> {
 
     if (response.statusCode == 204) {
       state = state.where((decision) => decision.id != decisionId).toList();
+      return true;
     }
+    return false;
+  }
+
+  void meetingRemoved(int meetingId) {
+    state = state.where((decision) => decision.meetingId != meetingId).toList();
   }
 }

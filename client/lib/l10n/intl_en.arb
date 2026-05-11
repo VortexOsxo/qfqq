@@ -56,6 +56,9 @@
   "agendaPageUpdateDraft": "Update Agenda as draft",
   "agendaPageSaveDraft": "Save Agenda as draft",
   "agendaPageUpdateAgenda": "Update Agenda",
+  "agendaDeleteTitle": "Delete meeting?",
+  "agendaDeleteMessage": "Are you sure you want to delete this meeting? This action cannot be undone.",
+  "agendaDeleteConfirm": "Delete meeting",
   
   "agendaListTitle": "Title",
   "agendaListDate": "Date",
@@ -115,6 +118,9 @@
   "projectCreationPageCreateProject": "Create new project",
   "projectCreationPageUpdateProject": "Modify project",
   "projectModificationPageTitle": "Project creation",
+  "projectDeleteTitle": "Delete project?",
+  "projectDeleteMessage": "Are you sure you want to delete this project? This action cannot be undone.",
+  "projectDeleteConfirm": "Delete project",
   
   "projectViewPageTitle": "Project Details",
   "projectPageEmpty": "No projects found",

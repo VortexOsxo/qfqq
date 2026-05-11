@@ -3,12 +3,37 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/providers/project_view_content_provider.dart';
+import 'package:qfqq/common/providers/projects_provider.dart';
+import 'package:qfqq/common/models/permissions.dart';
+import 'package:qfqq/common/services/modal_service.dart';
+import 'package:qfqq/common/widgets/permission_required.dart';
 import 'package:qfqq/common/widgets/reusables/tab_selection_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class ProjectViewControl extends ConsumerWidget {
   final Project project;
   const ProjectViewControl({super.key, required this.project});
+
+  void deleteProject(BuildContext context, WidgetRef ref) async {
+    var projectsService = ref.read(projectsServiceProvider);
+
+    final loc = S.of(context);
+
+    var result = await ModalService.showConfirmation(
+      context,
+      title: loc.projectDeleteTitle,
+      message: loc.projectDeleteMessage,
+      confirmLabel: loc.projectDeleteConfirm,
+      cancelLabel: loc.commonCancel,
+    );
+
+    if (result) {
+      bool success = await projectsService.deleteProject(project.id);
+      if (context.mounted && success) {
+        context.go('/projects');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,6 +51,13 @@ class ProjectViewControl extends ConsumerWidget {
         TextButton(
           child: Text(loc.commonModify),
           onPressed: () => context.go('/project/creation', extra: project),
+        ),
+        PermissionRequired(
+          neededPermissions: Permissions(canDelete: true),
+          child: TextButton(
+            onPressed: () => deleteProject(context, ref),
+            child: Text(loc.commonDelete),
+          ),
         ),
         SizedBox(child: Divider()),
         TabSelectionWidget(

@@ -173,3 +173,9 @@ class MeetingDataHandler:
 
         meetings = read_query(query, (participantId,))
         return [MeetingAgenda(*m) for m in meetings]
+
+    @classmethod
+    def delete_meeting(cls, id: int):
+        query = "DELETE FROM meetings WHERE id = %s;"
+        params = (id,)
+        write_query(query, params)

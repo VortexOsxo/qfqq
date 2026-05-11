@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
+import 'package:qfqq/common/providers/decisions_provider.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/meeting_agenda_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
@@ -9,6 +10,7 @@ final meetingsAgendasProvider = StateNotifierProvider<MeetingAgendaService, List
   (ref) => MeetingAgendaService(
     ref.read(qfqqHttpClientProvider),
     ref.read(authStateProvider.notifier),
+    ref.read(decisionsServiceProvider)
   ),
 );
 

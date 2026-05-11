@@ -4,11 +4,13 @@ import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/models/errors/project_errors.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
+import 'package:qfqq/common/services/meeting_agenda_service.dart';
 
 class ProjectsService extends StateNotifier<List<Project>> {
   final QfqqHttpClient _http;
+  final MeetingAgendaService meetingAgendaService;
 
-  ProjectsService(this._http, AuthService auth) : super([]) {
+  ProjectsService(this._http, AuthService auth, this.meetingAgendaService) : super([]) {
     auth.connectionNotifier.subscribe((_) => _loadProjects());
   }
 
@@ -42,6 +44,18 @@ class ProjectsService extends StateNotifier<List<Project>> {
 
     dynamic data = jsonDecode(response.body);
     return ProjectErrors.fromJson(data);
+  }
+
+  Future<bool> deleteProject(int projectId) async {
+    final response = await _http.delete(
+      _http.getUri('projects/$projectId'),
+      headers: {'Content-Type': 'application/json'},
+    );
+    if (response.statusCode != 204) return false;
+
+    state = state.where((e) => e.id != projectId).toList();
+    meetingAgendaService.projectRemoved(projectId);
+    return true;
   }
 
   Future<void> _loadProjects() async {

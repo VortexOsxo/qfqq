@@ -37,8 +37,8 @@ class DecisionViewPage extends ConsumerWidget {
     );
 
     if (result) {
-      decisionsService.deleteDecision(decisionId);
-      if (context.mounted) {
+      bool success = await decisionsService.deleteDecision(decisionId);
+      if (context.mounted && success) {
         context.go('/decisions');
       }
     }

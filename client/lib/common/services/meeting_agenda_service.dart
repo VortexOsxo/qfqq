@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/services/auth_service.dart';
+import 'package:qfqq/common/services/decisions_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
 
 class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
   final QfqqHttpClient _http;
+  final DecisionsService decisionsService;
 
-  MeetingAgendaService(this._http, AuthService auth) : super([]) {
+  MeetingAgendaService(this._http, AuthService auth, this.decisionsService) : super([]) {
     auth.connectionNotifier.subscribe((_) => _loadMeetingAgendas());
   }
 
@@ -54,6 +56,28 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
       (e) => (e.id != meetingId) ? e : e.copyWith(newStatus: status)
     ).toList();
     return true;
+  }
+
+  Future<bool> deleteMeetingAgenda(int meetingId) async {
+    final response = await _http.delete(
+      _http.getUri('meeting-agendas/$meetingId'),
+      headers: {'Content-Type': 'application/json'},
+    );
+    if (response.statusCode != 204) return false;
+
+    state = state.where((e) => e.id != meetingId).toList();
+    decisionsService.meetingRemoved(meetingId);
+    return true;
+  }
+
+  void projectRemoved(int projectId) {
+    final meetingsToRemove = state.where((m) => m.projectId == projectId).toList();
+    if (meetingsToRemove.isEmpty) return;
+    
+    state = state.where((m) => m.projectId != projectId).toList();
+    for (var meeting in meetingsToRemove) {
+      decisionsService.meetingRemoved(meeting.id);
+    }
   }
 
   Future<void> _loadMeetingAgendas() async {
