@@ -1,4 +1,4 @@
-from .postgres import close_db, create_db, fill_db
+from .postgres import close_db, create_db, fill_test_db
 from .handlers import (
     UserDataHandler,
     ProjectDataHandler,

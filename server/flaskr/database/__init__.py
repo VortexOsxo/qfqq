@@ -3,7 +3,7 @@ import click
 from .postgres import (
     create_db,
     close_db,
-    fill_db,
+    fill_test_db,
     UserDataHandler,
     ProjectDataHandler,
     DecisionDataHandler,

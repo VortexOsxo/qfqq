@@ -1,6 +1,6 @@
 import pytest
 from flaskr import create_app
-from flaskr.database import create_db, fill_db
+from flaskr.database import create_db, fill_test_db
 
 
 @pytest.fixture(scope="session")
@@ -9,7 +9,7 @@ def app():
 
     with app.app_context():
         create_db()
-        fill_db()
+        fill_test_db()
         yield app
 
 @pytest.fixture()
@@ -23,5 +23,5 @@ def runner(app):
 
 @pytest.fixture(autouse=True)
 def reset_db(app):
-    fill_db()
+    fill_test_db()
     yield

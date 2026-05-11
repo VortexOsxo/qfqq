@@ -18,8 +18,8 @@ def get_db_access():
 def create_db():
     _run_sql_file('schema')
 
-def fill_db():
-    _run_sql_file('mock_data')
+def fill_test_db():
+    _run_sql_file('test_mock_data')
 
 def write_query(query, params=None):
     with get_db_access() as conn:
