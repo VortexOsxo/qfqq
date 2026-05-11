@@ -38,10 +38,12 @@ class SidebarWidget extends StatelessWidget {
 class HoverTextButton extends StatefulWidget {
   final String text;
   final VoidCallback onTap;
+  final bool isActive;
 
   const HoverTextButton({
     required this.text,
     required this.onTap,
+    this.isActive = false,
     super.key,
   });
 
@@ -54,6 +56,7 @@ class _HoverTextButtonState extends State<HoverTextButton> {
 
   @override
   Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.onPrimary;
     return Padding(
       padding: const EdgeInsets.all(8),
       child: MouseRegion(
@@ -62,14 +65,27 @@ class _HoverTextButtonState extends State<HoverTextButton> {
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
           onTap: widget.onTap,
-          child: Text(
-            widget.text,
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onPrimary,
-              fontSize: 18,
-              fontWeight:
-                  _hovering ? FontWeight.bold : FontWeight.normal,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: 16,
+                child: widget.isActive
+                    ? Icon(Icons.arrow_right, color: color, size: 20)
+                    : null,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                widget.text,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 18,
+                  fontWeight: widget.isActive || _hovering
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -101,8 +117,13 @@ class _SideBarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentPath = GoRouterState.of(context).uri.path;
+    final isActive = currentPath == path ||
+        (path != '/' && currentPath.startsWith(path));
+
     return HoverTextButton(
       text: title,
+      isActive: isActive,
       onTap: () => context.go(path),
     );
   }

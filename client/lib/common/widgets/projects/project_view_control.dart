@@ -50,7 +50,7 @@ class ProjectViewControl extends ConsumerWidget {
       children: [
         TextButton(
           child: Text(loc.commonModify),
-          onPressed: () => context.go('/project/creation', extra: project),
+          onPressed: () => context.go('/projects/creation', extra: project),
         ),
         PermissionRequired(
           neededPermissions: Permissions(canDelete: true),

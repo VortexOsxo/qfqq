@@ -12,7 +12,7 @@ class ProjectClickableTextWidget extends ConsumerWidget {
   const ProjectClickableTextWidget({super.key, required this.projectId});
 
   void navigateToProject(BuildContext context) {
-    context.go('/project/$projectId');
+    context.go('/projects/$projectId');
   }
 
   @override

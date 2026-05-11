@@ -62,7 +62,7 @@ class ProjectPage extends ConsumerWidget {
           ),
           Expanded(flex: 1, child: SizedBox()),
           ElevatedButton(
-            onPressed: () => context.go('/project/creation'),
+            onPressed: () => context.go('/projects/creation'),
             style: squareButtonStyle(context),
             child: Text(S.of(context).buttonCreateProject),
           ),
@@ -136,7 +136,7 @@ class ProjectPage extends ConsumerWidget {
                       child: TextButton(
                         style: inplaceTextButtonStyle(context),
                         child: Text(loc.agendaListView),
-                        onPressed: () => context.go('/project/${project.id}'),
+                        onPressed: () => context.go('/projects/${project.id}'),
                       ),
                     ),
                   ),
