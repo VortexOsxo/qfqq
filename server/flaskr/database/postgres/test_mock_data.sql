@@ -47,16 +47,18 @@ INSERT INTO projects (title, goals, supervisorId) VALUES
   ('Beacon', 'Improve onboarding flow', (SELECT id FROM users WHERE email='bob@example.com'));
 
 -- Meetings
-INSERT INTO meetings (title, goals, status, redactionDate, meetingDate, meetingLocation, animatorId, projectId) VALUES
-  ('Apollo Kickoff', 'Discuss scope and milestones', 'planned', '2025-11-01', '2025-11-10', 'Room 101', (SELECT id FROM users WHERE email='alice@example.com'), (SELECT id FROM projects WHERE title='Apollo')),
-  ('Sprint Review', 'Review last sprint results', 'completed', '2025-12-05', '2025-12-06', 'Zoom', (SELECT id FROM users WHERE email='bob@example.com'), (SELECT id FROM projects WHERE title='Beacon')),
-  ('Design Sync', 'Align on UI patterns', 'draft', '2026-01-10', NULL, 'Room 202', (SELECT id FROM users WHERE email='carol@example.com'), (SELECT id FROM projects WHERE title='Apollo'));
+INSERT INTO meetings (title, goals, status, redactionDate, meetingDate, meetingLocation, animatorId, projectId, nextMeetingId) VALUES
+  ('Apollo Kickoff', 'Discuss scope and milestones', 'planned', '2025-11-01', '2025-11-10', 'Room 101', (SELECT id FROM users WHERE email='alice@example.com'), (SELECT id FROM projects WHERE title='Apollo'), null),
+  ('Sprint Review 2', 'Review last sprint results', 'completed', '2025-12-06', '2025-12-13', 'Zoom', (SELECT id FROM users WHERE email='bob@example.com'), (SELECT id FROM projects WHERE title='Beacon'), null),
+  ('Sprint Review', 'Review last sprint results', 'completed', '2025-12-05', '2025-12-06', 'Zoom', (SELECT id FROM users WHERE email='bob@example.com'), (SELECT id FROM projects WHERE title='Beacon'), 2),
+  ('Design Sync', 'Align on UI patterns', 'draft', '2026-01-10', NULL, 'Room 202', (SELECT id FROM users WHERE email='carol@example.com'), (SELECT id FROM projects WHERE title='Apollo'), null);
 
 -- Meeting themes
 INSERT INTO meetingsThemes (meetingId, theme) VALUES
   ((SELECT id FROM meetings WHERE title='Apollo Kickoff'), 'Scope'),
   ((SELECT id FROM meetings WHERE title='Apollo Kickoff'), 'Timeline'),
   ((SELECT id FROM meetings WHERE title='Sprint Review'), 'Retrospective'),
+  ((SELECT id FROM meetings WHERE title='Sprint Review 2'), 'Retrospective'),
   ((SELECT id FROM meetings WHERE title='Design Sync'), 'UI'),
   ((SELECT id FROM meetings WHERE title='Design Sync'), 'Accessibility');
 
@@ -66,6 +68,8 @@ INSERT INTO meetingsParticipants (meetingId, userId) VALUES
   ((SELECT id FROM meetings WHERE title='Apollo Kickoff'), (SELECT id FROM users WHERE email='carol@example.com')),
   ((SELECT id FROM meetings WHERE title='Sprint Review'), (SELECT id FROM users WHERE email='bob@example.com')),
   ((SELECT id FROM meetings WHERE title='Sprint Review'), (SELECT id FROM users WHERE email='dave@example.com')),
+  ((SELECT id FROM meetings WHERE title='Sprint Review 2'), (SELECT id FROM users WHERE email='bob@example.com')),
+  ((SELECT id FROM meetings WHERE title='Sprint Review 2'), (SELECT id FROM users WHERE email='dave@example.com')),
   ((SELECT id FROM meetings WHERE title='Design Sync'), (SELECT id FROM users WHERE email='carol@example.com')),
   ((SELECT id FROM meetings WHERE title='Design Sync'), (SELECT id FROM users WHERE email='alice@example.com'));
 

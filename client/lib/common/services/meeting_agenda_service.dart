@@ -13,11 +13,19 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
     auth.connectionNotifier.subscribe((_) => _loadMeetingAgendas());
   }
 
-  Future<bool> createMeetingAgenda(MeetingAgenda agenda) async {
+  Future<bool> createMeetingAgenda(MeetingAgenda agenda, {int? previousMeetingId}) async {
+    var body =
+        previousMeetingId != null
+            ? jsonEncode({
+              ...agenda.toJson(),
+              'previousMeetingId': previousMeetingId,
+            })
+            : jsonEncode(agenda);
+
     final response = await _http.post(
       _http.getUri('meeting-agendas'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(agenda),
+      body: body
     );
 
     dynamic data = jsonDecode(response.body);

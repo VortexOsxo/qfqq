@@ -18,6 +18,7 @@ class MeetingDataHandler:
         participantsIds: list[str],
         themes: list[str],
         projectId: str,
+        previousMeetingId: int = -1
     ):
         try:
             with get_db_access() as conn:
@@ -51,6 +52,12 @@ class MeetingDataHandler:
                 query = "INSERT INTO meetingsThemes (meetingId, theme) VALUES (%s, %s)"
                 params = [(meetingId, theme) for theme in themes]
                 cur.executemany(query, params)
+
+                if previousMeetingId != -1:
+                    query = "UPDATE meetings SET nextMeetingId = %s WHERE id = %s;"
+                    params = (meetingId, previousMeetingId)
+                    cur.execute(query, params)
+
             return MeetingAgenda(
                 meetingId,
                 meetingNb,
@@ -130,19 +137,18 @@ class MeetingDataHandler:
             write_query(query, params)
             return True
         except Exception as e:
-            print(e)
             return False
 
     @classmethod
     def get_meeting_agendas(cls) -> list[MeetingAgenda]:
-        query = "SELECT * FROM meetingsComplete;"
+        query = "SELECT id, nb, title, goals, status, redactionDate, meetingDate, meetingLocation, animatorId, projectId, participantsIds, themes FROM meetingsComplete;"
 
         meetings = read_query(query)
         return [MeetingAgenda(*m) for m in meetings]
 
     @classmethod
     def get_meeting_agenda(cls, id: int) -> MeetingAgenda | None:
-        query = "SELECT * FROM meetingsComplete WHERE id = %s;"
+        query = "SELECT id, nb, title, goals, status, redactionDate, meetingDate, meetingLocation, animatorId, projectId, participantsIds, themes FROM meetingsComplete WHERE id = %s;"
 
         meetings = read_query(query, (id,))
         return MeetingAgenda(*meetings[0]) if meetings else None
@@ -151,7 +157,7 @@ class MeetingDataHandler:
     def get_meeting_with_participants(cls, id: int) -> tuple[MeetingAgenda, list[str]] | None:
         query = """
         SELECT
-        mc.*,
+        mc.id, mc.nb, mc.title, mc.goals, mc.status, mc.redactionDate, mc.meetingDate, mc.meetingLocation, mc.animatorId, mc.projectId, mc.participantsIds, mc.themes,
         COALESCE(p.participantsNames, '{}') AS participantsNames
         FROM meetingsComplete mc
         LEFT JOIN LATERAL (
@@ -169,7 +175,7 @@ class MeetingDataHandler:
 
     @classmethod
     def get_meetings_by_participant(cls, participantId: int) -> list[MeetingAgenda]:
-        query = "SELECT * FROM meetingsComplete WHERE %s = ANY(participantsIds);"
+        query = "SELECT id, nb, title, goals, status, redactionDate, meetingDate, meetingLocation, animatorId, projectId, participantsIds, themes FROM meetingsComplete WHERE %s = ANY(participantsIds);"
 
         meetings = read_query(query, (participantId,))
         return [MeetingAgenda(*m) for m in meetings]
@@ -179,3 +185,21 @@ class MeetingDataHandler:
         query = "DELETE FROM meetings WHERE id = %s;"
         params = (id,)
         write_query(query, params)
+
+
+    @classmethod
+    def get_next_meeting(cls, currentMeetingId: int):
+        with get_db_access() as conn:
+            cur = conn.cursor()
+
+            query = "SELECT nextMeetingId FROM meetings WHERE id = %s;"
+            params = (currentMeetingId,)
+
+            cur.execute(query, params)
+            nextId = cur.fetchone()[0]
+
+        if nextId is None or nextId == -1:
+            return None
+        return cls.get_meeting_agenda(nextId)
+            
+           

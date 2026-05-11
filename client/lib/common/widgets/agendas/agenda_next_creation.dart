@@ -49,7 +49,7 @@ class _AgendaNextCreationState extends ConsumerState<AgendaNextCreation> {
 
     setState(() => isSending = true);
     final service = ref.read(meetingAgendaServiceProvider);
-    await service.createMeetingAgenda(widget.agenda);
+    await service.createMeetingAgenda(widget.agenda, previousMeetingId: widget.agenda.id);
     if (!mounted) return;
 
     setState(() => isSending = false);

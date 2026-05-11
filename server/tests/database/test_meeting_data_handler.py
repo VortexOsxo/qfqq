@@ -6,7 +6,7 @@ from flaskr.models import MeetingAgenda
 def test_get_all_meeting_agendas(app):
     meetings = MeetingDataHandler.get_meeting_agendas()
 
-    assert len(meetings) == 3
+    assert len(meetings) == 4
     assert all(isinstance(m, MeetingAgenda) for m in meetings)
 
 
@@ -103,7 +103,7 @@ def test_get_not_found_meeting_by_participant(app):
 
 
 def test_get_meeting_with_participants_names(app):
-    meeting, participants = MeetingDataHandler.get_meeting_with_participants(2)
+    meeting, participants = MeetingDataHandler.get_meeting_with_participants(3)
 
     assert meeting.title == "Sprint Review"
 
@@ -117,3 +117,12 @@ def test_update_meeting_status(app):
 
     meeting = MeetingDataHandler.get_meeting_agenda(3)
     assert meeting.status == 'planned'
+
+def test_get_next_meeting(app):
+    result = MeetingDataHandler.get_next_meeting(3)
+    assert result.id is 2
+    assert result.title == "Sprint Review 2"
+
+def test_get_next_meeting(app):
+    result = MeetingDataHandler.get_next_meeting(2)
+    assert result is None
