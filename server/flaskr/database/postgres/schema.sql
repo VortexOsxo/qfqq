@@ -61,7 +61,8 @@ CREATE TABLE
     meetingDate DATE,
     meetingLocation TEXT,
     animatorId INTEGER REFERENCES users (id),
-    projectId INTEGER REFERENCES projects (id) ON DELETE CASCADE
+    projectId INTEGER REFERENCES projects (id) ON DELETE CASCADE,
+    nextMeetingId INTEGER REFERENCES meetings (id)
   );
 
 CREATE TABLE

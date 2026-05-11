@@ -37,7 +37,8 @@ def create_meeting_agenda(**obj):
     }
 
     if request.method == "POST":
-        meeting = MeetingDataHandler.create_meeting_agenda(**kwargs)
+        previousMeetingId = data.get("previousMeetingId", -1)
+        meeting = MeetingDataHandler.create_meeting_agenda(previousMeetingId=previousMeetingId, **kwargs)
         return (jsonify(meeting.to_dict()), 201) if meeting is not None else ("", 400)
 
     elif request.method == "PUT":
@@ -84,9 +85,11 @@ def get_meeting_report(id: int):
     user = UserDataHandler.get_user_by_id(g.user_id)
     if user is None:
         return "Author not found", 400
-
+    
     decisions = DecisionDataHandler.get_decisions_and_responsible_by_meeting(meeting.id)
-    buffer = MeetingReportBuilder(meeting, user, participants, decisions, g.language).build()
+    nextMeeting = MeetingDataHandler.get_next_meeting(meeting.id)
+    
+    buffer = MeetingReportBuilder(meeting, user, participants, decisions, nextMeeting, g.language).build()
     return send_file(
         buffer,
         mimetype="application/pdf",

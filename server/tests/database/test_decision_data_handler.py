@@ -33,7 +33,7 @@ def test_get_decision_complete(app):
     assert str(decision.completedDate) == '2025-12-09'
     
     assert decision.responsibleId == 4
-    assert decision.meetingId == 2
+    assert decision.meetingId == 3
 
 
 def test_get_decisions_by_responsible(app):
