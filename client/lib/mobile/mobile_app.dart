@@ -4,6 +4,7 @@ import 'package:qfqq/mobile/mobile_router.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:qfqq/generated/l10n.dart';
 import 'package:qfqq/common/providers/locale_provider.dart';
+import 'package:qfqq/common/theme/theme.dart';
 
 class MobileApp extends ConsumerWidget {
   const MobileApp({super.key});
@@ -20,6 +21,7 @@ class MobileApp extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: S.delegate.supportedLocales,
+      theme: lightTheme,
     );
   }
 }
