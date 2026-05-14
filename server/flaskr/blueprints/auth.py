@@ -3,9 +3,10 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime, timedelta
 import jwt
 
-from flaskr.database import UserDataHandler, OrganizationDataHandler
+from flaskr.database import UserDataHandler, set_tenant
 from flaskr.services.reset_password_service import ResetPasswordService
 from flaskr.services.inputs import input_middleware, SignupBuilder, LoginBuilder, LambdaBuilder, StringValidator, EmailValidator, PasswordValidator
+from .middlewares import tenant_middleware
 from flaskr.errors import InputError
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -14,6 +15,7 @@ auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 @auth_bp.route("/signup", methods=(["POST"]))
 @input_middleware(SignupBuilder())
 def signup(firstName, lastName, email, password, slug):
+    set_tenant(slug)
     user = UserDataHandler.create_user(
         firstName, lastName, email, generate_password_hash(password), slug
     )
@@ -48,18 +50,17 @@ def signup(firstName, lastName, email, password, slug):
 
 @auth_bp.route("/login", methods=(["POST"]))
 @input_middleware(LoginBuilder())
+@tenant_middleware({"auth": InputError.InvalidLogin}, 401)
 def login(email, password):
     user = UserDataHandler.get_user_by_email(email)
 
     if user is None or not check_password_hash(user.passwordHash, password):
         return jsonify({"auth": InputError.InvalidLogin}), 401
 
-    slug = OrganizationDataHandler.get_user_org_slug(email)[0]
-
     token = jwt.encode(
         {
             "user_id": str(user.id),
-            "slug": slug,
+            "slug": g.org_slug,
             "exp": datetime.utcnow() + timedelta(hours=3),
         },
         current_app.config["SECRET_KEY"],
@@ -84,10 +85,11 @@ def login(email, password):
 
 @auth_bp.post("forgotten-password/request-code")
 @input_middleware(LambdaBuilder(("email", EmailValidator())))
+@tenant_middleware({"email": InputError.EmailNotFound}, 404)
 def request_code(email):
     user = UserDataHandler.get_user_by_email(email)
     if user is None:
-        return jsonify({"email": InputError.EmailNotFound})
+        return jsonify({"email": InputError.EmailNotFound}), 404
 
     result = ResetPasswordService.reset_password(email, g.language)
     return ("", 204) if result else (jsonify({"error": InputError.UnknownError}), 400)
@@ -97,6 +99,7 @@ def request_code(email):
 @input_middleware(
     LambdaBuilder(("email", EmailValidator()), ("code", StringValidator()))
 )
+@tenant_middleware({"email": InputError.EmailNotFound}, 404)
 def validate_code(email, code):
     result = ResetPasswordService.is_code_valid(email, code)
     return ("", 204) if result else (jsonify({"error": InputError.UnknownError}), 400)
@@ -110,6 +113,7 @@ def validate_code(email, code):
         ("password", PasswordValidator()),
     )
 )
+@tenant_middleware({"email": InputError.EmailNotFound}, 404)
 def update(email, code, password):
     result = ResetPasswordService.is_code_valid(email, code)
     if not result:

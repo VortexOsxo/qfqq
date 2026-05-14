@@ -4,6 +4,7 @@ from .postgres import (
     create_db,
     close_db,
     fill_test_db,
+    set_tenant,
     UserDataHandler,
     ProjectDataHandler,
     DecisionDataHandler,

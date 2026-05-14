@@ -16,10 +16,6 @@ class UserDataHandler:
                 )
                 userId = cur.fetchone()[0]
 
-                cur.execute(
-                    sql.SQL("SET search_path TO {};").format(sql.Identifier(orgSlug))
-                )
-
                 query = "INSERT INTO users (id, firstName, lastName, passwordHash, email) VALUES (%s, %s, %s, %s, %s);"
                 params = (userId, firstName, lastName, passwordHash, email)
                 cur.execute(query, params)
