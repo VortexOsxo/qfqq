@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS public.memberships,
 public.organizations,
-public.users CASCADE;
+public.users, public.passwordRequests CASCADE;
 
 CREATE TABLE
   public.organizations (
@@ -20,7 +20,15 @@ CREATE TABLE
 
 CREATE TABLE
   public.memberships (
-    userId INTEGER NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
-    orgId INTEGER NOT NULL REFERENCES public.organizations(id) ON DELETE CASCADE,
+    userId INTEGER NOT NULL REFERENCES public.users (id) ON DELETE CASCADE,
+    orgId INTEGER NOT NULL REFERENCES public.organizations (id) ON DELETE CASCADE,
     PRIMARY KEY (userId, orgId)
+  );
+
+CREATE TABLE
+  public.passwordRequests (
+    email TEXT REFERENCES users (email),
+    code TEXT,
+    date TEXT,
+    PRIMARY KEY (email)
   );
