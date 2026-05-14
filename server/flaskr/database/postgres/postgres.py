@@ -19,7 +19,7 @@ def get_db_access():
     if orgId:
         cur = conn.cursor()
         cur.execute(
-            sql.SQL("SET search_path TO {}, public;").format(sql.Identifier(orgId))
+            sql.SQL("SET search_path TO {}, public;").format(sql.Identifier(str(orgId)))
         )
     return conn
 
