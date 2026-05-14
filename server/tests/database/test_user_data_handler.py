@@ -3,7 +3,7 @@ from flaskr.models import User
 
 
 def test_create_user(app):
-    user_created = UserDataHandler.create_user("John", "Doe", "user1@gmail.com", "12345")
+    user_created = UserDataHandler.create_user("John", "Doe", "user1@gmail.com", "12345", "test")
 
     user = UserDataHandler.get_user_by_id(user_created.id)
     assert user == user_created
@@ -20,7 +20,7 @@ def test_create_user(app):
     assert permissions == (True,)*3
 
 def test_create_user_duplicate_email(app):
-    user = UserDataHandler.create_user("Alice", "Smith", "alice@example.com", "StrongPassword!")
+    user = UserDataHandler.create_user("Alice", "Smith", "alice@example.com", "StrongPassword!", "test")
 
     assert user is None
 

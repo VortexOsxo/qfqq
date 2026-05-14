@@ -15,12 +15,19 @@ TRUNCATE TABLE
   users
 RESTART IDENTITY CASCADE;
 
+-- Global users mapping
+INSERT INTO public.users (email, orgSlug) VALUES
+  ('alice@example.com', 'test'),
+  ('bob@example.com', 'test'),
+  ('carol@example.com', 'test'),
+  ('dave@example.com', 'test');
+
 -- Users
-INSERT INTO users (firstName, lastName, passwordHash, email) VALUES
-  ('Alice', 'Smith', 'passhash_alice', 'alice@example.com'),
-  ('Bob', 'Jones', 'passhash_bob', 'bob@example.com'),
-  ('Carol', 'Davis', 'passhash_carol', 'carol@example.com'),
-  ('Dave', 'Wilson', 'passhash_dave', 'dave@example.com');
+INSERT INTO users (id, firstName, lastName, passwordHash, email) VALUES
+  (1, 'Alice', 'Smith', 'passhash_alice', 'alice@example.com'),
+  (2, 'Bob', 'Jones', 'passhash_bob', 'bob@example.com'),
+  (3, 'Carol', 'Davis', 'passhash_carol', 'carol@example.com'),
+  (4, 'Dave', 'Wilson', 'passhash_dave', 'dave@example.com');
 
 --Default Roles
 INSERT INTO

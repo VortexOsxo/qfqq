@@ -1,23 +1,33 @@
+from psycopg import sql
 from ..postgres import read_query, write_query, get_db_access
 from flaskr.models import User
 
 
 class UserDataHandler:
     @classmethod
-    def create_user(cls, firstName: str, lastName: str, email: str, passwordHash: str) -> User:
+    def create_user(cls, firstName: str, lastName: str, email: str, passwordHash: str, orgSlug: str) -> User:
         try:
             with get_db_access() as conn:
                 cur = conn.cursor()
 
-                query = f"INSERT INTO users (firstName, lastName, passwordHash, email) values (%s, %s, %s, %s) RETURNING id;"
-                params = (firstName, lastName, passwordHash, email)
-                cur.execute(query, params)
+                cur.execute(
+                    "INSERT INTO public.users (email, orgSlug) VALUES (%s, %s) RETURNING id;",
+                    (email, orgSlug),
+                )
                 userId = cur.fetchone()[0]
+
+                cur.execute(
+                    sql.SQL("SET search_path TO {};").format(sql.Identifier(orgSlug))
+                )
+
+                query = "INSERT INTO users (id, firstName, lastName, passwordHash, email) VALUES (%s, %s, %s, %s, %s);"
+                params = (userId, firstName, lastName, passwordHash, email)
+                cur.execute(query, params)
 
                 query = f"INSERT INTO usersRoles (userId, roleId) VALUES (%s, %s);"
                 cur.execute(query, (userId, 1))
 
-                return User(userId, *params)
+                return User(*params)
         except Exception as e:
             # TODO: Logging
             pass
