@@ -39,7 +39,7 @@ class AuthService extends StateNotifier<AuthState> {
     return AccountError.fromJson(data);
   }
 
-  Future<AccountError> signup(User user, String password) async {
+  Future<AccountError> signup(User user, String password, String slug) async {
     final response = await http.post(
       Uri.parse('$_apiUrl/auth/signup'),
       headers: {'Content-Type': 'application/json', 'QfqqVersion': _version},
@@ -48,6 +48,7 @@ class AuthService extends StateNotifier<AuthState> {
         'lastName': user.lastName,
         'email': user.email,
         'password': password,
+        'slug': slug,
       }),
     );
     final data = jsonDecode(response.body);

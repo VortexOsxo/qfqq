@@ -55,7 +55,7 @@ class OrganizationDataHandler:
     
     @classmethod
     def get_user_org_slug(cls, email):
-        query = "SELECT orgSlug FROM users WHERE email = %s LIMIT 1;"
+        query = "SELECT orgSlug FROM public.users WHERE email = %s LIMIT 1;"
         params = (email,)
         with get_db_access() as conn:
             cur = conn.cursor()

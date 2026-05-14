@@ -69,6 +69,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             child: Text(loc.loginPageLinkSignup),
           ),
           TextButton(
+            onPressed: () => context.go('/organization/creation'),
+            child: Text(loc.loginPageLinkCreateOrganization),
+          ),
+          TextButton(
             onPressed: () {
               ref.read(forgottenPasswordStateProvider.notifier).reset();
               context.go('/forgotten-password');

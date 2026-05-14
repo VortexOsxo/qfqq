@@ -283,5 +283,12 @@
   "rolePermissionDelete": "Delete",
   "rolePermissionUpdate": "Update Permissions",
 
-  "createRoleFormUniqueName": "Role name must be unique"
+  "createRoleFormUniqueName": "Role name must be unique",
+  "organizationCreationPageTitle": "Create Organization",
+  "organizationCreationPageButton": "Create",
+  "organizationCreationPageLabelName": "Organization Name",
+  "loginPageLinkCreateOrganization": "Create a new organization",
+  "organizationCreationPageSuccess": "Organization created successfully!",
+  "organizationCreationPageCodeInstruction": "Please use the following code to create your account:",
+  "organizationCreationPageGoToSignup": "Continue to Signup"
 }
