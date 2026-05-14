@@ -16,10 +16,29 @@ def get_db_access():
 
 
 def create_db():
-    _run_sql_file('schema')
+    _run_sql_file("default")
+
 
 def fill_test_db():
-    _run_sql_file('test_mock_data')
+    _run_sql_file("default")
+
+    with get_db_access() as conn:
+        cur = conn.cursor()
+
+        query = "INSERT INTO public.organizations (orgSlug, orgName) values (%s, %s);"
+        params = ("test", "Test")
+        cur.execute(query, params)
+
+        cur.execute("CREATE SCHEMA IF NOT EXISTS test;")
+        cur.execute("SET search_path TO test;")
+
+        with current_app.open_resource(
+            os.path.join("database", "postgres", f"schema.sql")
+        ) as f:
+            cur.execute(f.read().decode("utf8"))
+
+    _run_sql_file("test_mock_data")
+
 
 def write_query(query, params=None):
     with get_db_access() as conn:
@@ -35,6 +54,7 @@ def read_query(query, params=None):
 
     return items
 
+
 def _run_sql_file(filename: str):
     with _get_db() as conn:
         cursor = conn.cursor()
@@ -46,5 +66,5 @@ def _run_sql_file(filename: str):
 
 
 def _get_db():
-    uri = current_app.config['DATABASE_URL']
+    uri = current_app.config["DATABASE_URL"]
     return psycopg.connect(uri, autocommit=False)

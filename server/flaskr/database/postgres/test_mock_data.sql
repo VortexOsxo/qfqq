@@ -1,5 +1,7 @@
 BEGIN;
 
+SET search_path TO test;
+
 -- Clear existing data and reset identities for a clean slate
 TRUNCATE TABLE
   decisionsAssistants,
