@@ -1,6 +1,8 @@
 import psycopg
+from psycopg import sql
 import os
 from flask import current_app
+from .tenant_context import get_current_tenant
 
 
 def init_db(app):
@@ -12,7 +14,14 @@ def close_db(e=None):
 
 
 def get_db_access():
-    return _get_db()
+    conn = _get_db()
+    slug = get_current_tenant()
+    if slug:
+        cur = conn.cursor()
+        cur.execute(
+            sql.SQL("SET search_path TO {}, public;").format(sql.Identifier(slug))
+        )
+    return conn
 
 
 def create_db():

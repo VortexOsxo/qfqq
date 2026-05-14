@@ -5,6 +5,7 @@ VALID_SIGNUP_PAYLOAD = {
     "lastName": "Doe",
     "email": "newuser@example.com",
     "password": "securepassword123!",
+    "slug": "test",
 }
 
 

@@ -3,7 +3,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime, timedelta
 import jwt
 
-from flaskr.database import UserDataHandler
+from flaskr.database import UserDataHandler, OrganizationDataHandler
 from flaskr.services.reset_password_service import ResetPasswordService
 from flaskr.services.inputs import input_middleware, SignupBuilder, LoginBuilder, LambdaBuilder, StringValidator, EmailValidator, PasswordValidator
 from flaskr.errors import InputError
@@ -21,7 +21,11 @@ def signup(firstName, lastName, email, password, slug):
         return jsonify({"email": InputError.EmailMustBeUnique}), 400
 
     token = jwt.encode(
-        {"user_id": str(user.id), "exp": datetime.utcnow() + timedelta(hours=3)},
+        {
+            "user_id": str(user.id),
+            "slug": slug,
+            "exp": datetime.utcnow() + timedelta(hours=3),
+        },
         current_app.config["SECRET_KEY"],
         algorithm="HS256",
     )
@@ -50,8 +54,14 @@ def login(email, password):
     if user is None or not check_password_hash(user.passwordHash, password):
         return jsonify({"auth": InputError.InvalidLogin}), 401
 
+    slug = OrganizationDataHandler.get_user_org_slug(email)[0]
+
     token = jwt.encode(
-        {"user_id": str(user.id), "exp": datetime.utcnow() + timedelta(hours=3)},
+        {
+            "user_id": str(user.id),
+            "slug": slug,
+            "exp": datetime.utcnow() + timedelta(hours=3),
+        },
         current_app.config["SECRET_KEY"],
         algorithm="HS256",
     )
