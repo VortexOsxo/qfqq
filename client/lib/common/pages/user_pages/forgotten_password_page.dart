@@ -16,9 +16,12 @@ class ForgottenPasswordPage extends ConsumerWidget {
     );
 
     if (isLoading) {
-      return Padding(
-        padding: EdgeInsetsGeometry.all(8),
-        child: CircularProgressIndicator(),
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 80),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [CircularProgressIndicator()],
+        ),
       );
     }
 
@@ -26,7 +29,7 @@ class ForgottenPasswordPage extends ConsumerWidget {
       forgottenPasswordStateProvider.select((state) => state.step),
     );
 
-    return switch (step) {
+    final stepWidget = switch (step) {
       ForgottenPasswordStep.enterEmail =>
         ForgottenPasswordEnterEmailStateWidget(),
       ForgottenPasswordStep.enterCode =>
@@ -34,5 +37,10 @@ class ForgottenPasswordPage extends ConsumerWidget {
       ForgottenPasswordStep.enterNewPassword =>
         ForgottenPasswordEnterPasswordStateWidget(),
     };
+
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: stepWidget,
+    );
   }
 }
