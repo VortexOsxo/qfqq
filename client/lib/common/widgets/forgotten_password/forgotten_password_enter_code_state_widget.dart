@@ -10,18 +10,16 @@ class ForgottenPasswordEnterCodeStateWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var loc = S.of(context);
-
-    var email = ref.read(
+    final loc = S.of(context);
+    final email = ref.read(
       forgottenPasswordStateProvider.select((value) => value.email),
     );
-    var error = ref.watch(
+    final error = ref.watch(
       forgottenPasswordStateProvider.select((state) => state.errorMessage),
     );
+    final service = ref.read(forgottenPasswordStateProvider.notifier);
 
-    var service = ref.read(forgottenPasswordStateProvider.notifier);
-
-    return Column(
+    final content = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(loc.forgottenPasswordPageResetCodeSent),
@@ -61,7 +59,65 @@ class ForgottenPasswordEnterCodeStateWidget extends ConsumerWidget {
           onPressed: () => context.go('/login'),
           child: Text(loc.forgottenPasswordPageLoginLink),
         ),
-        SizedBox(height: 100),
+      ],
+    );
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth > 600) {
+          return _DesktopLayout(child: content);
+        }
+        return _MobileLayout(child: content);
+      },
+    );
+  }
+}
+
+class _MobileLayout extends StatelessWidget {
+  final Widget child;
+  const _MobileLayout({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: child,
+    );
+  }
+}
+
+class _DesktopLayout extends StatelessWidget {
+  final Widget child;
+  const _DesktopLayout({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            color: Theme.of(context).colorScheme.primary,
+            child: Center(
+              child: Text(
+                'QFQQ',
+                style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 400),
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: child,
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
