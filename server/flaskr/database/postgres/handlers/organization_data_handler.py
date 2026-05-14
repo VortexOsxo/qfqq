@@ -47,6 +47,12 @@ class OrganizationDataHandler:
             pass
         return None
     
+    @classmethod    @classmethod
+    def get_org(cls, id: int):
+        query = f"SELECT * from organizations WHERE id = %s LIMIT 1;"
+        orgs = read_query(query, (id,))
+        return orgs[0] if orgs else None
+
     @classmethod
     def get_existing_slugs(cls):
         query = "SELECT orgSlug from organizations;"

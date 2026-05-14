@@ -3,7 +3,7 @@ from typing import Callable, Optional
 import re
 
 from flaskr.errors import InputError
-from flaskr.database import UserDataHandler, ProjectDataHandler, MeetingDataHandler, RoleDataHandler
+from flaskr.database import UserDataHandler, ProjectDataHandler, MeetingDataHandler, RoleDataHandler, OrganizationDataHandler
 
 
 class InputValidator(ABC):
@@ -123,6 +123,9 @@ class MeetingIdValidator(_ObjectIdValidator):
 class RoleIdValidator(_ObjectIdValidator):
     dataHandler = RoleDataHandler.get_role
 
+class OrganizationIdValidator(_ObjectIdValidator):
+    dataHandler = OrganizationDataHandler.get_org
+
 # TODO: Test it :)
 class EnumValidator(InputValidator):
     def __init__(self, enum):
@@ -162,3 +165,13 @@ class PermissionValidator(StringValidator):
             if value in ['canDelete', 'canWrite', 'canUpdatePermissions']
             else InputError.InvalidFormat
         )
+
+class SlugValidator(StringValidator):
+    def validate(self, value) -> InputError:
+        if (error := super().validate(value)) != InputError.NoError:
+            return error
+        
+        if value not in OrganizationDataHandler.get_existing_slugs():
+            return InputError.ObjectIdNotFound
+        
+        return InputError.NoError
