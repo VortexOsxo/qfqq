@@ -1,4 +1,5 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import Dict
 
 @dataclass
 class Email:
@@ -6,6 +7,4 @@ class Email:
     recipient: str
     sender: str
     body: str
-
-
-
+    attachments: Dict[str, bytes] = field(default_factory=dict)
