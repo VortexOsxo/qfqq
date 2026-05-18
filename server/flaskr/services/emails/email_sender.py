@@ -1,6 +1,7 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.application import MIMEApplication
 import os
 
 from flaskr.models.email import Email
@@ -16,6 +17,12 @@ class EmailSender:
 
         body = email.body
         msg.attach(MIMEText(body, "plain"))
+
+        if email.attachments:
+            for filename, content in email.attachments.items():
+                part = MIMEApplication(content, Name=filename)
+                part['Content-Disposition'] = f'attachment; filename="{filename}"'
+                msg.attach(part)
 
         try:
             with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:

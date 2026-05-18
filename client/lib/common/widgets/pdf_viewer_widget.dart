@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pdfrx/pdfrx.dart';
 import 'package:qfqq/common/services/pdf_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
+import 'package:qfqq/common/widgets/report_send_modal.dart';
 
 class PdfViewerWidget extends ConsumerStatefulWidget {
   final String pdfUrl;
@@ -21,6 +22,16 @@ class _PdfViewerState extends ConsumerState<PdfViewerWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final sendButton = IconButton(
+      icon: const Icon(Icons.send),
+      onPressed:
+          () => showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (_) => ReportSendModal(pdfUrl: widget.pdfUrl),
+          ),
+    );
+
     final downloadButton = IconButton(
       icon: const Icon(Icons.download),
       onPressed: () async {
@@ -70,6 +81,8 @@ class _PdfViewerState extends ConsumerState<PdfViewerWidget> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                sendButton,
+                const SizedBox(height: 8),
                 downloadButton,
                 const SizedBox(height: 8),
                 zoomInButton,

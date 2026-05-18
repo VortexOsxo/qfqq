@@ -286,5 +286,10 @@
   "rolePermissionDelete": "Delete",
   "rolePermissionUpdate": "Update Permissions",
 
-  "createRoleFormUniqueName": "Role name must be unique"
+  "createRoleFormUniqueName": "Role name must be unique",
+
+  "reportSendModalTitle": "Send the report",
+  "reportSendModalRecipient": "Recipient",
+  "reportSendModalSend": "Send",
+  "reportSendModalSuccess": "Report sent successfully!"
 }
