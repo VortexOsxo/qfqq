@@ -21,6 +21,7 @@ import 'package:qfqq/common/pages/agenda_list_page.dart';
 import 'package:qfqq/common/widgets/scaffolds/auth_page_scaffold.dart';
 
 import 'package:qfqq/common/widgets/scaffolds/default_page_scaffold.dart';
+import 'package:qfqq/common/utils/route_titles.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 NoTransitionPage _noTransition(Widget child) => NoTransitionPage(child: child);
@@ -144,13 +145,8 @@ final GoRouter desktopRouter = GoRouter(
 
 String? _getTitleForRoute(BuildContext context, GoRouterState state) {
   final loc = S.of(context);
-  final fullPath = state.fullPath;
 
-  if (fullPath == null) return null;
-
-  switch (fullPath) {
-    case '/':
-      return loc.homePageTitle;
+  switch (state.fullPath) {
     case '/agendas/creation':
       final agenda = state.extra as MeetingAgenda?;
       return agenda == null
@@ -172,17 +168,9 @@ String? _getTitleForRoute(BuildContext context, GoRouterState state) {
       return loc.projectModificationPageTitle;
     case '/projects/:id':
       return loc.projectViewPageTitle;
-    case '/profile':
-      return loc.profilePageTitle;
-    case '/login':
-      return loc.loginPageTitle;
-    case '/signup':
-      return loc.signupPageTitle;
-    case '/forgotten-password':
-      return loc.forgottenPasswordPageTitle;
     case '/permissions':
       return loc.commonPermissions;
     default:
-      return null;
+      return getTitleForRoute(context, state);
   }
 }

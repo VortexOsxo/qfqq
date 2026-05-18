@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/services/forgotten_password_service.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/widgets/reusables/adaptive_layout.dart';
+import 'package:qfqq/common/pages/user_pages/layouts/auth_desktop_layout.dart';
+import 'package:qfqq/common/pages/user_pages/layouts/auth_mobile_layout.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -38,15 +40,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final form = _LoginForm(
+      formKey: _formKey,
+      onSubmit: _submit,
+      error: error,
+      onEmailSaved: (v) => email = v ?? '',
+      onPasswordSaved: (v) => password = v ?? '',
+    );
     return AdaptiveLayout(
-      mobile: (_) => _MobileLayout(formKey: _formKey, onSubmit: _submit, error: error,
-        onEmailSaved: (v) => email = v ?? '',
-        onPasswordSaved: (v) => password = v ?? '',
-      ),
-      desktop: (_) => _DesktopLayout(formKey: _formKey, onSubmit: _submit, error: error,
-        onEmailSaved: (v) => email = v ?? '',
-        onPasswordSaved: (v) => password = v ?? '',
-      ),
+      mobile: (_) => AuthMobileLayout(child: form),
+      desktop: (_) => AuthDesktopLayout(child: form),
     );
   }
 }
@@ -110,90 +113,6 @@ class _LoginForm extends StatelessWidget {
           )),
         ],
       ),
-    );
-  }
-}
-
-class _MobileLayout extends StatelessWidget {
-  final GlobalKey<FormState> formKey;
-  final VoidCallback onSubmit;
-  final String error;
-  final ValueSetter<String?> onEmailSaved;
-  final ValueSetter<String?> onPasswordSaved;
-
-  const _MobileLayout({
-    required this.formKey,
-    required this.onSubmit,
-    required this.error,
-    required this.onEmailSaved,
-    required this.onPasswordSaved,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: _LoginForm(
-        formKey: formKey,
-        onSubmit: onSubmit,
-        error: error,
-        onEmailSaved: onEmailSaved,
-        onPasswordSaved: onPasswordSaved,
-      ),
-    );
-  }
-}
-
-class _DesktopLayout extends StatelessWidget {
-  final GlobalKey<FormState> formKey;
-  final VoidCallback onSubmit;
-  final String error;
-  final ValueSetter<String?> onEmailSaved;
-  final ValueSetter<String?> onPasswordSaved;
-
-  const _DesktopLayout({
-    required this.formKey,
-    required this.onSubmit,
-    required this.error,
-    required this.onEmailSaved,
-    required this.onPasswordSaved,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            color: Theme.of(context).colorScheme.primary,
-            child: Center(
-              child: Text(
-                'QFQQ',
-                style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
-              ),
-            ),
-          ),
-        ),
-        Expanded(
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 400),
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: _LoginForm(
-                  formKey: formKey,
-                  onSubmit: onSubmit,
-                  error: error,
-                  onEmailSaved: onEmailSaved,
-                  onPasswordSaved: onPasswordSaved,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
