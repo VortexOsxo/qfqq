@@ -18,7 +18,7 @@ import 'package:qfqq/common/pages/user_pages/signup_page.dart';
 import 'package:qfqq/common/pages/agenda_list_page.dart';
 import 'package:qfqq/common/widgets/scaffolds/auth_page_scaffold.dart';
 import 'package:qfqq/common/widgets/scaffolds/mobile_page_scaffold.dart';
-import 'package:qfqq/generated/l10n.dart';
+import 'package:qfqq/common/utils/route_titles.dart';
 
 final GoRouter mobileRouter = GoRouter(
   initialLocation: '/login',
@@ -27,7 +27,7 @@ final GoRouter mobileRouter = GoRouter(
       builder: (context, state, child) => mobilePageScaffold(
         context,
         child,
-        title: _getTitleForRoute(context, state),
+        title: getTitleForRoute(context, state),
       ),
       routes: [
         GoRoute(
@@ -94,7 +94,7 @@ final GoRouter mobileRouter = GoRouter(
       builder: (context, state, child) => authPageScaffold(
         context,
         child,
-        title: _getTitleForRoute(context, state),
+        title: getTitleForRoute(context, state),
       ),
       routes: [
         GoRoute(
@@ -114,43 +114,3 @@ final GoRouter mobileRouter = GoRouter(
   ],
 );
 
-String? _getTitleForRoute(BuildContext context, GoRouterState state) {
-  final loc = S.of(context);
-  final fullPath = state.fullPath;
-
-  if (fullPath == null) return null;
-
-  switch (fullPath) {
-    case '/':
-      return loc.homePageTitle;
-    case '/agenda':
-      final agenda = state.extra as MeetingAgenda?;
-      return agenda == null
-          ? '${loc.agendaPageTitleAppBar} - ${loc.commonCreate}'
-          : '${loc.agendaPageTitleAppBar} - ${loc.commonUpdate}';
-    case '/agendas':
-      return loc.agendasListPageTitle;
-    case '/agendas/:id':
-      return loc.agendaPageTitleAppBar;
-    case '/decisions':
-      return loc.decisionsListPageTitle;
-    case '/decisions/:id':
-      return loc.decisionViewPageTitle;
-    case '/projects':
-      return loc.projectPageTitle;
-    case '/project/creation':
-      return loc.projectModificationPageTitle;
-    case '/project/:id':
-      return loc.projectViewPageTitle;
-    case '/profile':
-      return loc.profilePageTitle;
-    case '/login':
-      return loc.loginPageTitle;
-    case '/signup':
-      return loc.signupPageTitle;
-    case '/forgotten-password':
-      return loc.forgottenPasswordPageTitle;
-    default:
-      return null;
-  }
-}
