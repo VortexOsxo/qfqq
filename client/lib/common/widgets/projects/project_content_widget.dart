@@ -35,7 +35,7 @@ class ProjectContentWidget extends ConsumerWidget {
   }
 
   Widget buildReportViewer(BuildContext context) {
-    final pdfUrl = 'projects/${project.id}/reports';
+    final pdfUrl = 'reports/projects/${project.id}';
     return PdfViewerWidget(pdfUrl: pdfUrl, pdfName: project.title);
   }
 }
