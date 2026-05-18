@@ -18,10 +18,7 @@ class ForgottenPasswordPage extends ConsumerWidget {
     if (isLoading) {
       return const Padding(
         padding: EdgeInsets.symmetric(vertical: 80),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [CircularProgressIndicator()],
-        ),
+        child: Center(child: CircularProgressIndicator()),
       );
     }
 

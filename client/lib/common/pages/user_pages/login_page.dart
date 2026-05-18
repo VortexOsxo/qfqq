@@ -5,6 +5,7 @@ import 'package:qfqq/common/providers/router_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/services/forgotten_password_service.dart';
 import 'package:qfqq/common/theme/styles.dart';
+import 'package:qfqq/common/widgets/reusables/adaptive_layout.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -37,19 +38,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth > 600) {
-          return _DesktopLayout(formKey: _formKey, onSubmit: _submit, error: error,
-            onEmailSaved: (v) => email = v ?? '',
-            onPasswordSaved: (v) => password = v ?? '',
-          );
-        }
-        return _MobileLayout(formKey: _formKey, onSubmit: _submit, error: error,
-          onEmailSaved: (v) => email = v ?? '',
-          onPasswordSaved: (v) => password = v ?? '',
-        );
-      },
+    return AdaptiveLayout(
+      mobile: (_) => _MobileLayout(formKey: _formKey, onSubmit: _submit, error: error,
+        onEmailSaved: (v) => email = v ?? '',
+        onPasswordSaved: (v) => password = v ?? '',
+      ),
+      desktop: (_) => _DesktopLayout(formKey: _formKey, onSubmit: _submit, error: error,
+        onEmailSaved: (v) => email = v ?? '',
+        onPasswordSaved: (v) => password = v ?? '',
+      ),
     );
   }
 }
