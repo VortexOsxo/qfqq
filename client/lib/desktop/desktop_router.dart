@@ -14,6 +14,7 @@ import 'package:qfqq/common/pages/user_pages/login_page.dart';
 import 'package:qfqq/common/pages/project_modification_page.dart';
 import 'package:qfqq/common/pages/project_page.dart';
 import 'package:qfqq/common/pages/project_view_page.dart';
+import 'package:qfqq/common/pages/decisions_report_page.dart';
 import 'package:qfqq/common/pages/user_pages/profile_page.dart';
 import 'package:qfqq/common/pages/user_pages/signup_page.dart';
 import 'package:qfqq/common/pages/agenda_list_page.dart';
@@ -67,6 +68,10 @@ final GoRouter desktopRouter = GoRouter(
           path: '/decisions',
           pageBuilder:
               (context, state) => _noTransition(const DecisionsListPage()),
+        ),
+        GoRoute(
+          path: '/decisions/report',
+          pageBuilder: (context, state) => _noTransition(const DecisionsReportPage()),
         ),
         GoRoute(
           path: '/decisions/:id',
@@ -157,6 +162,8 @@ String? _getTitleForRoute(BuildContext context, GoRouterState state) {
       return loc.agendaPageTitleAppBar;
     case '/decisions':
       return loc.decisionsListPageTitle;
+    case '/decisions/reports':
+      return loc.decisionsReportPageTitle;
     case '/decisions/:id':
       return loc.decisionViewPageTitle;
     case '/projects':

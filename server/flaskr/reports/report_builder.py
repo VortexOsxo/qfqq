@@ -14,32 +14,6 @@ from reportlab.pdfbase.pdfmetrics import stringWidth
 
 from flaskr.models import DecisionStatus
 
-decisions = [
-    {
-        "N": 1,
-        "Action": "Improve documentation, becaues right now it's lacking",
-        "Responsable": "Alice",
-        "Echeance": "2024-07-01",
-        "Statut": "In Progress",
-        "Fin": "",
-    },
-    {
-        "N": 2,
-        "Action": "Refactor codebase",
-        "Responsable": "Bob",
-        "Echeance": "2024-08-15",
-        "Statut": "Not Started",
-        "Fin": "",
-    },
-    {
-        "N": 3,
-        "Action": "Update dependencies",
-        "Responsable": "Charlie",
-        "Echeance": "2024-06-30",
-        "Statut": "Completed",
-        "Fin": "2024-06-25",
-    },
-]
 
 styles = getSampleStyleSheet()
 
@@ -95,8 +69,8 @@ background_table_style = TableStyle(
         ("BACKGROUND", (0, 0), (-1, -1), lightgrey),
         ("LEFTPADDING", (0, 0), (-1, -1), 10),
         ("RIGHTPADDING", (0, 0), (-1, -1), 10),
-        ("TOPPADDING", (0, 0), (-1, -1), 8),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+        ("TOPPADDING", (0, 0), (-1, -1), 4),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
     ]
 )
 
@@ -209,7 +183,7 @@ class ReportBuilder:
     def decisions_table(self, decisions, lang):
         cols = ["5%", "15%", "30%", "15%", "20%", "15%"]
         headers = (
-            ["N", "Action", "Responsable", "Date due", "Statut", "Date de fin"]
+            ["N", "Action", "Responsable", "Échéance", "Statut", "Date de fin"]
             if lang == "fr"
             else ["N", "Action", "Responsible", "Due Date", "Status", "Completed Date"]
         )
@@ -235,7 +209,7 @@ class ReportBuilder:
     def decisions_table_with_meeting_id(self, decisions, lang):
         cols = ["5%", "5%", "15%", "25%", "15%", "20%", "15%"]
         headers = (
-            ["N", "R", "Action", "Responsable", "Date due", "Statut", "Date de fin"]
+            ["N", "R", "Action", "Responsable", "Échéance", "Statut", "Date de fin"]
             if lang == "fr"
             else ["N", "M", "Action", "Responsible", "Due Date", "Status", "Completed Date"]
         )

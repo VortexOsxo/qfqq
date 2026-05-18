@@ -176,6 +176,8 @@
   "decisionDeleteMessage": "Êtes-vous sûr de vouloir supprimer cette décision ? Cette action est irréversible.",
   "decisionDeleteConfirm": "Supprimer la décision",
   
+  "decisionsReportPageTitle": "Rapport de décisions",
+
   "profilePageTitle": "Profil",
   "profilePageLogout": "Déconnexion",
   "profilePageLanguage": "Langue",
@@ -217,6 +219,7 @@
   "commonModify": "Modifier",
   "commonAction": "Action",
   "commonProfile": "Profil",
+  "commonReport": "Rapport",
 
   "commonNoGoalsSet": "Auncun objectif défini",
   "commonNoDateSet": "Aucune date définie",
