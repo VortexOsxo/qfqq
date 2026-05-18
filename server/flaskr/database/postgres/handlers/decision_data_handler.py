@@ -82,6 +82,12 @@ class DecisionDataHandler:
         return [Decision(*d) for d in decisions]
     
     @classmethod
+    def get_decisions_and_responsible(cls) -> list[tuple[Decision, str]]:
+        query = "SELECT dc.*, u.firstName, u.lastName from decisionsComplete dc JOIN users u ON u.id = dc.responsibleId;"
+        decisions = read_query(query)
+        return [(Decision(*d[:-2]), d[-2] + ' ' + d[-1]) for d in decisions]
+
+    @classmethod
     def get_decisions_and_responsible_by_meeting(cls, meetingId: int) -> list[tuple[Decision, str]]:
         query = "SELECT dc.*, u.firstName, u.lastName from decisionsComplete dc JOIN users u ON u.id = dc.responsibleId WHERE dc.meetingId = %s"
 
