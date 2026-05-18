@@ -1,7 +1,6 @@
-from flask import Blueprint, jsonify, request, send_file, g
+from flask import Blueprint, jsonify, request
 
-from flaskr.database import ProjectDataHandler, DecisionDataHandler
-from flaskr.reports import ProjectReportBuilder
+from flaskr.database import ProjectDataHandler
 from flaskr.blueprints.before_request import login_required
 from flaskr.blueprints.middlewares import permission_middleware, Permission
 from flaskr.services.inputs import input_middleware, CreateProjectBuilder
@@ -32,20 +31,6 @@ def get_projects():
     projects = ProjectDataHandler.get_projects()
     return jsonify([project.to_dict() for project in projects])
 
-@projects_bp.route("/<int:id>/reports")
-def get_project_report(id: int):
-    project = ProjectDataHandler.get_project_by_id(id)
-    if project is None: return "No project found", 404
-
-    decisions = DecisionDataHandler.get_decisions_and_responsible_by_project(project.id)
-
-    buffer = ProjectReportBuilder(project, decisions, g.language).build()
-    return send_file(
-        buffer,
-        mimetype="application/pdf",
-        as_attachment=False,
-        download_name="report.pdf",
-    )
 
 @projects_bp.delete("/<int:id>")
 @permission_middleware(Permission.CanDelete)

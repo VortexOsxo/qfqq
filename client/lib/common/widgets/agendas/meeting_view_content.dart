@@ -70,7 +70,7 @@ class MeetingViewContent extends ConsumerWidget {
   }
 
   Widget _completedContent(BuildContext context) {
-    final pdfUrl = 'meeting-agendas/${meeting.id}/reports';
+    final pdfUrl = 'reports/meeting-agendas/${meeting.id}';
     return PdfViewerWidget(pdfUrl: pdfUrl, pdfName: meeting.title);
   }
 }

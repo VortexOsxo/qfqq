@@ -1,10 +1,9 @@
 from datetime import datetime
-from flask import Blueprint, request, jsonify, g, send_file
+from flask import Blueprint, request, jsonify, g
 
 from flaskr.models import MeetingAgendaStatus
-from flaskr.database import MeetingDataHandler, DecisionDataHandler, UserDataHandler
+from flaskr.database import MeetingDataHandler
 from flaskr.services.inputs import input_middleware, LambdaBuilder, CreateMeetingAgendaBuilder, EnumValidator
-from flaskr.reports import MeetingReportBuilder
 from flaskr.blueprints.before_request import login_required
 from flaskr.blueprints.middlewares import permission_middleware, Permission
 
@@ -76,26 +75,6 @@ def patch_meeting_agenda_status(status, id: str):
         return jsonify({"error": "Meeting agenda not found"}), 404
     return '', 204
 
-@meeting_agendas_bp.route("/<int:id>/reports")
-def get_meeting_report(id: int):
-    meeting, participants = MeetingDataHandler.get_meeting_with_participants(id)
-    if meeting is None:
-        return "No meeting found", 404
-    
-    user = UserDataHandler.get_user_by_id(g.user_id)
-    if user is None:
-        return "Author not found", 400
-    
-    decisions = DecisionDataHandler.get_decisions_and_responsible_by_meeting(meeting.id)
-    nextMeeting = MeetingDataHandler.get_next_meeting(meeting.id)
-    
-    buffer = MeetingReportBuilder(meeting, user, participants, decisions, nextMeeting, g.language).build()
-    return send_file(
-        buffer,
-        mimetype="application/pdf",
-        as_attachment=False,
-        download_name="report.pdf",
-    )
 
 @meeting_agendas_bp.delete("/<int:id>")
 @permission_middleware(Permission.CanDelete)
