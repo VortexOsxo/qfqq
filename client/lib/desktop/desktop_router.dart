@@ -162,7 +162,7 @@ String? _getTitleForRoute(BuildContext context, GoRouterState state) {
       return loc.agendaPageTitleAppBar;
     case '/decisions':
       return loc.decisionsListPageTitle;
-    case '/decisions/reports':
+    case '/decisions/report':
       return loc.decisionsReportPageTitle;
     case '/decisions/:id':
       return loc.decisionViewPageTitle;
