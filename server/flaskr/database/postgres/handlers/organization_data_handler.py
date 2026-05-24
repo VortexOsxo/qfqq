@@ -23,17 +23,18 @@ class OrganizationDataHandler:
             with get_db_access() as conn:
                 cur = conn.cursor()
 
-                query = f"INSERT INTO organizations (orgSlug, orgName) values (%s, %s);"
+                query = f"INSERT INTO organizations (slug, name) values (%s, %s) RETURNING id;"
                 params = (orgSlug, orgName)
                 cur.execute(query, params)
+                org_id = cur.fetchone()[0]
 
                 cur.execute(
                     sql.SQL("CREATE SCHEMA IF NOT EXISTS {};").format(
-                        sql.Identifier(orgSlug)
+                        sql.Identifier(str(org_id))
                     )
                 )
                 cur.execute(
-                    sql.SQL("SET search_path TO {}, public;").format(sql.Identifier(orgSlug))
+                    sql.SQL("SET search_path TO {}, public;").format(sql.Identifier(str(org_id)))
                 )
 
                 with current_app.open_resource(
@@ -47,7 +48,7 @@ class OrganizationDataHandler:
             pass
         return None
     
-    @classmethod    @classmethod
+    @classmethod
     def get_org(cls, id: int):
         query = f"SELECT * from organizations WHERE id = %s LIMIT 1;"
         orgs = read_query(query, (id,))
@@ -55,7 +56,7 @@ class OrganizationDataHandler:
 
     @classmethod
     def get_existing_slugs(cls):
-        query = "SELECT orgSlug from organizations;"
+        query = "SELECT slug from organizations;"
         return [res[0] for res in read_query(query)]
     
     @classmethod

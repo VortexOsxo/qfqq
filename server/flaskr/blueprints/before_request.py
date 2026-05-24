@@ -2,6 +2,7 @@ from flask import request, jsonify, g, current_app
 import jwt
 
 from flaskr.errors import AuthError
+from flaskr.database.postgres.tenant_context import set_tenant
 
 
 def login_required():
@@ -25,7 +26,12 @@ def login_required():
     except Exception:
         return jsonify({"error": AuthError.mustBeLoggedIn}), 401
 
-    g.user_id = data["user_id"]
+    g.user_id = data.get("user_id")
+    g.org_id = data.get("org_id")
+    set_tenant(g.org_id)
+
+    if g.user_id is None or g.org_id is None:
+        return jsonify({"error": AuthError.mustBeLoggedIn}), 401
 
 SUPPORTED_VERSIONS = ['beta']
 

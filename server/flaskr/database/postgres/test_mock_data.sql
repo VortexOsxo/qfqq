@@ -1,6 +1,6 @@
 BEGIN;
 
-SET search_path TO test, public;
+SET search_path TO "1", public;
 
 -- Clear existing data and reset identities for a clean slate
 TRUNCATE TABLE
