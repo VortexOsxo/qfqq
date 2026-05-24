@@ -1,5 +1,4 @@
-DROP TABLE IF EXISTS users,
-roles,
+DROP TABLE IF EXISTS roles,
 usersRoles,
 projects,
 meetings,
@@ -15,15 +14,6 @@ decisionStatus CASCADE;
 CREATE TYPE meetingStatus AS ENUM ('draft', 'planned', 'ongoing', 'completed');
 
 CREATE TYPE decisionStatus AS ENUM ('inProgress', 'cancelled', 'completed');
-
-CREATE TABLE
-  users (
-    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    firstName TEXT NOT NULL,
-    lastName TEXT NOT NULL,
-    passwordHash TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL
-  );
 
 CREATE TABLE
   roles (
