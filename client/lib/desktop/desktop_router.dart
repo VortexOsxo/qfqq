@@ -19,6 +19,7 @@ import 'package:qfqq/common/pages/decisions_report_page.dart';
 import 'package:qfqq/common/pages/user_pages/profile_page.dart';
 import 'package:qfqq/common/pages/user_pages/signup_page.dart';
 import 'package:qfqq/common/pages/agenda_list_page.dart';
+import 'package:qfqq/common/pages/organization_links_page.dart';
 import 'package:qfqq/common/widgets/scaffolds/auth_page_scaffold.dart';
 
 import 'package:qfqq/common/widgets/scaffolds/default_page_scaffold.dart';
@@ -135,7 +136,7 @@ final GoRouter desktopRouter = GoRouter(
           pageBuilder: (context, state) => _noTransition(const SignupPage()),
         ),
         GoRoute(
-          path: '/organization/creation',
+          path: '/organizations/creation',
           pageBuilder:
               (context, state) => _noTransition(const OrganizationCreationPage()),
         ),
@@ -144,6 +145,10 @@ final GoRouter desktopRouter = GoRouter(
           pageBuilder: (context, state) => _noTransition(const ForgottenPasswordPage()),
         ),
       ],
+    ),
+    GoRoute(
+      path: '/organizations/links',
+      pageBuilder: (context, state) => _noTransition(const OrganizationLinksPage()),
     ),
   ],
 );
@@ -190,6 +195,8 @@ String? _getTitleForRoute(BuildContext context, GoRouterState state) {
       return loc.forgottenPasswordPageTitle;
     case '/permissions':
       return loc.commonPermissions;
+    case '/organizations/links':
+      return loc.organizationLinksPageTitle;
     default:
       return null;
   }

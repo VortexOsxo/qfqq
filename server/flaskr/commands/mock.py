@@ -4,12 +4,10 @@ import jwt
 from flask.cli import with_appcontext
 from flask import current_app
 
-from flaskr.database import set_tenant
-
-def get_auth_headers(client, user_id=1, slug="test"):
+def get_auth_headers(client, user_id=1, org_id=1):
     app = client.application
     token = jwt.encode(
-        {"user_id": user_id, "slug": slug}, app.config["SECRET_KEY"], algorithm="HS256"
+        {"user_id": user_id, "org_id": org_id}, app.config["SECRET_KEY"], algorithm="HS256"
     )
     return {"Authorization": f"Bearer {token}", "QfqqVersion": "beta"}
 
@@ -27,8 +25,8 @@ def mock_command():
             click.echo(f"Failed to create organization: {org_resp.get_json()}")
             return
 
-        slug = org_resp.get_json()["orgSlug"]
-        click.echo(f"Created organization with slug: {slug}")
+        orgId = org_resp.get_json()["orgId"]
+        click.echo(f"Created organization with slug: {orgId}")
 
         # Create Users
         users = [
@@ -49,7 +47,6 @@ def mock_command():
                     "lastName": last,
                     "email": email,
                     "password": password,
-                    "slug": slug,
                 },
             )
 
@@ -59,7 +56,7 @@ def mock_command():
                 click.echo(f"Failed to create user {email}: {signup_resp.get_json()}")
 
         # Create project
-        headers = get_auth_headers(client, 1, slug)
+        headers = get_auth_headers(client)
         result = client.post(
             "/projects",
             headers=headers,
@@ -70,7 +67,6 @@ def mock_command():
             },
         )
         if result.status_code != 201:
-            print(result.status_code)
             click.echo("Failed to create project 1")
         else:
             click.echo("Created project 1")

@@ -69,7 +69,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             child: Text(loc.loginPageLinkSignup),
           ),
           TextButton(
-            onPressed: () => context.go('/organization/creation'),
+            onPressed: () => context.go('/organizations/creation'),
             child: Text(loc.loginPageLinkCreateOrganization),
           ),
           TextButton(

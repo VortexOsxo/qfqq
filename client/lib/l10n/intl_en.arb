@@ -299,5 +299,14 @@
   "reportSendModalTitle": "Send the report",
   "reportSendModalRecipient": "Recipient",
   "reportSendModalSend": "Send",
-  "reportSendModalSuccess": "Report sent successfully!"
+  "reportSendModalSuccess": "Report sent successfully!",
+  "organizationLinksPageTitle": "Join an Organization",
+  "organizationLinksTabCreate": "Create Organization",
+  "organizationLinksTabJoin": "Join Organization",
+  "organizationLinksCreateDummy": "Organization creation form (Coming soon)",
+  "organizationLinksJoinDummy": "Organization joining form (Coming soon)",
+  "organizationLinksInputId": "Organization ID",
+  "organizationLinksButtonJoin": "Join",
+  "organizationJoinUserRequired": "User session is required. Please log in again.",
+  "organizationJoinInvalidOrg": "Organization not found or invalid."
 }

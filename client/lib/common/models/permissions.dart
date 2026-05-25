@@ -10,9 +10,9 @@ class Permissions {
   });
 
   Permissions.fromJson(dynamic data)
-    : canWrite = data['canWrite'],
-      canDelete = data['canDelete'],
-      canUpdatePermissions = data['canUpdatePermissions'];
+    : canWrite = data != null ? (data['canWrite'] ?? false) : false,
+      canDelete = data != null ? (data['canDelete'] ?? false) : false,
+      canUpdatePermissions = data != null ? (data['canUpdatePermissions'] ?? false) : false;
 
   bool respect(Permissions neededPermissions) {
     if (neededPermissions.canWrite && !canWrite) {

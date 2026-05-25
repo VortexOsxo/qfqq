@@ -45,7 +45,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
       if (accountError.getFirstError() != null) {
         setState(() => error = accountError);
       } else {
-        ref.read(routerProvider).go('/');
+        ref.read(routerProvider).go('/organizations/links');
       }
     }
   }
