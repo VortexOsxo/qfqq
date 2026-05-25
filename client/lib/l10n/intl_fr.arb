@@ -300,5 +300,14 @@
   "reportSendModalTitle": "Envoyer le rapport",
   "reportSendModalRecipient": "Destinataire",
   "reportSendModalSend": "Envoyer",
-  "reportSendModalSuccess": "Rapport envoyé avec succès!"
+  "reportSendModalSuccess": "Rapport envoyé avec succès!",
+  "organizationLinksPageTitle": "Rejoindre une organisation",
+  "organizationLinksTabCreate": "Créer une organisation",
+  "organizationLinksTabJoin": "Rejoindre une organisation",
+  "organizationLinksCreateDummy": "Formulaire de création d'organisation (Bientôt disponible)",
+  "organizationLinksJoinDummy": "Formulaire d'adhésion à une organisation (Bientôt disponible)",
+  "organizationLinksInputId": "Identifiant de l'organisation",
+  "organizationLinksButtonJoin": "Rejoindre",
+  "organizationJoinUserRequired": "La session utilisateur est requise. Veuillez vous reconnecter.",
+  "organizationJoinInvalidOrg": "Organisation introuvable ou invalide."
 }

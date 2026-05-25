@@ -60,6 +60,10 @@ class AuthService extends StateNotifier<AuthState> {
     return AccountError.fromJson(data);
   }
 
+  void onOrgJoined(dynamic data) {
+    _onSuccessfulAuth(data['session_token'], User.fromJson(data), Permissions.fromJson(data));
+  }
+
   void logout() {
     // TODO: Clear loaded data on disconnection
     state = AuthState();

@@ -1,14 +1,52 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, g
+
+from flaskr.errors.input_error import InputError
 from flaskr.services.inputs import input_middleware, LambdaBuilder, StringValidator
-from flaskr.database import OrganizationDataHandler
+from flaskr.database import OrganizationDataHandler, UserDataHandler
+from flaskr.utils.token import create_token 
+from flaskr.blueprints.before_request import login_optionnal
+from flaskr.database.postgres.tenant_context import set_tenant
 
 organizations_bp = Blueprint("organizations", __name__, url_prefix="/organizations")
-
+organizations_bp.before_request(login_optionnal)
 
 @organizations_bp.post("/")
 @input_middleware(LambdaBuilder(("organizationName", StringValidator())))
-def create_organization(name: str):
-    orgId = OrganizationDataHandler.create_organization(name)
+def create_organization(organizationName: str):
+    orgId = OrganizationDataHandler.create_organization(organizationName)
     if orgId is None:
         return "", 400
     return jsonify({"orgId": orgId}), 201
+
+@organizations_bp.post("<int:orgId>/join")
+def join_organization(orgId):
+    userId = g.user_id
+
+    if userId is None:
+        return jsonify({"userId": InputError.RequiredField}), 401
+    
+    if orgId is None:
+        return jsonify({"orgId": InputError.RequiredField}), 401
+
+    result = UserDataHandler.add_user_to_org(userId, orgId)
+    if not result:
+        return jsonify({"orgId": InputError.InvalidField}), 401
+    
+    token = create_token(userId, orgId)
+
+    user = UserDataHandler.get_user_by_id(userId)
+    set_tenant(orgId)
+    permissions = UserDataHandler.get_user_permissions(userId)
+
+    return (
+        jsonify(
+            {"session_token": token}
+            | user.to_dict()
+            | {
+                "canWrite": permissions[0],
+                "canDelete": permissions[1],
+                "canUpdatePermissions": permissions[2],
+            }
+        ),
+        200,
+    )
