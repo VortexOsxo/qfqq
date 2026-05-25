@@ -28,7 +28,7 @@ class AuthService extends StateNotifier<AuthState> {
     final response = await http.post(
       Uri.parse('$_apiUrl/auth/login'),
       headers: {'Content-Type': 'application/json', 'QfqqVersion': _version},
-      body: jsonEncode({'email': email, 'password': password}),
+      body: jsonEncode({'email': email.toLowerCase().trim(), 'password': password}),
     );
     final data = jsonDecode(response.body);
 
@@ -46,7 +46,7 @@ class AuthService extends StateNotifier<AuthState> {
       body: jsonEncode({
         'firstName': user.firstName,
         'lastName': user.lastName,
-        'email': user.email,
+        'email': user.email.toLowerCase().trim(),
         'password': password,
       }),
     );
