@@ -183,7 +183,7 @@
   "profilePageLanguage": "Langue",
 
   "forgottenPasswordPageTitle": "Mot de passe oublié",
-  "permissionsPageTitle": "Permissions",
+  "organizationPageTitle": "Organisation",
   "forgottenPasswordPageEnterEmail": "Saisissez l'adresse e-mail de votre compte",
   "forgottenPasswordPageResetPassword": "Réinitialiser le mot de passe",
   "forgottenPasswordPageLoginLink": "Retour à la page de connexion",
@@ -235,6 +235,7 @@
   "commonRole": "Role",
   "commonRoles": "Rôles",
   "commonPermissions": "Permissions",
+  "commonMembers": "Membres",
   "commonMeeting": "Réunion",
   "commonSelectDate": "Sélectionner une date",
   "commonTapToSelectDate": "Appuyer pour sélectionner une date",
