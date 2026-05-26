@@ -45,9 +45,13 @@ class UserDataHandler:
         return False
 
     @classmethod
-    def get_users(cls):
-        query = f"SELECT * from users;"
-        users = read_query(query)
+    def get_users(cls, orgId: int):
+        query = """
+            SELECT u.* FROM public.users u
+            JOIN public.memberships m ON u.id = m.userId
+            WHERE m.orgId = %s;
+        """
+        users = read_query(query, (orgId,))
         return [User(*user) for user in users]
 
     @classmethod

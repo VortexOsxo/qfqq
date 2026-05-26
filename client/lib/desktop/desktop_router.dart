@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:qfqq/common/pages/permissions_page.dart';
+import 'package:qfqq/common/pages/organization_page.dart';
 import 'package:qfqq/common/templates/navigation_guard.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/project.dart';
@@ -106,10 +106,9 @@ final GoRouter desktopRouter = GoRouter(
             );
           },
         ),
-        // TODO: Add redirect
         GoRoute(
-          path: '/permissions',
-          pageBuilder: (context, state) => _noTransition(const PermissionsPage()),
+          path: '/organization',
+          pageBuilder: (context, state) => _noTransition(const OrganizationPage()),
         ),
         GoRoute(
           path: '/profile',
@@ -187,8 +186,8 @@ String? _getTitleForRoute(BuildContext context, GoRouterState state) {
       return loc.organizationCreationPageTitle;
     case '/forgotten-password':
       return loc.forgottenPasswordPageTitle;
-    case '/permissions':
-      return loc.commonPermissions;
+    case '/organization':
+      return loc.organizationPageTitle;
     case '/organizations/links':
       return loc.organizationLinksPageTitle;
     default:
