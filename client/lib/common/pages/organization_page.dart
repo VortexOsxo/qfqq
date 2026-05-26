@@ -7,6 +7,7 @@ import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/providers/users_roles_provider.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/string.dart';
+import 'package:qfqq/common/widgets/invite_member_modal.dart';
 import 'package:qfqq/common/widgets/reusables/default_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/role_creation_modal.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -68,50 +69,69 @@ class MembersTab extends ConsumerWidget {
       ),
     ]);
 
-    return Card(
-      margin: EdgeInsets.zero,
-      child: SingleChildScrollView(
-        child: DataTable(
-          columns: [
-            DataColumn(label: Text(loc.attributeFirstName)),
-            DataColumn(label: Text(loc.attributeLastName)),
-            DataColumn(label: Text(loc.attributeEmail)),
-            const DataColumn(label: Text('Role')),
-          ],
-          rows:
-              users.map((user) {
-                var userRole = ref.watch(userRoleByIdProvider(user.id));
-                var roleId = userRole?.roleId ?? 0;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          child: Card(
+            margin: EdgeInsets.zero,
+            child: SingleChildScrollView(
+              child: DataTable(
+                columns: [
+                  DataColumn(label: Text(loc.attributeFirstName)),
+                  DataColumn(label: Text(loc.attributeLastName)),
+                  DataColumn(label: Text(loc.attributeEmail)),
+                  const DataColumn(label: Text('Role')),
+                ],
+                rows:
+                    users.map((user) {
+                      var userRole = ref.watch(userRoleByIdProvider(user.id));
+                      var roleId = userRole?.roleId ?? 0;
 
-                return DataRow(
-                  cells: [
-                    DataCell(Text(capitalize(user.firstName))),
-                    DataCell(Text(capitalize(user.lastName))),
-                    DataCell(Text(capitalize(user.email))),
-                    DataCell(
-                      DefaultDropdownMenu<int?>(
-                        initialSelection: roleId,
-                        onSelected: (int? newRoleId) {
-                          if (newRoleId == null) return;
-                          ref
-                              .read(usersRolesProvider.notifier)
-                              .updateUserRole(user.id, newRoleId);
-                        },
-                        entries: menuEntries,
-                        isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        constraints: const BoxConstraints(maxHeight: 36),
-                        textStyle: const TextStyle(fontSize: 14),
-                      ),
-                    ),
-                  ],
-                );
-              }).toList(),
+                      return DataRow(
+                        cells: [
+                          DataCell(Text(capitalize(user.firstName))),
+                          DataCell(Text(capitalize(user.lastName))),
+                          DataCell(Text(capitalize(user.email))),
+                          DataCell(
+                            DefaultDropdownMenu<int?>(
+                              initialSelection: roleId,
+                              onSelected: (int? newRoleId) {
+                                if (newRoleId == null) return;
+                                ref
+                                    .read(usersRolesProvider.notifier)
+                                    .updateUserRole(user.id, newRoleId);
+                              },
+                              entries: menuEntries,
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
+                              constraints: const BoxConstraints(maxHeight: 36),
+                              textStyle: const TextStyle(fontSize: 14),
+                            ),
+                          ),
+                        ],
+                      );
+                    }).toList(),
+              ),
+            ),
+          ),
         ),
-      ),
+        const SizedBox(height: 16),
+        ElevatedButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              barrierDismissible: true,
+              builder: (_) => InviteMemberModal(),
+            );
+          },
+          style: squareButtonStyle(context),
+          child: Text(loc.buttonInvitePeople),
+        ),
+      ],
     );
   }
 }

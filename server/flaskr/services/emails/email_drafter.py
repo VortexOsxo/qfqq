@@ -122,3 +122,31 @@ class EmailDrafter:
             body=body,
             attachments={filename: report_bytes}
         )
+
+    @staticmethod
+    def create_organization_invitation_email(recipient: str, org_id: int, org_name: str, lang: str = 'fr') -> Email:
+        if lang == 'en':
+            subject = f"Invitation to join '{org_name}' - QuiFaitQuoiQuand"
+            body = (
+                "Hello,\n"
+                f"You have been invited to join the organization '{org_name}'.\n"
+                f"The organization ID is: {org_id}\n\n"
+                "Thank you,\n"
+                "The QuiFaitQuoiQuand Team"
+            )
+        else:
+            subject = f"Invitation à rejoindre '{org_name}' - QuiFaitQuoiQuand"
+            body = (
+                "Bonjour,\n"
+                f"Vous avez été invité(e) à rejoindre l'organisation '{org_name}'.\n"
+                f"L'ID de l'organisation est : {org_id}\n\n"
+                "Merci,\n"
+                "L'équipe QuiFaitQuoiQuand"
+            )
+
+        return Email(
+            subject=subject,
+            recipient=recipient,
+            sender=os.getenv('MAIL_USER'),
+            body=body
+        )

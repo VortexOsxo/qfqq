@@ -1,10 +1,13 @@
 from flask import Blueprint, jsonify, g
 
 from flaskr.errors.input_error import InputError
-from flaskr.services.inputs import input_middleware, LambdaBuilder, StringValidator
+from flaskr.services.inputs import input_middleware, LambdaBuilder, StringValidator, EmailValidator
 from flaskr.database import OrganizationDataHandler, UserDataHandler
 from flaskr.utils.token import create_token 
 from flaskr.blueprints.before_request import login_optionnal
+from flaskr.blueprints.middlewares import permission_middleware
+from flaskr.models.permission import Permission
+from flaskr.services.emails import EmailDrafter, EmailSender
 from flaskr.database.postgres.tenant_context import set_tenant
 
 organizations_bp = Blueprint("organizations", __name__, url_prefix="/organizations")
@@ -75,3 +78,23 @@ def join_organization(orgId):
         ),
         200,
     )
+
+@organizations_bp.post("invite")
+@input_middleware(LambdaBuilder(("email", EmailValidator())))
+@permission_middleware(Permission.CanUpdatePermissions)
+def invite_to_organization(email):
+    orgId = g.org_id
+    org = OrganizationDataHandler.get_org(orgId)
+    if not org:
+        return jsonify({"orgId": InputError.ObjectIdNotFound}), 404
+
+    org_name = org[2]
+    lang = g.language
+    
+    email_obj = EmailDrafter.create_organization_invitation_email(email, orgId, org_name, lang)
+    success = EmailSender.send_email(email_obj)
+    
+    if success:
+        return "", 200
+    else:
+        return "", 500
