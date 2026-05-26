@@ -60,4 +60,12 @@ class OrganizationService {
 
     return loc.errorUnknown;
   }
+
+  Future<void> inviteMember(String email) async {
+    final _ = await _http.post(
+      _http.getUri('organizations/invite'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': email}),
+    );
+  }
 }
