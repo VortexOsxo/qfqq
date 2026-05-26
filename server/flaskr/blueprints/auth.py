@@ -5,7 +5,8 @@ from flaskr.database import UserDataHandler, OrganizationDataHandler
 from flaskr.services.reset_password_service import ResetPasswordService
 from flaskr.services.inputs import input_middleware, SignupBuilder, LoginBuilder, LambdaBuilder, StringValidator, EmailValidator, PasswordValidator
 from flaskr.errors import InputError
-from flaskr.utils.token import create_token 
+from flaskr.utils.token import create_token
+from flaskr.database.postgres.tenant_context import set_tenant
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -39,7 +40,7 @@ def login(email, password):
     orgId = OrganizationDataHandler.get_user_org_id(user.id)
 
     token = create_token(user.id, orgId)
-
+    set_tenant(orgId)
     permissions = UserDataHandler.get_user_permissions(userId=user.id)
 
     return (

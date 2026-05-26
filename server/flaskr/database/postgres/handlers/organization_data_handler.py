@@ -26,15 +26,15 @@ class OrganizationDataHandler:
                 query = f"INSERT INTO organizations (slug, name) values (%s, %s) RETURNING id;"
                 params = (orgSlug, orgName)
                 cur.execute(query, params)
-                org_id = cur.fetchone()[0]
+                orgId = cur.fetchone()[0]
 
                 cur.execute(
                     sql.SQL("CREATE SCHEMA IF NOT EXISTS {};").format(
-                        sql.Identifier(str(org_id))
+                        sql.Identifier(str(orgId))
                     )
                 )
                 cur.execute(
-                    sql.SQL("SET search_path TO {}, public;").format(sql.Identifier(str(org_id)))
+                    sql.SQL("SET search_path TO {}, public;").format(sql.Identifier(str(orgId)))
                 )
 
                 with current_app.open_resource(
@@ -42,7 +42,7 @@ class OrganizationDataHandler:
                 ) as f:
                     cur.execute(f.read().decode("utf8"))
 
-                return orgSlug
+                return orgId
         except Exception as e:
             # TODO: Logging
             pass
@@ -50,18 +50,18 @@ class OrganizationDataHandler:
     
     @classmethod
     def get_org(cls, id: int):
-        query = f"SELECT * from organizations WHERE id = %s LIMIT 1;"
+        query = f"SELECT * from public.organizations WHERE id = %s LIMIT 1;"
         orgs = read_query(query, (id,))
         return orgs[0] if orgs else None
 
     @classmethod
     def get_existing_slugs(cls):
-        query = "SELECT slug from organizations;"
+        query = "SELECT slug from public.organizations;"
         return [res[0] for res in read_query(query)]
     
     @classmethod
     def get_user_org_id(cls, userId):
-        query = "SELECT orgId FROM memberships WHERE userId = %s LIMIT 1;"
+        query = "SELECT orgId FROM public.memberships WHERE userId = %s LIMIT 1;"
         params = (userId,)
         with get_db_access() as conn:
             cur = conn.cursor()
