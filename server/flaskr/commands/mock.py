@@ -38,6 +38,7 @@ def mock_command():
 
         password = "Password1234!"
 
+        index = 1
         for first, last, email in users:
             signup_resp = client.post(
                 "/auth/signup",
@@ -54,6 +55,17 @@ def mock_command():
                 click.echo(f"Created user: {email}")
             else:
                 click.echo(f"Failed to create user {email}: {signup_resp.get_json()}")
+
+            join_resp = client.post(
+                "/organizations/1/join",
+                headers = get_auth_headers(client, user_id=index)
+            )
+
+            if join_resp.status_code == 201:
+                click.echo(f"User: {email} joined Organization1")
+            else:
+                click.echo(f"User: {email} failed to join Organization1: {join_resp.get_json()}")
+            index += 1
 
         # Create project
         headers = get_auth_headers(client)

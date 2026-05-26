@@ -16,7 +16,32 @@ def create_organization(organizationName: str):
     orgId = OrganizationDataHandler.create_organization(organizationName)
     if orgId is None:
         return "", 400
-    return jsonify({"orgId": orgId}), 201
+    
+    userId = g.user_id
+    if userId is None:
+        return jsonify({"orgId": orgId}), 201
+    
+    result = UserDataHandler.add_user_to_org(userId, orgId)
+    assert result, "Should not fail to join a just created org"
+
+    token = create_token(userId, orgId)
+
+    user = UserDataHandler.get_user_by_id(userId)
+    set_tenant(orgId)
+    permissions = UserDataHandler.get_user_permissions(userId)
+
+    return (
+        jsonify(
+            {"session_token": token}
+            | user.to_dict()
+            | {
+                "canWrite": permissions[0],
+                "canDelete": permissions[1],
+                "canUpdatePermissions": permissions[2],
+            }
+        ),
+        201,
+    )
 
 @organizations_bp.post("<int:orgId>/join")
 def join_organization(orgId):

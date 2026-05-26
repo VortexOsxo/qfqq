@@ -16,18 +16,21 @@ class OrganizationService {
 
   OrganizationService(this._http, this._authService);
 
-  Future<String?> createOrganization(String name) async {
+  Future<void> createOrganization(String name) async {
     final response = await _http.post(
       _http.getUri('organizations/'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'organizationName': name}),
     );
 
-    if (response.statusCode == 201) {
-      final Map<String, dynamic> data = jsonDecode(response.body);
-      return data['orgSlug'];
+    if (response.statusCode != 200) {
+      return;
     }
-    return null;
+    final Map<String, dynamic> data = jsonDecode(response.body);
+    if (!data.containsKey("session_token")) {
+      return;
+    }
+    _authService.onOrgJoined(data);
   }
 
   Future<String?> joinOrganisation(int orgId) async {
