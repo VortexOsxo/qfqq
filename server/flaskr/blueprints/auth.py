@@ -5,7 +5,7 @@ from flaskr.database import UserDataHandler, OrganizationDataHandler
 from flaskr.services.reset_password_service import ResetPasswordService
 from flaskr.services.inputs import input_middleware, SignupBuilder, LoginBuilder, LambdaBuilder, StringValidator, EmailValidator, PasswordValidator
 from flaskr.errors import InputError
-from flaskr.utils.token import create_token
+from flaskr.utils import create_auth_response, create_token
 from flaskr.database.postgres.tenant_context import set_tenant
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -21,10 +21,7 @@ def signup(firstName, lastName, email, password):
         return jsonify({"email": InputError.EmailMustBeUnique}), 400
 
     return (
-        jsonify(
-            {"session_token": create_token(user.id, None)}
-            | user.to_dict()
-        ),
+        create_auth_response(create_token(user.id, None), user),
         201,
     )
 
@@ -38,21 +35,18 @@ def login(email, password):
         return jsonify({"auth": InputError.InvalidLogin}), 401
 
     orgId = OrganizationDataHandler.get_user_org_id(user.id)
+    if orgId is None:
+        return (
+            create_auth_response(create_token(user.id, None), user),
+            200,
+        )
 
     token = create_token(user.id, orgId)
     set_tenant(orgId)
     permissions = UserDataHandler.get_user_permissions(userId=user.id)
 
     return (
-        jsonify(
-            {"session_token": token}
-            | user.to_dict()
-            | {
-                "canWrite": permissions[0],
-                "canDelete": permissions[1],
-                "canUpdatePermissions": permissions[2],
-            }
-        ),
+        create_auth_response(create_token(user.id, orgId), user, True, permissions),
         200,
     )
 

@@ -31,7 +31,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     if (e != null) {
       setState(() => error = e);
     } else {
-      ref.read(routerProvider).go('/');
+      final authState = ref.read(authStateProvider);
+      if (authState.hasOrg) {
+        ref.read(routerProvider).go('/');
+      } else {
+        ref.read(routerProvider).go('/organizations/links');
+      }
     }
   }
 
