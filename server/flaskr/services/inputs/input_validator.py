@@ -155,6 +155,26 @@ class ListValidator(InputValidator):
 
         return InputError.NoError
 
+
+class TypedListValidator(InputValidator):
+    def __init__(self, element_validator: InputValidator, can_be_empty: bool = True):
+        self.element_validator = element_validator
+        self.can_be_empty = can_be_empty
+
+    def validate(self, l) -> InputError:
+        if not isinstance(l, list):
+            return InputError.ValueMustBeAList
+
+        if not self.can_be_empty and len(l) == 0:
+            return InputError.ListMustBeNonEmpty
+
+        for item in l:
+            error = self.element_validator.validate(item)
+            if error != InputError.NoError:
+                return error
+
+        return InputError.NoError
+
 class PermissionValidator(StringValidator):
     def validate(self, value):
         if (error := super().validate(value)) != InputError.NoError:

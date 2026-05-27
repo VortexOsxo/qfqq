@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/errors/role_errors.dart';
 import 'package:qfqq/common/services/organization_service.dart';
-import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
+import 'package:qfqq/common/widgets/reusables/selection_text_fields/emails_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/form_filled_button.dart';
 import 'package:qfqq/common/widgets/reusables/form_outlined_button.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -15,14 +15,16 @@ class InviteMemberModal extends ConsumerStatefulWidget {
 }
 
 class _InviteMemberModalState extends ConsumerState<InviteMemberModal> {
-  String email = "";
+  List<String> _emails = [];
   RoleErrors errors = RoleErrors();
   bool isSending = false;
 
-  void inviteMember() async {
+  void inviteMembers() async {
+    if (_emails.isEmpty) return;
+
     setState(() => isSending = true);
     final service = ref.read(organizationServiceProvider);
-    await service.inviteMember(email);
+    await service.inviteMembers(_emails);
     if (!mounted) return;
 
     setState(() => isSending = false);
@@ -42,9 +44,9 @@ class _InviteMemberModalState extends ConsumerState<InviteMemberModal> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              DefaultTextField(
+              EmailsTextField(
                 hintText: loc.inviteMemberEmailHint,
-                onChanged: (value) => email = value,
+                onChanged: (value) => _emails = value,
                 error: errors.nameError,
               ),
               const SizedBox(height: 16),
@@ -66,7 +68,7 @@ class _InviteMemberModalState extends ConsumerState<InviteMemberModal> {
         FormFilledButton(
           text: loc.buttonInviteMemberSubmit,
           isSending: isSending,
-          onPressed: () => inviteMember(),
+          onPressed: () => inviteMembers(),
         ),
       ],
     );
