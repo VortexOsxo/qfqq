@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify, g
 from flaskr.errors.input_error import InputError
 from flaskr.services.inputs import input_middleware, LambdaBuilder, StringValidator, EmailValidator
 from flaskr.database import OrganizationDataHandler, UserDataHandler
-from flaskr.utils.token import create_token 
+from flaskr.utils import create_auth_response, create_token 
 from flaskr.blueprints.before_request import login_optionnal
 from flaskr.blueprints.middlewares import permission_middleware
 from flaskr.models.permission import Permission
@@ -34,16 +34,8 @@ def create_organization(organizationName: str):
     permissions = UserDataHandler.get_user_permissions(userId)
 
     return (
-        jsonify(
-            {"session_token": token}
-            | user.to_dict()
-            | {
-                "canWrite": permissions[0],
-                "canDelete": permissions[1],
-                "canUpdatePermissions": permissions[2],
-            }
-        ),
-        201,
+        create_auth_response(token, user, True, permissions),
+        201
     )
 
 @organizations_bp.post("<int:orgId>/join")
@@ -67,16 +59,8 @@ def join_organization(orgId):
     permissions = UserDataHandler.get_user_permissions(userId)
 
     return (
-        jsonify(
-            {"session_token": token}
-            | user.to_dict()
-            | {
-                "canWrite": permissions[0],
-                "canDelete": permissions[1],
-                "canUpdatePermissions": permissions[2],
-            }
-        ),
-        200,
+        create_auth_response(token, user, True, permissions),
+        200
     )
 
 @organizations_bp.post("invite")
