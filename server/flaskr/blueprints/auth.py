@@ -20,6 +20,17 @@ def signup(firstName, lastName, email, password):
     if user is None:
         return jsonify({"email": InputError.EmailMustBeUnique}), 400
 
+    orgId = OrganizationDataHandler.check_invite(email)
+    if orgId:
+        result = UserDataHandler.add_user_to_org(user.id, orgId)
+        assert result, "Should be able to join a org when invited"
+        set_tenant(orgId)
+        permissions = UserDataHandler.get_user_permissions(userId=user.id)
+        return (
+            create_auth_response(create_token(user.id, orgId), user, True, permissions),
+            201,
+        )
+
     return (
         create_auth_response(create_token(user.id, None), user),
         201,
@@ -41,7 +52,6 @@ def login(email, password):
             200,
         )
 
-    token = create_token(user.id, orgId)
     set_tenant(orgId)
     permissions = UserDataHandler.get_user_permissions(userId=user.id)
 

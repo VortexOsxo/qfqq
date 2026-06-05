@@ -2,23 +2,16 @@ from flaskr.database import OrganizationDataHandler
 
 
 def test_create_organization(app):
-    orgSlug = OrganizationDataHandler.create_organization("Bubbly")
-    assert orgSlug == "bubbly"
+    orgId = OrganizationDataHandler.create_organization("Bubbly")
+    assert orgId == 2
 
-
-def test_create_organization_with_duplicate_name(app):
-    orgSlug = OrganizationDataHandler.create_organization("Bubbly")
-    assert orgSlug == "bubbly"
-
-    orgSlug = OrganizationDataHandler.create_organization("Bubbly")
-    assert orgSlug == "bubbly2"
 
 def test_get_slugs(app):
-    orgSlug = OrganizationDataHandler.create_organization("Bubbly")
-    assert orgSlug == "bubbly"
+    orgId = OrganizationDataHandler.create_organization("Bubbly")
+    assert orgId == 2
 
-    orgSlug = OrganizationDataHandler.create_organization("Avio")
-    assert orgSlug == "avio"
+    orgId = OrganizationDataHandler.create_organization("Avio")
+    assert orgId == 3
 
     slugs = OrganizationDataHandler.get_existing_slugs()
     assert len(slugs) == 3
@@ -26,3 +19,20 @@ def test_get_slugs(app):
     assert "avio" in slugs
     assert "test" in slugs
 
+def test_add_invite(app):
+    OrganizationDataHandler.add_invite(1, "random@email.com")
+    orgId = OrganizationDataHandler.check_invite("random@email.com")
+    assert orgId == 1
+
+def test_no_invite(app):
+    orgId = OrganizationDataHandler.check_invite("random@email.com")
+    assert orgId is None 
+
+def test_delete_invite(app):
+    OrganizationDataHandler.add_invite(1, "random@email.com")
+    orgId = OrganizationDataHandler.check_invite("random@email.com")
+    assert orgId == 1
+
+    OrganizationDataHandler.delete_invite("random@email.com")
+    orgId = OrganizationDataHandler.check_invite("random@email.com")
+    assert orgId is None
