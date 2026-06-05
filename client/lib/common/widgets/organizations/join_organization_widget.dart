@@ -9,10 +9,12 @@ class JoinOrganizationWidget extends ConsumerStatefulWidget {
   const JoinOrganizationWidget({super.key});
 
   @override
-  ConsumerState<JoinOrganizationWidget> createState() => _JoinOrganizationWidgetState();
+  ConsumerState<JoinOrganizationWidget> createState() =>
+      _JoinOrganizationWidgetState();
 }
 
-class _JoinOrganizationWidgetState extends ConsumerState<JoinOrganizationWidget> {
+class _JoinOrganizationWidgetState
+    extends ConsumerState<JoinOrganizationWidget> {
   final TextEditingController _orgIdController = TextEditingController();
   String? _joinError;
   bool _isLoading = false;
@@ -25,7 +27,7 @@ class _JoinOrganizationWidgetState extends ConsumerState<JoinOrganizationWidget>
 
   void _joinOrganization() async {
     final String input = _orgIdController.text.trim();
-    
+
     // Distinguish "no orgId" (empty field)
     if (input.isEmpty) {
       setState(() {
@@ -102,6 +104,11 @@ class _JoinOrganizationWidgetState extends ConsumerState<JoinOrganizationWidget>
                 style: squareButtonStyle(context),
                 onPressed: _isLoading ? null : _joinOrganization,
                 child: Text(loc.organizationLinksButtonJoin),
+              ),
+              const SizedBox(height: 24),
+              TextButton(
+                onPressed: () => context.go('/login'),
+                child: Text(loc.commonBack),
               ),
             ],
           ),

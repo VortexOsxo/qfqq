@@ -77,9 +77,14 @@ def invite_to_organization(emails):
     
     success = True
     for email in set(emails):
-        email_obj = EmailDrafter.create_organization_invitation_email(email, orgId, org_name, lang)
-        if not EmailSender.send_email(email_obj):
-            success = False
+        user = UserDataHandler.get_user_by_email(email)
+        if user is None:
+            OrganizationDataHandler.add_invite(orgId=orgId, email=email)
+
+            email_obj = EmailDrafter.create_organization_invitation_email(email, orgId, org_name, lang)
+            success &= EmailSender.send_email(email_obj)
+        else:
+            success &= UserDataHandler.add_user_to_org(user.id, orgId)
     
     if success:
         return "", 200

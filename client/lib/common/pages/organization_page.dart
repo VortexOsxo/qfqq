@@ -81,7 +81,7 @@ class MembersTab extends ConsumerWidget {
                   DataColumn(label: Text(loc.attributeFirstName)),
                   DataColumn(label: Text(loc.attributeLastName)),
                   DataColumn(label: Text(loc.attributeEmail)),
-                  const DataColumn(label: Text('Role')),
+                  DataColumn(label: Text(loc.commonRole)),
                 ],
                 rows:
                     users.map((user) {

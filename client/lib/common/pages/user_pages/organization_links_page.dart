@@ -37,10 +37,14 @@ class OrganizationLinksPage extends StatelessWidget {
               ],
             ),
             const Expanded(
-              child: TabBarView(
+              child: Column(
                 children: [
-                  JoinOrganizationWidget(),
-                  CreateOrganizationWidget(),
+                  TabBarView(
+                    children: [
+                      JoinOrganizationWidget(),
+                      CreateOrganizationWidget(),
+                    ],
+                  ),
                 ],
               ),
             ),

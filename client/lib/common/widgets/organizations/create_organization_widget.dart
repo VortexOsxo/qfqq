@@ -9,10 +9,12 @@ class CreateOrganizationWidget extends ConsumerStatefulWidget {
   const CreateOrganizationWidget({super.key});
 
   @override
-  ConsumerState<CreateOrganizationWidget> createState() => _CreateOrganizationWidgetState();
+  ConsumerState<CreateOrganizationWidget> createState() =>
+      _CreateOrganizationWidgetState();
 }
 
-class _CreateOrganizationWidgetState extends ConsumerState<CreateOrganizationWidget> {
+class _CreateOrganizationWidgetState
+    extends ConsumerState<CreateOrganizationWidget> {
   final TextEditingController _orgNameController = TextEditingController();
   String? _createError;
   bool _isLoading = false;
@@ -76,6 +78,11 @@ class _CreateOrganizationWidgetState extends ConsumerState<CreateOrganizationWid
                 style: squareButtonStyle(context),
                 onPressed: _isLoading ? null : _createOrganization,
                 child: Text(loc.organizationCreationPageButton),
+              ),
+              const SizedBox(height: 24),
+              TextButton(
+                onPressed: () => context.go('/login'),
+                child: Text(loc.commonBack),
               ),
             ],
           ),
