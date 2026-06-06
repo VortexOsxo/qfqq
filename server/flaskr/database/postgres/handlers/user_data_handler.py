@@ -23,7 +23,7 @@ class UserDataHandler:
         return None
 
     @classmethod
-    def add_user_to_org(cls, userId, orgId):
+    def add_user_to_org(cls, userId, orgId, roleId=1):
         try:
             with get_db_access() as conn:
                 cur = conn.cursor()
@@ -37,7 +37,7 @@ class UserDataHandler:
                 )
 
                 query = f"INSERT INTO usersRoles (userId, roleId) VALUES (%s, %s);"
-                cur.execute(query, (userId, 1))
+                cur.execute(query, (userId, roleId))
 
                 return True
         except Exception as e:

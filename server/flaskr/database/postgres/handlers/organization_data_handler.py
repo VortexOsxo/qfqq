@@ -69,11 +69,10 @@ class OrganizationDataHandler:
             result = cur.fetchone()
         return result[0] if result else None
     
-
     @classmethod
-    def add_invite(cls, orgId, email):
-        query = "INSERT INTO public.invitations (orgId, email) VALUES (%s, %s);"
-        params = (orgId, email)
+    def add_invite(cls, orgId, email, roleId = None):
+        query = "INSERT INTO public.invitations (orgId, email, roleId) VALUES (%s, %s, %s);"
+        params = (orgId, email, roleId or 1)
         write_query(query, params)
     
     @classmethod
@@ -85,7 +84,7 @@ class OrganizationDataHandler:
     @classmethod
     def check_invite(cls, email):
         # TODO: Handle multiple invitations
-        query = "SELECT orgId from public.invitations WHERE email = %s LIMIT 1;"
+        query = "SELECT orgId, roleId from public.invitations WHERE email = %s LIMIT 1;"
         params = (email,)
         result = read_query(query, params)
-        return result[0][0] if result else None
+        return result[0][0] if result else None, None

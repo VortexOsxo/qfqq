@@ -31,6 +31,7 @@ CREATE TABLE
   public.invitations (
     orgId INTEGER NOT NULL REFERENCES public.organizations (id) ON DELETE CASCADE,
     email TEXT NOT NULL,
+    roleId INTEGER NOT NULL,
     PRIMARY KEY (orgId, email)
   );
 

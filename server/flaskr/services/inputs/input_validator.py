@@ -51,6 +51,9 @@ class BooleanValidator(InputValidator):
     def validate(self, value):
         return InputError.NoError if isinstance(value, bool) else InputError.InvalidType
 
+class IntValidator(InputValidator):
+    def validate(self, value):
+        return InputError.NoError if isinstance(value, int) else InputError.InvalidType
 
 # TODO: Improve email validation
 class EmailValidator(StringValidator):

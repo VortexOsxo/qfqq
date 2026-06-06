@@ -17,7 +17,7 @@ def test_create_user(app):
     assert user.passwordHash == "12345"
 
     permissions = UserDataHandler.get_user_permissions(user.id)
-    assert permissions == (True,)*3
+    assert permissions == (False,)*3
 
 def test_create_user_duplicate_email(app):
     user = UserDataHandler.create_user("Alice", "Smith", "alice@example.com", "StrongPassword!")

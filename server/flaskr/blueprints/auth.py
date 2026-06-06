@@ -20,9 +20,9 @@ def signup(firstName, lastName, email, password):
     if user is None:
         return jsonify({"email": InputError.EmailMustBeUnique}), 400
 
-    orgId = OrganizationDataHandler.check_invite(email)
+    orgId, roleId = OrganizationDataHandler.check_invite(email)
     if orgId:
-        result = UserDataHandler.add_user_to_org(user.id, orgId)
+        result = UserDataHandler.add_user_to_org(user.id, orgId, roleId)
         assert result, "Should be able to join a org when invited"
         set_tenant(orgId)
         permissions = UserDataHandler.get_user_permissions(userId=user.id)
