@@ -19,11 +19,11 @@ import 'package:qfqq/generated/l10n.dart';
   https://dribbble.com/shots/13944985-QuickBooks-Online-User-Management-I
 */
 
-class OrganizationPage extends ConsumerWidget {
+class OrganizationPage extends StatelessWidget {
   const OrganizationPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
       child: Padding(

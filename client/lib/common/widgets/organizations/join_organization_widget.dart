@@ -9,12 +9,10 @@ class JoinOrganizationWidget extends ConsumerStatefulWidget {
   const JoinOrganizationWidget({super.key});
 
   @override
-  ConsumerState<JoinOrganizationWidget> createState() =>
-      _JoinOrganizationWidgetState();
+  ConsumerState<JoinOrganizationWidget> createState() => _JoinOrganizationWidgetState();
 }
 
-class _JoinOrganizationWidgetState
-    extends ConsumerState<JoinOrganizationWidget> {
+class _JoinOrganizationWidgetState extends ConsumerState<JoinOrganizationWidget> {
   final TextEditingController _orgIdController = TextEditingController();
   String? _joinError;
   bool _isLoading = false;
@@ -26,22 +24,17 @@ class _JoinOrganizationWidgetState
   }
 
   void _joinOrganization() async {
+    final loc = S.of(context);
     final String input = _orgIdController.text.trim();
 
-    // Distinguish "no orgId" (empty field)
     if (input.isEmpty) {
-      setState(() {
-        _joinError = S.of(context).errorRequiredField;
-      });
+      setState(() => _joinError = loc.errorRequiredField);
       return;
     }
 
-    // Distinguish "invalid orgId" (not a valid integer number format)
     final int? orgId = int.tryParse(input);
     if (orgId == null) {
-      setState(() {
-        _joinError = S.of(context).organizationJoinInvalidOrg;
-      });
+      setState(() => _joinError = loc.organizationJoinInvalidOrg);
       return;
     }
 
@@ -50,29 +43,21 @@ class _JoinOrganizationWidgetState
       _isLoading = true;
     });
 
-    try {
-      final orgService = ref.read(organizationServiceProvider);
-      final String? errorMsg = await orgService.joinOrganisation(orgId);
+    final orgService = ref.read(organizationServiceProvider);
+    final String? errorMsg = await orgService.joinOrganisation(orgId);
 
-      if (!mounted) return;
+    if (!mounted) return;
 
-      if (errorMsg != null) {
-        setState(() {
-          _joinError = errorMsg;
-          _isLoading = false;
-        });
-      } else {
-        setState(() {
-          _isLoading = false;
-        });
-        context.go('/');
-      }
-    } catch (e) {
-      if (!mounted) return;
+    if (errorMsg != null) {
       setState(() {
-        _joinError = S.of(context).errorUnknown;
+        _joinError = errorMsg;
         _isLoading = false;
       });
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      context.go('/');
     }
   }
 
