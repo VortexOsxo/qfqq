@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/providers/roles_provider.dart';
@@ -8,8 +6,8 @@ import 'package:qfqq/common/providers/users_roles_provider.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/string.dart';
 import 'package:qfqq/common/widgets/invite_member_modal.dart';
-import 'package:qfqq/common/widgets/reusables/default_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/role_creation_modal.dart';
+import 'package:qfqq/common/widgets/role_dropdown_menu.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 // Inpirations
@@ -57,17 +55,6 @@ class MembersTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final loc = S.of(context);
     var users = ref.watch(usersProvider);
-    var roles = ref.watch(rolesProvider);
-
-    final List<DropdownMenuEntry<int?>> menuEntries = UnmodifiableListView([
-      ...roles.map(
-        (role) => DropdownMenuEntry<int?>(
-          value: role.id,
-          label:
-              '${loc.commonRole}: ${role.id == 1 ? loc.roleNameDefault : capitalize(role.name)}',
-        ),
-      ),
-    ]);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -94,23 +81,15 @@ class MembersTab extends ConsumerWidget {
                           DataCell(Text(capitalize(user.lastName))),
                           DataCell(Text(capitalize(user.email))),
                           DataCell(
-                            DefaultDropdownMenu<int?>(
-                              initialSelection: roleId,
-                              onSelected: (int? newRoleId) {
+                            RoleDropdownMenu(
+                              initialRoleId: roleId,
+                              valueChanged: (int? newRoleId) {
                                 if (newRoleId == null) return;
                                 ref
                                     .read(usersRolesProvider.notifier)
                                     .updateUserRole(user.id, newRoleId);
                               },
-                              entries: menuEntries,
-                              isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
-                              ),
-                              constraints: const BoxConstraints(maxHeight: 36),
-                              textStyle: const TextStyle(fontSize: 14),
-                            ),
+                            )
                           ),
                         ],
                       );

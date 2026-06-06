@@ -21,18 +21,18 @@ def test_get_slugs(app):
 
 def test_add_invite(app):
     OrganizationDataHandler.add_invite(1, "random@email.com")
-    orgId = OrganizationDataHandler.check_invite("random@email.com")
+    orgId, _ = OrganizationDataHandler.check_invite("random@email.com")
     assert orgId == 1
 
 def test_no_invite(app):
-    orgId = OrganizationDataHandler.check_invite("random@email.com")
+    orgId, _ = OrganizationDataHandler.check_invite("random@email.com")
     assert orgId is None 
 
 def test_delete_invite(app):
     OrganizationDataHandler.add_invite(1, "random@email.com")
-    orgId = OrganizationDataHandler.check_invite("random@email.com")
+    orgId, _ = OrganizationDataHandler.check_invite("random@email.com")
     assert orgId == 1
 
     OrganizationDataHandler.delete_invite("random@email.com")
-    orgId = OrganizationDataHandler.check_invite("random@email.com")
+    orgId, _ = OrganizationDataHandler.check_invite("random@email.com")
     assert orgId is None

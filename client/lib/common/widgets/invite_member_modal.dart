@@ -5,6 +5,7 @@ import 'package:qfqq/common/services/organization_service.dart';
 import 'package:qfqq/common/widgets/reusables/selection_text_fields/emails_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/form_filled_button.dart';
 import 'package:qfqq/common/widgets/reusables/form_outlined_button.dart';
+import 'package:qfqq/common/widgets/role_dropdown_menu.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class InviteMemberModal extends ConsumerStatefulWidget {
@@ -16,6 +17,7 @@ class InviteMemberModal extends ConsumerStatefulWidget {
 
 class _InviteMemberModalState extends ConsumerState<InviteMemberModal> {
   List<String> _emails = [];
+  int _roleId = 1;
   RoleErrors errors = RoleErrors();
   bool isSending = false;
 
@@ -24,13 +26,14 @@ class _InviteMemberModalState extends ConsumerState<InviteMemberModal> {
 
     setState(() => isSending = true);
     final service = ref.read(organizationServiceProvider);
-    await service.inviteMembers(_emails);
+    await service.inviteMembers(_emails, _roleId);
     if (!mounted) return;
 
     setState(() => isSending = false);
     Navigator.pop(context);
   }
 
+  // Idea: Add a button to add a new email, this add a distinction with sending the invitations
   @override
   Widget build(BuildContext context) {
     final loc = S.of(context);
@@ -50,6 +53,10 @@ class _InviteMemberModalState extends ConsumerState<InviteMemberModal> {
                 error: errors.nameError,
               ),
               const SizedBox(height: 16),
+              RoleDropdownMenu(
+                initialRoleId: _roleId,
+                valueChanged: (int? newRoleId) => _roleId = newRoleId ?? 1,
+              ),
             ],
           ),
         ),

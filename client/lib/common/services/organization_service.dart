@@ -61,11 +61,11 @@ class OrganizationService {
     return loc.errorUnknown;
   }
 
-  Future<void> inviteMembers(List<String> emails) async {
+  Future<void> inviteMembers(List<String> emails, int roleId) async {
     final _ = await _http.post(
       _http.getUri('organizations/invite'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'emails': emails}),
+      body: jsonEncode({'emails': emails, 'roleId': roleId}),
     );
   }
 }

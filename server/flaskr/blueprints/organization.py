@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, g
 
 from flaskr.errors.input_error import InputError
-from flaskr.services.inputs import input_middleware, LambdaBuilder, StringValidator, EmailValidator, TypedListValidator
+from flaskr.services.inputs import input_middleware, LambdaBuilder, IntValidator, StringValidator,EmailValidator, TypedListValidator
 from flaskr.database import OrganizationDataHandler, UserDataHandler
 from flaskr.utils import create_auth_response, create_token 
 from flaskr.blueprints.before_request import login_optionnal
@@ -64,9 +64,12 @@ def join_organization(orgId):
     )
 
 @organizations_bp.post("invite")
-@input_middleware(LambdaBuilder(("emails", TypedListValidator(EmailValidator(), can_be_empty=False))))
+@input_middleware(LambdaBuilder(
+    ("emails", TypedListValidator(EmailValidator(), can_be_empty=False)),
+    ("roleId", IntValidator()) # TODO: Better validation (the role actually exists ?)
+))
 @permission_middleware(Permission.CanUpdatePermissions)
-def invite_to_organization(emails):
+def invite_to_organization(emails, roleId):
     orgId = g.org_id
     org = OrganizationDataHandler.get_org(orgId)
     if not org:
@@ -79,12 +82,12 @@ def invite_to_organization(emails):
     for email in set(emails):
         user = UserDataHandler.get_user_by_email(email)
         if user is None:
-            OrganizationDataHandler.add_invite(orgId=orgId, email=email)
+            OrganizationDataHandler.add_invite(orgId=orgId, email=email, roleId=roleId)
 
             email_obj = EmailDrafter.create_organization_invitation_email(email, orgId, org_name, lang)
             success &= EmailSender.send_email(email_obj)
         else:
-            success &= UserDataHandler.add_user_to_org(user.id, orgId)
+            success &= UserDataHandler.add_user_to_org(user.id, orgId, roleId)
     
     if success:
         return "", 200
