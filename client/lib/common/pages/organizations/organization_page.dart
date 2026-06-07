@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/providers/roles_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/providers/users_roles_provider.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/string.dart';
-import 'package:qfqq/common/widgets/invite_member_modal.dart';
 import 'package:qfqq/common/widgets/role_creation_modal.dart';
 import 'package:qfqq/common/widgets/role_dropdown_menu.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -89,7 +89,8 @@ class MembersTab extends ConsumerWidget {
                                     .read(usersRolesProvider.notifier)
                                     .updateUserRole(user.id, newRoleId);
                               },
-                            )
+                              isSmall: true,
+                            ),
                           ),
                         ],
                       );
@@ -100,13 +101,7 @@ class MembersTab extends ConsumerWidget {
         ),
         const SizedBox(height: 16),
         ElevatedButton(
-          onPressed: () {
-            showDialog(
-              context: context,
-              barrierDismissible: true,
-              builder: (_) => InviteMemberModal(),
-            );
-          },
+          onPressed: () => context.go('/organization/invite'),
           style: squareButtonStyle(context),
           child: Text(loc.buttonInvitePeople),
         ),
