@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:qfqq/common/pages/organization_page.dart';
+import 'package:qfqq/common/pages/organizations/organization_invite_page.dart';
+import 'package:qfqq/common/pages/organizations/organization_page.dart';
 import 'package:qfqq/common/templates/navigation_guard.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/project.dart';
@@ -111,6 +112,10 @@ final GoRouter desktopRouter = GoRouter(
           pageBuilder: (context, state) => _noTransition(const OrganizationPage()),
         ),
         GoRoute(
+          path: '/organization/invite',
+          pageBuilder: (context, state) => _noTransition(const OrganizationInvitePage()),
+        ),
+        GoRoute(
           path: '/profile',
           pageBuilder: (context, state) => _noTransition(const ProfilePage()),
         ),
@@ -190,6 +195,8 @@ String? _getTitleForRoute(BuildContext context, GoRouterState state) {
       return loc.organizationPageTitle;
     case '/organizations/links':
       return loc.organizationLinksPageTitle;
+    case '/organization/invite':
+      return loc.inviteMemberLabel;
     default:
       return null;
   }

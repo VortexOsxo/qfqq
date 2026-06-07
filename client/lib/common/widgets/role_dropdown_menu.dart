@@ -10,8 +10,9 @@ import 'package:qfqq/generated/l10n.dart';
 class RoleDropdownMenu extends ConsumerWidget {
   final int initialRoleId;
   final ValueChanged<int?> valueChanged;
+  final bool isSmall;
 
-  const RoleDropdownMenu({super.key, required this.initialRoleId, required this.valueChanged});
+  const RoleDropdownMenu({super.key, required this.initialRoleId, required this.valueChanged, required this.isSmall});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,10 +34,10 @@ class RoleDropdownMenu extends ConsumerWidget {
       initialSelection: initialRoleId,
       onSelected: (int? value) => valueChanged(value),
       entries: menuEntries,
-      isDense: true,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      constraints: const BoxConstraints(maxHeight: 36),
-      textStyle: const TextStyle(fontSize: 14),
+      isDense: isSmall,
+      contentPadding: isSmall ? const EdgeInsets.symmetric(horizontal: 12, vertical: 8) : null,
+      constraints: isSmall ? const BoxConstraints(maxHeight: 36) : null,
+      textStyle: isSmall ? const TextStyle(fontSize: 14) : null,
     );
   }
 }

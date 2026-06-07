@@ -14,10 +14,10 @@ class EmailsTextField extends StatefulWidget {
   });
 
   @override
-  State<EmailsTextField> createState() => _EmailsTextFieldState();
+  State<EmailsTextField> createState() => EmailsTextFieldState();
 }
 
-class _EmailsTextFieldState extends State<EmailsTextField> {
+class EmailsTextFieldState extends State<EmailsTextField> {
   final List<String> _emails = [];
   final TextEditingController _controller = TextEditingController();
 
@@ -25,6 +25,13 @@ class _EmailsTextFieldState extends State<EmailsTextField> {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void addCurrent() {
+    _addEmail(_controller.value.text);
+    setState(() {
+      
+    });
   }
 
   void _addEmail(String value) {
