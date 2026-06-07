@@ -44,7 +44,7 @@
   "agendaPageSaveAgenda": "Save Agenda",
   "agendaPageAddButton": "Add",
   "agendaPageTitleHint": "Enter meeting title",
-  "agendaPageGoalsHint": "What do we want to accomplish together, concretely? (goal)\nIs my goal SMART, meaning Specific (precise), Measurable, Achievable, Realistic, and Time-bound (due date).",
+  "agendaPageGoalsHint": "Previous meeting objectives\nWhat do we want to accomplish together, concretely? (goal)\nIs my goal SMART, meaning Specific (precise), Measurable, Achievable, Realistic, and Time-bound (due date).",
   "agendaPageLocationHint": "Room or link",
   "agendaPageThemeHint": "Add a discussion topic",
   "agendaPageSelectDatePlaceholder": "Select a date for the meeting",
