@@ -11,7 +11,6 @@ import 'package:qfqq/common/pages/decisions_list_page.dart';
 import 'package:qfqq/common/pages/decision_view_page.dart';
 import 'package:qfqq/common/pages/home_page.dart';
 import 'package:qfqq/common/pages/user_pages/forgotten_password_page.dart';
-import 'package:qfqq/common/pages/user_pages/login_page.dart';
 import 'package:qfqq/common/pages/project_modification_page.dart';
 import 'package:qfqq/common/pages/project_page.dart';
 import 'package:qfqq/common/pages/project_view_page.dart';
@@ -24,6 +23,7 @@ import 'package:qfqq/common/widgets/scaffolds/auth_page_scaffold.dart';
 
 import 'package:qfqq/common/widgets/scaffolds/default_page_scaffold.dart';
 import 'package:qfqq/common/utils/route_titles.dart';
+import 'package:qfqq/desktop/pages/user_pages/login_page.dart';
 
 NoTransitionPage _noTransition(Widget child) => NoTransitionPage(child: child);
 
