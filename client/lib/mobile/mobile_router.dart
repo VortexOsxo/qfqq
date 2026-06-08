@@ -12,7 +12,7 @@ import 'package:qfqq/common/pages/project_modification_page.dart';
 import 'package:qfqq/common/pages/project_page.dart';
 import 'package:qfqq/common/pages/project_view_page.dart';
 import 'package:qfqq/common/pages/user_pages/profile_page.dart';
-import 'package:qfqq/common/pages/user_pages/signup_page.dart';
+import 'package:qfqq/mobile/pages/user_pages/signup_page.dart';
 import 'package:qfqq/common/pages/agenda_list_page.dart';
 import 'package:qfqq/common/widgets/scaffolds/auth_page_scaffold.dart';
 import 'package:qfqq/common/widgets/scaffolds/mobile_page_scaffold.dart';
