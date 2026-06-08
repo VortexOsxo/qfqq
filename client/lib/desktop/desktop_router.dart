@@ -196,7 +196,7 @@ String? _getTitleForRoute(BuildContext context, GoRouterState state) {
     case '/organizations/links':
       return loc.organizationLinksPageTitle;
     case '/organization/invite':
-      return loc.inviteMemberLabel;
+      return loc.inviteMemberPageTitle;
     default:
       return null;
   }
