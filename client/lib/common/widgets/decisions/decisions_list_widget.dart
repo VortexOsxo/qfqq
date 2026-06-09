@@ -43,9 +43,11 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
       decisions =
           decisions
               .where(
-                (Decision decision) => decision.description
-                    .toLowerCase()
-                    .contains(_searchQuery.toLowerCase()),
+                (decision) =>
+                    decision.description.toLowerCase().contains(
+                      _searchQuery.toLowerCase(),
+                    ) ||
+                    decision.number.toString().contains(_searchQuery),
               )
               .toList();
     }
@@ -84,7 +86,7 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
         children: [
           DefaultTextField(
             onChanged: (value) => setState(() => _searchQuery = value),
-            hintText: S.of(context).commonSearch,
+            hintText: S.of(context).searchDescriptionIdHint,
           ),
           SizedBox(height: 8),
           if (widget.isProjectFilterEnabled)

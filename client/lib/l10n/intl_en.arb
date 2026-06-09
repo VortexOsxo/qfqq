@@ -109,7 +109,6 @@
   "projectSupervisor": "Supervisor",
 
   "projectPageTitle": "Projects",
-  "projectPageSearchHint": "Search by Id or title",
   "projectNotFound": "Project not found",
 
   "projectCreationPageTitleHint": "Enter a project title",
@@ -315,5 +314,8 @@
   "organizationLinksInputId": "Organization ID",
   "organizationLinksButtonJoin": "Join",
   "organizationJoinUserRequired": "User session is required. Please log in again.",
-  "organizationJoinInvalidOrg": "Organization not found or invalid."
+  "organizationJoinInvalidOrg": "Organization not found or invalid.",
+
+  "searchTitleIdHint": "Search by Id or title",
+  "searchDescriptionIdHint": "Search by Id or description"
 }

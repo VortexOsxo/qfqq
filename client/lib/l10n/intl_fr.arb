@@ -110,7 +110,6 @@
   "projectSupervisor": "Superviseur",
 
   "projectPageTitle": "Projets",
-  "projectPageSearchHint": "Rechercher par id ou titre",
   "projectNotFound": "Projet introuvable",
   
   "projectCreationPageTitleHint": "Entrez un titre de projet",
@@ -316,5 +315,8 @@
   "organizationLinksInputId": "Identifiant de l'organisation",
   "organizationLinksButtonJoin": "Rejoindre",
   "organizationJoinUserRequired": "La session utilisateur est requise. Veuillez vous reconnecter.",
-  "organizationJoinInvalidOrg": "Organisation introuvable ou invalide."
+  "organizationJoinInvalidOrg": "Organisation introuvable ou invalide.",
+
+  "searchTitleIdHint": "Rechercher par id ou titre",
+  "searchDescriptionIdHint": "Rechercher par id ou description"
 }

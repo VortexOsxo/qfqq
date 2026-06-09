@@ -32,8 +32,9 @@ final filteredAgendaProvider = Provider<List<MeetingAgenda>>((ref) {
     agendas =
         agendas
             .where(
-              (MeetingAgenda agenda) =>
-                  agenda.title.toLowerCase().contains(query.toLowerCase()),
+              (agenda) =>
+                  agenda.title.toLowerCase().contains(query.toLowerCase()) ||
+                  agenda.number.toString().contains(query),
             )
             .toList();
   }
@@ -87,7 +88,7 @@ class AgendasListPage extends ConsumerWidget {
                       (value) =>
                           ref.read(agendaSearchQueryProvider.notifier).state =
                               value,
-                  hintText: S.of(context).commonSearch,
+                  hintText: S.of(context).searchTitleIdHint,
                 ),
               ),
               Expanded(flex: 1, child: SizedBox()),

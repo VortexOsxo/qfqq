@@ -59,7 +59,7 @@ class ProjectPage extends ConsumerWidget {
                   (value) =>
                       ref.read(projectSearchQueryProvider.notifier).state =
                           value,
-              hintText: S.of(context).projectPageSearchHint,
+              hintText: S.of(context).searchTitleIdHint,
             ),
           ),
           Expanded(flex: 1, child: SizedBox()),
