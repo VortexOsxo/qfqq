@@ -20,72 +20,104 @@ class _DesktopSignupView extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = S.of(context);
 
-    return Form(
-      key: vm.formKey,
-      child: Column(
-        children: [
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: loc.attributeEmail,
-              errorText: vm.error.emailError,
-            ),
-            onSaved: vm.saveEmail,
-          ),
-          const SizedBox(height: 8),
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: loc.attributeFirstName,
-              errorText: vm.error.firstNameError,
-            ),
-            onSaved: vm.saveFirstName,
-          ),
-          const SizedBox(height: 8),
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: loc.attributeLastName,
-              errorText: vm.error.lastNameError,
-            ),
-            onSaved: vm.saveLastName,
-          ),
-          const SizedBox(height: 8),
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: loc.attributePassword,
-              errorText: vm.error.passwordError,
-            ),
-            obscureText: true,
-            onSaved: vm.savePassword,
-          ),
-          const SizedBox(height: 8),
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: loc.signUpPageConfirmPassword,
-              errorText: vm.error.passwordError,
-            ),
-            obscureText: true,
-            onSaved: vm.saveConfirmPassword,
-          ),
-          const SizedBox(height: 16),
-          if (vm.error.authError != null)
-            Text(vm.error.authError!, style: const TextStyle(color: Colors.red)),
-          Align(
-            alignment: Alignment.center,
-            child: ElevatedButton(
-              style: squareButtonStyle(context),
-              onPressed: vm.submit,
-              child: Text(loc.signupPageButtonSignup),
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            color: Theme.of(context).colorScheme.primary,
+            child: Center(
+              child: Text(
+                'QFQQ',
+                style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              ),
             ),
           ),
-          const SizedBox(height: 32),
-          Align(
-            alignment: Alignment.center,
-            child: TextButton(
-              onPressed: vm.goToLogin,
-              child: Text(loc.signupPageLinkLogin),
+        ),
+        Expanded(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 400),
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: vm.formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: loc.attributeEmail,
+                            errorText: vm.error.emailError,
+                          ),
+                          onSaved: vm.saveEmail,
+                        ),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: loc.attributeFirstName,
+                            errorText: vm.error.firstNameError,
+                          ),
+                          onSaved: vm.saveFirstName,
+                        ),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: loc.attributeLastName,
+                            errorText: vm.error.lastNameError,
+                          ),
+                          onSaved: vm.saveLastName,
+                        ),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: loc.attributePassword,
+                            errorText: vm.error.passwordError,
+                          ),
+                          obscureText: true,
+                          onSaved: vm.savePassword,
+                        ),
+                        const SizedBox(height: 8),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: loc.signUpPageConfirmPassword,
+                            errorText: vm.error.passwordError,
+                          ),
+                          obscureText: true,
+                          onSaved: vm.saveConfirmPassword,
+                        ),
+                        const SizedBox(height: 16),
+                        if (vm.error.authError != null)
+                          Text(
+                            vm.error.authError!,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: ElevatedButton(
+                            style: squareButtonStyle(context),
+                            onPressed: vm.submit,
+                            child: Text(loc.signupPageButtonSignup),
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                        Align(
+                          alignment: Alignment.center,
+                          child: TextButton(
+                            onPressed: vm.goToLogin,
+                            child: Text(loc.signupPageLinkLogin),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
