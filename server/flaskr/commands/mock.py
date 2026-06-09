@@ -12,6 +12,22 @@ def get_auth_headers(client, user_id=1, org_id=1):
     return {"Authorization": f"Bearer {token}", "QfqqVersion": "beta"}
 
 
+def add_project(client, headers, title, goals, supervisorId):
+    result = client.post(
+        "/projects",
+        headers=headers,
+        json={
+            "title": title,
+            "goals": goals,
+            "supervisorId": supervisorId,
+        },
+    )
+    if result.status_code != 201:
+        click.echo(f"Failed to create {title}")
+    else:
+        click.echo(f"Created {title}")
+
+
 @click.command("mock-db")
 @with_appcontext
 def mock_command():
@@ -69,16 +85,27 @@ def mock_command():
 
         # Create project
         headers = get_auth_headers(client)
-        result = client.post(
-            "/projects",
+
+        add_project(
+            client=client,
             headers=headers,
-            json={
-                "title": "Projet1",
-                "goals": "Objectif du projet1",
-                "supervisorId": 1,
-            },
+            title="Projet1",
+            goals="Objectif du projet1",
+            supervisorId=1,
         )
-        if result.status_code != 201:
-            click.echo("Failed to create project 1")
-        else:
-            click.echo("Created project 1")
+
+        add_project(
+            client=client,
+            headers=headers,
+            title="Projet2",
+            goals="Objectif du projet2",
+            supervisorId=1,
+        )
+
+        add_project(
+            client=client,
+            headers=headers,
+            title = "Troisieme lien",
+            goals = "Developement d'un troisieme pont pour la ville de quebec",
+            supervisorId = 2,
+        )
