@@ -204,7 +204,7 @@ class AgendasListPage extends ConsumerWidget {
             SizedBox(width: 16),
           ],
         ),
-        const Divider(),
+        Divider(color: Theme.of(context).colorScheme.primary, thickness: 2),
         Expanded(
           child: ListView.separated(
             itemCount: agendas.length,

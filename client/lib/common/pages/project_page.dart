@@ -79,6 +79,8 @@ class ProjectPage extends ConsumerWidget {
     List<Project> projects,
   ) {
     final loc = S.of(context);
+    final theme = Theme.of(context);
+
     if (projects.isEmpty) {
       Widget cardContent = EmptyListWidget(text: loc.projectPageEmpty);
       return buildContentListCardTemplate(cardContent);
@@ -103,7 +105,7 @@ class ProjectPage extends ConsumerWidget {
             SizedBox(width: 16),
           ],
         ),
-        const Divider(),
+        Divider(color: theme.colorScheme.primary, thickness: 2,),
         Expanded(
           child: ListView.separated(
             itemCount: projects.length,

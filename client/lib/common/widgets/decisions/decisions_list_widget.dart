@@ -127,6 +127,8 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
     List<Decision> decisions,
   ) {
     final loc = S.of(context);
+    final theme = Theme.of(context);
+
     if (decisions.isEmpty) {
       Widget cardContent = EmptyListWidget(
         text: S.of(context).decisionsListPageEmpty,
@@ -154,7 +156,7 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
             SizedBox(width: 16),
           ],
         ),
-        const Divider(),
+        Divider(color: theme.colorScheme.primary, thickness: 2,),
         Expanded(
           child: ListView.separated(
             itemCount: decisions.length,
