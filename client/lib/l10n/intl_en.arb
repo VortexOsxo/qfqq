@@ -194,6 +194,10 @@
   "forgottenPasswordPageEnterNewPassword": "Enter a new password",
   "forgottenPasswordPageConfirmNewPassword": "Confirm your new password",
   "forgottenPasswordPageResendCodeLink": "Didn’t receive the code? Resend",
+ 
+  "commonFormsEnterEmail": "Please enter your email",
+  "errorEmailInvalidFormat": "Please use a valid email format: abc@def.ghi",
+  "forgottenPasswordPageNoAccount": "There is no account associated with the email: {email}",
 
   "commonCancel": "Cancel",
   "commonConfirm": "Confirm",

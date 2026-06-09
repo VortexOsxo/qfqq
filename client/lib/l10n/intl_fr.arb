@@ -196,6 +196,10 @@
   "forgottenPasswordPageConfirmNewPassword": "Confirmez votre nouveau mot de passe",
   "forgottenPasswordPageResendCodeLink": "Vous n’avez pas reçu le code ? Renvoyer",
 
+  "commonFormsEnterEmail": "Veuillez saisir une adresse e-mail",
+  "errorEmailInvalidFormat": "Veuillez utiliser un format d'e-mail valide : abc@def.ghi",
+  "forgottenPasswordPageNoAccount": "Aucun compte n'est associé à l'adresse e-mail : {email}",
+
   "commonCancel": "Annuler",
   "commonConfirm": "Confirmer",
   "commonClose": "Fermer",

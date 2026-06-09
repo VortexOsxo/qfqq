@@ -54,15 +54,12 @@ class ForgottenPasswordService extends StateNotifier<ForgottenPasswordState> {
 
     String? errorMessage;
 
-    // TODO: Translate
-
     if (error == 1) {
-      errorMessage = 'Please enter your email';
+      errorMessage = S.current.commonFormsEnterEmail;
     } else if (error == 2) {
-      errorMessage = 'Please use a valid email format: abc@def.ghi';
+      errorMessage = S.current.errorEmailInvalidFormat;
     } else if (error == 10) {
-      errorMessage =
-          'There is no account associated with the email: ${state.email}';
+      errorMessage = S.current.forgottenPasswordPageNoAccount(state.email);
     }
     state = state.copyWith(
       errorMessage: errorMessage ?? S.current.errorUnknown,
