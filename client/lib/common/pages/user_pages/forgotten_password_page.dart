@@ -1,38 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/states/forgotten_password_state.dart';
-import 'package:qfqq/common/services/forgotten_password_service.dart';
+import 'package:qfqq/common/pages/user_pages/forgotten_password_page_view_model.dart';
 import 'package:qfqq/common/widgets/forgotten_password/forgotten_password_enter_code_state_widget.dart';
 import 'package:qfqq/common/widgets/forgotten_password/forgotten_password_enter_email_state_widget.dart';
 import 'package:qfqq/common/widgets/forgotten_password/forgotten_password_enter_password_state_widget.dart';
 
-class ForgottenPasswordPage extends ConsumerWidget {
+class ForgottenPasswordPage extends StatelessWidget {
   const ForgottenPasswordPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    var isLoading = ref.watch(
-      forgottenPasswordStateProvider.select((state) => state.isLoading),
+  Widget build(BuildContext context) {
+    return ForgottenPasswordPageViewModel(
+      builder: (vm) => _ForgottenPasswordView(vm: vm),
     );
+  }
+}
 
-    if (isLoading) {
-      return Padding(
-        padding: EdgeInsetsGeometry.all(8),
+class _ForgottenPasswordView extends StatelessWidget {
+  final ForgottenPasswordPageViewModelState vm;
+  const _ForgottenPasswordView({required this.vm});
+
+  @override
+  Widget build(BuildContext context) {
+    if (vm.isLoading) {
+      return const Padding(
+        padding: EdgeInsets.all(8),
         child: CircularProgressIndicator(),
       );
     }
 
-    var step = ref.watch(
-      forgottenPasswordStateProvider.select((state) => state.step),
-    );
-
-    return switch (step) {
+    return switch (vm.step) {
       ForgottenPasswordStep.enterEmail =>
-        ForgottenPasswordEnterEmailStateWidget(),
+        ForgottenPasswordEnterEmailStateWidget(vm: vm),
       ForgottenPasswordStep.enterCode =>
-        ForgottenPasswordEnterCodeStateWidget(),
+        ForgottenPasswordEnterCodeStateWidget(vm: vm),
       ForgottenPasswordStep.enterNewPassword =>
-        ForgottenPasswordEnterPasswordStateWidget(),
+        ForgottenPasswordEnterPasswordStateWidget(vm: vm),
     };
   }
 }

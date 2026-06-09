@@ -111,6 +111,7 @@ class ForgottenPasswordService extends StateNotifier<ForgottenPasswordState> {
     );
 
     if (response.statusCode == 204) {
+      state = state.copyWith(isLoading: false);
       return true;
     }
 
