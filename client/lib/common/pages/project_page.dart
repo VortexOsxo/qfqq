@@ -21,7 +21,9 @@ final filteredProjectProvider = Provider<List<Project>>((ref) {
 
   return projects
       .where(
-        (project) => project.title.toLowerCase().contains(query.toLowerCase()),
+        (project) =>
+            project.title.toLowerCase().contains(query.toLowerCase()) ||
+            project.number.toString().contains(query.toLowerCase()),
       )
       .toList();
 });

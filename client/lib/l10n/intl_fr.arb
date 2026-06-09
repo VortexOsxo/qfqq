@@ -110,7 +110,7 @@
   "projectSupervisor": "Superviseur",
 
   "projectPageTitle": "Projets",
-  "projectPageSearchHint": "Rechercher",
+  "projectPageSearchHint": "Rechercher par id ou titre",
   "projectNotFound": "Projet introuvable",
   
   "projectCreationPageTitleHint": "Entrez un titre de projet",
