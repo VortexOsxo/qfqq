@@ -20,71 +20,77 @@ class _MobileSignupView extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = S.of(context);
 
-    return Form(
-      key: vm.formKey,
-      child: Column(
-        children: [
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: loc.attributeEmail,
-              errorText: vm.error.emailError,
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Form(
+        key: vm.formKey,
+        child: Column(
+          children: [
+            TextFormField(
+              decoration: InputDecoration(
+                labelText: loc.attributeEmail,
+                errorText: vm.error.emailError,
+              ),
+              onSaved: vm.saveEmail,
             ),
-            onSaved: vm.saveEmail,
-          ),
-          const SizedBox(height: 8),
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: loc.attributeFirstName,
-              errorText: vm.error.firstNameError,
+            const SizedBox(height: 8),
+            TextFormField(
+              decoration: InputDecoration(
+                labelText: loc.attributeFirstName,
+                errorText: vm.error.firstNameError,
+              ),
+              onSaved: vm.saveFirstName,
             ),
-            onSaved: vm.saveFirstName,
-          ),
-          const SizedBox(height: 8),
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: loc.attributeLastName,
-              errorText: vm.error.lastNameError,
+            const SizedBox(height: 8),
+            TextFormField(
+              decoration: InputDecoration(
+                labelText: loc.attributeLastName,
+                errorText: vm.error.lastNameError,
+              ),
+              onSaved: vm.saveLastName,
             ),
-            onSaved: vm.saveLastName,
-          ),
-          const SizedBox(height: 8),
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: loc.attributePassword,
-              errorText: vm.error.passwordError,
+            const SizedBox(height: 8),
+            TextFormField(
+              decoration: InputDecoration(
+                labelText: loc.attributePassword,
+                errorText: vm.error.passwordError,
+              ),
+              obscureText: true,
+              onSaved: vm.savePassword,
             ),
-            obscureText: true,
-            onSaved: vm.savePassword,
-          ),
-          const SizedBox(height: 8),
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: loc.signUpPageConfirmPassword,
-              errorText: vm.error.passwordError,
+            const SizedBox(height: 8),
+            TextFormField(
+              decoration: InputDecoration(
+                labelText: loc.signUpPageConfirmPassword,
+                errorText: vm.error.passwordError,
+              ),
+              obscureText: true,
+              onSaved: vm.saveConfirmPassword,
             ),
-            obscureText: true,
-            onSaved: vm.saveConfirmPassword,
-          ),
-          const SizedBox(height: 16),
-          if (vm.error.authError != null)
-            Text(vm.error.authError!, style: const TextStyle(color: Colors.red)),
-          Align(
-            alignment: Alignment.center,
-            child: ElevatedButton(
-              style: squareButtonStyle(context),
-              onPressed: vm.submit,
-              child: Text(loc.signupPageButtonSignup),
+            const SizedBox(height: 16),
+            if (vm.error.authError != null)
+              Text(
+                vm.error.authError!,
+                style: const TextStyle(color: Colors.red),
+              ),
+            Align(
+              alignment: Alignment.center,
+              child: ElevatedButton(
+                style: squareButtonStyle(context),
+                onPressed: vm.submit,
+                child: Text(loc.signupPageButtonSignup),
+              ),
             ),
-          ),
-          const SizedBox(height: 32),
-          Align(
-            alignment: Alignment.center,
-            child: TextButton(
-              onPressed: vm.goToLogin,
-              child: Text(loc.signupPageLinkLogin),
+            const SizedBox(height: 32),
+            Align(
+              alignment: Alignment.center,
+              child: TextButton(
+                onPressed: vm.goToLogin,
+                child: Text(loc.signupPageLinkLogin),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
