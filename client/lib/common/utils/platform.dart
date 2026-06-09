@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 enum PlatformType { mobile, desktop, unknown }
 
-PlatformType checkPlatform() {
+PlatformType _checkPlatform() {
   if (defaultTargetPlatform == TargetPlatform.android ||
       defaultTargetPlatform == TargetPlatform.iOS) {
     return PlatformType.mobile;
@@ -13,3 +13,5 @@ PlatformType checkPlatform() {
   }
   return PlatformType.unknown;
 }
+
+final PlatformType platformType = _checkPlatform();
