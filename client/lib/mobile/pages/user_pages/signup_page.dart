@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qfqq/common/pages/user_pages/signup_page_view_model.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/generated/l10n.dart';
+import 'package:qfqq/mobile/layouts/auth_page_layout.dart';
 
 class SignupPage extends StatelessWidget {
   const SignupPage({super.key});
@@ -20,9 +21,7 @@ class _MobileSignupView extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = S.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Form(
+    final form = Form(
         key: vm.formKey,
         child: Column(
           children: [
@@ -91,7 +90,8 @@ class _MobileSignupView extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
+      );
+
+    return AuthPageLayout(child: form);
   }
 }
