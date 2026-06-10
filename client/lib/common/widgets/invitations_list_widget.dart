@@ -22,6 +22,7 @@ class InvitationsListWidget extends ConsumerWidget {
             SizedBox(width: 16),
             Expanded(flex: 1, child: Text(loc.attributeEmail)),
             Expanded(flex: 1, child: Text(loc.commonRole)),
+            Text(loc.commonAction),
             SizedBox(width: 16),
           ],
         ),
@@ -34,12 +35,19 @@ class InvitationsListWidget extends ConsumerWidget {
               final invitation = invitations[index];
 
               return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Expanded(flex: 1, child: Text(invitation.email)),
                   Expanded(flex: 1, child: _RoleName(invitation.roleId)),
-                  SizedBox(width: 16),
+                  IconButton(
+                    onPressed: () async {
+                      final service = ref.read(invitationsProvider.notifier);
+                      await service.revokeInvitation(invitation.email);
+                    },
+                    icon: Icon(Icons.close, color: theme.colorScheme.error),
+                    tooltip: 'Revoke',
+                  ),
+                  const SizedBox(width: 16),
                 ],
               );
             },
