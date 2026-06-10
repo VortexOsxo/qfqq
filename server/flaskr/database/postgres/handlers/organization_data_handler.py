@@ -1,11 +1,10 @@
 import os
-import psycopg
 from psycopg import sql
 from flask import current_app
 
 from ..postgres import read_query, write_query, get_db_access
 from flaskr.utils.organization import generate_org_slug
-
+from flaskr.models.data.invitation import Invitation
 
 class OrganizationDataHandler:
     @classmethod
@@ -70,13 +69,26 @@ class OrganizationDataHandler:
         return result[0] if result else None
     
     @classmethod
+    def get_invites(cls, orgId):
+        query = "SELECT orgId, email, roleId from public.invitations WHERE orgId = %s;"
+        params = (orgId,)
+        results = read_query(query, params)
+        return [Invitation(*result) for result in results]
+
+    @classmethod
+    def revoke_invite(cls, orgId, email):
+        query = "DELETE FROM public.invitations WHERE orgId = %s and email = %s;"
+        params = (orgId, email)
+        write_query(query, params)
+
+    @classmethod
     def add_invite(cls, orgId, email, roleId = None):
         query = "INSERT INTO public.invitations (orgId, email, roleId) VALUES (%s, %s, %s);"
         params = (orgId, email, roleId or 1)
         write_query(query, params)
     
     @classmethod
-    def delete_invite(cls, email):
+    def delete_email_invite(cls, email):
         query = "DELETE FROM public.invitations WHERE email = %s;"
         params = (email,)
         write_query(query, params)
