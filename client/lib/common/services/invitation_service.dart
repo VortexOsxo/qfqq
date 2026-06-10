@@ -11,11 +11,11 @@ class InvitationsService extends StateNotifier<List<Invitation>> {
     auth.connectionNotifier.subscribe((_) => loadInvitations());
   }
 
-  Future<void> addInvitations(List<String> emails, int roleId) async {
+  Future<void> addInvitation(String email, int roleId) async {
     final response = await _http.post(
       _http.getUri('organizations/invitations'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'emails': emails, 'roleId': roleId}),
+      body: jsonEncode({'email': email, 'roleId': roleId}),
     );
 
     if (response.statusCode != 201) {
@@ -23,26 +23,28 @@ class InvitationsService extends StateNotifier<List<Invitation>> {
     }
 
     final data = jsonDecode(response.body);
-    final List<Invitation> addedInvitations = data.map<Invitation>(Invitation.fromJson).toList();
-
-    if (addedInvitations.isEmpty) {
+    Invitation invitation;
+    try {
+      invitation = Invitation.fromJson(data);
+    } catch (e) {
       return;
     }
 
-    final merged = <String, Invitation>{};
+    final updatedState = [...state];
+    final index = updatedState.indexWhere((existing) {
+      return existing.orgId == invitation.orgId &&
+          existing.email.toLowerCase() == invitation.email.toLowerCase();
+    });
 
-    for (final invitation in state) {
-      merged[_inviteKey(invitation)] = invitation;
+    if (index >= 0) {
+      updatedState[index] = invitation;
+    } else {
+      updatedState.add(invitation);
     }
 
-    for (final invitation in addedInvitations) {
-      merged[_inviteKey(invitation)] = invitation;
-    }
-
-    state = merged.values.toList();
+    state = updatedState;
   }
 
-  String _inviteKey(Invitation invitation) => '${invitation.orgId}:${invitation.email.toLowerCase()}';
 
   Future<void> loadInvitations() async {
     final response = await _http.get(
@@ -53,7 +55,6 @@ class InvitationsService extends StateNotifier<List<Invitation>> {
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       state = data.map(Invitation.fromJson).toList();
-      print(state);
     }
   }
 }
