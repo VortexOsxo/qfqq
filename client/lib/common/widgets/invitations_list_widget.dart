@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/providers/invitations_provider.dart';
+import 'package:qfqq/common/providers/roles_provider.dart';
 import 'package:qfqq/common/templates/card_template.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -37,7 +38,7 @@ class InvitationsListWidget extends ConsumerWidget {
                 children: [
                   SizedBox(width: 16),
                   Expanded(flex: 1, child: Text(invitation.email)),
-                  Expanded(flex: 1, child: Text(invitation.roleId.toString())),
+                  Expanded(flex: 1, child: _RoleName(invitation.roleId)),
                   SizedBox(width: 16),
                 ],
               );
@@ -47,5 +48,20 @@ class InvitationsListWidget extends ConsumerWidget {
       ],
     );
     return buildContentListCardTemplate(cardContent);
+  }
+}
+
+
+class _RoleName extends ConsumerWidget {
+  final int roleId;
+
+  const _RoleName(this.roleId);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final String? roleName = ref.watch(roleByIdProvider(roleId))?.name;
+    assert(roleName != null);
+
+    return Text(roleName ?? "");
   }
 }
