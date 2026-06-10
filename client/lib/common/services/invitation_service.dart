@@ -45,6 +45,19 @@ class InvitationsService extends StateNotifier<List<Invitation>> {
     state = updatedState;
   }
 
+  Future<void> revokeInvitation(String email) async {
+    final response = await _http.delete(
+      _http.getUri('organizations/invitations/$email'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode != 200) {
+      return;
+    }
+
+    state = state.where((e) => e.email != email).toList();
+  }
+
 
   Future<void> loadInvitations() async {
     final response = await _http.get(

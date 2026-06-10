@@ -105,3 +105,13 @@ def get_invites():
 
     invitations = OrganizationDataHandler.get_invites(orgId)
     return jsonify([i.to_dict() for i in invitations]), 200
+
+@organizations_bp.delete("invitations/<email>")
+@permission_middleware(Permission.CanUpdatePermissions)
+def delete_invite(email):
+    orgId = g.org_id
+    if orgId is None:
+        return "", 400
+
+    OrganizationDataHandler.revoke_invite(orgId=orgId, email=email)
+    return "", 200
