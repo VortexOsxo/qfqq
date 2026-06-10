@@ -6,6 +6,7 @@ class DefaultTextField extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final int maxLines;
   final String? error;
+  final TextEditingController? controller;
 
   const DefaultTextField({
     super.key,
@@ -14,12 +15,14 @@ class DefaultTextField extends StatelessWidget {
     this.onChanged,
     this.maxLines = 1,
     this.error,
+    this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      initialValue: initialValue,
+      controller: controller,
+      initialValue: controller == null ? initialValue : null,
       onChanged: onChanged,
       maxLines: maxLines,
 

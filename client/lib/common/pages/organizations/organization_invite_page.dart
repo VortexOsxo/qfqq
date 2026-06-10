@@ -1,39 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:qfqq/common/models/errors/role_errors.dart';
 import 'package:qfqq/common/providers/invitations_provider.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/widgets/invitations_list_widget.dart';
-import 'package:qfqq/common/widgets/reusables/selection_text_fields/emails_text_field.dart';
+import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/common/widgets/role_dropdown_menu.dart';
 import 'package:qfqq/generated/l10n.dart';
-
-final _emailFieldKey = GlobalKey<EmailsTextFieldState>();
 
 class OrganizationInvitePage extends ConsumerStatefulWidget {
   const OrganizationInvitePage({super.key});
 
   @override
-  ConsumerState<OrganizationInvitePage> createState() => _OrganizationInviteState();
+  ConsumerState<OrganizationInvitePage> createState() =>
+      _OrganizationInviteState();
 }
 
 class _OrganizationInviteState extends ConsumerState<OrganizationInvitePage> {
-  List<String> _emails = [];
+  late final TextEditingController _emailController;
+  
+  String _email = '';
   int _roleId = 1;
-  RoleErrors errors = RoleErrors();
-  bool isSending = false;
 
-  void inviteMembers() async {
-    if (_emails.isEmpty) return;
+  @override
+  void initState() {
+    super.initState();
+    _emailController = TextEditingController(text: _email);
+  }
 
-    setState(() => isSending = true);
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  void inviteMember() async {
+    if (_email.isEmpty) return; // TODO: better validation ?
+
+    final email = _email;
+
+    setState(() {
+      _email = "";
+      _emailController.clear();
+    });
+
     final service = ref.read(invitationsProvider.notifier);
-    await service.addInvitations(_emails, _roleId);
-    if (!mounted) return;
-
-    setState(() => isSending = false);
-    () => context.go('/organization');
+    await service.addInvitation(email, _roleId);
   }
 
   @override
@@ -59,11 +71,10 @@ class _OrganizationInviteState extends ConsumerState<OrganizationInvitePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: EmailsTextField(
-                  key: _emailFieldKey,
+                child: DefaultTextField(
+                  controller: _emailController,
                   hintText: loc.inviteMemberEmailHint,
-                  onChanged: (value) => _emails = value,
-                  error: errors.nameError,
+                  onChanged: (v) => _email = v,
                 ),
               ),
               const SizedBox(width: 16),
@@ -74,14 +85,16 @@ class _OrganizationInviteState extends ConsumerState<OrganizationInvitePage> {
               ),
               const SizedBox(width: 16),
               ElevatedButton(
-                onPressed: () => _emailFieldKey.currentState?.addCurrent(),
+                onPressed: inviteMember,
                 style: squareButtonStyle(context).copyWith(
                   minimumSize: const WidgetStatePropertyAll(Size(180, 56)),
                 ),
-                child: Text(loc.commonAdd),
+                child: Text(loc.buttonInviteMemberSubmit),
               ),
             ],
           ),
+
+          SizedBox(height: 24),
 
           Text(
             loc.inviteMemberPageCurrent,
@@ -91,28 +104,15 @@ class _OrganizationInviteState extends ConsumerState<OrganizationInvitePage> {
             ),
           ),
           Expanded(child: InvitationsListWidget()),
-          Row(
-            children: [
-              ElevatedButton(
-                onPressed: () => context.go('/organization'),
-                style: squareButtonStyle(context).copyWith(
-                  backgroundColor: const WidgetStatePropertyAll(Colors.white),
-                  foregroundColor: WidgetStatePropertyAll(
-                    Theme.of(context).primaryColor,
-                  ),
-                ),
-                child: Text(loc.commonBack),
+          ElevatedButton(
+            onPressed: () => context.go('/organization'),
+            style: squareButtonStyle(context).copyWith(
+              backgroundColor: const WidgetStatePropertyAll(Colors.white),
+              foregroundColor: WidgetStatePropertyAll(
+                Theme.of(context).primaryColor,
               ),
-              const SizedBox(width: 12),
-              ElevatedButton(
-                onPressed: () => inviteMembers(),
-                style: squareButtonStyle(context),
-                child:
-                    isSending
-                        ? CircularProgressIndicator()
-                        : Text(loc.buttonInviteMemberSubmit),
-              ),
-            ],
+            ),
+            child: Text(loc.commonBack),
           ),
         ],
       ),

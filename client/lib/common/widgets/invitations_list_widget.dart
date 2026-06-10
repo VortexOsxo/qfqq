@@ -11,7 +11,7 @@ class InvitationsListWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final loc = S.of(context);
-    final invitations = ref.read(invitationsProvider);
+    final invitations = ref.watch(invitationsProvider);
 
     Widget cardContent = Column(
       mainAxisSize: MainAxisSize.min,
