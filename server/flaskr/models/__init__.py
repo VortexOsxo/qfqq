@@ -3,3 +3,5 @@ from .data.meeting_agenda import MeetingAgenda, MeetingAgendaStatus
 from .data.decision import Decision, DecisionStatus
 from .data.project import Project
 from .data.role import Role
+from .data.invitation import Invitation
+from .permission import Permission

@@ -50,22 +50,13 @@ class OrganizationService {
       return loc.organizationJoinUserRequired;
     }
 
-    if (data['orgId'] == 1) {
-      return loc.errorRequiredField;
+    switch (data['orgId']) {
+      case 1:
+        return loc.errorRequiredField;
+      case 15:
+        return loc.organizationJoinInvalidOrg;
+      default:
+        return loc.errorUnknown;
     }
-
-    if (data['orgId'] == 15) {
-      return loc.organizationJoinInvalidOrg;
-    }
-
-    return loc.errorUnknown;
-  }
-
-  Future<void> inviteMembers(List<String> emails, int roleId) async {
-    final _ = await _http.post(
-      _http.getUri('organizations/invite'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'emails': emails, 'roleId': roleId}),
-    );
   }
 }

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/errors/role_errors.dart';
-import 'package:qfqq/common/services/organization_service.dart';
+import 'package:qfqq/common/providers/invitations_provider.dart';
 import 'package:qfqq/common/theme/styles.dart';
+import 'package:qfqq/common/widgets/invitations_list_widget.dart';
 import 'package:qfqq/common/widgets/reusables/selection_text_fields/emails_text_field.dart';
 import 'package:qfqq/common/widgets/role_dropdown_menu.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -27,8 +28,8 @@ class _OrganizationInviteState extends ConsumerState<OrganizationInvitePage> {
     if (_emails.isEmpty) return;
 
     setState(() => isSending = true);
-    final service = ref.read(organizationServiceProvider);
-    await service.inviteMembers(_emails, _roleId);
+    final service = ref.read(invitationsProvider.notifier);
+    await service.addInvitations(_emails, _roleId);
     if (!mounted) return;
 
     setState(() => isSending = false);
@@ -82,16 +83,14 @@ class _OrganizationInviteState extends ConsumerState<OrganizationInvitePage> {
             ],
           ),
 
-          // TODO: Add sent invitations
-
-          // Text(
-          //   loc.inviteMemberPageCurrent,
-          //   style: theme.textTheme.headlineMedium?.copyWith(
-          //     fontWeight: FontWeight.bold,
-          //     color: theme.primaryColor,
-          //   ),
-          // ),
-          Expanded(child: SizedBox()),
+          Text(
+            loc.inviteMemberPageCurrent,
+            style: theme.textTheme.headlineMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: theme.primaryColor,
+            ),
+          ),
+          Expanded(child: InvitationsListWidget()),
           Row(
             children: [
               ElevatedButton(
