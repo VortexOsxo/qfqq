@@ -59,15 +59,30 @@ class _OrganizationInviteState extends ConsumerState<OrganizationInvitePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            loc.inviteMemberLabel,
-            style: theme.textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: theme.primaryColor,
-            ),
+          Row(
+            children: [
+              IconButton(
+                onPressed: () => context.go('/organization'),
+                icon: Icon(
+                  Icons.chevron_left,
+                  color: theme.primaryColor,
+                  size: 32,
+                ),
+                tooltip: loc.commonBack,
+              ),
+              Text(
+                loc.inviteMemberLabel,
+                style: theme.textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: theme.primaryColor,
+                ),
+              ),
+            ],
           ),
           SizedBox(height: 12),
-          Row(
+          Padding(
+            padding: EdgeInsetsGeometry.symmetric(horizontal: 16, vertical: 0),
+            child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
@@ -92,7 +107,7 @@ class _OrganizationInviteState extends ConsumerState<OrganizationInvitePage> {
                 child: Text(loc.buttonInviteMemberSubmit),
               ),
             ],
-          ),
+          ),),
 
           SizedBox(height: 24),
 
@@ -104,16 +119,6 @@ class _OrganizationInviteState extends ConsumerState<OrganizationInvitePage> {
             ),
           ),
           Expanded(child: InvitationsListWidget()),
-          ElevatedButton(
-            onPressed: () => context.go('/organization'),
-            style: squareButtonStyle(context).copyWith(
-              backgroundColor: const WidgetStatePropertyAll(Colors.white),
-              foregroundColor: WidgetStatePropertyAll(
-                Theme.of(context).primaryColor,
-              ),
-            ),
-            child: Text(loc.commonBack),
-          ),
         ],
       ),
     );
