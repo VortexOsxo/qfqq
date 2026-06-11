@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qfqq/common/widgets/common_app_bar.dart';
-import 'package:qfqq/common/widgets/sidebar_widget.dart';
+import 'package:qfqq/desktop/widgets/sidebar_widget.dart';
 
 Scaffold defaultPageScaffold(BuildContext context, Widget child, {String? title}) {
   String pageTitle = title ?? "QFQQ";
