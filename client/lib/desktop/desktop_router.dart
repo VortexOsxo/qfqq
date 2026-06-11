@@ -9,7 +9,7 @@ import 'package:qfqq/common/pages/agenda_modification_page.dart';
 import 'package:qfqq/common/pages/agenda_view_page.dart';
 import 'package:qfqq/common/pages/decisions_list_page.dart';
 import 'package:qfqq/common/pages/decision_view_page.dart';
-import 'package:qfqq/common/pages/home_page.dart';
+import 'package:qfqq/desktop/pages/home_page.dart';
 import 'package:qfqq/common/pages/user_pages/forgotten_password_page.dart';
 import 'package:qfqq/common/pages/project_modification_page.dart';
 import 'package:qfqq/common/pages/project_page.dart';
