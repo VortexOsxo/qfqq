@@ -12,7 +12,7 @@ import 'package:qfqq/common/pages/decision_view_page.dart';
 import 'package:qfqq/desktop/pages/home_page.dart';
 import 'package:qfqq/common/pages/user_pages/forgotten_password_page.dart';
 import 'package:qfqq/common/pages/project_modification_page.dart';
-import 'package:qfqq/common/pages/project_page.dart';
+import 'package:qfqq/desktop/pages/project_page.dart';
 import 'package:qfqq/common/pages/project_view_page.dart';
 import 'package:qfqq/common/pages/decisions_report_page.dart';
 import 'package:qfqq/common/pages/user_pages/profile_page.dart';

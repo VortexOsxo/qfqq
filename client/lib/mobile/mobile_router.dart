@@ -9,7 +9,7 @@ import 'package:qfqq/common/pages/decision_view_page.dart';
 import 'package:qfqq/mobile/pages/home_page.dart';
 import 'package:qfqq/common/pages/user_pages/forgotten_password_page.dart';
 import 'package:qfqq/common/pages/project_modification_page.dart';
-import 'package:qfqq/common/pages/project_page.dart';
+import 'package:qfqq/mobile/pages/project_page.dart';
 import 'package:qfqq/common/pages/project_view_page.dart';
 import 'package:qfqq/common/pages/user_pages/profile_page.dart';
 import 'package:qfqq/mobile/pages/user_pages/signup_page.dart';
@@ -76,7 +76,7 @@ final GoRouter mobileRouter = GoRouter(
           },
         ),
         GoRoute(
-          path: '/project/:id',
+          path: '/projects/:id',
           builder: (context, state) {
             final id = state.pathParameters['id']!;
             return ProjectViewPage(projectId: int.tryParse(id) ?? 0);
