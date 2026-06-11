@@ -45,7 +45,7 @@ class InvitationsListWidget extends ConsumerWidget {
                       await service.revokeInvitation(invitation.email);
                     },
                     icon: Icon(Icons.close, color: theme.colorScheme.error),
-                    tooltip: 'Revoke',
+                    tooltip: loc.commonRevoke,
                   ),
                   const SizedBox(width: 16),
                 ],

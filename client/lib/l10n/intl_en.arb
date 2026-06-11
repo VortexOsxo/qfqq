@@ -220,6 +220,7 @@
   "commonStart": "Start",
   "commonModify": "Modify",
   "commonAction": "Action",
+  "commonRevoke": "Revoke",
   "commonProfile": "Profile",
   "commonReport": "Report",
 
