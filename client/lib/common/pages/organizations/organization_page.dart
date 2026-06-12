@@ -5,6 +5,7 @@ import 'package:qfqq/common/providers/roles_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/providers/users_roles_provider.dart';
 import 'package:qfqq/common/theme/styles.dart';
+import 'package:qfqq/common/utils/role.dart';
 import 'package:qfqq/common/utils/string.dart';
 import 'package:qfqq/common/widgets/role_creation_modal.dart';
 import 'package:qfqq/common/widgets/role_dropdown_menu.dart';
@@ -153,11 +154,7 @@ class RolesTab extends ConsumerWidget {
                       return DataRow(
                         cells: [
                           DataCell(
-                            Text(
-                              role.id == 1
-                                  ? loc.roleNameDefault
-                                  : capitalize(role.name),
-                            ),
+                            Text(formatRoleName(role)),
                           ),
                           _checkboxDataCell(
                             ref,

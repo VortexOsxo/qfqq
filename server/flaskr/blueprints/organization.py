@@ -24,7 +24,7 @@ def create_organization(organizationName: str):
     if userId is None:
         return jsonify({"orgId": orgId}), 201
     
-    result = UserDataHandler.add_user_to_org(userId, orgId)
+    result = UserDataHandler.add_user_to_org(userId, orgId, 2)
     assert result, "Should not fail to join a just created org"
 
     token = create_token(userId, orgId)

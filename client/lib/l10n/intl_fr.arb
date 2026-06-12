@@ -288,7 +288,8 @@
   "buttonCreateAgenda": "Créer un ordre du jour",
   "buttonCreateProject": "Créer un projet",
   "buttonCreateRole": "Créer un rôle",
-  "roleNameDefault": "Défaut",
+  "roleNameMember": "Membre",
+  "roleNameAdmin": "Administrateur",
 
   "roleName": "Nom du rôle",
   "roleCanWrite": "Peut écrire",
