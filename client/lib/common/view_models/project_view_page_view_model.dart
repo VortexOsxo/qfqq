@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/project.dart';
-import 'package:qfqq/common/providers/project_view_content_provider.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/services/modal_service.dart';
@@ -27,11 +26,6 @@ class ProjectViewPageViewModelState extends ConsumerState<ProjectViewPageViewMod
 
   String get supervisorName =>
       ref.watch(userByIdProvider(project?.supervisorId ?? 0))?.displayName ?? '';
-
-  String get selectedContent => ref.watch(projectViewContentProvider);
-
-  void onContentChanged(String content) =>
-      ref.read(projectViewContentProvider.notifier).changeContent(content);
 
   void goToModify() => context.go('/projects/creation', extra: project);
 
