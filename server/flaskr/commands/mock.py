@@ -27,50 +27,54 @@ def add_project(client, headers, title, goals, supervisorId):
     else:
         click.echo(f"Created {title}")
 
+def create_user(client, firstname, lastname, email):
+    signup_resp = client.post(
+        "/auth/signup",
+        headers={"QfqqVersion": "beta"},
+        json={
+            "firstName": firstname,
+            "lastName": lastname,
+            "email": email,
+            "password": "Password1234!",
+        },
+    )
+
+    if signup_resp.status_code == 201:
+        click.echo(f"Created user: {email}")
+    else:
+        click.echo(f"Failed to create user {email}: {signup_resp.get_json()}")
+
 
 @click.command("mock-db")
 @with_appcontext
 def mock_command():
     with current_app.test_client() as client:
+        create_user(client, "Salut", "Hi", "salut@gmail.com")
+
+        headers = get_auth_headers(client)
+
         org_resp = client.post(
             "/organizations/",
-            headers={"QfqqVersion": "beta"},
+            headers=headers,
             json={"organizationName": "Organization1"},
         )
         if org_resp.status_code != 201:
             click.echo(f"Failed to create organization: {org_resp.get_json()}")
             return
 
-        orgId = org_resp.get_json()["orgId"]
+        orgId = org_resp.get_json()
         click.echo(f"Created organization with slug: {orgId}")
 
         # Create Users
         users = [
-            ("Salut", "Hi", "salut@gmail.com"),
             ("Bobby", "Ho", "bobby@gmail.com"),
             ("Greg", "Ha", "greg@gmail.com"),
             ("Lyne", "Dahan", "lyne@gmail.com")
         ]
 
-        password = "Password1234!"
-
         index = 1
         for first, last, email in users:
-            signup_resp = client.post(
-                "/auth/signup",
-                headers={"QfqqVersion": "beta"},
-                json={
-                    "firstName": first,
-                    "lastName": last,
-                    "email": email,
-                    "password": password,
-                },
-            )
-
-            if signup_resp.status_code == 201:
-                click.echo(f"Created user: {email}")
-            else:
-                click.echo(f"Failed to create user {email}: {signup_resp.get_json()}")
+            create_user(client, first, last, email)
 
             join_resp = client.post(
                 "/organizations/1/join",
@@ -84,7 +88,6 @@ def mock_command():
             index += 1
 
         # Create project
-        headers = get_auth_headers(client)
 
         add_project(
             client=client,

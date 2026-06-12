@@ -137,4 +137,5 @@ FROM
 INSERT INTO
   roles (name, canWrite, canDelete, canUpdatePermissions)
 VALUES
-  ('default', true, true, true);
+  ('default', true, false, false),
+  ('admin', true, true, true);

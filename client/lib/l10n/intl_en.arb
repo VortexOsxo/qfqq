@@ -287,7 +287,8 @@
   "buttonCreateAgenda": "Create Meeting Agenda",
   "buttonCreateProject": "Create a Project",
   "buttonCreateRole": "Create a Role",
-  "roleNameDefault": "Default",
+  "roleNameMember": "Member",
+  "roleNameAdmin": "Admin",
 
   "roleName": "Role Name",
   "roleCanWrite": "Can Write",
