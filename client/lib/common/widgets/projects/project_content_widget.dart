@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/decision.dart';
 import 'package:qfqq/common/models/project.dart';
-import 'package:qfqq/common/providers/project_view_content_provider.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/widgets/decisions/decisions_list_widget.dart';
 import 'package:qfqq/common/widgets/pdf_viewer_widget.dart';
+import 'package:qfqq/generated/l10n.dart';
 
 class ProjectContentWidget extends ConsumerWidget {
   final Project project;
@@ -14,12 +14,33 @@ class ProjectContentWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final content = ref.watch(projectViewContentProvider);
+    final loc = S.of(context);
 
-    if (content == 'decisions') {
-      return buildDecisionLists(context);
-    }
-    return buildReportViewer(context);
+    return DefaultTabController(
+      length: 2,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TabBar(
+            isScrollable: true,
+            tabAlignment: TabAlignment.start,
+            tabs: [
+              Tab(text: loc.commonObjectDecisions),
+              Tab(text: loc.commonObjectReports),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: TabBarView(
+              children: [
+                buildDecisionLists(context),
+                buildReportViewer(context),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildDecisionLists(BuildContext context) {
