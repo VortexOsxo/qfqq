@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/templates/card_template.dart';
@@ -6,10 +5,11 @@ import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/view_models/agenda_list_page_view_model.dart';
+import 'package:qfqq/common/widgets/dropdowns/agenda_status_dropdown_menu.dart';
+import 'package:qfqq/common/widgets/dropdowns/project_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/status_chip.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
 import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
-import 'package:qfqq/common/widgets/reusables/default_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -69,68 +69,19 @@ class _AgendaPageView extends StatelessWidget {
           SizedBox(height: 8),
           Row(
             children: [
-              _buildStatusFilterDropdown(context),
+              AgendaStatusDropdownMenu(
+                initialStatus: vm.statusQuery,
+                valueChanged: vm.onStatusQueryChanged,
+              ),
               SizedBox(width: 16),
-              _buildProjectFilterDropdown(context),
+              ProjectDropdownMenu(
+                initialProject: vm.projectIdQuery,
+                valueChanged: vm.onProjectQueryChanged,
+              ),
             ],
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildStatusFilterDropdown(BuildContext context) {
-    String getStatusLabel(MeetingAgendaStatus status) {
-      var loc = S.of(context);
-      var ui = getMeetingAgendaStatusUI(loc, status);
-      return '${loc.attributeStatus}: ${ui.label}';
-    }
-
-    final List<DropdownMenuEntry<MeetingAgendaStatus?>> menuEntries =
-        UnmodifiableListView([
-          DropdownMenuEntry<MeetingAgendaStatus?>(
-            value: null,
-            label: S.of(context).agendaListAnyStatus,
-          ),
-          ...MeetingAgendaStatus.values.map(
-            (status) => DropdownMenuEntry<MeetingAgendaStatus?>(
-              value: status,
-              label: getStatusLabel(status),
-            ),
-          ),
-        ]);
-
-    return DefaultDropdownMenu<MeetingAgendaStatus?>(
-      entries: menuEntries,
-      initialSelection: vm.statusQuery,
-      onSelected: vm.onStatusQueryChanged,
-    );
-  }
-
-  Widget _buildProjectFilterDropdown(BuildContext context) {
-    var projects = vm.projects;
-
-    final List<DropdownMenuEntry<int?>> menuEntries = UnmodifiableListView([
-      DropdownMenuEntry<int?>(
-        value: null,
-        label: S.of(context).agendaListAnyProject,
-      ),
-      DropdownMenuEntry<int?>(
-        value: -1,
-        label: S.of(context).agendaListNoProject,
-      ),
-
-      ...projects.map(
-        (project) => DropdownMenuEntry<int?>(
-          value: project.id,
-          label: '${S.of(context).attributeProject}: ${project.title}',
-        ),
-      ),
-    ]);
-    return DefaultDropdownMenu<int?>(
-      entries: menuEntries,
-      initialSelection: vm.projectIdQuery,
-      onSelected: vm.onProjectQueryChanged,
     );
   }
 

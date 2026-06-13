@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/providers/roles_provider.dart';
 import 'package:qfqq/common/utils/role.dart';
-import 'package:qfqq/common/widgets/reusables/default_dropdown_menu.dart';
+import 'package:qfqq/common/widgets/dropdowns/default_dropdown_menu.dart';
 
 class RoleDropdownMenu extends ConsumerWidget {
   final int initialRoleId;

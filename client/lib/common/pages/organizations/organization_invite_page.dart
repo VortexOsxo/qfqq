@@ -5,7 +5,7 @@ import 'package:qfqq/common/providers/invitations_provider.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/widgets/invitations_list_widget.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
-import 'package:qfqq/common/widgets/role_dropdown_menu.dart';
+import 'package:qfqq/common/widgets/dropdowns/role_dropdown_menu.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class OrganizationInvitePage extends ConsumerStatefulWidget {

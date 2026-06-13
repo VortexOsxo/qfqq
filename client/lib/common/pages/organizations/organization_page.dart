@@ -8,7 +8,7 @@ import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/role.dart';
 import 'package:qfqq/common/utils/string.dart';
 import 'package:qfqq/common/widgets/role_creation_modal.dart';
-import 'package:qfqq/common/widgets/role_dropdown_menu.dart';
+import 'package:qfqq/common/widgets/dropdowns/role_dropdown_menu.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 // Inpirations
