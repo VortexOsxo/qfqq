@@ -1,16 +1,11 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
-import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
-import 'package:qfqq/common/providers/projects_provider.dart';
-import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/templates/card_template.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
-import 'package:qfqq/common/utils/is_id_valid.dart';
+import 'package:qfqq/common/view_models/agenda_list_page_view_model.dart';
 import 'package:qfqq/common/widgets/status_chip.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
 import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
@@ -18,62 +13,37 @@ import 'package:qfqq/common/widgets/reusables/default_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 
-final agendaSearchQueryProvider = StateProvider<String>((ref) => '');
-final agendaStatusQueryProvider = StateProvider<MeetingAgendaStatus?>(
-  (ref) => null,
-);
-final agendaProjectQueryProvider = StateProvider<int?>((ref) => null);
 
-final filteredAgendaProvider = Provider<List<MeetingAgenda>>((ref) {
-  var agendas = ref.watch(meetingsAgendasProvider);
-
-  final query = ref.watch(agendaSearchQueryProvider);
-  if (query.isNotEmpty) {
-    agendas =
-        agendas
-            .where(
-              (agenda) =>
-                  agenda.title.toLowerCase().contains(query.toLowerCase()) ||
-                  agenda.number.toString().contains(query),
-            )
-            .toList();
-  }
-
-  final status = ref.watch(agendaStatusQueryProvider);
-  if (status != null) {
-    agendas =
-        agendas
-            .where((MeetingAgenda agenda) => agenda.status == status)
-            .toList();
-  }
-
-  final projectId = ref.watch(agendaProjectQueryProvider);
-  if (projectId == -1) {
-    agendas = agendas.where((agenda) => !isIdValid(agenda.projectId)).toList();
-  }
-  else if (isIdValid(projectId)) {
-    agendas = agendas.where((agenda) => agenda.projectId == projectId).toList();
-  }
-
-  return agendas;
-});
-
-class AgendasListPage extends ConsumerWidget {
+class AgendasListPage extends StatelessWidget {
   const AgendasListPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final agendas = ref.watch(filteredAgendaProvider);
+  Widget build(BuildContext context) {
+    return AgendaListPageViewModel(
+      builder: (vm) => _AgendaPageView(vm: vm)
+    );
+  }
+}
+
+class _AgendaPageView extends StatelessWidget {
+  final AgendaListPageViewModelState vm;
+
+  const _AgendaPageView({required this.vm});
+
+
+  @override
+  Widget build(BuildContext context) {
+    final agendas = vm.filteredAgendas;
 
     return Column(
       children: [
-        _buildSearchAndFilterSection(context, ref),
-        Expanded(child: _buildAgendasList(context, ref, agendas)),
+        _buildSearchAndFilterSection(context),
+        Expanded(child: _buildAgendasList(context, agendas)),
       ],
     );
   }
 
-  Widget _buildSearchAndFilterSection(BuildContext context, WidgetRef ref) {
+  Widget _buildSearchAndFilterSection(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
       child: Column(
@@ -84,16 +54,13 @@ class AgendasListPage extends ConsumerWidget {
               Expanded(
                 flex: 6,
                 child: DefaultTextField(
-                  onChanged:
-                      (value) =>
-                          ref.read(agendaSearchQueryProvider.notifier).state =
-                              value,
+                  onChanged: vm.onSearchQueryChanged,
                   hintText: S.of(context).searchTitleIdHint,
                 ),
               ),
               Expanded(flex: 1, child: SizedBox()),
               ElevatedButton(
-                onPressed: () => context.go('/agendas/creation'),
+                onPressed: vm.goToAgendaCreation,
                 style: squareButtonStyle(context),
                 child: Text(S.of(context).buttonCreateAgenda),
               ),
@@ -102,9 +69,9 @@ class AgendasListPage extends ConsumerWidget {
           SizedBox(height: 8),
           Row(
             children: [
-              _buildStatusFilterDropdown(context, ref),
+              _buildStatusFilterDropdown(context),
               SizedBox(width: 16),
-              _buildProjectFilterDropdown(context, ref),
+              _buildProjectFilterDropdown(context),
             ],
           ),
         ],
@@ -112,7 +79,7 @@ class AgendasListPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatusFilterDropdown(BuildContext context, WidgetRef ref) {
+  Widget _buildStatusFilterDropdown(BuildContext context) {
     String getStatusLabel(MeetingAgendaStatus status) {
       var loc = S.of(context);
       var ui = getMeetingAgendaStatusUI(loc, status);
@@ -135,15 +102,13 @@ class AgendasListPage extends ConsumerWidget {
 
     return DefaultDropdownMenu<MeetingAgendaStatus?>(
       entries: menuEntries,
-      initialSelection: ref.read(agendaStatusQueryProvider),
-      onSelected: (MeetingAgendaStatus? value) {
-        ref.read(agendaStatusQueryProvider.notifier).state = value;
-      },
+      initialSelection: vm.statusQuery,
+      onSelected: vm.onStatusQueryChanged,
     );
   }
 
-  Widget _buildProjectFilterDropdown(BuildContext context, WidgetRef ref) {
-    var projects = ref.watch(projectsProvider);
+  Widget _buildProjectFilterDropdown(BuildContext context) {
+    var projects = vm.projects;
 
     final List<DropdownMenuEntry<int?>> menuEntries = UnmodifiableListView([
       DropdownMenuEntry<int?>(
@@ -164,18 +129,12 @@ class AgendasListPage extends ConsumerWidget {
     ]);
     return DefaultDropdownMenu<int?>(
       entries: menuEntries,
-      initialSelection: ref.read(agendaProjectQueryProvider),
-      onSelected: (int? value) {
-        ref.read(agendaProjectQueryProvider.notifier).state = value;
-      },
+      initialSelection: vm.projectIdQuery,
+      onSelected: vm.onProjectQueryChanged,
     );
   }
 
-  Widget _buildAgendasList(
-    BuildContext context,
-    WidgetRef ref,
-    List<MeetingAgenda> agendas,
-  ) {
+  Widget _buildAgendasList(BuildContext context, List<MeetingAgenda> agendas) {
     if (agendas.isEmpty) {
       Widget cardContent = EmptyListWidget(
         text: S.of(context).agendasListPageEmpty,
@@ -214,10 +173,6 @@ class AgendasListPage extends ConsumerWidget {
             itemBuilder: (context, index) {
               final loc = S.of(context);
               final agenda = agendas[index];
-              final animator =
-                  isIdValid(agenda.animatorId)
-                      ? ref.watch(userByIdProvider(agenda.animatorId!))
-                      : null;
 
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -246,9 +201,10 @@ class AgendasListPage extends ConsumerWidget {
                   Expanded(
                     flex: 3,
                     child: Text(
-                      animator != null
-                          ? animator.displayName
-                          : loc.commonNoAnimatorSet,
+                      vm.animatorName(
+                        agenda.animatorId,
+                        loc.commonNoAnimatorSet,
+                      ),
                     ),
                   ),
                   Expanded(
@@ -263,8 +219,8 @@ class AgendasListPage extends ConsumerWidget {
                       alignment: Alignment.center,
                       child: TextButton(
                         style: inplaceTextButtonStyle(context),
+                        onPressed: () => vm.goToAgenda(agenda.id),
                         child: Text(loc.agendaListView),
-                        onPressed: () => context.go('/agendas/${agenda.id}'),
                       ),
                     ),
                   ),
