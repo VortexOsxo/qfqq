@@ -17,7 +17,7 @@ import 'package:qfqq/desktop/pages/projects/project_view_page.dart';
 import 'package:qfqq/common/pages/decisions_report_page.dart';
 import 'package:qfqq/common/pages/user_pages/profile_page.dart';
 import 'package:qfqq/desktop/pages/user_pages/signup_page.dart';
-import 'package:qfqq/common/pages/agenda_list_page.dart';
+import 'package:qfqq/desktop/pages/agendas/agenda_list_page.dart';
 import 'package:qfqq/common/pages/user_pages/organization_links_page.dart';
 import 'package:qfqq/common/widgets/scaffolds/auth_page_scaffold.dart';
 
