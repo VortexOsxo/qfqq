@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qfqq/common/view_models/agenda_list_page_view_model.dart';
-import 'package:qfqq/common/widgets/agendas/agenda_filter_widget.dart';
+import 'package:qfqq/mobile/widgets/filters/agenda_filter_widget.dart';
 import 'package:qfqq/common/widgets/decisions/agendas_list_widget.dart';
 
 class AgendasListPage extends StatelessWidget {

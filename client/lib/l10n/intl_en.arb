@@ -323,5 +323,6 @@
   "organizationJoinInvalidOrg": "Organization not found or invalid.",
 
   "searchTitleIdHint": "Search by Id or title",
-  "searchDescriptionIdHint": "Search by Id or description"
+  "searchDescriptionIdHint": "Search by Id or description",
+  "toggleAdvancedFilters": "Toggle advanced filters"
 }
