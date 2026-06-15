@@ -20,7 +20,7 @@ class MeetingViewControl extends ConsumerWidget {
     final loc = S.of(context);
 
     var result = await ModalService.showConfirmation(
-      context,
+      context: context,
       title: loc.agendaDeleteTitle,
       message: loc.agendaDeleteMessage,
       confirmLabel: loc.agendaDeleteConfirm,

@@ -37,7 +37,7 @@ class _ProjectModificationState extends ConsumerState<ProjectModificationPage> {
     }
     final loc = S.of(context);
     return await ModalService.showConfirmation(
-      context,
+      context: context,
       title: loc.unsavedChangesTitle,
       message: loc.unsavedChangesMessage,
       confirmLabel: loc.unsavedChangesDiscard,

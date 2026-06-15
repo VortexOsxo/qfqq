@@ -30,7 +30,7 @@ def login_required():
 
     userId, orgId = get_authorization()
     if userId is None or orgId is None:
-        return jsonify({"error": AuthError.mustBeLoggedIn}), 401
+        return jsonify({"auth": AuthError.mustBeLoggedIn}), 401
 
     g.user_id = userId
     g.org_id = orgId

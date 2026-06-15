@@ -1,7 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:qfqq/common/providers/locale_provider.dart';
+import 'package:qfqq/common/providers/navigator_key.dart';
 import 'package:qfqq/common/services/auth_service.dart';
+import 'package:qfqq/common/services/modal_service.dart';
 
 var qfqqHttpClientProvider = Provider(
   (ref) => QfqqHttpClient(
@@ -38,9 +41,19 @@ class QfqqHttpClient extends http.BaseClient {
   }
 
   @override
-  Future<http.StreamedResponse> send(http.BaseRequest request) {
+  Future<http.StreamedResponse> send(http.BaseRequest request) async {
     addHeaders(request.headers);
-    return _inner.send(request);
+    final response = await _inner.send(request);
+
+    if (response.statusCode == 401) {
+      await ModalService.showInformation(
+        title: 'Session expired',
+        message: 'Your session has expired. Please log in again.',
+      );
+      navigatorKey.currentContext?.go('/login');
+    }
+
+    return response;
   }
 
   @override

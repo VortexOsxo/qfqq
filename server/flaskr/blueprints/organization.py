@@ -43,14 +43,14 @@ def join_organization(orgId):
     userId = g.user_id
 
     if userId is None:
-        return jsonify({"userId": InputError.RequiredField}), 401
+        return jsonify({"userId": InputError.RequiredField}), 400
     
     if orgId is None:
-        return jsonify({"orgId": InputError.RequiredField}), 401
+        return jsonify({"orgId": InputError.RequiredField}), 400
 
     result = UserDataHandler.add_user_to_org(userId, orgId)
     if not result:
-        return jsonify({"orgId": InputError.InvalidField}), 401
+        return jsonify({"orgId": InputError.InvalidField}), 400
     
     token = create_token(userId, orgId)
 

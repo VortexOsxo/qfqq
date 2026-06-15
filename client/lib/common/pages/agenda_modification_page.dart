@@ -42,7 +42,7 @@ class _AgendaModificationPageState extends ConsumerState<AgendaModificationPage>
     }
     final loc = S.of(ctx);
     return await ModalService.showConfirmation(
-      ctx,
+      context: ctx,
       title: loc.unsavedChangesTitle,
       message: loc.unsavedChangesMessage,
       confirmLabel: loc.unsavedChangesDiscard,

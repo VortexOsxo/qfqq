@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/providers/navigator_key.dart';
 import 'package:qfqq/common/templates/navigation_guard.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/project.dart';
@@ -20,6 +21,7 @@ import 'package:qfqq/common/utils/route_titles.dart';
 import 'package:qfqq/mobile/pages/user_pages/login_page.dart';
 
 final GoRouter mobileRouter = GoRouter(
+  navigatorKey: navigatorKey,
   initialLocation: '/login',
   routes: [
     ShellRoute(

@@ -1,36 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:qfqq/common/providers/navigator_key.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class ModalService {
   ModalService._();
 
-  static Future<bool> showConfirmation(
-    BuildContext context, {
+  static BuildContext? get currentContext => navigatorKey.currentContext;
+
+  static Future<bool> showConfirmation({
+    BuildContext? context,
     required String title,
     required String message,
     String? confirmLabel,
     String? cancelLabel,
   }) async {
-    confirmLabel ??= S.of(context).commonConfirm;
-    cancelLabel ??= S.of(context).commonCancel;
+    context ?? currentContext;
+    assert(context != null);
+
+    confirmLabel ??= S.of(context!).commonConfirm;
+    cancelLabel ??= S.of(context!).commonCancel;
 
     var result = await showDialog<bool>(
-      context: context,
+      context: context!,
       barrierDismissible: false,
       builder: (_) => _ConfirmationDialog(title, message, confirmLabel!, cancelLabel!),
     );
     return result ?? false;
   }
 
-  static Future<void> showInformation(
-    BuildContext context, {
+  static Future<void> showInformation({
+    BuildContext? context,  
     required String title,
     required String message,
     String? closeLabel,
   }) {
-    closeLabel ??= S.of(context).commonClose;
+    context ??= currentContext;
+    assert(context != null);
+
+    closeLabel ??= S.of(context!).commonClose;
     return showDialog<void>(
-      context: context,
+      context: context!,
       builder: (_) => _InformationDialog(title, message, closeLabel!),
     );
   }

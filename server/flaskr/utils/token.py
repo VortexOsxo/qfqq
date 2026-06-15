@@ -7,7 +7,7 @@ def create_token(userId, orgId):
         {
             "user_id": userId,
             "org_id": orgId,
-            "exp": datetime.utcnow() + timedelta(hours=3),
+            "exp": datetime.utcnow() + timedelta(seconds=30),
         },
         current_app.config["SECRET_KEY"],
         algorithm="HS256",

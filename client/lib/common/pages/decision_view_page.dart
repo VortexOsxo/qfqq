@@ -29,7 +29,7 @@ class DecisionViewPage extends ConsumerWidget {
     final loc = S.of(context);
 
     var result = await ModalService.showConfirmation(
-      context,
+      context: context,
       title: loc.decisionDeleteTitle,
       message: loc.decisionDeleteMessage,
       confirmLabel: loc.decisionDeleteConfirm,

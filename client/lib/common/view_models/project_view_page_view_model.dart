@@ -35,7 +35,7 @@ class ProjectViewPageViewModelState extends ConsumerState<ProjectViewPageViewMod
     final loc = S.of(context);
 
     final confirmed = await ModalService.showConfirmation(
-      context,
+      context: context,
       title: loc.projectDeleteTitle,
       message: loc.projectDeleteMessage,
       confirmLabel: loc.projectDeleteConfirm,
