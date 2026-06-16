@@ -20,9 +20,8 @@ class AuthService extends StateNotifier<AuthState> {
 
   AuthService() : super(AuthState());
 
-  String getSessionId() {
-    return state.sessionId;
-  }
+  String getSessionId() => state.sessionId;
+  bool isAuthenticated() => state.isAuthenticated;
 
   Future<AccountError> login(String email, String password) async {
     final response = await http.post(
