@@ -5,9 +5,7 @@ import 'package:qfqq/common/models/errors/decision_errors.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/user.dart';
 import 'package:qfqq/common/providers/decisions_provider.dart';
-import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
-import 'package:qfqq/common/services/meeting_agenda_service.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/utils/validation.dart';
@@ -16,41 +14,22 @@ import 'package:qfqq/common/widgets/reusables/selection_text_fields/user_text_fi
 import 'package:qfqq/common/widgets/reusables/selection_text_fields/users_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 
-class MeetingViewContentOngoing extends ConsumerStatefulWidget {
+class MeetingViewContentOngoing extends ConsumerWidget {
   final MeetingAgenda meeting;
 
   const MeetingViewContentOngoing({super.key, required this.meeting});
 
   @override
-  ConsumerState<MeetingViewContentOngoing> createState() => _MeetingViewContentOngoingState();
-}
-
-class _MeetingViewContentOngoingState extends ConsumerState<MeetingViewContentOngoing> {
-  MeetingAgendaService? service;
-
-  @override
-  void initState() {
-    super.initState();
-    _onJoinMeeting();
-  }
-
-  @override
-  void dispose() {
-    _onLeaveMeeting();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final loc = S.of(context);
     final decisions = ref.watch(decisionsProvider);
 
-    final meetingDecisions = decisions.where((d) => d.meetingId == widget.meeting.id).toList();
+    final meetingDecisions = decisions.where((d) => d.meetingId == meeting.id).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _CreateDecisionForm(meeting: widget.meeting),
+        _CreateDecisionForm(meeting: meeting),
         _takenDecisions(loc, meetingDecisions, ref),
       ],
     );
@@ -97,18 +76,6 @@ class _MeetingViewContentOngoingState extends ConsumerState<MeetingViewContentOn
         },
       ),
     );
-  }
-
-  void _onJoinMeeting() {
-    service = ref.read(meetingAgendaServiceProvider);
-    service?.joinMeeting(widget.meeting.id);
-
-    ref.read(decisionsServiceProvider).reload(); // TODO: Optimize
-  }
-
-  void _onLeaveMeeting() {
-    service?.leaveMeeting(widget.meeting.id);
-    service = null;
   }
 }
 

@@ -2,25 +2,58 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/errors/meeting_agenda_errors.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
+import 'package:qfqq/common/providers/decisions_provider.dart';
+import 'package:qfqq/common/services/meeting_agenda_service.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_content_ongoing.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/utils/validation.dart';
 import 'package:qfqq/common/widgets/pdf_viewer_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
-class MeetingViewContent extends ConsumerWidget {
+class MeetingViewContent extends ConsumerStatefulWidget {
   final MeetingAgenda meeting;
   const MeetingViewContent({super.key, required this.meeting});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    switch (meeting.status) {
+  ConsumerState<MeetingViewContent> createState() => _MeetingViewContentState();
+}
+
+class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
+  MeetingAgendaService? service;
+
+  void _onJoinMeeting() {
+    service = ref.read(meetingAgendaServiceProvider);
+    service?.joinMeeting(widget.meeting.id);
+
+    ref.read(decisionsServiceProvider).reload(); // TODO: Optimize
+  }
+
+  void _onLeaveMeeting() {
+    service?.leaveMeeting(widget.meeting.id);
+    service = null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _onJoinMeeting();
+  }
+
+  @override
+  void dispose() {
+    _onLeaveMeeting();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    switch (widget.meeting.status) {
       case MeetingAgendaStatus.draft:
         return _draftContent(context, ref);
       case MeetingAgendaStatus.planned:
         return SizedBox();
       case MeetingAgendaStatus.ongoing:
-        return MeetingViewContentOngoing(meeting: meeting);
+        return MeetingViewContentOngoing(meeting: widget.meeting);
       case MeetingAgendaStatus.completed:
         return _completedContent(context);
     }
@@ -28,7 +61,7 @@ class MeetingViewContent extends ConsumerWidget {
 
   Widget _draftContent(BuildContext context, WidgetRef ref) {
     MeetingAgendaErrors errors = validateMeetingAgenda(
-      meeting,
+      widget.meeting,
       wantedStatus: MeetingAgendaStatus.planned,
     );
 
@@ -59,7 +92,7 @@ class MeetingViewContent extends ConsumerWidget {
           TextButton(
             onPressed:
                 () => meetingsService.updateMeetingAgendaStatus(
-                  meeting.id,
+                  widget.meeting.id,
                   MeetingAgendaStatus.planned,
                 ),
             child: Text(loc.meetingViewContentMarkAsPlan),
@@ -70,7 +103,7 @@ class MeetingViewContent extends ConsumerWidget {
   }
 
   Widget _completedContent(BuildContext context) {
-    final pdfUrl = 'reports/meeting-agendas/${meeting.id}';
-    return PdfViewerWidget(pdfUrl: pdfUrl, pdfName: meeting.title);
+    final pdfUrl = 'reports/meeting-agendas/${widget.meeting.id}';
+    return PdfViewerWidget(pdfUrl: pdfUrl, pdfName: widget.meeting.title);
   }
 }
