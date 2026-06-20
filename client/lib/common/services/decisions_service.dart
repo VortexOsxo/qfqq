@@ -4,12 +4,17 @@ import 'package:qfqq/common/models/decision.dart';
 import 'package:qfqq/common/models/errors/decision_errors.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
+import 'package:qfqq/common/services/web_socket_service.dart';
 
 class DecisionsService extends StateNotifier<List<Decision>> {
   final QfqqHttpClient _http;
 
   DecisionsService(this._http, AuthService auth) : super([]) {
     auth.connectionNotifier.subscribe((_) => _loadDecisions());
+  }
+
+  Future<void> reload() async {
+    _loadDecisions();
   }
 
   Future<void> _loadDecisions() async {
@@ -35,6 +40,7 @@ class DecisionsService extends StateNotifier<List<Decision>> {
 
     if (response.statusCode == 201) {
       state = [...state, Decision.fromJson(data)];
+      WebSocketService.send("meeting", "decision", {});
       return DecisionErrors();
     }
     return DecisionErrors.fromJson(data);

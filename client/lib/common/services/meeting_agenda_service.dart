@@ -4,10 +4,13 @@ import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/decisions_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
+import 'package:qfqq/common/services/web_socket_service.dart';
 
 class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
   final QfqqHttpClient _http;
   final DecisionsService decisionsService;
+
+  int _currentMeeting = -1;
 
   MeetingAgendaService(this._http, AuthService auth, this.decisionsService) : super([]) {
     auth.connectionNotifier.subscribe((_) => _loadMeetingAgendas());
@@ -98,5 +101,36 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
 
     final List<dynamic> data = jsonDecode(response.body);
     state = data.map(MeetingAgenda.fromJson).toList();
+  }
+
+  Future<String> getMeetingCode(int meetingId) async {
+    final response = await _http.get(
+      _http.getUri('meeting-agendas/$meetingId/code'),
+      headers: {'Content-Type': 'application/json'},
+    );
+    return response.body;
+  }
+
+  Future<void> joinMeeting(int meetingId) async {
+    final code = await getMeetingCode(meetingId);
+    _currentMeeting = meetingId;
+    WebSocketService.registerHandler("meeting", _handler);
+    WebSocketService.send("meeting", "join", {"code": code});
+  }
+
+  Future<void> leaveMeeting(int meetingId) async {
+    WebSocketService.send("meeting", "leave", {});
+    WebSocketService.unregisterHandler("meeting");
+    _currentMeeting = -1;
+  }
+
+  void _handler(dynamic event) {
+    if (event["type"] == "decision") {
+      _reloadDecisions(_currentMeeting);
+    } 
+  }
+
+  void _reloadDecisions(int meetingId) async {
+    decisionsService.reload(); // TODO: Optimize, we don't want to reload all decisions, only the one we need to
   }
 }
