@@ -52,6 +52,34 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
     return true;
   }
 
+  Future<bool> startMeeting(int meetingId) async {
+    final result = await updateMeetingAgendaStatus(
+      meetingId,
+      MeetingAgendaStatus.ongoing,
+    );
+    if (result) {
+      WebSocketService.send("meeting", "start", {});
+    }
+    return result;
+  }
+
+  Future<bool> completeMeeting(int meetingId) async {
+    final result = await updateMeetingAgendaStatus(
+      meetingId,
+      MeetingAgendaStatus.completed,
+    );
+    if (result) {
+      WebSocketService.send("meeting", "end", {});
+    }
+    return result;
+  }
+
+  void onMeetingStatusUpdated(int meetingId, MeetingAgendaStatus status) {
+    state = state
+      .map((e) => (e.id != meetingId) ? e : e.copyWith(newStatus: status))
+      .toList();
+  }
+
   Future<bool> updateMeetingAgendaStatus(
     int meetingId,
     MeetingAgendaStatus status,
@@ -63,9 +91,7 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
     );
     if (response.statusCode != 204) return false;
 
-    state = state.map(
-      (e) => (e.id != meetingId) ? e : e.copyWith(newStatus: status)
-    ).toList();
+    onMeetingStatusUpdated(meetingId, status);
     return true;
   }
 
@@ -111,6 +137,7 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
     return response.body;
   }
 
+  // TODO: Listen even if the meeting isn't started (we need to know when it starts)
   Future<void> joinMeeting(int meetingId) async {
     final code = await getMeetingCode(meetingId);
     _currentMeeting = meetingId;
@@ -127,7 +154,12 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
   void _handler(dynamic event) {
     if (event["type"] == "decision") {
       _reloadDecisions(_currentMeeting);
-    } 
+    } else if (event["type"] == "start") {
+      onMeetingStatusUpdated(_currentMeeting, MeetingAgendaStatus.ongoing);
+    } else if (event["type"] == "end") {
+      // TODO: Pop up the evaluation modal and then update meeting state I guess ?
+      onMeetingStatusUpdated(_currentMeeting, MeetingAgendaStatus.completed);
+    }
   }
 
   void _reloadDecisions(int meetingId) async {

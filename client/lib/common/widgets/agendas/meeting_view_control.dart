@@ -105,11 +105,7 @@ class MeetingViewControl extends ConsumerWidget {
       ),
       TextButton(
         child: Text(loc.commonStart),
-        onPressed:
-            () => meetingsService.updateMeetingAgendaStatus(
-              meeting.id,
-              MeetingAgendaStatus.ongoing,
-            ),
+        onPressed: () => meetingsService.startMeeting(meeting.id),
       ),
     ];
   }
@@ -137,11 +133,7 @@ class MeetingViewControl extends ConsumerWidget {
       ),
       TextButton(
         child: Text(loc.meetingViewControlTerminate),
-        onPressed:
-            () => meetingsService.updateMeetingAgendaStatus(
-              meeting.id,
-              MeetingAgendaStatus.completed,
-            ),
+        onPressed: () => meetingsService.completeMeeting(meeting.id),
       ),
     ];
   }
