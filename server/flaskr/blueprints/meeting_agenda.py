@@ -84,3 +84,8 @@ def delete_meeting(id):
         return "", 204
     except:
         return "", 500
+    
+@meeting_agendas_bp.route("/<int:id>/code", methods=["GET"])
+def get_meeting_code(id):
+    # TODO: Obfuscate
+    return f"{g.org_id}-{id}", 200
