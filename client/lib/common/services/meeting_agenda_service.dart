@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
+import 'package:qfqq/common/providers/navigator_key.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/decisions_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
 import 'package:qfqq/common/services/web_socket_service.dart';
+import 'package:qfqq/common/widgets/modal/meeting_review_modal.dart';
 
 class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
   final QfqqHttpClient _http;
@@ -159,10 +162,24 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
     } else if (event["type"] == "end") {
       // TODO: Pop up the evaluation modal and then update meeting state I guess ?
       onMeetingStatusUpdated(_currentMeeting, MeetingAgendaStatus.completed);
+      _showEndMeetingReview();
     }
   }
 
   void _reloadDecisions(int meetingId) async {
     decisionsService.reload(); // TODO: Optimize, we don't want to reload all decisions, only the one we need to
+  }
+
+  void _showEndMeetingReview() {
+    final context = navigatorKey.currentContext;
+    if (context == null) {
+      return;
+    } 
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) => MeetingReviewModal(),
+    );
   }
 }

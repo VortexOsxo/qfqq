@@ -135,6 +135,15 @@
   "meetingInProgressProject": "Project",
   "meetingInProgressDueDate": "Due date",
   "meetingInProgressDueDateSelected": "Due date: {date}",
+  
+  "meetingReviewTitle": "Meeting review",
+  "meetingReviewObjective": "The meeting goals and objectives are clear",
+  "meetingReviewSmoothRunning": "The facilitator ensures the meeting runs smoothly, item by item",
+  "meetingReviewPreparation": "Participant preparation",
+  "meetingReviewLength": "The meeting duration does not exceed the allocated time",
+  "meetingReviewRespect": "There is listening and mutual respect among participants, everyone contributes according to their strengths",
+  "meetingReviewCommentsHint": "Additional comments and suggestions",
+  "meetingReviewSend": "Send",
 
   "meetingViewContentDraftCorrectErrors": "To mark the meeting as planned, please resolve the following issues:",
   "meetingViewContentDraftMarkPlanned": "Mark this meeting as planned to make it visible to your team.",
