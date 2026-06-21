@@ -137,6 +137,15 @@
   "meetingInProgressDueDate": "Date d’échéance",
   "meetingInProgressDueDateSelected": "Date d’échéance : {date}",
   
+  "meetingReviewTitle": "Diagnostic de la réunion",
+  "meetingReviewObjective": "Les buts et objectifs de la réunion sont clairs",
+  "meetingReviewSmoothRunning": "L’animateur assure le bon déroulement de la réunion, point par point",
+  "meetingReviewPreparation": "La préparation des participants",
+  "meetingReviewLength": "La durée de la réunion ne dépasse pas le temps alloué",
+  "meetingReviewRespect": "Il y a de l’écoute et du respect mutuel entre participants, chacun contribue selon ses forces",
+  "meetingReviewCommentsHint": "Commentaires et suggestions additionnels",
+  "meetingReviewSend": "Envoyer",
+  
   "meetingViewContentDraftCorrectErrors": "Pour marquer la réunion comme planifiée, veuillez corriger les erreurs suivantes :",
   "meetingViewContentDraftMarkPlanned": "Marquez cette réunion comme planifiée pour la rendre visible à votre équipe.",
   "meetingViewContentMarkAsPlan": "Marquer comme planifiée",
