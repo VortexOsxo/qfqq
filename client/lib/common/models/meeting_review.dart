@@ -13,7 +13,7 @@ class MeetingReview {
 
   factory MeetingReview.fromJson(Map<String, dynamic> json) {
     return MeetingReview()
-      ..anonymous = json['anonymous'] as bool? ?? true
+      ..anonymous = json['isAnonymous'] as bool? ?? true
       ..objective = json['objective'] as int? ?? -1
       ..smoothRunning = json['smoothRunning'] as int? ?? -1
       ..preparation = json['preparation'] as int? ?? -1
@@ -24,7 +24,7 @@ class MeetingReview {
 
   Map<String, dynamic> toJson() {
     return {
-      'anonymous': anonymous,
+      'isAnonymous': anonymous,
       'objective': objective,
       'smoothRunning': smoothRunning,
       'preparation': preparation,

@@ -10,9 +10,9 @@ import 'package:qfqq/generated/l10n.dart';
 
 class MeetingReviewModal extends ConsumerStatefulWidget {
   final meetingReview = MeetingReview();
-  final int meetingId = 1;
+  final int meetingId;
 
-  MeetingReviewModal({super.key});
+  MeetingReviewModal({super.key, required this.meetingId});
 
   @override
   ConsumerState<MeetingReviewModal> createState() => _MeetingReviewModalState();

@@ -202,10 +202,12 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
       return;
     }
 
+    assert(_currentMeeting != -1);
+
     showDialog(
       context: context,
       barrierDismissible: true,
-      builder: (_) => MeetingReviewModal(),
+      builder: (_) => MeetingReviewModal(meetingId: _currentMeeting),
     );
   }
 }

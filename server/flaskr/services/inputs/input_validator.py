@@ -57,6 +57,8 @@ class IntValidator(InputValidator):
         self.max_value = max_value
 
     def validate(self, value):
+        if value is None:
+            return InputError.RequiredField
         if not isinstance(value, int):
             return InputError.InvalidType
         if self.min_value is not None and value < self.min_value:

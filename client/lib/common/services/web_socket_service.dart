@@ -6,8 +6,11 @@ class WebSocketService {
   static Map<String, Function> handlers = {};
 
   static void connect() {
-    channel = WebSocketChannel.connect(Uri.parse('ws://localhost:8001'));
+    if (channel != null) {
+      return;
+    }
 
+    channel = WebSocketChannel.connect(Uri.parse('ws://localhost:8001'));
     channel!.stream.listen(_onEvent); // Handle error and disconnect ?
   }
 
@@ -29,7 +32,12 @@ class WebSocketService {
   }
 
   static void _onEvent(dynamic message) {
-    final event = jsonDecode(message);
+    final dynamic event;
+    try {
+      event = jsonDecode(message as String);
+    } catch (_) {
+      return;
+    }
 
     final handlerKey = event['handler'];
 

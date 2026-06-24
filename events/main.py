@@ -4,8 +4,6 @@ from websockets.asyncio.server import serve # type: ignore
 
 from meeting_handler import MeetingHandler
 
-rooms = {}
-
 async def handler(websocket):
     handlers = {
         'meeting': MeetingHandler(websocket)
