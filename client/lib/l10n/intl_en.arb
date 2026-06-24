@@ -145,6 +145,12 @@
   "meetingReviewCommentsHint": "Additional comments and suggestions",
   "meetingReviewSend": "Send",
 
+  "meetingReviewObjectiveShort": "Objective",
+  "meetingReviewSmoothRunningShort": "Flow",
+  "meetingReviewPreparationShort": "Preparation",
+  "meetingReviewLengthShort": "Length",
+  "meetingReviewRespectShort": "Respect",
+
   "meetingViewContentDraftCorrectErrors": "To mark the meeting as planned, please resolve the following issues:",
   "meetingViewContentDraftMarkPlanned": "Mark this meeting as planned to make it visible to your team.",
   "meetingViewContentMarkAsPlan": "Mark as planned",
@@ -277,6 +283,8 @@
 
   "commonObjectDecisions": "Decisions",
   "commonObjectReports": "Reports",
+  "commonObjectReviews": "Reviews",
+  "commonNoReviews": "No reviews found",
 
   "widgetProjectLabel": "Project",
   "widgetUserLabel": "User",

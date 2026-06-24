@@ -3,7 +3,14 @@ from flask import Blueprint, request, jsonify, g
 
 from flaskr.models import MeetingAgendaStatus
 from flaskr.database import MeetingDataHandler
-from flaskr.services.inputs import input_middleware, LambdaBuilder, CreateMeetingAgendaBuilder, EnumValidator
+from flaskr.services.inputs import (
+    input_middleware,
+    LambdaBuilder,
+    CreateMeetingAgendaBuilder,
+    EnumValidator,
+    IntValidator,
+    StringValidator,
+)
 from flaskr.blueprints.before_request import login_required
 from flaskr.blueprints.middlewares import permission_middleware, Permission
 
@@ -66,6 +73,41 @@ def get_meeting_agenda(id: str):
     if not meeting_agenda:
         return jsonify({"error": "Meeting agenda not found"}), 404
     return jsonify(meeting_agenda.to_dict()), 200
+
+
+@meeting_agendas_bp.get("/<int:id>/reviews")
+def get_meeting_reviews(id: int):
+    reviews = MeetingDataHandler.get_meeting_reviews(id)
+    return jsonify([review.to_dict() for review in reviews]), 200
+
+
+@meeting_agendas_bp.post("/<int:id>/reviews")
+@input_middleware(
+    LambdaBuilder(
+        ("objective", IntValidator(1,5)),
+        ("smoothRunning", IntValidator(1,5)),
+        ("preparation", IntValidator(1,5)),
+        ("length", IntValidator(1,5)),
+        ("respect", IntValidator(1,5)),
+        ("comments", StringValidator()),
+    )
+)
+def create_meeting_review(objective, smoothRunning, preparation, length, respect, comments, id: int):
+    try:
+        MeetingDataHandler.create_review(
+            meetingId=id,
+            userId=g.user_id,
+            objective=objective,
+            smoothRunning=smoothRunning,
+            preparation=preparation,
+            length=length,
+            respect=respect,
+            comments=comments,
+        )
+        return "", 201
+    except Exception:
+        return jsonify({"error": "Unable to create meeting review"}), 400
+
 
 @meeting_agendas_bp.patch("/<string:id>/status")
 @input_middleware(LambdaBuilder(("status", EnumValidator(MeetingAgendaStatus))))
