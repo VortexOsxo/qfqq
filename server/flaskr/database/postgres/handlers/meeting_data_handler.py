@@ -1,4 +1,4 @@
-from flaskr.models import MeetingAgendaStatus, MeetingAgenda
+from flaskr.models import MeetingAgendaStatus, MeetingAgenda, MeetingReview
 from ..postgres import get_db_access, read_query, write_query
 from datetime import datetime
 
@@ -186,7 +186,6 @@ class MeetingDataHandler:
         params = (id,)
         write_query(query, params)
 
-
     @classmethod
     def get_next_meeting(cls, currentMeetingId: int):
         with get_db_access() as conn:
@@ -201,5 +200,27 @@ class MeetingDataHandler:
         if nextId is None or nextId == -1:
             return None
         return cls.get_meeting_agenda(nextId)
-            
-           
+
+    @classmethod
+    def create_review(cls, meetingId, userId, objective, smoothRunning, preparation, length, respect, comments):
+        isAnonymous = False # TODO
+
+        query = """
+        INSERT INTO meetingsReviews
+        (meetingId, userId, isAnonymous, objective, smoothRunning, preparation, length, respect, comments)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
+        """
+
+        params = (meetingId, userId, isAnonymous, objective, smoothRunning, preparation, length, respect, comments)
+        write_query(query, params)
+    
+    @classmethod
+    def get_meeting_reviews(cls, meetingId):
+        query = """
+        SELECT meetingId, userId, isAnonymous, objective, smoothRunning, preparation, length, respect, comments
+        FROM meetingsReviews WHERE meetingId = %s;
+        """
+        params = (meetingId,)
+
+        results = read_query(query, params)
+        return [MeetingReview(*result) for result in results]

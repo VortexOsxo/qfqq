@@ -8,6 +8,7 @@ TRUNCATE TABLE
   decisions,
   meetingsParticipants,
   meetingsThemes,
+  meetingsReviews,
   meetings,
   projects,
   usersRoles,

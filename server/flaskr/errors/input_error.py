@@ -18,3 +18,4 @@ class InputError(Enum):
     MinLengthExceeded = 13
     MustBeUnique = 14
     InvalidField = 15
+    OutOfRange = 16

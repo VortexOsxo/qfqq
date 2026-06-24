@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS roles,
 usersRoles,
 projects,
 meetings,
+meetingsReviews,
 meetingsThemes,
 meetingsParticipants,
 decisions,
@@ -65,6 +66,24 @@ CREATE TABLE
   meetingsParticipants (
     meetingId INTEGER REFERENCES meetings (id) ON DELETE CASCADE,
     userId INTEGER REFERENCES users (id),
+    PRIMARY KEY (meetingId, userId)
+  );
+
+CREATE TABLE
+  meetingsReviews (
+    -- Could reference a participant instead ?
+    meetingId INTEGER REFERENCES meetings (id) ON DELETE CASCADE,
+    userId INTEGER REFERENCES users (id),
+
+    isAnonymous BOOLEAN NOT NULL,
+    objective INTEGER NOT NULL,
+    smoothRunning INTEGER NOT NULL,
+    preparation INTEGER NOT NULL,
+    length INTEGER NOT NULL,
+    respect INTEGER NOT NULL,
+
+    comments TEXT NOT NULL,
+
     PRIMARY KEY (meetingId, userId)
   );
 

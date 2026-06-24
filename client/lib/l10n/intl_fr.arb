@@ -145,6 +145,12 @@
   "meetingReviewRespect": "Il y a de l’écoute et du respect mutuel entre participants, chacun contribue selon ses forces",
   "meetingReviewCommentsHint": "Commentaires et suggestions additionnels",
   "meetingReviewSend": "Envoyer",
+
+  "meetingReviewObjectiveShort": "Objectif",
+  "meetingReviewSmoothRunningShort": "Déroulement",
+  "meetingReviewPreparationShort": "Préparation",
+  "meetingReviewLengthShort": "Durée",
+  "meetingReviewRespectShort": "Respect",
   
   "meetingViewContentDraftCorrectErrors": "Pour marquer la réunion comme planifiée, veuillez corriger les erreurs suivantes :",
   "meetingViewContentDraftMarkPlanned": "Marquez cette réunion comme planifiée pour la rendre visible à votre équipe.",
@@ -278,6 +284,8 @@
 
   "commonObjectDecisions": "Décisions",
   "commonObjectReports": "Rapports",
+  "commonObjectReviews": "Retours",
+  "commonNoReviews": "Aucun retour trouvé",
 
   "widgetProjectLabel": "Projet",
   "widgetUserLabel": "Utilisateur",

@@ -31,6 +31,8 @@ def create_db():
 def fill_test_db():
     _run_sql_file("default")
 
+    orgId = get_current_tenant() or "1"
+
     with get_db_access() as conn:
         cur = conn.cursor()
 
@@ -38,8 +40,12 @@ def fill_test_db():
         params = ("test", "Test")
         cur.execute(query, params)
 
-        cur.execute("CREATE SCHEMA IF NOT EXISTS test;")
-        cur.execute("SET search_path TO test, public;")
+        cur.execute(
+            sql.SQL("CREATE SCHEMA IF NOT EXISTS {}; ").format(sql.Identifier(str(orgId)))
+        )
+        cur.execute(
+            sql.SQL("SET search_path TO {}, public; ").format(sql.Identifier(str(orgId)))
+        )
 
         with current_app.open_resource(
             os.path.join("database", "postgres", f"schema.sql")

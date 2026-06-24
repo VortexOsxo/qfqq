@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
+import 'package:qfqq/common/models/meeting_review.dart';
 import 'package:qfqq/common/providers/navigator_key.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/decisions_service.dart';
@@ -154,6 +155,31 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
     _currentMeeting = -1;
   }
 
+  Future<void> addReview(int meetingId, MeetingReview review) async {
+    // TODO: Ajouter la gestion des erreurs
+    final _ = await _http.post(
+      _http.getUri('meeting-agendas/$meetingId/reviews'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(review.toJson()),
+    );
+  }
+
+  Future<List<MeetingReview>> getReviews(int meetingId) async {
+    final response = await _http.get(
+      _http.getUri('meeting-agendas/$meetingId/reviews'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode != 200) {
+      return [];
+    }
+
+    final List<dynamic> body = jsonDecode(response.body);
+    return body
+        .map((item) => MeetingReview.fromJson(item as Map<String, dynamic>))
+        .toList();
+  }
+
   void _handler(dynamic event) {
     if (event["type"] == "decision") {
       _reloadDecisions(_currentMeeting);
@@ -174,7 +200,7 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
     final context = navigatorKey.currentContext;
     if (context == null) {
       return;
-    } 
+    }
 
     showDialog(
       context: context,

@@ -52,8 +52,18 @@ class BooleanValidator(InputValidator):
         return InputError.NoError if isinstance(value, bool) else InputError.InvalidType
 
 class IntValidator(InputValidator):
+    def __init__(self, min_value = None, max_value = None):
+        self.min_value = min_value
+        self.max_value = max_value
+
     def validate(self, value):
-        return InputError.NoError if isinstance(value, int) else InputError.InvalidType
+        if not isinstance(value, int):
+            return InputError.InvalidType
+        if self.min_value is not None and value < self.min_value:
+            return InputError.OutOfRange
+        if self.max_value is not None and value > self.max_value:
+            return InputError.OutOfRange
+        return InputError.NoError
 
 # TODO: Improve email validation
 class EmailValidator(StringValidator):

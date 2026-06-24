@@ -4,10 +4,10 @@ import 'package:qfqq/common/models/errors/meeting_agenda_errors.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/providers/decisions_provider.dart';
 import 'package:qfqq/common/services/meeting_agenda_service.dart';
+import 'package:qfqq/common/widgets/agendas/meeting_view_content_completed.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_content_ongoing.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/utils/validation.dart';
-import 'package:qfqq/common/widgets/pdf_viewer_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class MeetingViewContent extends ConsumerStatefulWidget {
@@ -55,7 +55,7 @@ class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
       case MeetingAgendaStatus.ongoing:
         return MeetingViewContentOngoing(meeting: widget.meeting);
       case MeetingAgendaStatus.completed:
-        return _completedContent(context);
+        return MeetingViewContentCompleted(widget.meeting);
     }
   }
 
@@ -100,10 +100,5 @@ class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
         ],
       );
     }
-  }
-
-  Widget _completedContent(BuildContext context) {
-    final pdfUrl = 'reports/meeting-agendas/${widget.meeting.id}';
-    return PdfViewerWidget(pdfUrl: pdfUrl, pdfName: widget.meeting.title);
   }
 }

@@ -23,18 +23,13 @@ class _MeetingReviewModalState extends ConsumerState<MeetingReviewModal> {
 
   void reviewMeeting() async {
     setState(() => isSending = true);
-    ref.read(meetingsAgendasProvider.notifier);
+    final service = ref.read(meetingsAgendasProvider.notifier);
 
-    // final result = await service.createRole(widget.role);
+    await service.addReview(widget.meetingId, widget.meetingReview);
     if (!mounted) return;
 
     setState(() => isSending = false);
-
-    // if (result.hasAny()) {
-    //   setState(() => errors = result);
-    // } else {
-      Navigator.pop(context);
-    // }
+    Navigator.pop(context);
   }
 
   @override
