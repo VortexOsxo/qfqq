@@ -14,7 +14,7 @@ class DecisionsService extends StateNotifier<List<Decision>> {
   }
 
   Future<void> reload() async {
-    _loadDecisions();
+    await _loadDecisions();
   }
 
   Future<void> _loadDecisions() async {

@@ -54,4 +54,6 @@ class MeetingHandler:
     def _leave(self):
         if self.joined is not None:
             self.rooms[self.joined].remove(self.websocket)
+            if not self.rooms[self.joined]:
+                del self.rooms[self.joined]
             self.joined = None
