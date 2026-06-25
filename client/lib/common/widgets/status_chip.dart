@@ -3,13 +3,14 @@ import 'package:qfqq/common/utils/get_status_ui.dart';
 
 class StatusChip extends StatelessWidget {
   final StatusUIData statusUIData;
+  final Alignment? alignement;
 
-  const StatusChip({super.key, required this.statusUIData});
+  const StatusChip({super.key, required this.statusUIData, this.alignement});
 
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: Alignment.centerLeft,
+      alignment: alignement ?? Alignment.centerLeft,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         decoration: BoxDecoration(
