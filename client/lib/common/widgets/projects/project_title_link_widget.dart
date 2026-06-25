@@ -6,8 +6,9 @@ import 'package:qfqq/generated/l10n.dart';
 
 class ProjectTitleLinkWidget extends ConsumerWidget {
   final int projectId;
+  final bool minimized;
 
-  const ProjectTitleLinkWidget({super.key, required this.projectId});
+  const ProjectTitleLinkWidget({super.key, required this.projectId, this.minimized = true});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,7 +23,7 @@ class ProjectTitleLinkWidget extends ConsumerWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
+        if (!minimized) Text(
           '${loc.commonProject}: ',
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
@@ -34,12 +35,12 @@ class ProjectTitleLinkWidget extends ConsumerWidget {
             color: theme.primaryColor,
           ),
         ),
-        const SizedBox(width: 6),
+        if (!minimized)const SizedBox(width: 6),
         IconButton(
           onPressed: () => context.go('/projects/$projectId'),
           icon: Icon(
             Icons.open_in_new,
-            size: 24,
+            size: minimized ? 20 : 24,
             color: theme.primaryColor,
             fontWeight: FontWeight.w500,
           ),

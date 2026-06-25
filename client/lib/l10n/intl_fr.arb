@@ -13,6 +13,7 @@
   "attributeGoals": "Objectifs",
   "attributeLocation": "Lieu",
   "attributeDate": "Date",
+  "attributeLocationDate": "Lieu & date",
   "attributeAnimator": "Animateur",
   "attributeThemes": "Thèmes",
   "attributeAssitants": "Assistants",

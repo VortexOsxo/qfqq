@@ -1,28 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
-import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
-import 'package:qfqq/common/providers/users_provider.dart';
-import 'package:qfqq/common/utils/fromatting.dart';
-import 'package:qfqq/common/utils/is_id_valid.dart';
-import 'package:qfqq/common/utils/get_status_ui.dart';
+import 'package:qfqq/common/view_models/agenda_view_model.dart';
 import 'package:qfqq/common/widgets/status_chip.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_content.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_control.dart';
 import 'package:qfqq/common/widgets/details_attribute_widget.dart';
 import 'package:qfqq/common/widgets/details_list_widget.dart';
 import 'package:qfqq/common/widgets/projects/project_title_link_widget.dart';
+import 'package:qfqq/common/utils/fromatting.dart';
+import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/generated/l10n.dart';
 
-class AgendaViewPage extends ConsumerWidget {
+class AgendaViewPage extends StatelessWidget {
   final int agendaId;
   const AgendaViewPage({super.key, required this.agendaId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final loc = S.of(context);
+  Widget build(BuildContext context) {
+    return AgendaViewModel(
+      agendaId: agendaId,
+      builder: (vm) => _AgendaViewPage(vm: vm),
+    );
+  }
+}
 
-    final agenda = ref.watch(meetingAgendaByIdProvider(agendaId));
+class _AgendaViewPage extends StatelessWidget {
+  final AgendaViewPageViewModelState vm;
+
+  const _AgendaViewPage({required this.vm});
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = S.of(context);
+    final agenda = vm.agenda;
+
     if (agenda == null) {
       return Center(child: Text(loc.meetingNotFound));
     }
@@ -31,7 +42,7 @@ class AgendaViewPage extends ConsumerWidget {
       padding: const EdgeInsets.all(32),
       child: Column(
         children: [
-          _buildTopCard(context, ref, agenda),
+          _buildTopCard(context, agenda),
           const SizedBox(height: 16),
 
           Expanded(
@@ -42,7 +53,7 @@ class AgendaViewPage extends ConsumerWidget {
                   padding: const EdgeInsets.all(8),
                   child: SizedBox(
                     width: 250,
-                    child: _buildMeetingInfo(context, ref, agenda),
+                    child: _buildMeetingInfo(context, agenda),
                   ),
                 ),
 
@@ -57,67 +68,46 @@ class AgendaViewPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildTopCard(
-    BuildContext context,
-    WidgetRef ref,
-    MeetingAgenda agenda,
-  ) {
+  Widget _buildTopCard(BuildContext context, MeetingAgenda agenda) {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Text(
-                '${agenda.number}: ${agenda.title}',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                  color: theme.primaryColor,
-                ),
-              ),
-            ],
+          Text(
+            '${agenda.number}: ${agenda.title}',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 24,
+              color: theme.primaryColor,
+            ),
           ),
 
-          if (isIdValid(agenda.projectId))
-            ProjectTitleLinkWidget(projectId: agenda.projectId ?? 0),
+          if (vm.hasProject)
+            ProjectTitleLinkWidget(projectId: vm.projectId),
         ],
       ),
     );
   }
 
-  Widget _buildMeetingInfo(
-    BuildContext context,
-    WidgetRef ref,
-    MeetingAgenda agenda,
-  ) {
+  Widget _buildMeetingInfo(BuildContext context, MeetingAgenda agenda) {
+    final loc = S.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        StatusChip(statusUIData: getMeetingAgendaStatusUI(S.of(context), agenda.status)),
-        Flexible(child: _buildDetails(context, ref, agenda)),
+        StatusChip(statusUIData: getMeetingAgendaStatusUI(loc, agenda.status)),
+        Flexible(child: _buildDetails(context, loc, agenda)),
         const SizedBox(height: 16),
         Center(child: MeetingViewControl(meeting: agenda)),
       ],
     );
   }
 
-  Widget _buildDetails(
-    BuildContext context,
-    WidgetRef ref,
-    MeetingAgenda agenda,
-  ) {
-    final loc = S.of(context);
-
-    final animator =
-        agenda.animatorId != null
-            ? ref.watch(userByIdProvider(agenda.animatorId!))
-            : null;
-
+  Widget _buildDetails(BuildContext context, S loc, MeetingAgenda agenda) {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -128,18 +118,19 @@ class AgendaViewPage extends ConsumerWidget {
           ),
           DetailsAttributeWidget(
             label: loc.attributeLocation,
-            value: agenda.meetingLocation ?? loc.commonNoDateSet,
+            value: agenda.meetingLocation ?? loc.commonNoLocationSet,
           ),
           DetailsAttributeWidget(
             label: loc.attributeDate,
-            value:
-                agenda.meetingDate != null
-                    ? formatDate(context, agenda.meetingDate)
-                    : loc.commonNoDateSet,
+            value: agenda.meetingDate != null
+                ? formatDate(context, agenda.meetingDate)
+                : loc.commonNoDateSet,
           ),
           DetailsAttributeWidget(
             label: loc.attributeAnimator,
-            value: animator?.displayName ?? loc.commonNoAnimatorSet,
+            value: vm.animatorName.isNotEmpty
+                ? vm.animatorName
+                : loc.commonNoAnimatorSet,
           ),
           DetailsListWidget(
             label: loc.attributeThemes,
@@ -150,13 +141,9 @@ class AgendaViewPage extends ConsumerWidget {
           DetailsListWidget(
             label: loc.attributeParticipants,
             emptyLabel: loc.attributeNoParticipants,
-            values:
-                agenda.participantsIds.map((participantId) {
-                  final participant = ref.watch(
-                    userByIdProvider(participantId),
-                  );
-                  return participant?.displayName ?? loc.commonUnknown;
-                }).toList(),
+            values: vm.participantNames.isNotEmpty
+                ? vm.participantNames
+                : [],
           ),
         ],
       ),
