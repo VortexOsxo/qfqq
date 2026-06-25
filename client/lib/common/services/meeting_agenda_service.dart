@@ -79,6 +79,9 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
   }
 
   void onMeetingStatusUpdated(int meetingId, MeetingAgendaStatus status) {
+    if (meetingId == -1) {
+      return;
+    }
     state = state
       .map((e) => (e.id != meetingId) ? e : e.copyWith(newStatus: status))
       .toList();
@@ -186,7 +189,6 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
     } else if (event["type"] == "start") {
       onMeetingStatusUpdated(_currentMeeting, MeetingAgendaStatus.ongoing);
     } else if (event["type"] == "end") {
-      // TODO: Pop up the evaluation modal and then update meeting state I guess ?
       onMeetingStatusUpdated(_currentMeeting, MeetingAgendaStatus.completed);
       _showEndMeetingReview();
     }

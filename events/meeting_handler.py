@@ -35,12 +35,12 @@ class MeetingHandler:
         await self._broadcast_message({"handler": "meeting", "type": "start"})
 
     async def _end(self):
-        await self._broadcast_message({"handler": "meeting", "type": "end"})
+        await self._broadcast_message({"handler": "meeting", "type": "end"}, send_to_self=True)
 
-    async def _broadcast_message(self, message):
+    async def _broadcast_message(self, message, send_to_self = False):
         room = self.rooms[self.joined]
         for ws in room:
-            if ws is self.websocket:
+            if ws is self.websocket and not send_to_self:
                 continue
             await ws.send(json.dumps(message))
 
