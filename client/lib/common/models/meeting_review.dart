@@ -33,4 +33,10 @@ class MeetingReview {
       'comments': comments,
     };
   }
+
+  static bool isValidGrade(int value) => value >= 1 && value <= 5;
+
+  bool get hasValidRatings =>
+      [objective, smoothRunning, preparation, length, respect]
+          .every(isValidGrade);
 }

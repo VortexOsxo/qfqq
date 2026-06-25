@@ -89,7 +89,7 @@ def get_meeting_reviews(id: int):
         ("preparation", IntValidator(1,5)),
         ("length", IntValidator(1,5)),
         ("respect", IntValidator(1,5)),
-        ("comments", StringValidator()),
+        ("comments", StringValidator(allow_empty=True)),
     )
 )
 def create_meeting_review(objective, smoothRunning, preparation, length, respect, comments, id: int):

@@ -20,11 +20,52 @@ class MeetingReviewModal extends ConsumerStatefulWidget {
 
 class _MeetingReviewModalState extends ConsumerState<MeetingReviewModal> {
   bool isSending = false;
+  String? _objectiveError;
+  String? _smoothRunningError;
+  String? _preparationError;
+  String? _lengthError;
+  String? _respectError;
+
+  bool _validateReview() {
+    final loc = S.of(context);
+
+    _objectiveError = MeetingReview.isValidGrade(widget.meetingReview.objective)
+        ? null
+        : loc.errorRequiredField;
+    _smoothRunningError =
+        MeetingReview.isValidGrade(widget.meetingReview.smoothRunning)
+            ? null
+            : loc.errorRequiredField;
+    _preparationError =
+        MeetingReview.isValidGrade(widget.meetingReview.preparation)
+            ? null
+            : loc.errorRequiredField;
+    _lengthError = MeetingReview.isValidGrade(widget.meetingReview.length)
+        ? null
+        : loc.errorRequiredField;
+    _respectError = MeetingReview.isValidGrade(widget.meetingReview.respect)
+        ? null
+        : loc.errorRequiredField;
+
+    setState(() {});
+    return [
+      _objectiveError,
+      _smoothRunningError,
+      _preparationError,
+      _lengthError,
+      _respectError,
+    ].every((error) => error == null);
+  }
 
   void reviewMeeting() async {
     setState(() => isSending = true);
-    final service = ref.read(meetingsAgendasProvider.notifier);
+    if (!_validateReview()) {
+      setState(() => isSending = false);
+      return;
+    }
 
+    final service = ref.read(meetingsAgendasProvider.notifier);
+    
     await service.addReview(widget.meetingId, widget.meetingReview);
     if (!mounted) return;
 
@@ -50,31 +91,51 @@ class _MeetingReviewModalState extends ConsumerState<MeetingReviewModal> {
               GradeInputWidget(
                 label: loc.meetingReviewObjective,
                 initialValue: widget.meetingReview.objective > 0 ? widget.meetingReview.objective : null,
-                onChanged: (value) => widget.meetingReview.objective = value,
+                errorText: _objectiveError,
+                onChanged: (value) {
+                  setState(() => _objectiveError = null);
+                  widget.meetingReview.objective = value;
+                },
               ),
               const SizedBox(height: 16),
               GradeInputWidget(
                 label: loc.meetingReviewSmoothRunning,
                 initialValue: widget.meetingReview.smoothRunning > 0 ? widget.meetingReview.smoothRunning : null,
-                onChanged: (value) => widget.meetingReview.smoothRunning = value,
+                errorText: _smoothRunningError,
+                onChanged: (value) {
+                  setState(() => _smoothRunningError = null);
+                  widget.meetingReview.smoothRunning = value;
+                },
               ),
               const SizedBox(height: 16),
               GradeInputWidget(
                 label: loc.meetingReviewPreparation,
                 initialValue: widget.meetingReview.preparation > 0 ? widget.meetingReview.preparation : null,
-                onChanged: (value) => widget.meetingReview.preparation = value,
+                errorText: _preparationError,
+                onChanged: (value) {
+                  setState(() => _preparationError = null);
+                  widget.meetingReview.preparation = value;
+                },
               ),
               const SizedBox(height: 16),
               GradeInputWidget(
                 label: loc.meetingReviewLength,
                 initialValue: widget.meetingReview.length > 0 ? widget.meetingReview.length : null,
-                onChanged: (value) => widget.meetingReview.length = value,
+                errorText: _lengthError,
+                onChanged: (value) {
+                  setState(() => _lengthError = null);
+                  widget.meetingReview.length = value;
+                },
               ),
               const SizedBox(height: 16),
               GradeInputWidget(
                 label: loc.meetingReviewRespect,
                 initialValue: widget.meetingReview.respect > 0 ? widget.meetingReview.respect : null,
-                onChanged: (value) => widget.meetingReview.respect = value,
+                errorText: _respectError,
+                onChanged: (value) {
+                  setState(() => _respectError = null);
+                  widget.meetingReview.respect = value;
+                },
               ),
               const SizedBox(height: 20),
               DefaultTextField(

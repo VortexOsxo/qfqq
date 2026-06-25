@@ -25,9 +25,10 @@ class OptionalInputValidator(InputValidator):
 
 
 class StringValidator(InputValidator):
-    def __init__(self, min_length=0, max_length=float('inf')):
+    def __init__(self, min_length=0, max_length=float('inf'), allow_empty=False):
         self.min_length=min_length
         self.max_length=max_length
+        self.allow_empty=allow_empty
 
     def validate(self, value) -> InputError:
         if value is None:
@@ -36,7 +37,7 @@ class StringValidator(InputValidator):
         if not isinstance(value, str):
             return InputError.InvalidType
         
-        if value.strip() == "":
+        if value.strip() == "" and not self.allow_empty:
             return InputError.RequiredField
         
         if len(value) > self.max_length:
