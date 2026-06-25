@@ -17,7 +17,7 @@ import 'package:qfqq/common/pages/user_pages/profile_page.dart';
 import 'package:qfqq/common/pages/user_pages/signup_page.dart';
 import 'package:qfqq/common/pages/agenda_list_page.dart';
 import 'package:qfqq/common/widgets/scaffolds/auth_page_scaffold.dart';
-import 'package:qfqq/common/widgets/scaffolds/mobile_page_scaffold.dart';
+import 'package:qfqq/common/widgets/scaffolds/mobile_shell.dart';
 import 'package:qfqq/common/utils/route_titles.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -25,10 +25,9 @@ final GoRouter mobileRouter = GoRouter(
   initialLocation: '/login',
   routes: [
     ShellRoute(
-      builder: (context, state, child) => mobilePageScaffold(
-        context,
-        child,
+      builder: (context, state, child) => MobileShell(
         title: _getTitleForRoute(context, state),
+        child: child,
       ),
       routes: [
         GoRoute(
