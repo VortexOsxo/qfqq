@@ -44,7 +44,7 @@
   "agendaPageSaveAgenda": "Enregistrer l'ordre du jour",
   "agendaPageAddButton": "Ajouter",
   "agendaPageTitleHint": "Entrez le titre de la réunion",
-  "agendaPageGoalsHint": "Que voulons-nous accomplir ensemble, concrètement? (objectif)\nMon objectif est-il SMART, c’est-à-dire Spécifiques (précis), Mesurables, Atteignables, Réalistes et Temporels (date due).",
+  "agendaPageGoalsHint": "Objectifs des réunions précédentes\nQue voulons-nous accomplir ensemble, concrètement? (objectif)\nMon objectif est-il SMART, c’est-à-dire Spécifiques (précis), Mesurables, Atteignables, Réalistes et Temporels (date due).",
   "agendaPageLocationHint": "Salle ou lien",
   "agendaPageThemeHint": "Ajouter un sujet de discussion",
   "agendaPageSelectDatePlaceholder": "Sélectionnez une date pour la réunion",
@@ -110,7 +110,6 @@
   "projectSupervisor": "Superviseur",
 
   "projectPageTitle": "Projets",
-  "projectPageSearchHint": "Rechercher",
   "projectNotFound": "Projet introuvable",
   
   "projectCreationPageTitleHint": "Entrez un titre de projet",
@@ -137,6 +136,21 @@
   "meetingInProgressProject": "Projet",
   "meetingInProgressDueDate": "Date d’échéance",
   "meetingInProgressDueDateSelected": "Date d’échéance : {date}",
+  
+  "meetingReviewTitle": "Diagnostic de la réunion",
+  "meetingReviewObjective": "Les buts et objectifs de la réunion sont clairs",
+  "meetingReviewSmoothRunning": "L’animateur assure le bon déroulement de la réunion, point par point",
+  "meetingReviewPreparation": "La préparation des participants",
+  "meetingReviewLength": "La durée de la réunion ne dépasse pas le temps alloué",
+  "meetingReviewRespect": "Il y a de l’écoute et du respect mutuel entre participants, chacun contribue selon ses forces",
+  "meetingReviewCommentsHint": "Commentaires et suggestions additionnels",
+  "meetingReviewSend": "Envoyer",
+
+  "meetingReviewObjectiveShort": "Objectif",
+  "meetingReviewSmoothRunningShort": "Déroulement",
+  "meetingReviewPreparationShort": "Préparation",
+  "meetingReviewLengthShort": "Durée",
+  "meetingReviewRespectShort": "Respect",
   
   "meetingViewContentDraftCorrectErrors": "Pour marquer la réunion comme planifiée, veuillez corriger les erreurs suivantes :",
   "meetingViewContentDraftMarkPlanned": "Marquez cette réunion comme planifiée pour la rendre visible à votre équipe.",
@@ -183,7 +197,7 @@
   "profilePageLanguage": "Langue",
 
   "forgottenPasswordPageTitle": "Mot de passe oublié",
-  "permissionsPageTitle": "Permissions",
+  "organizationPageTitle": "Organisation",
   "forgottenPasswordPageEnterEmail": "Saisissez l'adresse e-mail de votre compte",
   "forgottenPasswordPageResetPassword": "Réinitialiser le mot de passe",
   "forgottenPasswordPageLoginLink": "Retour à la page de connexion",
@@ -196,6 +210,10 @@
   "forgottenPasswordPageEnterNewPassword": "Entrez un nouveau mot de passe",
   "forgottenPasswordPageConfirmNewPassword": "Confirmez votre nouveau mot de passe",
   "forgottenPasswordPageResendCodeLink": "Vous n’avez pas reçu le code ? Renvoyer",
+
+  "commonFormsEnterEmail": "Veuillez saisir une adresse e-mail",
+  "errorEmailInvalidFormat": "Veuillez utiliser un format d'e-mail valide : abc@def.ghi",
+  "forgottenPasswordPageNoAccount": "Aucun compte n'est associé à l'adresse e-mail : {email}",
 
   "commonCancel": "Annuler",
   "commonConfirm": "Confirmer",
@@ -218,6 +236,7 @@
   "commonStart": "Démarrer",
   "commonModify": "Modifier",
   "commonAction": "Action",
+  "commonRevoke": "Révoquer",
   "commonProfile": "Profil",
   "commonReport": "Rapport",
 
@@ -235,6 +254,13 @@
   "commonRole": "Role",
   "commonRoles": "Rôles",
   "commonPermissions": "Permissions",
+  "commonMembers": "Membres",
+  "buttonInvitePeople": "Inviter des membres",
+  "inviteMemberPageTitle": "Organisation - Inviter des membres",
+  "inviteMemberLabel": "Inviter des membres",
+  "inviteMemberPageCurrent": "Invitations envoyées",
+  "inviteMemberEmailHint": "Saisissez une adresse e-mail",
+  "buttonInviteMemberSubmit": "Inviter",
   "commonMeeting": "Réunion",
   "commonSelectDate": "Sélectionner une date",
   "commonTapToSelectDate": "Appuyer pour sélectionner une date",
@@ -258,6 +284,8 @@
 
   "commonObjectDecisions": "Décisions",
   "commonObjectReports": "Rapports",
+  "commonObjectReviews": "Retours",
+  "commonNoReviews": "Aucun retour trouvé",
 
   "widgetProjectLabel": "Projet",
   "widgetUserLabel": "Utilisateur",
@@ -277,7 +305,8 @@
   "buttonCreateAgenda": "Créer un ordre du jour",
   "buttonCreateProject": "Créer un projet",
   "buttonCreateRole": "Créer un rôle",
-  "roleNameDefault": "Défaut",
+  "roleNameMember": "Membre",
+  "roleNameAdmin": "Administrateur",
 
   "roleName": "Nom du rôle",
   "roleCanWrite": "Peut écrire",
@@ -289,8 +318,29 @@
 
   "createRoleFormUniqueName": "Le nom du rôle doit être unique",
 
+  "organizationCreationPageTitle": "Créer une organisation",
+  "organizationCreationPageButton": "Créer",
+  "organizationCreationPageLabelName": "Nom de l'organisation",
+  "loginPageLinkCreateOrganization": "Créer une nouvelle organisation",
+  "organizationCreationPageSuccess": "Organisation créée avec succès !",
+  "organizationCreationPageCodeInstruction": "Veuillez utiliser le code suivant pour créer votre compte :",
+  "organizationCreationPageGoToSignup": "Continuer vers l'inscription",
+
   "reportSendModalTitle": "Envoyer le rapport",
   "reportSendModalRecipient": "Destinataire",
   "reportSendModalSend": "Envoyer",
-  "reportSendModalSuccess": "Rapport envoyé avec succès!"
+  "reportSendModalSuccess": "Rapport envoyé avec succès!",
+  "organizationLinksPageTitle": "Rejoindre une organisation",
+  "organizationLinksTabCreate": "Créer une organisation",
+  "organizationLinksTabJoin": "Rejoindre une organisation",
+  "organizationLinksCreateDummy": "Formulaire de création d'organisation (Bientôt disponible)",
+  "organizationLinksJoinDummy": "Formulaire d'adhésion à une organisation (Bientôt disponible)",
+  "organizationLinksInputId": "Identifiant de l'organisation",
+  "organizationLinksButtonJoin": "Rejoindre",
+  "organizationJoinUserRequired": "La session utilisateur est requise. Veuillez vous reconnecter.",
+  "organizationJoinInvalidOrg": "Organisation introuvable ou invalide.",
+
+  "searchTitleIdHint": "Rechercher par id ou titre",
+  "searchDescriptionIdHint": "Rechercher par id ou description",
+  "toggleAdvancedFilters": "Afficher les filtres avancés"
 }

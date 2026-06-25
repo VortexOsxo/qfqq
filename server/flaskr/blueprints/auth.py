@@ -1,12 +1,12 @@
-from flask import Blueprint, jsonify, current_app, g
+from flask import Blueprint, jsonify, g
 from werkzeug.security import check_password_hash, generate_password_hash
-from datetime import datetime, timedelta
-import jwt
 
-from flaskr.database import UserDataHandler
+from flaskr.database import UserDataHandler, OrganizationDataHandler
 from flaskr.services.reset_password_service import ResetPasswordService
 from flaskr.services.inputs import input_middleware, SignupBuilder, LoginBuilder, LambdaBuilder, StringValidator, EmailValidator, PasswordValidator
 from flaskr.errors import InputError
+from flaskr.utils import create_auth_response, create_token
+from flaskr.database.postgres.tenant_context import set_tenant
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -20,24 +20,19 @@ def signup(firstName, lastName, email, password):
     if user is None:
         return jsonify({"email": InputError.EmailMustBeUnique}), 400
 
-    token = jwt.encode(
-        {"user_id": str(user.id), "exp": datetime.utcnow() + timedelta(hours=3)},
-        current_app.config["SECRET_KEY"],
-        algorithm="HS256",
-    )
-
-    permissions = UserDataHandler.get_user_permissions(userId=user.id)
+    orgId, roleId = OrganizationDataHandler.check_invite(email)
+    if orgId:
+        result = UserDataHandler.add_user_to_org(user.id, orgId, roleId)
+        assert result, "Should be able to join a org when invited"
+        set_tenant(orgId)
+        permissions = UserDataHandler.get_user_permissions(userId=user.id)
+        return (
+            create_auth_response(create_token(user.id, orgId), user, True, permissions),
+            201,
+        )
 
     return (
-        jsonify(
-            {"session_token": token}
-            | user.to_dict()
-            | {
-                "canWrite": permissions[0],
-                "canDelete": permissions[1],
-                "canUpdatePermissions": permissions[2],
-            }
-        ),
+        create_auth_response(create_token(user.id, None), user),
         201,
     )
 
@@ -50,24 +45,18 @@ def login(email, password):
     if user is None or not check_password_hash(user.passwordHash, password):
         return jsonify({"auth": InputError.InvalidLogin}), 401
 
-    token = jwt.encode(
-        {"user_id": str(user.id), "exp": datetime.utcnow() + timedelta(hours=3)},
-        current_app.config["SECRET_KEY"],
-        algorithm="HS256",
-    )
+    orgId = OrganizationDataHandler.get_user_org_id(user.id)
+    if orgId is None:
+        return (
+            create_auth_response(create_token(user.id, None), user),
+            200,
+        )
 
+    set_tenant(orgId)
     permissions = UserDataHandler.get_user_permissions(userId=user.id)
 
     return (
-        jsonify(
-            {"session_token": token}
-            | user.to_dict()
-            | {
-                "canWrite": permissions[0],
-                "canDelete": permissions[1],
-                "canUpdatePermissions": permissions[2],
-            }
-        ),
+        create_auth_response(create_token(user.id, orgId), user, True, permissions),
         200,
     )
 

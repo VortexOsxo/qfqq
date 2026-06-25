@@ -24,8 +24,7 @@ class MeetingViewContentOngoing extends ConsumerWidget {
     final loc = S.of(context);
     final decisions = ref.watch(decisionsProvider);
 
-    final meetingDecisions =
-        decisions.where((d) => d.meetingId == meeting.id).toList();
+    final meetingDecisions = decisions.where((d) => d.meetingId == meeting.id).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

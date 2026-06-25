@@ -3,7 +3,7 @@ from typing import Callable, Optional
 import re
 
 from flaskr.errors import InputError
-from flaskr.database import UserDataHandler, ProjectDataHandler, MeetingDataHandler, RoleDataHandler
+from flaskr.database import UserDataHandler, ProjectDataHandler, MeetingDataHandler, RoleDataHandler, OrganizationDataHandler
 
 
 class InputValidator(ABC):
@@ -51,6 +51,21 @@ class BooleanValidator(InputValidator):
     def validate(self, value):
         return InputError.NoError if isinstance(value, bool) else InputError.InvalidType
 
+class IntValidator(InputValidator):
+    def __init__(self, min_value = None, max_value = None):
+        self.min_value = min_value
+        self.max_value = max_value
+
+    def validate(self, value):
+        if value is None:
+            return InputError.RequiredField
+        if not isinstance(value, int):
+            return InputError.InvalidType
+        if self.min_value is not None and value < self.min_value:
+            return InputError.OutOfRange
+        if self.max_value is not None and value > self.max_value:
+            return InputError.OutOfRange
+        return InputError.NoError
 
 # TODO: Improve email validation
 class EmailValidator(StringValidator):
@@ -123,6 +138,9 @@ class MeetingIdValidator(_ObjectIdValidator):
 class RoleIdValidator(_ObjectIdValidator):
     dataHandler = RoleDataHandler.get_role
 
+class OrganizationIdValidator(_ObjectIdValidator):
+    dataHandler = OrganizationDataHandler.get_org
+
 # TODO: Test it :)
 class EnumValidator(InputValidator):
     def __init__(self, enum):
@@ -152,6 +170,26 @@ class ListValidator(InputValidator):
 
         return InputError.NoError
 
+
+class TypedListValidator(InputValidator):
+    def __init__(self, element_validator: InputValidator, can_be_empty: bool = True):
+        self.element_validator = element_validator
+        self.can_be_empty = can_be_empty
+
+    def validate(self, l) -> InputError:
+        if not isinstance(l, list):
+            return InputError.ValueMustBeAList
+
+        if not self.can_be_empty and len(l) == 0:
+            return InputError.ListMustBeNonEmpty
+
+        for item in l:
+            error = self.element_validator.validate(item)
+            if error != InputError.NoError:
+                return error
+
+        return InputError.NoError
+
 class PermissionValidator(StringValidator):
     def validate(self, value):
         if (error := super().validate(value)) != InputError.NoError:
@@ -162,3 +200,13 @@ class PermissionValidator(StringValidator):
             if value in ['canDelete', 'canWrite', 'canUpdatePermissions']
             else InputError.InvalidFormat
         )
+
+class SlugValidator(StringValidator):
+    def validate(self, value) -> InputError:
+        if (error := super().validate(value)) != InputError.NoError:
+            return error
+        
+        if value not in OrganizationDataHandler.get_existing_slugs():
+            return InputError.ObjectIdNotFound
+        
+        return InputError.NoError

@@ -1,55 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:qfqq/common/templates/button_template.dart';
+import 'package:qfqq/common/utils/platform.dart';
 import 'package:qfqq/common/widgets/agendas/agenda_future_widget.dart';
 import 'package:qfqq/common/widgets/decisions/decision_responsabilities_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class HomePageContent extends StatelessWidget {
+  const HomePageContent({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(child: buildMainContent(context)),
-        IntrinsicWidth(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Expanded(
-                child: buildNavButtonTemplate(
-                  context,
-                  S.of(context).homePageProjectButton,
-                  '/projects/creation',
-                ),
-              ),
-              Expanded(
-                child: buildNavButtonTemplate(
-                  context,
-                  S.of(context).homePageMeetingButton,
-                  '/agendas/creation',
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
+    Widget content;
+    var children = [
+      buildDecisionsContent(context),
+      buildMeetingsContent(context),
+    ];
 
-  Widget buildMainContent(BuildContext context) {
-    return SizedBox.expand(
-      child: Row(
+    if (platformType == PlatformType.desktop) {
+      content = Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          buildDecisionsContent(context),
-          buildMeetingsContent(context),
-        ],
-      ),
-    );
+        children: children,
+      );
+    } else {
+      content = Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: children,
+      );
+    }
+
+    return SizedBox.expand(child: content);
   }
 
   // TODO: When the user logs in, directly send the first page of it's meetings and decisions

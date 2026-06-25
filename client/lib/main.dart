@@ -5,10 +5,9 @@ import 'package:qfqq/desktop/desktop_app.dart';
 import 'package:qfqq/mobile/mobile_app.dart';
 
 void main() {
-  final platform = checkPlatform();
-  if (platform == PlatformType.desktop) {
+  if (platformType == PlatformType.desktop) {
     runApp(ProviderScope(child: const DesktopApp()));
-  } else if (platform == PlatformType.mobile) {
+  } else if (platformType == PlatformType.mobile) {
     runApp(ProviderScope(child: const MobileApp()));
   }
 }

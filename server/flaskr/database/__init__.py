@@ -9,6 +9,7 @@ from .postgres import (
     DecisionDataHandler,
     MeetingDataHandler,
     RoleDataHandler,
+    OrganizationDataHandler,
 )
 
 

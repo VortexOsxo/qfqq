@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:qfqq/common/pages/permissions_page.dart';
+import 'package:qfqq/common/pages/organizations/organization_invite_page.dart';
+import 'package:qfqq/common/pages/organizations/organization_page.dart';
+import 'package:qfqq/common/providers/navigator_key.dart';
 import 'package:qfqq/common/templates/navigation_guard.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/project.dart';
@@ -8,33 +10,34 @@ import 'package:qfqq/common/pages/agenda_modification_page.dart';
 import 'package:qfqq/common/pages/agenda_view_page.dart';
 import 'package:qfqq/common/pages/decisions_list_page.dart';
 import 'package:qfqq/common/pages/decision_view_page.dart';
-import 'package:qfqq/common/pages/home_page.dart';
+import 'package:qfqq/desktop/pages/home_page.dart';
 import 'package:qfqq/common/pages/user_pages/forgotten_password_page.dart';
-import 'package:qfqq/common/pages/user_pages/login_page.dart';
 import 'package:qfqq/common/pages/project_modification_page.dart';
-import 'package:qfqq/common/pages/project_page.dart';
-import 'package:qfqq/common/pages/project_view_page.dart';
+import 'package:qfqq/desktop/pages/projects/project_page.dart';
+import 'package:qfqq/desktop/pages/projects/project_view_page.dart';
 import 'package:qfqq/common/pages/decisions_report_page.dart';
 import 'package:qfqq/common/pages/user_pages/profile_page.dart';
-import 'package:qfqq/common/pages/user_pages/signup_page.dart';
-import 'package:qfqq/common/pages/agenda_list_page.dart';
+import 'package:qfqq/desktop/pages/user_pages/signup_page.dart';
+import 'package:qfqq/desktop/pages/agendas/agenda_list_page.dart';
+import 'package:qfqq/common/pages/user_pages/organization_links_page.dart';
 import 'package:qfqq/common/widgets/scaffolds/auth_page_scaffold.dart';
 
 import 'package:qfqq/common/widgets/scaffolds/default_page_scaffold.dart';
 import 'package:qfqq/common/utils/route_titles.dart';
-import 'package:qfqq/generated/l10n.dart';
+import 'package:qfqq/desktop/pages/user_pages/login_page.dart';
 
 NoTransitionPage _noTransition(Widget child) => NoTransitionPage(child: child);
 
 final GoRouter desktopRouter = GoRouter(
   initialLocation: '/login',
+  navigatorKey: navigatorKey,
   routes: [
     ShellRoute(
       builder:
           (context, state, child) => defaultPageScaffold(
             context,
             child,
-            title: _getTitleForRoute(context, state),
+            title: getTitleForRoute(context, state),
           ),
       routes: [
         GoRoute(
@@ -106,10 +109,13 @@ final GoRouter desktopRouter = GoRouter(
             );
           },
         ),
-        // TODO: Add redirect
         GoRoute(
-          path: '/permissions',
-          pageBuilder: (context, state) => _noTransition(const PermissionsPage()),
+          path: '/organization',
+          pageBuilder: (context, state) => _noTransition(const OrganizationPage()),
+        ),
+        GoRoute(
+          path: '/organization/invite',
+          pageBuilder: (context, state) => _noTransition(const OrganizationInvitePage()),
         ),
         GoRoute(
           path: '/profile',
@@ -123,7 +129,7 @@ final GoRouter desktopRouter = GoRouter(
           (context, state, child) => authPageScaffold(
             context,
             child,
-            title: _getTitleForRoute(context, state),
+            title: getTitleForRoute(context, state),
           ),
       routes: [
         GoRoute(
@@ -140,37 +146,10 @@ final GoRouter desktopRouter = GoRouter(
         ),
       ],
     ),
+    GoRoute(
+      path: '/organizations/links',
+      pageBuilder: (context, state) => _noTransition(const OrganizationLinksPage()),
+    ),
   ],
 );
 
-String? _getTitleForRoute(BuildContext context, GoRouterState state) {
-  final loc = S.of(context);
-
-  switch (state.fullPath) {
-    case '/agendas/creation':
-      final agenda = state.extra as MeetingAgenda?;
-      return agenda == null
-          ? '${loc.agendaPageTitleAppBar} - ${loc.commonCreate}'
-          : '${loc.agendaPageTitleAppBar} - ${loc.commonUpdate}';
-    case '/agendas':
-      return loc.agendasListPageTitle;
-    case '/agendas/:id':
-      return loc.agendaPageTitleAppBar;
-    case '/decisions':
-      return loc.decisionsListPageTitle;
-    case '/decisions/report':
-      return loc.decisionsReportPageTitle;
-    case '/decisions/:id':
-      return loc.decisionViewPageTitle;
-    case '/projects':
-      return loc.projectPageTitle;
-    case '/projects/creation':
-      return loc.projectModificationPageTitle;
-    case '/projects/:id':
-      return loc.projectViewPageTitle;
-    case '/permissions':
-      return loc.commonPermissions;
-    default:
-      return getTitleForRoute(context, state);
-  }
-}

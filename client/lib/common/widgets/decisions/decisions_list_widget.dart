@@ -13,7 +13,7 @@ import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
 import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
-import 'package:qfqq/common/widgets/reusables/default_dropdown_menu.dart';
+import 'package:qfqq/common/widgets/dropdowns/default_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -43,9 +43,11 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
       decisions =
           decisions
               .where(
-                (Decision decision) => decision.description
-                    .toLowerCase()
-                    .contains(_searchQuery.toLowerCase()),
+                (decision) =>
+                    decision.description.toLowerCase().contains(
+                      _searchQuery.toLowerCase(),
+                    ) ||
+                    decision.number.toString().contains(_searchQuery),
               )
               .toList();
     }
@@ -84,7 +86,7 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
         children: [
           DefaultTextField(
             onChanged: (value) => setState(() => _searchQuery = value),
-            hintText: S.of(context).commonSearch,
+            hintText: S.of(context).searchDescriptionIdHint,
           ),
           SizedBox(height: 8),
           if (widget.isProjectFilterEnabled)
@@ -127,6 +129,8 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
     List<Decision> decisions,
   ) {
     final loc = S.of(context);
+    final theme = Theme.of(context);
+
     if (decisions.isEmpty) {
       Widget cardContent = EmptyListWidget(
         text: S.of(context).decisionsListPageEmpty,
@@ -154,7 +158,7 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
             SizedBox(width: 16),
           ],
         ),
-        const Divider(),
+        Divider(color: theme.colorScheme.primary, thickness: 2,),
         Expanded(
           child: ListView.separated(
             itemCount: decisions.length,

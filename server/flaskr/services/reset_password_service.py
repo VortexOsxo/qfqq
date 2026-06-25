@@ -14,12 +14,9 @@ class ResetPasswordService:
         code = "".join([random.choice(letters_and_digits) for _ in range(6)])
 
         lost_password_email = EmailDrafter.create_reset_password_email(email, code, lang)
-        result = EmailSender.send_email(lost_password_email)
-        if not result:
-            return False
+        EmailSender.send_email(lost_password_email)
 
-        PasswordRequestDataHandler.create_request(email, code, time_now_to_string())
-        return True
+        return PasswordRequestDataHandler.create_request(email, code, time_now_to_string())
 
     @staticmethod
     def is_code_valid(email: str, code: str):

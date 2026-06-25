@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/providers/navigator_key.dart';
 import 'package:qfqq/common/templates/navigation_guard.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/project.dart';
@@ -7,27 +8,28 @@ import 'package:qfqq/common/pages/agenda_modification_page.dart';
 import 'package:qfqq/common/pages/agenda_view_page.dart';
 import 'package:qfqq/common/pages/decisions_list_page.dart';
 import 'package:qfqq/common/pages/decision_view_page.dart';
-import 'package:qfqq/common/pages/home_page.dart';
+import 'package:qfqq/mobile/pages/home_page.dart';
 import 'package:qfqq/common/pages/user_pages/forgotten_password_page.dart';
-import 'package:qfqq/common/pages/user_pages/login_page.dart';
 import 'package:qfqq/common/pages/project_modification_page.dart';
-import 'package:qfqq/common/pages/project_page.dart';
-import 'package:qfqq/common/pages/project_view_page.dart';
+import 'package:qfqq/mobile/pages/projects/project_page.dart';
+import 'package:qfqq/mobile/pages/projects/project_view_page.dart';
 import 'package:qfqq/common/pages/user_pages/profile_page.dart';
-import 'package:qfqq/common/pages/user_pages/signup_page.dart';
-import 'package:qfqq/common/pages/agenda_list_page.dart';
+import 'package:qfqq/mobile/pages/user_pages/signup_page.dart';
+import 'package:qfqq/mobile/pages/agendas/agenda_list_page.dart';
 import 'package:qfqq/common/widgets/scaffolds/auth_page_scaffold.dart';
-import 'package:qfqq/common/widgets/scaffolds/mobile_shell.dart';
+import 'package:qfqq/common/widgets/scaffolds/mobile_page_scaffold.dart';
 import 'package:qfqq/common/utils/route_titles.dart';
-import 'package:qfqq/generated/l10n.dart';
+import 'package:qfqq/mobile/pages/user_pages/login_page.dart';
 
 final GoRouter mobileRouter = GoRouter(
+  navigatorKey: navigatorKey,
   initialLocation: '/login',
   routes: [
     ShellRoute(
-      builder: (context, state, child) => MobileShell(
-        title: _getTitleForRoute(context, state),
-        child: child,
+      builder: (context, state, child) => mobilePageScaffold(
+        context,
+        child,
+        title: getTitleForRoute(context, state),
       ),
       routes: [
         GoRoute(
@@ -77,7 +79,7 @@ final GoRouter mobileRouter = GoRouter(
           },
         ),
         GoRoute(
-          path: '/project/:id',
+          path: '/projects/:id',
           builder: (context, state) {
             final id = state.pathParameters['id']!;
             return ProjectViewPage(projectId: int.tryParse(id) ?? 0);
@@ -94,7 +96,7 @@ final GoRouter mobileRouter = GoRouter(
       builder: (context, state, child) => authPageScaffold(
         context,
         child,
-        title: _getTitleForRoute(context, state),
+        title: getTitleForRoute(context, state),
       ),
       routes: [
         GoRoute(
@@ -114,20 +116,3 @@ final GoRouter mobileRouter = GoRouter(
   ],
 );
 
-String? _getTitleForRoute(BuildContext context, GoRouterState state) {
-  final loc = S.of(context);
-
-  switch (state.fullPath) {
-    case '/agenda':
-      final agenda = state.extra as MeetingAgenda?;
-      return agenda == null
-          ? '${loc.agendaPageTitleAppBar} - ${loc.commonCreate}'
-          : '${loc.agendaPageTitleAppBar} - ${loc.commonUpdate}';
-    case '/project/creation':
-      return loc.projectModificationPageTitle;
-    case '/project/:id':
-      return loc.projectViewPageTitle;
-    default:
-      return getTitleForRoute(context, state);
-  }
-}

@@ -1,13 +1,20 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
+import 'package:qfqq/common/models/meeting_review.dart';
+import 'package:qfqq/common/providers/navigator_key.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/decisions_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
+import 'package:qfqq/common/services/web_socket_service.dart';
+import 'package:qfqq/common/widgets/modal/meeting_review_modal.dart';
 
 class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
   final QfqqHttpClient _http;
   final DecisionsService decisionsService;
+
+  int _currentMeeting = -1;
 
   MeetingAgendaService(this._http, AuthService auth, this.decisionsService) : super([]) {
     auth.connectionNotifier.subscribe((_) => _loadMeetingAgendas());
@@ -49,6 +56,34 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
     return true;
   }
 
+  Future<bool> startMeeting(int meetingId) async {
+    final result = await updateMeetingAgendaStatus(
+      meetingId,
+      MeetingAgendaStatus.ongoing,
+    );
+    if (result) {
+      WebSocketService.send("meeting", "start", {});
+    }
+    return result;
+  }
+
+  Future<bool> completeMeeting(int meetingId) async {
+    final result = await updateMeetingAgendaStatus(
+      meetingId,
+      MeetingAgendaStatus.completed,
+    );
+    if (result) {
+      WebSocketService.send("meeting", "end", {});
+    }
+    return result;
+  }
+
+  void onMeetingStatusUpdated(int meetingId, MeetingAgendaStatus status) {
+    state = state
+      .map((e) => (e.id != meetingId) ? e : e.copyWith(newStatus: status))
+      .toList();
+  }
+
   Future<bool> updateMeetingAgendaStatus(
     int meetingId,
     MeetingAgendaStatus status,
@@ -60,9 +95,7 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
     );
     if (response.statusCode != 204) return false;
 
-    state = state.map(
-      (e) => (e.id != meetingId) ? e : e.copyWith(newStatus: status)
-    ).toList();
+    onMeetingStatusUpdated(meetingId, status);
     return true;
   }
 
@@ -98,5 +131,83 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
 
     final List<dynamic> data = jsonDecode(response.body);
     state = data.map(MeetingAgenda.fromJson).toList();
+  }
+
+  Future<String> getMeetingCode(int meetingId) async {
+    final response = await _http.get(
+      _http.getUri('meeting-agendas/$meetingId/code'),
+      headers: {'Content-Type': 'application/json'},
+    );
+    return response.body;
+  }
+
+  // TODO: Listen even if the meeting isn't started (we need to know when it starts)
+  Future<void> joinMeeting(int meetingId) async {
+    final code = await getMeetingCode(meetingId);
+    _currentMeeting = meetingId;
+    WebSocketService.registerHandler("meeting", _handler);
+    WebSocketService.send("meeting", "join", {"code": code});
+  }
+
+  Future<void> leaveMeeting(int meetingId) async {
+    WebSocketService.send("meeting", "leave", {});
+    WebSocketService.unregisterHandler("meeting");
+    _currentMeeting = -1;
+  }
+
+  Future<void> addReview(int meetingId, MeetingReview review) async {
+    // TODO: Ajouter la gestion des erreurs
+    final _ = await _http.post(
+      _http.getUri('meeting-agendas/$meetingId/reviews'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(review.toJson()),
+    );
+  }
+
+  Future<List<MeetingReview>> getReviews(int meetingId) async {
+    final response = await _http.get(
+      _http.getUri('meeting-agendas/$meetingId/reviews'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode != 200) {
+      return [];
+    }
+
+    final List<dynamic> body = jsonDecode(response.body);
+    return body
+        .map((item) => MeetingReview.fromJson(item as Map<String, dynamic>))
+        .toList();
+  }
+
+  void _handler(dynamic event) {
+    if (event["type"] == "decision") {
+      _reloadDecisions(_currentMeeting);
+    } else if (event["type"] == "start") {
+      onMeetingStatusUpdated(_currentMeeting, MeetingAgendaStatus.ongoing);
+    } else if (event["type"] == "end") {
+      // TODO: Pop up the evaluation modal and then update meeting state I guess ?
+      onMeetingStatusUpdated(_currentMeeting, MeetingAgendaStatus.completed);
+      _showEndMeetingReview();
+    }
+  }
+
+  void _reloadDecisions(int meetingId) async {
+    decisionsService.reload(); // TODO: Optimize, we don't want to reload all decisions, only the one we need to
+  }
+
+  void _showEndMeetingReview() {
+    final context = navigatorKey.currentContext;
+    if (context == null) {
+      return;
+    }
+
+    assert(_currentMeeting != -1);
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) => MeetingReviewModal(meetingId: _currentMeeting),
+    );
   }
 }

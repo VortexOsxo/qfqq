@@ -1,13 +1,12 @@
-DROP TABLE IF EXISTS users,
-roles,
+DROP TABLE IF EXISTS roles,
 usersRoles,
 projects,
 meetings,
+meetingsReviews,
 meetingsThemes,
 meetingsParticipants,
 decisions,
-decisionsAssistants,
-passwordRequests CASCADE;
+decisionsAssistants CASCADE;
 
 DROP TYPE IF EXISTS meetingStatus,
 decisionStatus CASCADE;
@@ -15,15 +14,6 @@ decisionStatus CASCADE;
 CREATE TYPE meetingStatus AS ENUM ('draft', 'planned', 'ongoing', 'completed');
 
 CREATE TYPE decisionStatus AS ENUM ('inProgress', 'cancelled', 'completed');
-
-CREATE TABLE
-  users (
-    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    firstName TEXT NOT NULL,
-    lastName TEXT NOT NULL,
-    passwordHash TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL
-  );
 
 CREATE TABLE
   roles (
@@ -76,6 +66,24 @@ CREATE TABLE
   meetingsParticipants (
     meetingId INTEGER REFERENCES meetings (id) ON DELETE CASCADE,
     userId INTEGER REFERENCES users (id),
+    PRIMARY KEY (meetingId, userId)
+  );
+
+CREATE TABLE
+  meetingsReviews (
+    -- Could reference a participant instead ?
+    meetingId INTEGER REFERENCES meetings (id) ON DELETE CASCADE,
+    userId INTEGER REFERENCES users (id),
+
+    isAnonymous BOOLEAN NOT NULL,
+    objective INTEGER NOT NULL,
+    smoothRunning INTEGER NOT NULL,
+    preparation INTEGER NOT NULL,
+    length INTEGER NOT NULL,
+    respect INTEGER NOT NULL,
+
+    comments TEXT NOT NULL,
+
     PRIMARY KEY (meetingId, userId)
   );
 
@@ -145,15 +153,8 @@ FROM
   ) da ON da.decisionId = d.id
   JOIN meetings m on m.id = d.meetingId;
 
-CREATE TABLE
-  passwordRequests (
-    email TEXT REFERENCES users (email),
-    code TEXT,
-    date TEXT,
-    PRIMARY KEY (email)
-  );
-
 INSERT INTO
   roles (name, canWrite, canDelete, canUpdatePermissions)
 VALUES
-  ('default', true, true, true);
+  ('default', true, false, false),
+  ('admin', true, true, true);

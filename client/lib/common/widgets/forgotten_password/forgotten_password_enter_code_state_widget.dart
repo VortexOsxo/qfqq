@@ -1,30 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:qfqq/common/services/forgotten_password_service.dart';
+import 'package:qfqq/common/pages/user_pages/forgotten_password_page_view_model.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/generated/l10n.dart';
 
-class ForgottenPasswordEnterCodeStateWidget extends ConsumerWidget {
-  const ForgottenPasswordEnterCodeStateWidget({super.key});
+class ForgottenPasswordEnterCodeStateWidget extends StatelessWidget {
+  final ForgottenPasswordPageViewModelState vm;
+  const ForgottenPasswordEnterCodeStateWidget({super.key, required this.vm});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final loc = S.of(context);
-    final email = ref.read(
-      forgottenPasswordStateProvider.select((value) => value.email),
-    );
-    final error = ref.watch(
-      forgottenPasswordStateProvider.select((state) => state.errorMessage),
-    );
-    final service = ref.read(forgottenPasswordStateProvider.notifier);
+  Widget build(BuildContext context) {
+    var loc = S.of(context);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(loc.forgottenPasswordPageResetCodeSent),
-        Text(email),
-        SizedBox(height: 8),
+        Text(vm.email),
+        const SizedBox(height: 8),
         Text(loc.forgottenPasswordPageEnterCode),
         SizedBox(
           width: 180,
@@ -35,31 +27,28 @@ class ForgottenPasswordEnterCodeStateWidget extends ConsumerWidget {
               hintText: loc.forgottenPasswordPageEnterCodeHint,
               counterText: '',
             ),
-            onChanged: service.setCode,
+            onChanged: vm.setCode,
           ),
         ),
-        SizedBox(height: 16),
-        if (error != null)
-          Text(error, style: const TextStyle(color: Colors.red)),
-        SizedBox(height: 8),
+        const SizedBox(height: 16),
+        if (vm.errorMessage != null)
+          Text(vm.errorMessage!, style: const TextStyle(color: Colors.red)),
+        const SizedBox(height: 8),
         ElevatedButton(
           style: squareButtonStyleSmall(context),
-          onPressed: service.validateCode,
+          onPressed: vm.validateCode,
           child: Text(loc.forgottenPasswordPageConfirm),
         ),
         TextButton(
-          onPressed: () {
-            ref.read(forgottenPasswordStateProvider.notifier).reset();
-            context.go('/forgotten-password');
-          },
+          onPressed: vm.resendCode,
           child: Text(loc.forgottenPasswordPageResendCodeLink),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         TextButton(
-          onPressed: () => context.go('/login'),
+          onPressed: vm.goToLogin,
           child: Text(loc.forgottenPasswordPageLoginLink),
         ),
-        SizedBox(height: 100),
+        const SizedBox(height: 100),
       ],
     );
   }

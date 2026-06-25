@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qfqq/common/providers/initializer_provider.dart';
 import 'package:qfqq/mobile/mobile_router.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -11,6 +12,8 @@ class MobileApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.read(initializationProvider);
+
     return MaterialApp.router(
       routerConfig: mobileRouter,
       locale: ref.watch(localeProvider),

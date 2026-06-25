@@ -153,3 +153,41 @@ def test_create_meeting_invalid_status(client):
     response = client.post("/meeting-agendas", json=payload, headers=headers)
     assert response.status_code == 400
     assert "status" in response.get_json()
+
+
+def test_create_meeting_review(client):
+    headers = get_auth_headers(client, user_id=2)
+    payload = {
+        "objective": 4,
+        "smoothRunning": 5,
+        "preparation": 3,
+        "length": 4,
+        "respect": 5,
+        "comments": "Strong teamwork and clear follow-up",
+    }
+
+    response = client.post("/meeting-agendas/3/reviews", json=payload, headers=headers)
+    assert response.status_code == 201
+
+    response = client.get("/meeting-agendas/3/reviews", headers=headers)
+    assert response.status_code == 200
+    reviews = response.get_json()
+
+    assert len(reviews) == 1
+    review = reviews[0]
+    assert review["meetingId"] == 3
+    assert review["userId"] == 2
+    assert review["objective"] == 4
+    assert review["smoothRunning"] == 5
+    assert review["preparation"] == 3
+    assert review["length"] == 4
+    assert review["respect"] == 5
+    assert review["comments"] == "Strong teamwork and clear follow-up"
+
+
+def test_get_meeting_reviews_empty(client):
+    headers = get_auth_headers(client)
+    response = client.get("/meeting-agendas/1/reviews", headers=headers)
+
+    assert response.status_code == 200
+    assert response.get_json() == []

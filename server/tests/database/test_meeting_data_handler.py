@@ -1,6 +1,6 @@
 from datetime import datetime
 from flaskr.database import MeetingDataHandler
-from flaskr.models import MeetingAgenda
+from flaskr.models import MeetingAgenda, MeetingReview
 
 
 def test_get_all_meeting_agendas(app):
@@ -118,11 +118,44 @@ def test_update_meeting_status(app):
     meeting = MeetingDataHandler.get_meeting_agenda(3)
     assert meeting.status == 'planned'
 
-def test_get_next_meeting(app):
+def test_get_next_meeting_with_next(app):
     result = MeetingDataHandler.get_next_meeting(3)
-    assert result.id is 2
+    assert result.id == 2
     assert result.title == "Sprint Review 2"
 
-def test_get_next_meeting(app):
+def test_get_next_meeting_none(app):
     result = MeetingDataHandler.get_next_meeting(2)
     assert result is None
+
+
+def test_create_and_get_meeting_review(app):
+    MeetingDataHandler.create_review(
+        meetingId=3,
+        userId=2,
+        objective=4,
+        smoothRunning=5,
+        preparation=3,
+        length=4,
+        respect=5,
+        comments="Great collaboration",
+    )
+
+    reviews = MeetingDataHandler.get_meeting_reviews(3)
+
+    assert len(reviews) == 1
+    review = reviews[0]
+    assert isinstance(review, MeetingReview)
+    assert review.meetingId == 3
+    assert review.userId == 2
+    assert review.isAnonymous is False
+    assert review.objective == 4
+    assert review.smoothRunning == 5
+    assert review.preparation == 3
+    assert review.length == 4
+    assert review.respect == 5
+    assert review.comments == "Great collaboration"
+
+
+def test_get_meeting_reviews_empty(app):
+    reviews = MeetingDataHandler.get_meeting_reviews(1)
+    assert reviews == []

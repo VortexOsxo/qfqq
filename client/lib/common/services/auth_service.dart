@@ -20,9 +20,8 @@ class AuthService extends StateNotifier<AuthState> {
 
   AuthService() : super(AuthState());
 
-  String getSessionId() {
-    return state.sessionId;
-  }
+  String getSessionId() => state.sessionId;
+  bool isAuthenticated() => state.isAuthenticated;
 
   Future<AccountError> login(String email, String password) async {
     final response = await http.post(
@@ -33,7 +32,7 @@ class AuthService extends StateNotifier<AuthState> {
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      _onSuccessfulAuth(data['session_token'], User.fromJson(data), Permissions.fromJson(data));
+      _onSuccessfulAuth(data);
       return AccountError();
     }
     return AccountError.fromJson(data);
@@ -53,11 +52,15 @@ class AuthService extends StateNotifier<AuthState> {
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 201) {
-      _onSuccessfulAuth(data['session_token'], User.fromJson(data), Permissions.fromJson(data));
+      _onSuccessfulAuth(data);
       return AccountError();
     }
     // TODO: Improve error messages to be more descriptive
     return AccountError.fromJson(data);
+  }
+
+  void onOrgJoined(dynamic data) {
+    _onSuccessfulAuth(data);
   }
 
   void logout() {
@@ -66,8 +69,13 @@ class AuthService extends StateNotifier<AuthState> {
     disconnectionNotifier.notify(state);
   }
 
-  _onSuccessfulAuth( String sessionId, User user, Permissions perms) {
-    state = AuthState(sessionId: sessionId, user: user, permissions: perms);
+  _onSuccessfulAuth(dynamic data) {
+    state = AuthState(
+      sessionId: data['session_token'],
+      user: User.fromJson(data),
+      hasOrg: data['hasOrg'],
+      permissions: Permissions.fromJson(data),
+    );
     connectionNotifier.notify(state);
   }
 }

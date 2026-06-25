@@ -1,11 +1,14 @@
 BEGIN;
 
+SET search_path TO "1", public;
+
 -- Clear existing data and reset identities for a clean slate
 TRUNCATE TABLE
   decisionsAssistants,
   decisions,
   meetingsParticipants,
   meetingsThemes,
+  meetingsReviews,
   meetings,
   projects,
   usersRoles,
@@ -19,6 +22,13 @@ INSERT INTO users (firstName, lastName, passwordHash, email) VALUES
   ('Bob', 'Jones', 'passhash_bob', 'bob@example.com'),
   ('Carol', 'Davis', 'passhash_carol', 'carol@example.com'),
   ('Dave', 'Wilson', 'passhash_dave', 'dave@example.com');
+
+--Memberships
+INSERT INTO memberships (userId, orgId) VALUES
+  ((SELECT id FROM users WHERE email='alice@example.com'), 1),
+  ((SELECT id FROM users WHERE email='bob@example.com'), 1),
+  ((SELECT id FROM users WHERE email='carol@example.com'), 1),
+  ((SELECT id FROM users WHERE email='dave@example.com'), 1);
 
 --Default Roles
 INSERT INTO

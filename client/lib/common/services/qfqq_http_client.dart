@@ -16,12 +16,13 @@ const _apiUrl = String.fromEnvironment("API_URL");
 class QfqqHttpClient extends http.BaseClient {
   final LocaleNotifier _locale;
   final http.Client _inner = http.Client();
+  final AuthService _authService;
 
   String? token;
 
-  QfqqHttpClient(AuthService authService, this._locale)
-    : token = authService.getSessionId() {
-    _initSubscription(authService);
+  QfqqHttpClient(this._authService, this._locale)
+    : token = _authService.getSessionId() {
+    _initSubscription();
   }
 
   //TODO: Can we move this inside of the send method, so it does it automatically ?
@@ -38,9 +39,9 @@ class QfqqHttpClient extends http.BaseClient {
   }
 
   @override
-  Future<http.StreamedResponse> send(http.BaseRequest request) {
+  Future<http.StreamedResponse> send(http.BaseRequest request) async {
     addHeaders(request.headers);
-    return _inner.send(request);
+    return await _inner.send(request);
   }
 
   @override
@@ -49,10 +50,10 @@ class QfqqHttpClient extends http.BaseClient {
     super.close();
   }
 
-  void _initSubscription(AuthService authService) {
-    authService.connectionNotifier.subscribe(
-      (_) => token = authService.getSessionId(),
+  void _initSubscription() {
+    _authService.connectionNotifier.subscribe(
+      (_) => token = _authService.getSessionId(),
     );
-    authService.disconnectionNotifier.subscribe((_) => token = null);
+    _authService.disconnectionNotifier.subscribe((_) => token = null);
   }
 }

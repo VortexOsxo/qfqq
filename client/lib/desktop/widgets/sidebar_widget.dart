@@ -25,7 +25,7 @@ class SidebarWidget extends StatelessWidget {
           _SideBarItem(title: loc.decisionsListPageTitle, path: '/decisions'),
           PermissionRequired(
             neededPermissions: Permissions(canUpdatePermissions: true),
-            child: _SideBarItem(title: loc.permissionsPageTitle, path: '/permissions'),
+            child: _SideBarItem(title: loc.organizationPageTitle, path: '/organization'),
           ),
           Spacer(),
           _LogOutButton()

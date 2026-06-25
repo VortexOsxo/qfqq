@@ -1,3 +1,5 @@
+from psycopg import sql
+
 from ..postgres import read_query, write_query, get_db_access
 from flaskr.models import User
 
@@ -9,13 +11,10 @@ class UserDataHandler:
             with get_db_access() as conn:
                 cur = conn.cursor()
 
-                query = f"INSERT INTO users (firstName, lastName, passwordHash, email) values (%s, %s, %s, %s) RETURNING id;"
+                query = f"INSERT INTO public.users (firstName, lastName, passwordHash, email) values (%s, %s, %s, %s) RETURNING id;"
                 params = (firstName, lastName, passwordHash, email)
                 cur.execute(query, params)
                 userId = cur.fetchone()[0]
-
-                query = f"INSERT INTO usersRoles (userId, roleId) VALUES (%s, %s);"
-                cur.execute(query, (userId, 1))
 
                 return User(userId, *params)
         except Exception as e:
@@ -24,9 +23,35 @@ class UserDataHandler:
         return None
 
     @classmethod
-    def get_users(cls):
-        query = f"SELECT * from users;"
-        users = read_query(query)
+    def add_user_to_org(cls, userId, orgId, roleId=1):
+        try:
+            with get_db_access() as conn:
+                cur = conn.cursor()
+
+                query = "INSERT INTO public.memberships (userId, orgId) values (%s, %s);"
+                params = (userId, orgId)
+                cur.execute(query, params)
+
+                cur.execute(
+                    sql.SQL("SET search_path TO {}, public;").format(sql.Identifier(str(orgId)))
+                )
+
+                query = f"INSERT INTO usersRoles (userId, roleId) VALUES (%s, %s);"
+                cur.execute(query, (userId, roleId))
+
+                return True
+        except Exception as e:
+            pass
+        return False
+
+    @classmethod
+    def get_users(cls, orgId: int):
+        query = """
+            SELECT u.* FROM public.users u
+            JOIN public.memberships m ON u.id = m.userId
+            WHERE m.orgId = %s;
+        """
+        users = read_query(query, (orgId,))
         return [User(*user) for user in users]
 
     @classmethod
