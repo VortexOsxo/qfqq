@@ -43,6 +43,8 @@ function(APPLY_STANDARD_SETTINGS TARGET)
   target_compile_options(${TARGET} PRIVATE /EHsc)
   target_compile_definitions(${TARGET} PRIVATE "_HAS_EXCEPTIONS=0")
   target_compile_definitions(${TARGET} PRIVATE "$<$<CONFIG:Debug>:_DEBUG>")
+  # Suppress LNK4099: prebuilt Firebase libs don't ship with PDB debug symbols.
+  target_link_options(${TARGET} PRIVATE /ignore:4099)
 endfunction()
 
 # Flutter library and tool build rules.
