@@ -12,6 +12,7 @@ TRUNCATE TABLE
   meetings,
   projects,
   usersRoles,
+  usersFCM,
   roles,
   users
 RESTART IDENTITY CASCADE;

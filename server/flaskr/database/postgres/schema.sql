@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS roles,
 usersRoles,
+usersFCM,
 projects,
 meetings,
 meetingsReviews,
@@ -29,6 +30,13 @@ CREATE TABLE
     userId INTEGER REFERENCES users (id),
     roleId INTEGER REFERENCES roles (id),
     PRIMARY KEY (userId, roleId)
+  );
+
+CREATE TABLE 
+  usersFCM (
+    userId INTEGER REFERENCES users (id),
+    FCM TEXT NOT NULL,
+    PRIMARY KEY (userId)
   );
 
 CREATE TABLE

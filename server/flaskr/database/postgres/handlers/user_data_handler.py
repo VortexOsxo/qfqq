@@ -121,3 +121,22 @@ class UserDataHandler:
         """
         permissions = read_query(query, (userId,))
         return permissions[0] if permissions else ((False,) * 3) 
+
+    @classmethod
+    def upsert_user_fcm(cls, userId: int, fcm: str):
+        query = """
+            INSERT INTO usersFCM (userId, FCM) 
+            VALUES (%s, %s)
+            ON CONFLICT (userId) 
+            DO UPDATE SET fcm = EXCLUDED.FCM;
+        """
+
+        params = (userId, fcm)
+        write_query(query, params)
+
+    @classmethod
+    def get_user_fcm(cls, userId: int):
+        query = "SELECT FCM FROM usersFCM WHERE userId = %s;"
+        params = (userId,)
+        result = read_query(query, params)
+        return result[0] if result else None
