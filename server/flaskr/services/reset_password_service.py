@@ -3,7 +3,7 @@ import string
 from werkzeug.security import generate_password_hash
 
 from flaskr.services.emails import *
-from flaskr.database.postgres import PasswordRequestDataHandler, UserDataHandler
+from flaskr.database import PasswordRequestDataHandler, UserDataHandler
 from flaskr.utils.time import time_now_to_string, string_to_time
 from datetime import datetime, timedelta
 

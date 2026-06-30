@@ -2,7 +2,7 @@ from flask import request, jsonify, g, current_app
 import jwt
 
 from flaskr.errors import AuthError
-from flaskr.database.postgres.tenant_context import set_tenant
+from flaskr.database.tenant_context import set_tenant
 
 def get_authorization():
     token = None

@@ -29,7 +29,7 @@ def reset_db(app):
 
 @pytest.fixture(autouse=True)
 def request_context(app):
-    from flaskr.database.postgres.tenant_context import use_tenant
+    from flaskr.database.tenant_context import use_tenant
 
     with app.test_request_context():
         with use_tenant("1"):

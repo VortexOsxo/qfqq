@@ -1,15 +1,19 @@
 import click
 
-from .postgres import (
-    create_db,
-    close_db,
-    fill_test_db,
+from .handlers import (
     UserDataHandler,
     ProjectDataHandler,
     DecisionDataHandler,
     MeetingDataHandler,
     RoleDataHandler,
     OrganizationDataHandler,
+    PasswordRequestDataHandler,
+)
+
+from .postgres import (
+    create_db,
+    close_db,
+    fill_test_db,
 )
 
 

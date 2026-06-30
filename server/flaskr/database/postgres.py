@@ -48,7 +48,7 @@ def fill_test_db():
         )
 
         with current_app.open_resource(
-            os.path.join("database", "postgres", f"schema.sql")
+            os.path.join("database", f"schema.sql")
         ) as f:
             cur.execute(f.read().decode("utf8"))
 
@@ -74,7 +74,7 @@ def _run_sql_file(filename: str):
         cursor = conn.cursor()
 
         with current_app.open_resource(
-            os.path.join("database", "postgres", f"{filename}.sql")
+            os.path.join("database", f"{filename}.sql")
         ) as f:
             cursor.execute(f.read().decode("utf8"))
 
