@@ -111,6 +111,17 @@ def test_get_meeting_with_participants_names(app):
     assert "Bob Jones" in participants
     assert "Dave Wilson" in participants
 
+
+def test_get_meeting_users_returns_all_users(app):
+    users = MeetingDataHandler.get_meeting_users(1)
+
+    assert users == [1, 3, 1]
+    assert users.count(1) == 2
+
+def test_get_meeting_users_returns_empty_for_missing_meeting(app):
+    users = MeetingDataHandler.get_meeting_users(999)
+    assert users == []
+
 def test_update_meeting_status(app):
     result = MeetingDataHandler.update_meeting_status(3, 'planned')
     assert result

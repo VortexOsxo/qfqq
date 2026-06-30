@@ -202,6 +202,19 @@ class MeetingDataHandler:
         return cls.get_meeting_agenda(nextId)
 
     @classmethod
+    def get_meeting_users(cls, meetingId):
+        """Return all users involved in the meeting"""
+        query = "SELECT animatorId, participantsIds FROM meetingsComplete WHERE id = %s;"
+        params = (meetingId,)
+        result = read_query(query, params)
+        if not result: return []
+        animatorId, participantsIds = result[0]
+        return participantsIds + [animatorId] # TODO: Handle duplicate ?
+        # Or maybe it shouldnt be possible to have a participants that is the animator
+        # Another option is to have all users be participants and then we can tag role onto them
+        # this could allow to support more than the animator role.
+
+    @classmethod
     def create_review(cls, meetingId, userId, objective, smoothRunning, preparation, length, respect, comments):
         isAnonymous = False # TODO
 
