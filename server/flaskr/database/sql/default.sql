@@ -2,7 +2,8 @@ DROP TABLE IF EXISTS public.memberships,
 public.organizations,
 public.invitations,
 public.users,
-public.passwordRequests CASCADE;
+public.passwordRequests,
+public.notificationJobs CASCADE;
 
 CREATE TABLE
   public.organizations (
@@ -41,4 +42,15 @@ CREATE TABLE
     code TEXT,
     date TEXT,
     PRIMARY KEY (email)
+  );
+
+CREATE TABLE
+  public.notificationJobs (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    orgId INTEGER NOT NULL REFERENCES public.organizations (id) ON DELETE CASCADE,
+    targetId INTEGER NOT NULL,
+    type TEXT NOT NULL,
+    payload TEXT,
+    scheduledAt TIMESTAMPTZ NOT NULL,
+    sentAt TIMESTAMPTZ
   );
