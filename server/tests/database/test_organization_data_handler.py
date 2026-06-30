@@ -3,21 +3,22 @@ from flaskr.models.data.invitation import Invitation
 
 def test_create_organization(app):
     orgId = OrganizationDataHandler.create_organization("Bubbly")
-    assert orgId == 2
+    assert orgId == 3
 
 
 def test_get_slugs(app):
     orgId = OrganizationDataHandler.create_organization("Bubbly")
-    assert orgId == 2
-
-    orgId = OrganizationDataHandler.create_organization("Avio")
     assert orgId == 3
 
+    orgId = OrganizationDataHandler.create_organization("Avio")
+    assert orgId == 4
+
     slugs = OrganizationDataHandler.get_existing_slugs()
-    assert len(slugs) == 3
+    assert len(slugs) == 4
     assert "bubbly" in slugs
     assert "avio" in slugs
     assert "test" in slugs
+    assert "test2" in slugs
 
 def test_get_invites(app):
     OrganizationDataHandler.add_invite(1, "random@example.com", 2)

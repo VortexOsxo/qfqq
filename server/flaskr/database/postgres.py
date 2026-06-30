@@ -21,9 +21,13 @@ def fill_test_db():
     with Database.get_db_access() as conn:
         cur = conn.cursor()
 
-        query = "INSERT INTO public.organizations (slug, name) values (%s, %s);"
-        params = ("test", "Test")
-        cur.execute(query, params)
+        query = """
+        INSERT INTO public.organizations (slug, name)
+        VALUES
+            ('test', 'Test'),
+            ('test2', 'Test2');
+        """
+        cur.execute(query)
 
         cur.execute(
             sql.SQL("CREATE SCHEMA IF NOT EXISTS {}; ").format(sql.Identifier(str(orgId)))

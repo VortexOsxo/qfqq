@@ -14,7 +14,8 @@ TRUNCATE TABLE
   usersRoles,
   usersFCM,
   roles,
-  users
+  users,
+  public.notificationJobs
 RESTART IDENTITY CASCADE;
 
 -- Users
