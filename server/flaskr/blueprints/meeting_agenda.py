@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import Blueprint, request, jsonify, g
 
 from flaskr.models import MeetingAgendaStatus
-from flaskr.database import MeetingDataHandler
+from flaskr.database import MeetingDataHandler, UserDataHandler
 from flaskr.services.inputs import (
     input_middleware,
     LambdaBuilder,
@@ -11,6 +11,7 @@ from flaskr.services.inputs import (
     IntValidator,
     StringValidator,
 )
+from flaskr.services.push_notification_service import PushNotificationService
 from flaskr.blueprints.before_request import login_required
 from flaskr.blueprints.middlewares import permission_middleware, Permission
 
@@ -115,6 +116,14 @@ def patch_meeting_agenda_status(status, id: str):
     result = MeetingDataHandler.update_meeting_status(id, status)
     if not result:
         return jsonify({"error": "Meeting agenda not found"}), 404
+    
+    if status == "ongoing":
+        usersIds = MeetingDataHandler.get_meeting_users(id)
+        FCMs = [UserDataHandler.get_user_fcm(userId) for userId in usersIds]
+        for fcm in FCMs:
+            if fcm is None: continue
+            PushNotificationService.send(fcm, "MeetingStarted", "Your meeting just started, you can join it", {'fake_data': 1})
+
     return '', 204
 
 

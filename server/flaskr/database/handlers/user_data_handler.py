@@ -139,4 +139,4 @@ class UserDataHandler:
         query = "SELECT FCM FROM usersFCM WHERE userId = %s;"
         params = (userId,)
         result = read_query(query, params)
-        return result[0] if result else None
+        return result[0][0] if result else None

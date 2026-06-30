@@ -4,3 +4,4 @@ PyJWT
 psycopg[binary]
 pytest
 reportlab
+firebase-admin
