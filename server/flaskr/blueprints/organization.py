@@ -8,7 +8,7 @@ from flaskr.blueprints.before_request import login_optionnal
 from flaskr.blueprints.middlewares import permission_middleware
 from flaskr.models import Permission, Invitation
 from flaskr.services.emails import EmailDrafter, EmailSender
-from flaskr.database.postgres.tenant_context import set_tenant
+from flaskr.database.tenant_context import set_tenant
 
 organizations_bp = Blueprint("organizations", __name__, url_prefix="/organizations")
 organizations_bp.before_request(login_optionnal)

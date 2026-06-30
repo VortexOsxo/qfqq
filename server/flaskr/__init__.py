@@ -35,7 +35,7 @@ def create_app(config_name='development'):
     app.before_request(get_language)
 
 
-    init_db(app)
+    init_db(app, uri=app.config["DATABASE_URL"])
     app.cli.add_command(mock_command)
 
     return app
