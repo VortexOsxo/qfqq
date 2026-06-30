@@ -37,7 +37,7 @@ class OrganizationDataHandler:
                 )
 
                 with current_app.open_resource(
-                    os.path.join("database", "postgres", f"schema.sql")
+                    os.path.join("database", "sql", f"schema.sql")
                 ) as f:
                     cur.execute(f.read().decode("utf8"))
 

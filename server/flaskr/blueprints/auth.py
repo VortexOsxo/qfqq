@@ -6,7 +6,7 @@ from flaskr.services.reset_password_service import ResetPasswordService
 from flaskr.services.inputs import input_middleware, SignupBuilder, LoginBuilder, LambdaBuilder, StringValidator, EmailValidator, PasswordValidator
 from flaskr.errors import InputError
 from flaskr.utils import create_auth_response, create_token
-from flaskr.database.postgres.tenant_context import set_tenant
+from flaskr.database.tenant_context import set_tenant
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
