@@ -89,6 +89,7 @@
   "loginPageButtonLogin": "Login",
   "loginPageLinkSignup": "Don't have an account? Sign Up",
   "loginPageForgottenPasswordLink": "Forgot your password? Click here to reset it.",
+  "loginPageStayLoggedIn": "Stay logged in",
   
   "homePageTitle": "Home",
   "homePageResponsabilities": "Responsabilities",
