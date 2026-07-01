@@ -11,7 +11,7 @@ from flaskr.services.inputs import (
     IntValidator,
     StringValidator,
 )
-from flaskr.services.push_notification_service import PushNotificationService
+from flaskr.services.notifications import NotificationService, NotificationType
 from flaskr.blueprints.before_request import login_required
 from flaskr.blueprints.middlewares import permission_middleware, Permission
 
@@ -29,11 +29,12 @@ def create_meeting_agenda(**obj):
     meetingDate = (
         datetime.fromisoformat(data["meetingDate"]) if "meetingDate" in data else None
     )
+    status = data.get('status')
 
     kwargs = {
         'title': data["title"],
         'goals': data.get("goals", ""),
-        'status': data.get("status"),
+        'status': status,
         'redactionDate': datetime.now(),
         'meetingDate': meetingDate,
         'meetingLocation': data["meetingLocation"] if "meetingLocation" in data else None,
@@ -46,6 +47,10 @@ def create_meeting_agenda(**obj):
     if request.method == "POST":
         previousMeetingId = data.get("previousMeetingId", -1)
         meeting = MeetingDataHandler.create_meeting_agenda(previousMeetingId=previousMeetingId, **kwargs)
+
+        if status == "planned":
+            NotificationService.add_notification(NotificationType.MeetingStart.value, g.org_id, meeting)
+
         return (jsonify(meeting.to_dict()), 201) if meeting is not None else ("", 400)
 
     elif request.method == "PUT":
@@ -53,6 +58,13 @@ def create_meeting_agenda(**obj):
         if not "id" in data:
             return jsonify({"error": "Missing/Invalid fields: id"}), 400
         MeetingDataHandler.update_meeting_agenda(meetingId=data["id"], **kwargs)
+
+        if status == "planned":
+            # TODO
+            # Should know weither to create or update
+            NotificationService.add_notification(NotificationType.MeetingStart.value, g.org_id, meeting)
+
+        # TODO: If participants/date is modified, update the different notifications
         return "", 204
     return "", 405
 
@@ -116,13 +128,6 @@ def patch_meeting_agenda_status(status, id: str):
     result = MeetingDataHandler.update_meeting_status(id, status)
     if not result:
         return jsonify({"error": "Meeting agenda not found"}), 404
-    
-    if status == "ongoing":
-        usersIds = MeetingDataHandler.get_meeting_users(id)
-        FCMs = [UserDataHandler.get_user_fcm(userId) for userId in usersIds]
-        for fcm in FCMs:
-            if fcm is None: continue
-            PushNotificationService.send(fcm, "MeetingStarted", "Your meeting just started, you can join it", {'fake_data': 1})
 
     return '', 204
 

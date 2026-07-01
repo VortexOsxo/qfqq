@@ -11,13 +11,15 @@ PAYLOAD = '{"meetingId": 1}'
 
 
 def make_job(orgId = None, scheduledAt: datetime = None) -> NotificationJob | None:
-    return NotificationJobDataHandler.create_notification_job(
+    job = NotificationJob(
+        id=-1,
         orgId=orgId or ORG_ID,
         targetId=TARGET_ID,
         type=JOB_TYPE,
         payload=PAYLOAD,
         scheduledAt=scheduledAt or datetime.now(timezone.utc),
     )
+    return NotificationJobDataHandler.create_notification_job(job)
 
 
 # ---------------------------------------------------------------------------
@@ -25,8 +27,10 @@ def make_job(orgId = None, scheduledAt: datetime = None) -> NotificationJob | No
 # ---------------------------------------------------------------------------
 
 def test_create_job_returns_notification_job(app):
-    scheduled = datetime.now(timezone.utc) + timedelta(hours=1)
-    job = make_job(scheduledAt=scheduled)
+    scheduled = datetime.now(timezone.utc) + timedelta(hours=-1)
+    assert make_job(scheduledAt=scheduled)
+
+    job = NotificationJobDataHandler.get_pending_jobs()[0]
 
     assert isinstance(job, NotificationJob)
     assert job.id is not None
@@ -39,15 +43,9 @@ def test_create_job_returns_notification_job(app):
 
 def test_create_job_with_invalid_org_returns_none(app):
     scheduled = datetime.now(timezone.utc) + timedelta(hours=1)
-    job = NotificationJobDataHandler.create_notification_job(
-        orgId=9999,
-        targetId=TARGET_ID,
-        type=JOB_TYPE,
-        payload=PAYLOAD,
-        scheduledAt=scheduled,
-    )
+    result = make_job(orgId=9999, scheduledAt=scheduled)
 
-    assert job is None
+    assert not result
 
 
 # ---------------------------------------------------------------------------
@@ -75,8 +73,10 @@ def test_get_pending_jobs_excludes_future_jobs(app):
 
 def test_get_pending_jobs_excludes_already_sent(app):
     past = datetime.now(timezone.utc) - timedelta(minutes=5)
-    job = make_job(scheduledAt=past)
-    NotificationJobDataHandler.mark_as_sent(job.id)
+    make_job(scheduledAt=past)
+
+    id = NotificationJobDataHandler.get_pending_jobs()[0].id
+    NotificationJobDataHandler.mark_as_sent(id)
 
     jobs = NotificationJobDataHandler.get_pending_jobs()
 
@@ -137,11 +137,12 @@ def test_get_jobs_by_target_not_found_returns_empty(app):
 # ---------------------------------------------------------------------------
 
 def test_update_job_replaces_data(app):
-    job = make_job(scheduledAt=datetime.now(timezone.utc) + timedelta(hours=1))
+    make_job(scheduledAt=datetime.now(timezone.utc) + timedelta(hours=-1))
+    id = NotificationJobDataHandler.get_pending_jobs()[0].id
 
     new_scheduled = datetime.now(timezone.utc) + timedelta(hours=5)
     updated = NotificationJob(
-        id=job.id,
+        id=id,
         orgId=ORG_ID,
         targetId=2,
         type="decision_due",
@@ -150,7 +151,7 @@ def test_update_job_replaces_data(app):
         sentAt=None,
     )
 
-    result = NotificationJobDataHandler.update_job(job.id, updated)
+    result = NotificationJobDataHandler.update_job(id, updated)
     assert result is True
 
     jobs = NotificationJobDataHandler.get_jobs_by_target(ORG_ID, 2, "decision_due")
@@ -180,36 +181,41 @@ def test_update_job_not_found_returns_true(app):
 # ---------------------------------------------------------------------------
 
 def test_mark_as_sent(app):
-    job = make_job(scheduledAt=datetime.now(timezone.utc) - timedelta(minutes=1))
+    make_job(scheduledAt=datetime.now(timezone.utc) - timedelta(minutes=1))
+    id = NotificationJobDataHandler.get_pending_jobs()[0].id
 
-    NotificationJobDataHandler.mark_as_sent(job.id)
+    NotificationJobDataHandler.mark_as_sent(id)
 
     pending = NotificationJobDataHandler.get_pending_jobs()
-    assert all(j.id != job.id for j in pending)
+    assert all(j.id != id for j in pending)
 
 
 def test_mark_as_sent_with_explicit_timestamp(app):
-    job = make_job(scheduledAt=datetime.now(timezone.utc) - timedelta(minutes=1))
+    make_job(scheduledAt=datetime.now(timezone.utc) - timedelta(minutes=1))
+    id = NotificationJobDataHandler.get_pending_jobs()[0].id
+    
     sent_time = datetime(2026, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
 
-    NotificationJobDataHandler.mark_as_sent(job.id, sentAt=sent_time)
+    NotificationJobDataHandler.mark_as_sent(id, sentAt=sent_time)
 
     # Job should no longer appear in pending
     pending = NotificationJobDataHandler.get_pending_jobs()
-    assert all(j.id != job.id for j in pending)
+    assert all(j.id != id for j in pending)
 
 
 def test_mark_many_as_sent(app):
     now = datetime.now(timezone.utc)
-    job1 = make_job(scheduledAt=now - timedelta(minutes=5))
-    job2 = make_job(scheduledAt=now - timedelta(minutes=3))
-    job3 = make_job(scheduledAt=now - timedelta(minutes=1))
+    make_job(scheduledAt=now - timedelta(minutes=5))
+    make_job(scheduledAt=now - timedelta(minutes=3))
+    make_job(scheduledAt=now - timedelta(minutes=1))
 
-    NotificationJobDataHandler.mark_many_as_sent([job1.id, job2.id])
+    ids = [x.id for x in NotificationJobDataHandler.get_pending_jobs()]
+
+    NotificationJobDataHandler.mark_many_as_sent([ids[0], ids[1]])
 
     pending = NotificationJobDataHandler.get_pending_jobs()
     pending_ids = [j.id for j in pending]
-    assert job1.id not in pending_ids
-    assert job2.id not in pending_ids
-    assert job3.id in pending_ids
+    assert ids[0] not in pending_ids
+    assert ids[1] not in pending_ids
+    assert ids[2] in pending_ids
 
