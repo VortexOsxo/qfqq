@@ -19,6 +19,8 @@ from .postgres import (
     fill_test_db,
 )
 
+from .tenant_context import set_tenant
+
 
 @click.command("create-db")
 def create_db_command():

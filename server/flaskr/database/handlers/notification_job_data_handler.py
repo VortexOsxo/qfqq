@@ -6,38 +6,17 @@ from datetime import datetime
 class NotificationJobDataHandler:
 
     @classmethod
-    def create_notification_job(
-        cls,
-        orgId: int,
-        targetId: int,
-        type: str,
-        payload: str,
-        scheduledAt: datetime,
-    ) -> NotificationJob | None:
+    def create_notification_job(cls, job: NotificationJob) -> bool:
         query = (
             "INSERT INTO public.notificationJobs (orgId, targetId, type, payload, scheduledAt) "
-            "VALUES (%s, %s, %s, %s, %s) RETURNING id;"
+            "VALUES (%s, %s, %s, %s, %s);"
         )
-        params = (orgId, targetId, type, payload, scheduledAt)
+        params = (job.orgId, job.targetId, job.type, job.payload, job.scheduledAt)
         try:
-            with get_db_access() as conn:
-                cur = conn.cursor()
-                cur.execute(query, params)
-                row = cur.fetchone()
-                if not row:
-                    return None
-                jobId = row[0]
-            return NotificationJob(
-                id=jobId,
-                orgId=orgId,
-                targetId=targetId,
-                type=type,
-                payload=payload,
-                scheduledAt=scheduledAt,
-                sentAt=None,
-            )
+            write_query(query, params)
+            return True
         except Exception:
-            return None
+            return False
 
     @classmethod
     def get_pending_jobs(cls) -> list[NotificationJob]:

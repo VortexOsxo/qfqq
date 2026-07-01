@@ -3,6 +3,14 @@ from datetime import datetime
 
 
 @dataclass(slots=True)
+class Notification:
+    userId: str
+    title: str
+    body: str
+    data: str | None = None
+
+
+@dataclass(slots=True)
 class NotificationJob:
     id: int
     orgId: int
@@ -10,7 +18,7 @@ class NotificationJob:
     type: str
     payload: str
     scheduledAt: datetime
-    sentAt: datetime | None
+    sentAt: datetime | None = None
 
     def to_dict(self):
         return {
