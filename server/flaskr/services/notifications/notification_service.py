@@ -23,17 +23,19 @@ class NotificationService:
     @classmethod
     def send_loop(cls):
         while True:
-            jobs = NotificationJobDataHandler.get_pending_jobs()
-            if jobs: print(f'Found jobs: {jobs}')
-            for job in jobs:
-                handler = handlers.get(job.type)
-                assert handler is not None
+            try:
+                jobs = NotificationJobDataHandler.get_pending_jobs()
+                if jobs: print(f'Found jobs: {jobs}')
+                for job in jobs:
+                    handler = handlers.get(job.type)
+                    assert handler is not None
 
-                notifs = handler.get_notifications_from_job(job)
-                cls._send_notifs(notifs)
+                    notifs = handler.get_notifications_from_job(job)
+                    cls._send_notifs(notifs)
 
-                NotificationJobDataHandler.mark_as_sent(job.id)
-            time.sleep(15)
+                    NotificationJobDataHandler.mark_as_sent(job.id)
+            finally:
+                time.sleep(15)
     
     @classmethod
     def _send_notifs(cls, notifs):

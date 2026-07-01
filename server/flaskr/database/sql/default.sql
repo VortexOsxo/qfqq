@@ -54,3 +54,7 @@ CREATE TABLE
     scheduledAt TIMESTAMPTZ NOT NULL,
     sentAt TIMESTAMPTZ
   );
+
+CREATE INDEX notification_jobs_due_idx
+  ON public.notificationJobs (scheduledAt)
+  WHERE sentAt IS NULL;
