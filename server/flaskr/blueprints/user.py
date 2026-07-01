@@ -40,5 +40,8 @@ def update_permissions(userId: int, roleId: int):
 @users_bp.post('/<int:userId>/fcm')
 @input_middleware(LambdaBuilder(("fcm", StringValidator()), ("locale", StringValidator())))
 def update_fcm(userId:int, fcm: str, locale: str):
+    if (g.user_id != userId):
+        return "", 403
+
     UserDataHandler.upsert_user_fcm(userId, fcm, locale)
     return "", 204

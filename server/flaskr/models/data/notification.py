@@ -7,7 +7,7 @@ class Notification:
     token: str
     title: str
     body: str
-    data: str | None = None
+    data: dict[str, str] | None = None
 
 
 @dataclass(slots=True)

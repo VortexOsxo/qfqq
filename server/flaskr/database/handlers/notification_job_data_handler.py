@@ -54,14 +54,14 @@ class NotificationJobDataHandler:
             return False
 
     @classmethod
-    def mark_as_sent(cls, jobId: int, sentAt: datetime = None) -> bool:
+    def mark_as_sent(cls, jobId: int, sentAt: datetime = None):
         timestamp = sentAt or datetime.utcnow()
         query = "UPDATE public.notificationJobs SET sentAt = %s WHERE id = %s;"
         params = (timestamp, jobId)
         write_query(query, params)
 
     @classmethod
-    def mark_many_as_sent(cls, jobIds: list[int], sentAt: datetime = None) -> bool:
+    def mark_many_as_sent(cls, jobIds: list[int], sentAt: datetime = None):
         if not jobIds: return
 
         timestamp = sentAt or datetime.utcnow()

@@ -62,7 +62,8 @@ def create_meeting_agenda(**obj):
         if status == "planned":
             # TODO
             # Should know weither to create or update
-            NotificationService.add_notification(NotificationType.MeetingStart.value, g.org_id, meeting)
+            # NotificationService.add_notification(NotificationType.MeetingStart.value, g.org_id, meeting)
+            pass
 
         # TODO: If participants/date is modified, update the different notifications
         return "", 204

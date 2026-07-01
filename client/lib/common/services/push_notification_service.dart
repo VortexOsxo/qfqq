@@ -1,18 +1,15 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/states/auth_state.dart';
 import 'package:qfqq/common/providers/locale_provider.dart';
-import 'package:qfqq/common/providers/router_provider.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
-import 'package:qfqq/common/utils/platform.dart';
 
 final pushNotificationServiceProvider = Provider((ref) {
   return PushNotificationService(
     ref.read(qfqqHttpClientProvider),
-    ref.read(routerProvider),
     ref.read(authStateProvider.notifier),
     ref.read(localeProvider.notifier),
   );
@@ -21,19 +18,34 @@ final pushNotificationServiceProvider = Provider((ref) {
 class PushNotificationService {
   static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final QfqqHttpClient _http;
-  final GoRouter _router;
   final LocaleNotifier _locale;
 
-  PushNotificationService(this._http, this._router, AuthService authService, this._locale) {
-    authService.connectionNotifier.subscribe(_onconnection);
+  StreamSubscription<RemoteMessage>? _foregroundSubscription;
+  StreamSubscription<RemoteMessage>? _openedAppSubscription;
+  StreamSubscription<String>? _tokenRefreshSubscription;
+
+  PushNotificationService(this._http, AuthService authService, this._locale) {
+    authService.connectionNotifier.subscribe(_initialize);
+    authService.disconnectionNotifier.subscribe(_clear);
   }
 
-  void initialize() {
-    FirebaseMessaging.onMessage.listen(_onForegroundMessage);
+  Future<void> _initialize(AuthState auth) async {
+    final id = auth.user?.id;
+    assert(id != null);
 
-    FirebaseMessaging.onMessageOpenedApp.listen(_onMessageOpened);
+    _clear(null);
+    await _requestPermissions(id!);
+
+    _foregroundSubscription = FirebaseMessaging.onMessage.listen(_onForegroundMessage);
+    _openedAppSubscription = FirebaseMessaging.onMessageOpenedApp.listen(_onMessageOpened);
 
     _checkInitialMessage();
+  }
+
+  void _clear(_) {
+    _foregroundSubscription?.cancel();
+    _openedAppSubscription?.cancel();
+    _tokenRefreshSubscription?.cancel();
   }
 
   void _onForegroundMessage(RemoteMessage message) {
@@ -52,19 +64,6 @@ class PushNotificationService {
     // TODO
   }
 
-  void _onconnection(AuthState auth) {
-    if (platformType != PlatformType.mobile) {
-      return;
-    }
-
-    final id = auth.user?.id;
-    if (id != null) {
-      _requestPermissions(id);
-    }
-
-    initialize();
-  }
-
   Future<void> _requestPermissions(int userId) async {
     await _messaging.requestPermission(alert: true, badge: true, sound: true);
     final String? token = await _messaging.getToken();
@@ -73,7 +72,7 @@ class PushNotificationService {
       await _registerToken(userId, token);
     }
 
-    _messaging.onTokenRefresh.listen((newToken) async {
+    _tokenRefreshSubscription = _messaging.onTokenRefresh.listen((newToken) async {
       await _registerToken(userId, newToken);
     });
   }
