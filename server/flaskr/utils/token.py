@@ -2,6 +2,8 @@ from flask import current_app
 from datetime import datetime, timedelta, timezone
 import jwt
 
+# TODO: Add token type field
+
 def create_tokens(userId, orgId):
     return create_auth_token(userId, orgId), create_refresh_token(userId)
 

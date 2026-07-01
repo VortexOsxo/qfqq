@@ -36,14 +36,15 @@ class _MobileLoginView extends StatelessWidget {
             onSaved: vm.savePassword,
           ),
           const SizedBox(height: 8),
-          Row(
-            children: [
-              Checkbox(value: vm.stay, onChanged: vm.saveStay),
-              Text(
-                loc.loginPageStayLoggedIn,
-                style: const TextStyle(fontWeight: FontWeight.w500),
-              ),
-            ],
+          CheckboxListTile(
+            contentPadding: EdgeInsets.zero,
+            controlAffinity: ListTileControlAffinity.leading,
+            value: vm.stay,
+            onChanged: vm.saveStay,
+            title: Text(
+              loc.loginPageStayLoggedIn,
+              style: const TextStyle(fontWeight: FontWeight.w500),
+            ),
           ),
           const SizedBox(height: 16),
           if (vm.error.isNotEmpty)

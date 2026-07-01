@@ -33,7 +33,7 @@ class AuthService extends StateNotifier<AuthState> {
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      _onSuccessfulAuth(data, stay);
+      _onSuccessfulAuth(data, stay: stay, clear: !stay);
       return AccountError();
     }
     return AccountError.fromJson(data);
@@ -55,7 +55,7 @@ class AuthService extends StateNotifier<AuthState> {
     );
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      _onSuccessfulAuth(data, false);
+      _onSuccessfulAuth(data);
       return true;
     }
     return false;
@@ -75,7 +75,7 @@ class AuthService extends StateNotifier<AuthState> {
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 201) {
-      _onSuccessfulAuth(data, false);
+      _onSuccessfulAuth(data);
       return AccountError();
     }
     // TODO: Improve error messages to be more descriptive
@@ -83,7 +83,7 @@ class AuthService extends StateNotifier<AuthState> {
   }
 
   void onOrgJoined(dynamic data) {
-    _onSuccessfulAuth(data, false);
+    _onSuccessfulAuth(data);
   }
 
   void logout() async {
@@ -94,9 +94,11 @@ class AuthService extends StateNotifier<AuthState> {
     disconnectionNotifier.notify(state);
   }
 
-  _onSuccessfulAuth(dynamic data, bool stayLoggedIn) {
-    if (stayLoggedIn) {
+  _onSuccessfulAuth(dynamic data, {bool stay= false, bool clear = false}) {
+    if (stay) {
       storage.write(key: 'refresh_token', value: data['refresh_token']);
+    } else if (clear) {
+      storage.delete(key: 'refresh_token');
     }
 
     state = AuthState(

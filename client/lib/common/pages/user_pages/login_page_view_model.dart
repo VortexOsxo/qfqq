@@ -61,7 +61,7 @@ class LoginPageViewModelState extends ConsumerState<LoginPageViewModel> {
     final service = ref.read(authStateProvider.notifier);
 
     final result = await service.refresh();
-    if (!result) {
+    if (!result || !mounted) {
       return;
     }
 
