@@ -4,7 +4,7 @@ from datetime import datetime
 
 @dataclass(slots=True)
 class Notification:
-    userId: str
+    token: str
     title: str
     body: str
     data: str | None = None

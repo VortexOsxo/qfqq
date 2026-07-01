@@ -36,6 +36,7 @@ CREATE TABLE
   usersFCM (
     userId INTEGER REFERENCES users (id),
     FCM TEXT NOT NULL,
+    locale TEXT NOT NULL DEFAULT 'fr',
     PRIMARY KEY (userId)
   );
 
