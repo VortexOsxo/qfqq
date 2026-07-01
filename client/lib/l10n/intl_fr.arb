@@ -90,6 +90,7 @@
   "loginPageButtonLogin": "Se connecter",
   "loginPageLinkSignup": "Pas de compte ? S'inscrire",
   "loginPageForgottenPasswordLink": "Mot de passe oublié ? Cliquez ici pour le réinitialiser.",
+  "loginPageStayLoggedIn": "Rester connecté",
 
   "homePageTitle": "Accueil",
   "homePageResponsabilities": "Responsabilités",

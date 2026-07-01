@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify, g
 from flaskr.errors.input_error import InputError
 from flaskr.services.inputs import input_middleware, LambdaBuilder, IntValidator, StringValidator,EmailValidator, TypedListValidator
 from flaskr.database import OrganizationDataHandler, UserDataHandler
-from flaskr.utils import create_auth_response, create_token 
+from flaskr.utils import create_auth_response, create_tokens 
 from flaskr.blueprints.before_request import login_optionnal
 from flaskr.blueprints.middlewares import permission_middleware
 from flaskr.models import Permission, Invitation
@@ -27,14 +27,14 @@ def create_organization(organizationName: str):
     result = UserDataHandler.add_user_to_org(userId, orgId, 2)
     assert result, "Should not fail to join a just created org"
 
-    token = create_token(userId, orgId)
+    tokens = create_tokens(userId, orgId)
 
     user = UserDataHandler.get_user_by_id(userId)
     set_tenant(orgId)
     permissions = UserDataHandler.get_user_permissions(userId)
 
     return (
-        create_auth_response(token, user, True, permissions),
+        create_auth_response(*tokens, user, True, permissions),
         201
     )
 
@@ -52,14 +52,14 @@ def join_organization(orgId):
     if not result:
         return jsonify({"orgId": InputError.InvalidField}), 400
     
-    token = create_token(userId, orgId)
+    tokens = create_tokens(userId, orgId)
 
     user = UserDataHandler.get_user_by_id(userId)
     set_tenant(orgId)
     permissions = UserDataHandler.get_user_permissions(userId)
 
     return (
-        create_auth_response(token, user, True, permissions),
+        create_auth_response(*tokens, user, True, permissions),
         200
     )
 
