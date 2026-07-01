@@ -7,6 +7,8 @@ from flaskr.services.inputs import input_middleware, CreateDecisionBuilder, Lamb
 from flaskr.blueprints.before_request import login_required
 from flaskr.blueprints.middlewares import permission_middleware, Permission
 
+from flaskr.services.notifications import NotificationService, NotificationType
+
 decisions_bp = Blueprint("decisions", __name__, url_prefix="/decisions")
 decisions_bp.before_request(login_required)
 
@@ -25,7 +27,11 @@ def create_decision(description, responsibleId, meetingId, dueDate):
         assistantsIds=data.get("assistantsIds", None),
         meetingId=meetingId,
     )
-    return (jsonify(decision.to_dict()), 201) if decision is not None else ("", 400)
+    if decision is not None:
+        NotificationService.add_notification(NotificationType.DecisionDue.value, g.org_id, decision)
+        return jsonify(decision.to_dict()), 201
+    
+    return "", 400
 
 
 @decisions_bp.route("/", methods=["GET"])
