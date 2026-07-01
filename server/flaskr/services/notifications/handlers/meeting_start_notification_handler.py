@@ -1,9 +1,21 @@
 from flaskr.models import NotificationJob, Notification, MeetingAgenda
 from flaskr.database import MeetingDataHandler, set_tenant
+from flaskr.database.handlers import UserDataHandler
 
 from ..notification_type import NotificationType
 
 from datetime import timedelta
+
+_STRINGS = {
+    'en': {
+        'title': 'Meeting Starting Soon',
+        'body': "Your meeting is starting in 15 minutes, don't forget to join!",
+    },
+    'fr': {
+        'title': 'Réunion bientôt',
+        'body': "Votre réunion commence dans 15 minutes, n'oubliez pas de la rejoindre !",
+    },
+}
 
 
 class MeetingStartNotificationHandler:
@@ -19,12 +31,16 @@ class MeetingStartNotificationHandler:
         )
 
     def get_notifications_from_job(self, job: NotificationJob):
-        title = "Meeting Started"
-        body = "Your meeting in starting in 15 minutes, don't forget to join it"
-
         set_tenant(job.orgId)
         usersIds = MeetingDataHandler.get_meeting_users(job.targetId)
-        return [Notification(userId, title, body) for userId in usersIds]
+
+        notifications = []
+        for userId in usersIds:
+            token, locale = UserDataHandler.get_user_fcm(userId)
+            if token is None: continue
+            strings = _STRINGS.get(locale, _STRINGS['fr'])
+            notifications.append(Notification(token, strings['title'], strings['body']))
+        return notifications
 
     def update(self, job: NotificationJob, meeting: MeetingAgenda):
         # TODO: Dead code for now :(

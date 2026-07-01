@@ -4,7 +4,7 @@ import firebase_admin
 from firebase_admin import credentials, messaging
 
 from .handlers import handlers
-from flaskr.database.handlers import NotificationJobDataHandler, UserDataHandler
+from flaskr.database.handlers import NotificationJobDataHandler
 
 class NotificationService:
     @classmethod
@@ -38,12 +38,10 @@ class NotificationService:
     @classmethod
     def _send_notifs(cls, notifs):
         for notif in notifs:
-            token = UserDataHandler.get_user_fcm(notif.userId)
-            if token is None: continue
-            print(f"Sending notification to {token}: {notif.title}")
+            print(f"Sending notification to {notif.token}: {notif.title}")
 
             message = messaging.Message(
-                token=token,
+                token=notif.token,
                 notification=messaging.Notification(
                     title=notif.title,
                     body=notif.body,
