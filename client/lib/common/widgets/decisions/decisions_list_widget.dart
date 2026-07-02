@@ -12,13 +12,16 @@ import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
+import 'package:qfqq/common/widgets/icon_status_chip.dart';
 import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
 import 'package:qfqq/common/widgets/dropdowns/default_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
+import 'package:qfqq/common/widgets/status_chip.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class DecisionsListWidget extends ConsumerStatefulWidget {
   final bool isProjectFilterEnabled;
+  final bool showDetails;
 
   final bool Function(Decision)? filterFunction;
 
@@ -26,6 +29,7 @@ class DecisionsListWidget extends ConsumerStatefulWidget {
     super.key,
     this.isProjectFilterEnabled = true,
     this.filterFunction,
+    this.showDetails = false,
   });
 
   @override
@@ -141,21 +145,20 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
       children: [
         Row(
           children: [
-            SizedBox(width: 16),
+            SizedBox(width: widget.showDetails ? 16 : 8),
             Expanded(flex: 1, child: Text(loc.attributeNumber)),
             Expanded(flex: 3, child: Text(loc.decisionListDescription)),
-            Expanded(flex: 3, child: Text(loc.attributeStatus)),
             Expanded(flex: 3, child: Text(loc.decisionListDueDate)),
-            Expanded(flex: 3, child: Text(loc.decisionListResponsible)),
-            Expanded(flex: 3, child: Text(loc.decisionListProject)),
-            Expanded(
-              flex: 2,
-              child: Align(
-                alignment: Alignment.center,
-                child: Text(S.of(context).commonAction),
-              ),
-            ),
-            SizedBox(width: 16),
+            if (widget.showDetails)
+              Expanded(flex: 3, child: Text(loc.decisionListResponsible)),
+            if (widget.showDetails)
+              Expanded(flex: 3, child: Text(loc.decisionListProject)),
+            if (widget.showDetails) ...[
+              Expanded(flex: 3, child: Center(child: Text(S.of(context).attributeStatus))),
+              Expanded(flex: 2, child: Center(child: Text(S.of(context).commonAction))),
+            ] else 
+              Expanded(flex:2, child: SizedBox()),
+            SizedBox(width: widget.showDetails ? 16 : 8),
           ],
         ),
         Divider(color: theme.colorScheme.primary, thickness: 2,),
@@ -172,16 +175,14 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
                       ? ref.watch(userByIdProvider(decision.responsibleId!))
                       : null;
 
+              final statusUIData = getDecisionStatusUI(S.of(context), decision.status);
+
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  SizedBox(width: 16),
+                  SizedBox(width: widget.showDetails ? 16 : 8),
                   Expanded(flex: 1, child: Text(decision.number.toString())),
                   Expanded(flex: 3, child: Text(decision.description)),
-                  Expanded(
-                    flex: 3,
-                    child: Text(getDecisionStatusUI(S.of(context), decision.status).label),
-                  ),
                   Expanded(
                     flex: 3,
                     child: Text(
@@ -190,33 +191,27 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
                           : loc.commonNoDateSet,
                     ),
                   ),
-                  Expanded(
-                    flex: 3,
-                    child: Text(
-                      responsible != null
-                          ? responsible.displayName
-                          : loc.decisionListNoResponsibleSet,
-                    ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: ProjectClickableTextWidget(
-                      projectId: decision.projectId,
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: TextButton(
-                        style: inplaceTextButtonStyle(context),
-                        child: Text(loc.agendaListView),
-                        onPressed:
-                            () => context.go('/decisions/${decision.id}'),
+                  if (widget.showDetails)
+                    Expanded(
+                      flex: 3,
+                      child: Text(
+                        responsible != null
+                            ? responsible.displayName
+                            : loc.decisionListNoResponsibleSet,
                       ),
                     ),
-                  ),
-                  SizedBox(width: 16),
+                  if (widget.showDetails)
+                    Expanded(
+                      flex: 3,
+                      child: ProjectClickableTextWidget(
+                        projectId: decision.projectId,
+                      ),
+                    ),
+                  if (widget.showDetails)
+                    ..._desktopOther(context, loc, decision, statusUIData)
+                  else
+                    ..._mobileOther(context, loc, decision, statusUIData),
+                  SizedBox(width: widget.showDetails ? 16 : 8),
                 ],
               );
             },
@@ -225,5 +220,43 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
       ],
     );
     return buildContentListCardTemplate(cardContent);
+  }
+
+  List<Widget> _mobileOther(context, loc, decision, uiData) {
+    return [
+      Expanded(
+        flex: 2,
+        child: Row(
+          children: [
+            Center(child: IconStatusChip(statusUIData: uiData)),
+            TextButton(
+              style: inplaceTextButtonStyle(context),
+              onPressed: () => context.go('/decisions/${decision.id}'),
+              child: Text(loc.agendaListView),
+            ),
+          ],
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> _desktopOther(BuildContext context, loc, decision, uiData) {
+    return [
+      Expanded(
+        flex: 3,
+        child: StatusChip(statusUIData: uiData, alignement: Alignment.center),
+      ),
+      Expanded(
+        flex: 2,
+        child: Align(
+          alignment: Alignment.center,
+          child: TextButton(
+            style: inplaceTextButtonStyle(context),
+            onPressed: () => context.go('/decisions/${decision.id}'),
+            child: Text(loc.agendaListView),
+          ),
+        ),
+      ),
+    ];
   }
 }
