@@ -2,6 +2,7 @@ flask
 python-dotenv
 PyJWT
 psycopg[binary]
+psycopg-pool
 pytest
 reportlab
 firebase-admin
