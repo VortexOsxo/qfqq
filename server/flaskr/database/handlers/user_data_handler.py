@@ -36,7 +36,10 @@ class UserDataHandler:
                     sql.SQL("SET search_path TO {}, public;").format(sql.Identifier(str(orgId)))
                 )
 
-                query = f"INSERT INTO usersRoles (userId, roleId) VALUES (%s, %s);"
+                query = """
+                    INSERT INTO usersRoles (userId, roleId) VALUES (%s, %s)
+                    ON CONFLICT (userId) DO UPDATE SET roleId = EXCLUDED.roleId;
+                """
                 cur.execute(query, (userId, roleId))
 
                 return True
@@ -102,8 +105,8 @@ class UserDataHandler:
             JOIN usersRoles ur ON ur.roleId = r.id
             WHERE ur.userId = %s;
         """
-        permissions = read_query(query, (userId,))
-        return permissions[0] if permissions else ((False,) * 3) 
+        result = read_query(query, (userId,))
+        return result[0] if result else (False, False, False)
 
     @classmethod
     def get_users_permissions(cls):
@@ -119,8 +122,8 @@ class UserDataHandler:
             SELECT r.canWrite, r.canDelete, r.canUpdatePermissions FROM roles r
             JOIN usersRoles ur ON ur.roleId = r.id WHERE userId = %s;
         """
-        permissions = read_query(query, (userId,))
-        return permissions[0] if permissions else ((False,) * 3) 
+        result = read_query(query, (userId,))
+        return result[0] if result else (False, False, False)
 
     @classmethod
     def upsert_user_fcm(cls, userId: int, fcm: str, locale: str = 'fr'):
