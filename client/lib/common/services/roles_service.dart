@@ -39,7 +39,7 @@ class RolesService extends StateNotifier<List<Role>> {
     return RoleErrors.fromJson(data);
   }
 
-  Future<void> updateRole(int roleId, String permission, bool value) async {
+  Future<bool> updateRole(int roleId, String permission, bool value) async {
     final response = await _http.patch(
       _http.getUri('roles/$roleId'),
       headers: {'Content-Type': 'application/json'},
@@ -67,7 +67,9 @@ class RolesService extends StateNotifier<List<Role>> {
 
     if (response.statusCode == 204) {
       state = state.map(update).toList();
+      return true;
     }
+    return false;
   }
 
   Future<bool> deleteRole(int roleId) async {

@@ -22,14 +22,14 @@ class UsersRolesService extends StateNotifier<List<UserRole>> {
     state = data.map((item) => UserRole.fromJson(item)).toList();
   }
 
-  Future<void> updateUserRole(int userId, int roleId) async {
+  Future<bool> updateUserRole(int userId, int roleId) async {
     final response = await _http.patch(
       _http.getUri('users/$userId/role'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'roleId': roleId}),
     );
 
-    if (response.statusCode != 204) return;
+    if (response.statusCode != 204) return false;
 
     UserRole update(UserRole userRole) {
       if (userRole.userId != userId) {
@@ -40,5 +40,6 @@ class UsersRolesService extends StateNotifier<List<UserRole>> {
     }
 
     state = state.map(update).toList();
+    return true;
   }
 }

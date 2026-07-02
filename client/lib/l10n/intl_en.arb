@@ -350,5 +350,8 @@
   "roleDeleteMessage": "Are you sure you want to delete this role? This action cannot be undone.",
   "roleDeleteConfirm": "Delete role",
   "roleDeleteErrorTitle": "Cannot delete role",
-  "roleDeleteErrorMessage": "This role is still assigned to one or more members. Reassign them before deleting it."
+  "roleDeleteErrorMessage": "This role is still assigned to one or more members. Reassign them before deleting it.",
+
+  "selfLockoutErrorTitle": "Action blocked",
+  "selfLockoutErrorMessage": "You cannot remove your own permission to manage roles. Ask another administrator to make this change."
 }
