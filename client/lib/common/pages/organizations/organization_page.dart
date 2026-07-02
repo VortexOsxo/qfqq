@@ -177,7 +177,7 @@ class RolesTab extends ConsumerWidget {
                           DataCell(
                             Row(
                               children: [
-                                if (role.id != 1)
+                                if (role.id != 1 && role.id != 2)
                                   IconButton(
                                     onPressed: () => deleteRole(ref, role.id),
                                     icon: const Icon(Icons.delete),

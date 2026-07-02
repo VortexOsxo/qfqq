@@ -27,9 +27,8 @@ CREATE TABLE
 
 CREATE TABLE
   usersRoles (
-    userId INTEGER REFERENCES users (id),
-    roleId INTEGER REFERENCES roles (id),
-    PRIMARY KEY (userId, roleId)
+    userId INTEGER PRIMARY KEY REFERENCES users (id),
+    roleId INTEGER NOT NULL REFERENCES roles (id)
   );
 
 CREATE TABLE 
