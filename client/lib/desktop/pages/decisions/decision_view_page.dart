@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/decision.dart';
 import 'package:qfqq/common/models/permissions.dart';
-import 'package:qfqq/common/providers/decisions_provider.dart';
-import 'package:qfqq/common/providers/users_provider.dart';
-import 'package:qfqq/common/services/modal_service.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
-import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
+import 'package:qfqq/common/view_models/decision_view_page_view_model.dart';
 import 'package:qfqq/common/widgets/permission_required.dart';
 import 'package:qfqq/common/widgets/reusables/form_filled_button.dart';
 import 'package:qfqq/common/widgets/reusables/form_outlined_button.dart';
@@ -23,48 +19,34 @@ class DecisionViewPage extends ConsumerWidget {
 
   const DecisionViewPage({super.key, required this.decisionId});
 
-  void deleteDecision(BuildContext context, WidgetRef ref) async {
-    var decisionsService = ref.read(decisionsProvider.notifier);
-
-    final loc = S.of(context);
-
-    var result = await ModalService.showConfirmation(
-      context: context,
-      title: loc.decisionDeleteTitle,
-      message: loc.decisionDeleteMessage,
-      confirmLabel: loc.decisionDeleteConfirm,
-      cancelLabel: loc.commonCancel,
-    );
-
-    if (result) {
-      bool success = await decisionsService.deleteDecision(decisionId);
-      if (context.mounted && success) {
-        context.go('/decisions');
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    return DecisionViewPageViewModel(
+      decisionId: decisionId,
+      builder: (vm) => _DecisionViewPageContent(vm: vm),
+    );
+  }
+}
+
+class _DecisionViewPageContent extends StatelessWidget {
+  final DecisionViewPageViewModelState vm;
+
+  const _DecisionViewPageContent({required this.vm});
+
+  @override
+  Widget build(BuildContext context) {
+    final decision = vm.decision;
     final loc = S.of(context);
-    final decision = ref.watch(decisionByIdProvider(decisionId));
 
     if (decision == null) {
       return Center(child: Text(loc.decisionNotFound));
     }
 
-    return _buildContent(context, ref, decision);
-  }
-
-  Widget _buildContent(BuildContext context, WidgetRef ref, Decision decision) {
-    final decisionsService = ref.read(decisionsServiceProvider);
-    final loc = S.of(context);
-
     return Padding(
       padding: const EdgeInsets.all(32),
       child: Column(
         children: [
-          _buildTopCard(context, ref, decision),
+          _buildTopCard(context, decision),
           const SizedBox(height: 16),
           Expanded(
             child: Row(
@@ -72,7 +54,7 @@ class DecisionViewPage extends ConsumerWidget {
               children: [
                 SizedBox(
                   width: 300,
-                  child: _buildDecisionInfo(context, ref, decision),
+                  child: _buildDecisionInfo(context, decision),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -91,27 +73,19 @@ class DecisionViewPage extends ConsumerWidget {
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       Spacer(),
-                      if (decision.status == DecisionStatus.inProgress) ...[
+                      if (vm.isInProgress) ...[
                         const SizedBox(height: 8),
                         IntrinsicWidth(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               FormFilledButton(
-                                onPressed:
-                                    () => decisionsService.updateDecisionStatus(
-                                      decision.id,
-                                      DecisionStatus.completed,
-                                    ),
+                                onPressed: vm.markAsCompleted,
                                 text: loc.decisionViewPageMarkAsCompleted,
                               ),
                               const SizedBox(height: 8),
                               FormOutlinedButton(
-                                onPressed:
-                                    () => decisionsService.updateDecisionStatus(
-                                      decision.id,
-                                      DecisionStatus.cancelled,
-                                    ),
+                                onPressed: vm.markAsCancelled,
                                 text: loc.decisionViewPageMarkAsCancelled,
                               ),
                             ],
@@ -129,9 +103,9 @@ class DecisionViewPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildTopCard(BuildContext context, WidgetRef ref, Decision decision) {
-    final loc = S.of(context);
+  Widget _buildTopCard(BuildContext context, Decision decision) {
     final theme = Theme.of(context);
+    final loc = S.of(context);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 24),
@@ -151,17 +125,8 @@ class DecisionViewPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildDecisionInfo(
-    BuildContext context,
-    WidgetRef ref,
-    Decision decision,
-  ) {
+  Widget _buildDecisionInfo(BuildContext context, Decision decision) {
     final loc = S.of(context);
-
-    final responsible =
-        isIdValid(decision.responsibleId)
-            ? ref.watch(userByIdProvider(decision.responsibleId!))
-            : null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,25 +154,24 @@ class DecisionViewPage extends ConsumerWidget {
         ],
         DetailsAttributeWidget(
           label: loc.decisionListResponsible,
-          value: responsible?.displayName ?? loc.decisionListNoResponsibleSet,
+          value:
+              vm.responsibleName.isNotEmpty
+                  ? vm.responsibleName
+                  : loc.decisionListNoResponsibleSet,
         ),
         DetailsListWidget(
           label: loc.attributeAssitants,
           emptyLabel: loc.attributeNoAssitants,
-          values:
-              decision.assistantsIds.map((participantId) {
-                final participant = ref.watch(userByIdProvider(participantId));
-                return participant?.displayName ?? loc.commonUnknown;
-              }).toList(),
+          values: vm.assistantNames,
         ),
-        if (isIdValid(decision.meetingId)) ...[
+        if (vm.hasMeeting) ...[
           Text(
             loc.decisionViewPageMeeting,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
           TextButton(
-            onPressed: () => context.go('/agendas/${decision.meetingId}'),
+            onPressed: vm.goToMeeting,
             style: TextButton.styleFrom(
               padding: EdgeInsets.zero,
               alignment: Alignment.centerLeft,
@@ -227,7 +191,7 @@ class DecisionViewPage extends ConsumerWidget {
         PermissionRequired(
           neededPermissions: Permissions(canDelete: true),
           child: TextButton(
-            onPressed: () => deleteDecision(context, ref),
+            onPressed: vm.deleteDecision,
             child: Text(loc.commonDelete),
           ),
         ),

@@ -6,7 +6,7 @@ import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/pages/agenda_modification_page.dart';
 import 'package:qfqq/mobile/pages/agendas/agenda_view_page.dart';
 import 'package:qfqq/common/pages/decisions_list_page.dart';
-import 'package:qfqq/common/pages/decision_view_page.dart';
+import 'package:qfqq/mobile/pages/decisions/decision_view_page.dart';
 import 'package:qfqq/mobile/pages/home_page.dart';
 import 'package:qfqq/common/pages/user_pages/forgotten_password_page.dart';
 import 'package:qfqq/common/pages/project_modification_page.dart';

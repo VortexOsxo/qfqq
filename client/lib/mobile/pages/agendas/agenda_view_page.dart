@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/view_models/agenda_view_model.dart';
-import 'package:qfqq/common/widgets/icon_status_chip.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_content.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_control.dart';
 import 'package:qfqq/common/widgets/details_attribute_widget.dart';
@@ -10,6 +9,7 @@ import 'package:qfqq/common/widgets/projects/project_title_link_widget.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/generated/l10n.dart';
+import 'package:qfqq/mobile/widgets/title_with_status.dart';
 
 class AgendaViewPage extends StatelessWidget {
   final int agendaId;
@@ -55,32 +55,16 @@ class _AgendaViewPage extends StatelessWidget {
   }
 
   Widget _buildTopCard(BuildContext context, MeetingAgenda agenda) {
-    final theme = Theme.of(context);
     final statusUIData = getMeetingAgendaStatusUI(S.of(context), agenda.status);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                '${agenda.number}: ${agenda.title}',
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                  color: theme.primaryColor,
-                ),
-              ),
-              Transform.translate(
-                offset: const Offset(0, -10),
-                child: IconStatusChip(statusUIData: statusUIData, iconSize: 20),
-              ),
-            ],
-          ),
+          child: TitleWithStatus(
+            title: '${agenda.number}: ${agenda.title}',
+            uiData: statusUIData,
+          )
         ),
 
         if (vm.hasProject)
