@@ -30,6 +30,15 @@ class MeetingStartNotificationHandler:
             None,
         )
 
+    def update(self, jobs: list[NotificationJob], meeting: MeetingAgenda):
+        newJobs = []
+        for job in jobs:
+            if job.targetId != meeting.id:
+                continue
+            job.scheduledAt = meeting.meetingDate - timedelta(minutes=15)
+            newJobs.append(job)
+        return newJobs
+
     def get_notifications_from_job(self, job: NotificationJob):
         set_tenant(job.orgId)
         usersIds = MeetingDataHandler.get_meeting_users(job.targetId)
@@ -42,9 +51,3 @@ class MeetingStartNotificationHandler:
             notifications.append(Notification(token, strings['title'], strings['body']))
         return notifications
 
-    def update(self, job: NotificationJob, meeting: MeetingAgenda):
-        # TODO: Dead code for now :(
-        if job.targetId != meeting.id:
-            return False, None
-        job.scheduledAt = meeting.meetingDate - timedelta(minutes=15)
-        return True, job

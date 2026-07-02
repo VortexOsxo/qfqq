@@ -21,6 +21,17 @@ class NotificationService:
         NotificationJobDataHandler.create_notification_job(job)
 
     @classmethod
+    def update_notification(cls, type, orgId, targetId, *arg, **kwarg):
+        handler = handlers.get(type)
+        assert handler is not None
+
+        previousJobs = NotificationJobDataHandler.get_jobs_by_target(orgId=orgId, targetId=targetId, type=type)
+
+        newJobs = handler.update(previousJobs, *arg, **kwarg)
+        for job in newJobs:
+            NotificationJobDataHandler.update_job(job.id, job)
+
+    @classmethod
     def send_loop(cls):
         while True:
             try:
