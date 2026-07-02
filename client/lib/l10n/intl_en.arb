@@ -240,6 +240,7 @@
   "commonRevoke": "Revoke",
   "commonProfile": "Profile",
   "commonReport": "Report",
+  "commonTable": "Table",
 
   "commonNoGoalsSet": "No goals set",
   "commonNoDateSet": "No date set",
