@@ -344,5 +344,11 @@
 
   "searchTitleIdHint": "Search by Id or title",
   "searchDescriptionIdHint": "Search by Id or description",
-  "toggleAdvancedFilters": "Toggle advanced filters"
+  "toggleAdvancedFilters": "Toggle advanced filters",
+
+  "roleDeleteTitle": "Delete role?",
+  "roleDeleteMessage": "Are you sure you want to delete this role? This action cannot be undone.",
+  "roleDeleteConfirm": "Delete role",
+  "roleDeleteErrorTitle": "Cannot delete role",
+  "roleDeleteErrorMessage": "This role is still assigned to one or more members. Reassign them before deleting it."
 }
