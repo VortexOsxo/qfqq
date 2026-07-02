@@ -47,6 +47,7 @@ class _AgendaViewPage extends StatelessWidget {
           const SizedBox(height: 8),
           Flexible(fit: FlexFit.loose, child: _buildDetails(context, loc, agenda)),
           Expanded(child: MeetingViewContent(meeting: agenda)),
+          const Spacer(),
           Center(child: MeetingViewControl(meeting: agenda)),
         ],
       ),
