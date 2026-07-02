@@ -85,11 +85,20 @@ class MembersTab extends ConsumerWidget {
                           DataCell(
                             RoleDropdownMenu(
                               initialRoleId: roleId,
-                              valueChanged: (int? newRoleId) {
+                              valueChanged: (int? newRoleId) async {
                                 if (newRoleId == null) return;
-                                ref
+
+                                final success = await ref
                                     .read(usersRolesProvider.notifier)
                                     .updateUserRole(user.id, newRoleId);
+
+                                if (!success && context.mounted) {
+                                  ModalService.showInformation(
+                                    context: context,
+                                    title: loc.selfLockoutErrorTitle,
+                                    message: loc.selfLockoutErrorMessage,
+                                  );
+                                }
                               },
                               isSmall: true,
                             ),
@@ -139,13 +148,23 @@ class RolesTab extends ConsumerWidget {
   }
 
   void updateRolePermission(
+    BuildContext context,
     WidgetRef ref,
     int id,
     String permission,
     bool value,
-  ) {
-    final service = ref.read(rolesProvider.notifier);
-    service.updateRole(id, permission, value);
+  ) async {
+    final loc = S.of(context);
+
+    final success = await ref.read(rolesProvider.notifier).updateRole(id, permission, value);
+
+    if (!success && context.mounted) {
+      ModalService.showInformation(
+        context: context,
+        title: loc.selfLockoutErrorTitle,
+        message: loc.selfLockoutErrorMessage,
+      );
+    }
   }
 
   @override
@@ -175,24 +194,9 @@ class RolesTab extends ConsumerWidget {
                           DataCell(
                             Text(formatRoleName(role)),
                           ),
-                          _checkboxDataCell(
-                            ref,
-                            role.id,
-                            role.canWrite,
-                            "canWrite",
-                          ),
-                          _checkboxDataCell(
-                            ref,
-                            role.id,
-                            role.canDelete,
-                            "canDelete",
-                          ),
-                          _checkboxDataCell(
-                            ref,
-                            role.id,
-                            role.canUpdatePermissions,
-                            "canUpdatePermissions",
-                          ),
+                          _checkboxDataCell(context, ref, role.id, role.canWrite, "canWrite"),
+                          _checkboxDataCell(context, ref, role.id, role.canDelete, "canDelete"),
+                          _checkboxDataCell(context, ref, role.id, role.canUpdatePermissions, "canUpdatePermissions"),
                           DataCell(
                             Row(
                               children: [
@@ -228,6 +232,7 @@ class RolesTab extends ConsumerWidget {
   }
 
   DataCell _checkboxDataCell(
+    BuildContext context,
     WidgetRef ref,
     int id,
     bool currentValue,
@@ -237,7 +242,7 @@ class RolesTab extends ConsumerWidget {
       Checkbox(
         value: currentValue,
         onChanged: (value) {
-          updateRolePermission(ref, id, permission, value ?? !currentValue);
+          updateRolePermission(context, ref, id, permission, value ?? !currentValue);
         },
       ),
     );

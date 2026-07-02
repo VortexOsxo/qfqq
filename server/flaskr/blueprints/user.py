@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, g
 
-from flaskr.database import UserDataHandler
+from flaskr.database import UserDataHandler, RoleDataHandler
 from flaskr.blueprints.before_request import login_required
 from flaskr.blueprints.middlewares import permission_middleware, Permission
 from flaskr.services.inputs import input_middleware, LambdaBuilder, RoleIdValidator, StringValidator
@@ -33,7 +33,12 @@ def get_user_permissions(id: str):
 @users_bp.patch("/<int:userId>/role")
 @permission_middleware(Permission.CanUpdatePermissions)
 @input_middleware(LambdaBuilder(("roleId", RoleIdValidator())))
-def update_permissions(userId: int, roleId: int): 
+def update_permissions(userId: int, roleId: int):
+    if userId == g.user_id:
+        target_role = RoleDataHandler.get_role(roleId)
+        if target_role is None or not target_role.canUpdatePermissions:
+            return jsonify({"error": "self_lockout"}), 403
+
     UserDataHandler.update_user_role(userId, roleId)
     return "", 204
 

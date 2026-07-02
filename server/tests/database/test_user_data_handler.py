@@ -49,3 +49,11 @@ def test_update_role(app):
     UserDataHandler.update_user_role(3, 3)
     permissions = UserDataHandler.get_user_permissions(3)
     assert permissions == (True, True, False)
+
+def test_get_user_role_id(app):
+    roleId = UserDataHandler.get_user_role_id(3)
+    assert roleId == 4
+
+    UserDataHandler.update_user_role(3, 1)
+    roleId = UserDataHandler.get_user_role_id(3)
+    assert roleId == 1

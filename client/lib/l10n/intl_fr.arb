@@ -351,5 +351,8 @@
   "roleDeleteMessage": "Êtes-vous sûr de vouloir supprimer ce rôle ? Cette action est irréversible.",
   "roleDeleteConfirm": "Supprimer le rôle",
   "roleDeleteErrorTitle": "Impossible de supprimer le rôle",
-  "roleDeleteErrorMessage": "Ce rôle est encore attribué à un ou plusieurs membres. Réaffectez-les avant de le supprimer."
+  "roleDeleteErrorMessage": "Ce rôle est encore attribué à un ou plusieurs membres. Réaffectez-les avant de le supprimer.",
+
+  "selfLockoutErrorTitle": "Action bloquée",
+  "selfLockoutErrorMessage": "Vous ne pouvez pas supprimer votre propre permission de gestion des rôles. Demandez à un autre administrateur d'effectuer ce changement."
 }

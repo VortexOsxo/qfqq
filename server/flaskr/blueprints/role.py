@@ -1,6 +1,6 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, g
 
-from flaskr.database import RoleDataHandler
+from flaskr.database import RoleDataHandler, UserDataHandler
 from flaskr.blueprints.before_request import login_required
 from flaskr.blueprints.middlewares import permission_middleware, Permission
 from flaskr.services.inputs import input_middleware, LambdaBuilder, PermissionValidator, BooleanValidator, StringValidator
@@ -43,7 +43,7 @@ def create_role(name: str, canWrite: bool, canDelete: bool, canUpdatePermissions
     return role.to_dict(), 201
 
 
-@roles_bp.patch("/<int:id>")
+@roles_bp.patch("/<int:roleId>")
 @permission_middleware(Permission.CanUpdatePermissions)
 @input_middleware(
     LambdaBuilder(
@@ -51,8 +51,12 @@ def create_role(name: str, canWrite: bool, canDelete: bool, canUpdatePermissions
         ("permission_value", BooleanValidator()),
     )
 )
-def update_role(id: str, permission_name, permission_value):
-    RoleDataHandler.update_role(id, permission_name, permission_value)
+def update_role(roleId: str, permission_name, permission_value):
+    if permission_name == "canUpdatePermissions" and not permission_value:
+        if UserDataHandler.get_user_role_id(g.user_id) == roleId:
+            return jsonify({"error": "self_lockout"}), 403
+
+    RoleDataHandler.update_role(roleId, permission_name, permission_value)
     return "", 204
 
 @roles_bp.delete("/<int:id>")

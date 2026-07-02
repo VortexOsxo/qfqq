@@ -109,6 +109,12 @@ class UserDataHandler:
         return result[0] if result else (False, False, False)
 
     @classmethod
+    def get_user_role_id(cls, userId: int) -> int | None:
+        query = "SELECT roleId FROM usersRoles WHERE userId = %s;"
+        result = read_query(query, (userId,))
+        return result[0][0] if result else None
+
+    @classmethod
     def get_users_permissions(cls):
         query = """
             SELECT ur.userId, r.canWrite, r.canDelete, r.canUpdatePermissions FROM roles r
