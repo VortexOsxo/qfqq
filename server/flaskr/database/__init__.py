@@ -15,7 +15,6 @@ from .database import Database
 
 from .postgres import (
     create_db,
-    close_db,
     fill_test_db,
 )
 
@@ -28,7 +27,7 @@ def create_db_command():
 
 
 def init_db(app, uri):
-    Database.set_uri(uri)
-    
-    app.teardown_appcontext(close_db)
+    Database.init_pool(uri)
+
+    app.teardown_appcontext(lambda e: Database.close_pool())
     app.cli.add_command(create_db_command)
