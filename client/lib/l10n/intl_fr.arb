@@ -345,5 +345,11 @@
 
   "searchTitleIdHint": "Rechercher par id ou titre",
   "searchDescriptionIdHint": "Rechercher par id ou description",
-  "toggleAdvancedFilters": "Afficher les filtres avancés"
+  "toggleAdvancedFilters": "Afficher les filtres avancés",
+
+  "roleDeleteTitle": "Supprimer le rôle ?",
+  "roleDeleteMessage": "Êtes-vous sûr de vouloir supprimer ce rôle ? Cette action est irréversible.",
+  "roleDeleteConfirm": "Supprimer le rôle",
+  "roleDeleteErrorTitle": "Impossible de supprimer le rôle",
+  "roleDeleteErrorMessage": "Ce rôle est encore attribué à un ou plusieurs membres. Réaffectez-les avant de le supprimer."
 }

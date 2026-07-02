@@ -70,7 +70,7 @@ class RolesService extends StateNotifier<List<Role>> {
     }
   }
 
-  Future<void> deleteRole(int roleId) async {
+  Future<bool> deleteRole(int roleId) async {
     final response = await _http.delete(
       _http.getUri('roles/$roleId'),
       headers: {'Content-Type': 'application/json'},
@@ -78,6 +78,8 @@ class RolesService extends StateNotifier<List<Role>> {
 
     if (response.statusCode == 204) {
       state = [...state].where((role) => role.id != roleId).toList();
+      return true;
     }
+    return false;
   }
 }

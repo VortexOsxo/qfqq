@@ -58,5 +58,7 @@ def update_role(id: str, permission_name, permission_value):
 @roles_bp.delete("/<int:id>")
 @permission_middleware(Permission.CanUpdatePermissions)
 def delete_role(id: int):
-    result = RoleDataHandler.delete_role(id) # Won't delete used roles
-    return ("", 204) if result else ("", 400) 
+    result = RoleDataHandler.delete_role(id)
+    if result:
+        return "", 204
+    return jsonify({"error": "role_in_use"}), 400

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/providers/roles_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/providers/users_roles_provider.dart';
+import 'package:qfqq/common/services/modal_service.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/role.dart';
 import 'package:qfqq/common/utils/string.dart';
@@ -114,9 +115,27 @@ class MembersTab extends ConsumerWidget {
 class RolesTab extends ConsumerWidget {
   const RolesTab({super.key});
 
-  void deleteRole(WidgetRef ref, int roleId) {
+  void deleteRole(BuildContext context, WidgetRef ref, int roleId) async {
+    final loc = S.of(context);
+
+    final confirmed = await ModalService.showConfirmation(
+      context: context,
+      title: loc.roleDeleteTitle,
+      message: loc.roleDeleteMessage,
+      confirmLabel: loc.roleDeleteConfirm,
+    );
+    if (!confirmed) return;
+
     final service = ref.read(rolesProvider.notifier);
-    service.deleteRole(roleId);
+    final success = await service.deleteRole(roleId);
+
+    if (!success && context.mounted) {
+      ModalService.showInformation(
+        context: context,
+        title: loc.roleDeleteErrorTitle,
+        message: loc.roleDeleteErrorMessage,
+      );
+    }
   }
 
   void updateRolePermission(
@@ -179,7 +198,7 @@ class RolesTab extends ConsumerWidget {
                               children: [
                                 if (role.id != 1 && role.id != 2)
                                   IconButton(
-                                    onPressed: () => deleteRole(ref, role.id),
+                                    onPressed: () => deleteRole(context, ref, role.id),
                                     icon: const Icon(Icons.delete),
                                   ),
                               ],
