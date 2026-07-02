@@ -28,6 +28,4 @@ def create_db_command():
 
 def init_db(app, uri):
     Database.init_pool(uri)
-
-    app.teardown_appcontext(lambda e: Database.close_pool())
     app.cli.add_command(create_db_command)

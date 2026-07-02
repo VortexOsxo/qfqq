@@ -24,7 +24,6 @@ class Database:
 
     @classmethod
     def init_pool(cls, uri: str, min_size: int = 2, max_size: int = 10) -> None:
-        """Create the shared connection pool.  Call once at app startup."""
         cls._pool = ConnectionPool(
             conninfo=uri,
             min_size=min_size,
