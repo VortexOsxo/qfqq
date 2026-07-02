@@ -222,7 +222,7 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
     return buildContentListCardTemplate(cardContent);
   }
 
-  List<Widget> _mobileOther(context, loc, decision, uiData) {
+  List<Widget> _mobileOther(BuildContext context, loc, decision, uiData) {
     return [
       Expanded(
         flex: 2,
