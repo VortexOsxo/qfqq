@@ -57,15 +57,17 @@ def create_meeting_agenda(**obj):
         # TODO: Handle concurrent update reflects that could cause conflicts ?
         if not "id" in data:
             return jsonify({"error": "Missing/Invalid fields: id"}), 400
-        MeetingDataHandler.update_meeting_agenda(meetingId=data["id"], **kwargs)
+        id = data.get("id")
 
-        if status == "planned":
-            # TODO
-            # Should know weither to create or update
-            # NotificationService.add_notification(NotificationType.MeetingStart.value, g.org_id, meeting)
-            pass
+        meeting = MeetingDataHandler.get_meeting_agenda(id)
+        MeetingDataHandler.update_meeting_agenda(meetingId=id, **kwargs)
 
-        # TODO: If participants/date is modified, update the different notifications
+        if meeting.status != "planned" and status == "planned":
+            meeting = MeetingDataHandler.get_meeting_agenda(id)
+            NotificationService.add_notification(NotificationType.MeetingStart.value, g.org_id, meeting)
+        elif meeting.status == "planned" and data.get('meetingDate') is not None and meeting.meetingDate != datetime.fromisoformat(data.get('meetingDate')):
+            NotificationService.update_notification(NotificationType.MeetingStart.value, g.org_id, meeting.id, meeting)
+
         return "", 204
     return "", 405
 
@@ -129,7 +131,12 @@ def patch_meeting_agenda_status(status, id: str):
     result = MeetingDataHandler.update_meeting_status(id, status)
     if not result:
         return jsonify({"error": "Meeting agenda not found"}), 404
-
+    if status=="planned":
+        meeting = MeetingDataHandler.get_meeting_agenda(id)
+        NotificationService.add_notification(NotificationType.MeetingStart.value, g.org_id, meeting)
+    elif status == "ongoing":
+        # TODO: remove meetingstart notification and add meeting started notification
+        pass
     return '', 204
 
 
