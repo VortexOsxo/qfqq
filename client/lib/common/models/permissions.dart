@@ -1,29 +1,29 @@
 class Permissions {
-  final bool canWrite;
-  final bool canDelete;
-  final bool canUpdatePermissions;
+  final bool contribute;
+  final bool deleteContent;
+  final bool manageTeam;
 
   Permissions({
-    this.canWrite = false,
-    this.canDelete = false,
-    this.canUpdatePermissions = false,
+    this.contribute = false,
+    this.deleteContent = false,
+    this.manageTeam = false,
   });
 
   Permissions.fromJson(dynamic data)
-    : canWrite = data != null ? (data['canWrite'] ?? false) : false,
-      canDelete = data != null ? (data['canDelete'] ?? false) : false,
-      canUpdatePermissions = data != null ? (data['canUpdatePermissions'] ?? false) : false;
+    : contribute = data != null ? (data['contribute'] ?? false) : false,
+      deleteContent = data != null ? (data['deleteContent'] ?? false) : false,
+      manageTeam = data != null ? (data['manageTeam'] ?? false) : false;
 
   bool respect(Permissions neededPermissions) {
-    if (neededPermissions.canWrite && !canWrite) {
+    if (neededPermissions.contribute && !contribute) {
       return false;
     }
 
-    if (neededPermissions.canDelete && !canDelete) {
+    if (neededPermissions.deleteContent && !deleteContent) {
       return false;
     }
 
-    if (neededPermissions.canUpdatePermissions && !canUpdatePermissions) {
+    if (neededPermissions.manageTeam && !manageTeam) {
       return false;
     }
 

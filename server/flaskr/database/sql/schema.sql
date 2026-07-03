@@ -20,9 +20,9 @@ CREATE TABLE
   roles (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name TEXT UNIQUE NOT NULL,
-    canWrite BOOLEAN,
-    canDelete BOOLEAN,
-    canUpdatePermissions BOOLEAN
+    contribute BOOLEAN,
+    deleteContent BOOLEAN,
+    manageTeam BOOLEAN
   );
 
 CREATE TABLE
@@ -162,7 +162,7 @@ FROM
   JOIN meetings m on m.id = d.meetingId;
 
 INSERT INTO
-  roles (name, canWrite, canDelete, canUpdatePermissions)
+  roles (name, contribute, deleteContent, manageTeam)
 VALUES
   ('default', true, false, false),
   ('admin', true, true, true);

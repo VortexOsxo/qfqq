@@ -11,9 +11,9 @@ def test_get_roles_success(client):
     assert len(roles) >= 5
 
     assert roles[1]["name"] == "Admin"
-    assert roles[1]["canWrite"]
-    assert roles[1]["canDelete"]
-    assert roles[1]["canUpdatePermissions"]
+    assert roles[1]["contribute"]
+    assert roles[1]["deleteContent"]
+    assert roles[1]["manageTeam"]
 
 
 def test_get_roles_forbidden(client):
@@ -30,9 +30,9 @@ def test_get_role_success(client):
     role = response.get_json()
 
     assert role["name"] == "Manager"
-    assert role["canWrite"]
-    assert role["canDelete"]
-    assert not role["canUpdatePermissions"]
+    assert role["contribute"]
+    assert role["deleteContent"]
+    assert not role["manageTeam"]
 
 
 def test_get_role_not_found(client):
@@ -51,24 +51,24 @@ def test_create_role_success(client):
     headers = get_auth_headers(client, user_id=1)
     payload = {
         "name": "NewRole",
-        "canWrite": True,
-        "canDelete": False,
-        "canUpdatePermissions": False,
+        "contribute": True,
+        "deleteContent": False,
+        "manageTeam": False,
     }
     response = client.post("/roles", json=payload, headers=headers)
     assert response.status_code == 201
     role = response.get_json()
     assert role["name"] == "newrole"
-    assert role["canWrite"] is True
+    assert role["contribute"] is True
 
 
 def test_create_role_forbidden(client):
     headers = get_auth_headers(client, user_id=2)
     payload = {
         "name": "NewRole",
-        "canWrite": True,
-        "canDelete": False,
-        "canUpdatePermissions": False,
+        "contribute": True,
+        "deleteContent": False,
+        "manageTeam": False,
     }
     response = client.post("/roles", json=payload, headers=headers)
     assert response.status_code == 403
@@ -78,9 +78,9 @@ def test_create_role_invalid_data(client):
     headers = get_auth_headers(client, user_id=1)
     payload = {
         "name": "NewRole",
-        "canWrite": "not-a-bool",
-        "canDelete": False,
-        "canUpdatePermissions": False,
+        "contribute": "not-a-bool",
+        "deleteContent": False,
+        "manageTeam": False,
     }
     response = client.post("/roles", json=payload, headers=headers)
     assert response.status_code == 400
@@ -88,18 +88,18 @@ def test_create_role_invalid_data(client):
 
 def test_update_role_success(client):
     headers = get_auth_headers(client, user_id=1)
-    payload = {"permission_name": "canWrite", "permission_value": False}
+    payload = {"permission_name": "contribute", "permission_value": False}
     response = client.patch("/roles/3", json=payload, headers=headers)
     assert response.status_code == 204
 
     get_res = client.get("/roles/3", headers=headers)
     assert get_res.status_code == 200
-    assert not get_res.get_json()["canWrite"]
+    assert not get_res.get_json()["contribute"]
 
 
 def test_update_role_forbidden(client):
     headers = get_auth_headers(client, user_id=2)
-    payload = {"permission_name": "canWrite", "permission_value": False}
+    payload = {"permission_name": "contribute", "permission_value": False}
     response = client.patch("/roles/3", json=payload, headers=headers)
     assert response.status_code == 403
 

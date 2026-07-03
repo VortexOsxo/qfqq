@@ -312,12 +312,12 @@
   "roleNameAdmin": "Administrateur",
 
   "roleName": "Nom du rôle",
-  "roleCanWrite": "Peut écrire",
-  "roleCanDelete": "Peut supprimer",
-  "roleCanUpdatePermissions": "Peut modifier les permissions",
-  "rolePermissionWrite": "Écrire",
-  "rolePermissionDelete": "Supprimer",
-  "rolePermissionUpdate": "Modifier les permissions",
+  "roleContribute": "Contribuer",
+  "roleDeleteContent": "Supprimer du contenu",
+  "roleManageTeam": "Gérer l'équipe",
+  "rolePermissionContribute": "Contribuer",
+  "rolePermissionDeleteContent": "Supprimer du contenu",
+  "rolePermissionManageTeam": "Gérer l'équipe",
 
   "createRoleFormUniqueName": "Le nom du rôle doit être unique",
 

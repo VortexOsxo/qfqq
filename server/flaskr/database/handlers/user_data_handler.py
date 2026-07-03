@@ -100,7 +100,7 @@ class UserDataHandler:
     @classmethod
     def get_user_role(cls, userId: int):
         query = """
-            SELECT r.canWrite, r.canDelete, r.canUpdatePermissions 
+            SELECT r.contribute, r.deleteContent, r.manageTeam 
             FROM roles r
             JOIN usersRoles ur ON ur.roleId = r.id
             WHERE ur.userId = %s;
@@ -117,7 +117,7 @@ class UserDataHandler:
     @classmethod
     def get_users_permissions(cls):
         query = """
-            SELECT ur.userId, r.canWrite, r.canDelete, r.canUpdatePermissions FROM roles r
+            SELECT ur.userId, r.contribute, r.deleteContent, r.manageTeam FROM roles r
             JOIN usersRoles ur ON ur.roleId = r.id;
         """
         return read_query(query)
@@ -125,7 +125,7 @@ class UserDataHandler:
     @classmethod
     def get_user_permissions(cls, userId: int):
         query = """
-            SELECT r.canWrite, r.canDelete, r.canUpdatePermissions FROM roles r
+            SELECT r.contribute, r.deleteContent, r.manageTeam FROM roles r
             JOIN usersRoles ur ON ur.roleId = r.id WHERE userId = %s;
         """
         result = read_query(query, (userId,))

@@ -33,7 +33,7 @@ def get_projects():
 
 
 @projects_bp.delete("/<int:id>")
-@permission_middleware(Permission.CanDelete)
+@permission_middleware(Permission.DeleteContent)
 def delete_project(id):
     try:
         ProjectDataHandler.delete_project_cascade(id)

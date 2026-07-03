@@ -11,14 +11,14 @@ roles_bp.before_request(login_required)
 
 
 @roles_bp.get("")
-@permission_middleware(Permission.CanUpdatePermissions)
+@permission_middleware(Permission.ManageTeam)
 def get_roles():
     roles = RoleDataHandler.get_roles()
     return jsonify([role.to_dict() for role in roles]), 200
 
 
 @roles_bp.get("/<int:id>")
-@permission_middleware(Permission.CanUpdatePermissions)
+@permission_middleware(Permission.ManageTeam)
 def get_role(id: int):
     role = RoleDataHandler.get_role(id)
     if not role:
@@ -27,24 +27,24 @@ def get_role(id: int):
 
 
 @roles_bp.post("")
-@permission_middleware(Permission.CanUpdatePermissions)
+@permission_middleware(Permission.ManageTeam)
 @input_middleware(
     LambdaBuilder(
         ("name", StringValidator()),
-        ("canWrite", BooleanValidator()),
-        ("canDelete", BooleanValidator()),
-        ("canUpdatePermissions", BooleanValidator()),
+        ("contribute", BooleanValidator()),
+        ("deleteContent", BooleanValidator()),
+        ("manageTeam", BooleanValidator()),
     )
 )
-def create_role(name: str, canWrite: bool, canDelete: bool, canUpdatePermissions: bool):
-    role = RoleDataHandler.create_role(name.lower(), canWrite, canDelete, canUpdatePermissions)
+def create_role(name: str, contribute: bool, deleteContent: bool, manageTeam: bool):
+    role = RoleDataHandler.create_role(name.lower(), contribute, deleteContent, manageTeam)
     if role is None: return jsonify({"name": InputError.MustBeUnique}), 400
 
     return role.to_dict(), 201
 
 
 @roles_bp.patch("/<int:roleId>")
-@permission_middleware(Permission.CanUpdatePermissions)
+@permission_middleware(Permission.ManageTeam)
 @input_middleware(
     LambdaBuilder(
         ("permission_name", PermissionValidator()),
@@ -52,7 +52,7 @@ def create_role(name: str, canWrite: bool, canDelete: bool, canUpdatePermissions
     )
 )
 def update_role(roleId: str, permission_name, permission_value):
-    if permission_name == "canUpdatePermissions" and not permission_value:
+    if permission_name == "manageTeam" and not permission_value:
         if UserDataHandler.get_user_role_id(g.user_id) == roleId:
             return jsonify({"error": "self_lockout"}), 403
 
@@ -60,7 +60,7 @@ def update_role(roleId: str, permission_name, permission_value):
     return "", 204
 
 @roles_bp.delete("/<int:id>")
-@permission_middleware(Permission.CanUpdatePermissions)
+@permission_middleware(Permission.ManageTeam)
 def delete_role(id: int):
     result = RoleDataHandler.delete_role(id)
     if result:
