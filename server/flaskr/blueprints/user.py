@@ -15,28 +15,30 @@ def get_users():
 
 
 @users_bp.get("/permissions")
-@permission_middleware(Permission.CanUpdatePermissions)
+@permission_middleware(Permission.ManageTeam)
 def get_users_permissions():
     return UserDataHandler.get_users_permissions(), 200
 
 @users_bp.get("/roles")
-@permission_middleware(Permission.CanUpdatePermissions)
+@permission_middleware(Permission.ManageTeam)
 def get_users_roles():
     return UserDataHandler.get_users_role(), 200
 
 @users_bp.get("/<string:id>/permissions")
-@permission_middleware(Permission.CanUpdatePermissions)
+@permission_middleware(Permission.ManageTeam)
 def get_user_permissions(id: str):
     return list(UserDataHandler.get_user_permissions(id)), 200
 
 
 @users_bp.patch("/<int:userId>/role")
-@permission_middleware(Permission.CanUpdatePermissions)
+@permission_middleware(Permission.ManageTeam)
 @input_middleware(LambdaBuilder(("roleId", RoleIdValidator())))
 def update_permissions(userId: int, roleId: int):
+    # Prevent self-lockout: block assigning yourself a role that removes
+    # manageTeam, which would leave you with no way to recover.
     if userId == g.user_id:
         target_role = RoleDataHandler.get_role(roleId)
-        if target_role is None or not target_role.canUpdatePermissions:
+        if target_role is None or not target_role.manageTeam:
             return jsonify({"error": "self_lockout"}), 403
 
     UserDataHandler.update_user_role(userId, roleId)

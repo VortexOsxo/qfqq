@@ -54,12 +54,12 @@ class RolesService extends StateNotifier<List<Role>> {
         return role;
       }
 
-      if (permission == 'canWrite') {
-        role.canWrite = value;
-      } else if (permission == 'canDelete') {
-        role.canDelete = value;
-      } else if (permission == 'canUpdatePermissions') {
-        role.canUpdatePermissions = value;
+      if (permission == 'contribute') {
+        role.contribute = value;
+      } else if (permission == 'deleteContent') {
+        role.deleteContent = value;
+      } else if (permission == 'manageTeam') {
+        role.manageTeam = value;
       }
 
       return role;

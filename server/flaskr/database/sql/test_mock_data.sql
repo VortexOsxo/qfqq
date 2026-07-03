@@ -34,12 +34,12 @@ INSERT INTO memberships (userId, orgId) VALUES
 
 --Default Roles
 INSERT INTO
-  roles (name, canWrite, canDelete, canUpdatePermissions)
+  roles (name, contribute, deleteContent, manageTeam)
 VALUES
   ('default', true, true, true);
 
 -- Roles
-INSERT INTO roles (name, canWrite, canDelete, canUpdatePermissions) VALUES
+INSERT INTO roles (name, contribute, deleteContent, manageTeam) VALUES
   ('Admin', true, true, true),
   ('Manager', true, true, false),
   ('Contributor', true, false, false),

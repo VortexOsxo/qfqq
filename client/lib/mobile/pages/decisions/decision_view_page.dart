@@ -177,7 +177,7 @@ class _DecisionViewPageContent extends StatelessWidget {
 
         Spacer(),
         PermissionRequired(
-          neededPermissions: Permissions(canDelete: true),
+          neededPermissions: Permissions(deleteContent: true),
           child: TextButton(
             onPressed: vm.deleteDecision,
             child: Text(loc.commonDelete),

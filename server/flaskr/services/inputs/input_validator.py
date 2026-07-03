@@ -198,7 +198,7 @@ class PermissionValidator(StringValidator):
 
         return (
             InputError.NoError
-            if value in ['canDelete', 'canWrite', 'canUpdatePermissions']
+            if value in ['contribute', 'deleteContent', 'manageTeam']
             else InputError.InvalidFormat
         )
 

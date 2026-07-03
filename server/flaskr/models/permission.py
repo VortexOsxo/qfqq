@@ -1,6 +1,6 @@
 from enum import Enum
 
 class Permission(Enum):
-    CanWrite = 0
-    CanDelete = 1
-    CanUpdatePermissions = 2
+    Contribute = 0
+    DeleteContent = 1
+    ManageTeam = 2

@@ -22,7 +22,7 @@ class ProjectViewControl extends ConsumerWidget {
           child: Text(loc.commonModify),
         ),
         PermissionRequired(
-          neededPermissions: Permissions(canDelete: true),
+          neededPermissions: Permissions(deleteContent: true),
           child: TextButton(
             onPressed: vm.deleteProject,
             child: Text(loc.commonDelete),

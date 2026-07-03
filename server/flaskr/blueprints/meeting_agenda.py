@@ -134,7 +134,7 @@ def patch_meeting_agenda_status(status, id: str):
 
 
 @meeting_agendas_bp.delete("/<int:id>")
-@permission_middleware(Permission.CanDelete)
+@permission_middleware(Permission.DeleteContent)
 def delete_meeting(id):
     try:
         MeetingDataHandler.delete_meeting(id)

@@ -62,7 +62,7 @@ def patch_meeting_agenda_status(status, id: str):
     return '', 404
 
 @decisions_bp.delete("/<int:id>")
-@permission_middleware(Permission.CanDelete)
+@permission_middleware(Permission.DeleteContent)
 def delete_decision(id):
     try:
         DecisionDataHandler.delete_decision(id)

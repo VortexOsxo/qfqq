@@ -182,9 +182,9 @@ class RolesTab extends ConsumerWidget {
               child: DataTable(
                 columns: [
                   DataColumn(label: Text(loc.roleName)),
-                  DataColumn(label: Text(loc.roleCanWrite)),
-                  DataColumn(label: Text(loc.roleCanDelete)),
-                  DataColumn(label: Text(loc.roleCanUpdatePermissions)),
+                  DataColumn(label: Text(loc.roleContribute)),
+                  DataColumn(label: Text(loc.roleDeleteContent)),
+                  DataColumn(label: Text(loc.roleManageTeam)),
                   DataColumn(label: Text('${loc.commonAction}s')),
                 ],
                 rows:
@@ -194,9 +194,9 @@ class RolesTab extends ConsumerWidget {
                           DataCell(
                             Text(formatRoleName(role)),
                           ),
-                          _checkboxDataCell(context, ref, role.id, role.canWrite, "canWrite"),
-                          _checkboxDataCell(context, ref, role.id, role.canDelete, "canDelete"),
-                          _checkboxDataCell(context, ref, role.id, role.canUpdatePermissions, "canUpdatePermissions"),
+                          _checkboxDataCell(context, ref, role.id, role.contribute, "contribute"),
+                          _checkboxDataCell(context, ref, role.id, role.deleteContent, "deleteContent"),
+                          _checkboxDataCell(context, ref, role.id, role.manageTeam, "manageTeam"),
                           DataCell(
                             Row(
                               children: [
