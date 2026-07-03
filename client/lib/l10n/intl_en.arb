@@ -353,5 +353,9 @@
   "roleDeleteErrorMessage": "This role is still assigned to one or more members. Reassign them before deleting it.",
 
   "selfLockoutErrorTitle": "Action blocked",
-  "selfLockoutErrorMessage": "You cannot remove your own permission to manage roles. Ask another administrator to make this change."
+  "selfLockoutErrorMessage": "You cannot remove your own permission to manage roles. Ask another administrator to make this change.",
+
+  "roleContributeTooltip": "Allows creating and editing meetings, decisions, and projects.",
+  "roleDeleteContentTooltip": "Allows deleting meetings, decisions, and projects.",
+  "roleManageTeamTooltip": "Allows inviting members, creating/deleting roles, and modifying permissions."
 }
