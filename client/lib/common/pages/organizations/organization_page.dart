@@ -182,9 +182,9 @@ class RolesTab extends ConsumerWidget {
               child: DataTable(
                 columns: [
                   DataColumn(label: Text(loc.roleName)),
-                  DataColumn(label: Text(loc.roleContribute)),
-                  DataColumn(label: Text(loc.roleDeleteContent)),
-                  DataColumn(label: Text(loc.roleManageTeam)),
+                  DataColumn(label: Text(loc.roleContribute), tooltip: loc.roleContributeTooltip),
+                  DataColumn(label: Text(loc.roleDeleteContent), tooltip: loc.roleDeleteContentTooltip),
+                  DataColumn(label: Text(loc.roleManageTeam), tooltip: loc.roleManageTeamTooltip),
                   DataColumn(label: Text('${loc.commonAction}s')),
                 ],
                 rows:

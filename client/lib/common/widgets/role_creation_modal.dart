@@ -57,6 +57,7 @@ class _RoleCreationModal extends ConsumerState<RoleCreationModal> {
               const SizedBox(height: 16),
               CheckboxListTile(
                 title: Text(loc.roleContribute),
+                subtitle: Text(loc.roleContributeTooltip),
                 value: widget.role.contribute,
                 onChanged: (bool? value) {
                   setState(() => widget.role.contribute = value ?? false);
@@ -66,6 +67,7 @@ class _RoleCreationModal extends ConsumerState<RoleCreationModal> {
               ),
               CheckboxListTile(
                 title: Text(loc.roleDeleteContent),
+                subtitle: Text(loc.roleDeleteContentTooltip),
                 value: widget.role.deleteContent,
                 onChanged: (bool? value) {
                   setState(() => widget.role.deleteContent = value ?? false);
@@ -75,6 +77,7 @@ class _RoleCreationModal extends ConsumerState<RoleCreationModal> {
               ),
               CheckboxListTile(
                 title: Text(loc.roleManageTeam),
+                subtitle: Text(loc.roleManageTeamTooltip),
                 value: widget.role.manageTeam,
                 onChanged: (bool? value) {
                   setState(() {

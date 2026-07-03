@@ -354,5 +354,9 @@
   "roleDeleteErrorMessage": "Ce rôle est encore attribué à un ou plusieurs membres. Réaffectez-les avant de le supprimer.",
 
   "selfLockoutErrorTitle": "Action bloquée",
-  "selfLockoutErrorMessage": "Vous ne pouvez pas supprimer votre propre permission de gestion des rôles. Demandez à un autre administrateur d'effectuer ce changement."
+  "selfLockoutErrorMessage": "Vous ne pouvez pas supprimer votre propre permission de gestion des rôles. Demandez à un autre administrateur d'effectuer ce changement.",
+
+  "roleContributeTooltip": "Permet de créer et modifier les réunions, décisions et projets.",
+  "roleDeleteContentTooltip": "Permet de supprimer les réunions, décisions et projets.",
+  "roleManageTeamTooltip": "Permet d'inviter des membres, de créer/supprimer des rôles et de modifier les permissions."
 }
