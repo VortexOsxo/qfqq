@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import Blueprint, request, jsonify, g
 
 from flaskr.models import MeetingAgendaStatus
-from flaskr.database import MeetingDataHandler, UserDataHandler
+from flaskr.database import MeetingDataHandler
 from flaskr.services.inputs import (
     input_middleware,
     LambdaBuilder,

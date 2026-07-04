@@ -3,12 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/decision.dart';
 import 'package:qfqq/common/models/errors/decision_errors.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
+import 'package:qfqq/common/models/permissions.dart';
 import 'package:qfqq/common/models/user.dart';
 import 'package:qfqq/common/providers/decisions_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/utils/validation.dart';
+import 'package:qfqq/common/widgets/permission_required.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/selection_text_fields/user_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/selection_text_fields/users_text_field.dart';
@@ -29,7 +31,10 @@ class MeetingViewContentOngoing extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _CreateDecisionForm(meeting: meeting),
+        PermissionRequired(
+          neededPermissions: Permissions(contribute: true),
+          child: _CreateDecisionForm(meeting: meeting),
+        ),
         _takenDecisions(loc, meetingDecisions, ref),
       ],
     );
