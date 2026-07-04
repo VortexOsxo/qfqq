@@ -315,8 +315,8 @@
   "roleDeleteContent": "Delete content",
   "roleManageTeam": "Manage team",
   "rolePermissionContribute": "Contribute",
-  "rolePermissionDeleteContent": "Delete Content",
-  "rolePermissionManageTeam": "Manage Team",
+  "rolePermissionDeleteContent": "Delete content",
+  "rolePermissionManageTeam": "Manage team",
 
   "createRoleFormUniqueName": "Role name must be unique",
 
