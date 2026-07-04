@@ -133,7 +133,7 @@ class RolesTab extends ConsumerWidget {
       message: loc.roleDeleteMessage,
       confirmLabel: loc.roleDeleteConfirm,
     );
-    if (!confirmed) return;
+    if (!confirmed || !context.mounted) return;
 
     final service = ref.read(rolesProvider.notifier);
     final success = await service.deleteRole(roleId);
