@@ -36,7 +36,10 @@ class UserDataHandler:
                     sql.SQL("SET search_path TO {}, public;").format(sql.Identifier(str(orgId)))
                 )
 
-                query = f"INSERT INTO usersRoles (userId, roleId) VALUES (%s, %s);"
+                query = """
+                    INSERT INTO usersRoles (userId, roleId) VALUES (%s, %s)
+                    ON CONFLICT (userId) DO UPDATE SET roleId = EXCLUDED.roleId;
+                """
                 cur.execute(query, (userId, roleId))
 
                 return True
@@ -97,18 +100,24 @@ class UserDataHandler:
     @classmethod
     def get_user_role(cls, userId: int):
         query = """
-            SELECT r.canWrite, r.canDelete, r.canUpdatePermissions 
+            SELECT r.contribute, r.deleteContent, r.manageTeam 
             FROM roles r
             JOIN usersRoles ur ON ur.roleId = r.id
             WHERE ur.userId = %s;
         """
-        permissions = read_query(query, (userId,))
-        return permissions[0] if permissions else ((False,) * 3) 
+        result = read_query(query, (userId,))
+        return result[0] if result else (False, False, False)
+
+    @classmethod
+    def get_user_role_id(cls, userId: int) -> int | None:
+        query = "SELECT roleId FROM usersRoles WHERE userId = %s;"
+        result = read_query(query, (userId,))
+        return result[0][0] if result else None
 
     @classmethod
     def get_users_permissions(cls):
         query = """
-            SELECT ur.userId, r.canWrite, r.canDelete, r.canUpdatePermissions FROM roles r
+            SELECT ur.userId, r.contribute, r.deleteContent, r.manageTeam FROM roles r
             JOIN usersRoles ur ON ur.roleId = r.id;
         """
         return read_query(query)
@@ -116,11 +125,11 @@ class UserDataHandler:
     @classmethod
     def get_user_permissions(cls, userId: int):
         query = """
-            SELECT r.canWrite, r.canDelete, r.canUpdatePermissions FROM roles r
+            SELECT r.contribute, r.deleteContent, r.manageTeam FROM roles r
             JOIN usersRoles ur ON ur.roleId = r.id WHERE userId = %s;
         """
-        permissions = read_query(query, (userId,))
-        return permissions[0] if permissions else ((False,) * 3) 
+        result = read_query(query, (userId,))
+        return result[0] if result else (False, False, False)
 
     @classmethod
     def upsert_user_fcm(cls, userId: int, fcm: str, locale: str = 'fr'):

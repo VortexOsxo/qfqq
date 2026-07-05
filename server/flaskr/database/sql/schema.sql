@@ -20,16 +20,15 @@ CREATE TABLE
   roles (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name TEXT UNIQUE NOT NULL,
-    canWrite BOOLEAN,
-    canDelete BOOLEAN,
-    canUpdatePermissions BOOLEAN
+    contribute BOOLEAN,
+    deleteContent BOOLEAN,
+    manageTeam BOOLEAN
   );
 
 CREATE TABLE
   usersRoles (
-    userId INTEGER REFERENCES users (id),
-    roleId INTEGER REFERENCES roles (id),
-    PRIMARY KEY (userId, roleId)
+    userId INTEGER PRIMARY KEY REFERENCES users (id),
+    roleId INTEGER NOT NULL REFERENCES roles (id)
   );
 
 CREATE TABLE 
@@ -163,7 +162,7 @@ FROM
   JOIN meetings m on m.id = d.meetingId;
 
 INSERT INTO
-  roles (name, canWrite, canDelete, canUpdatePermissions)
+  roles (name, contribute, deleteContent, manageTeam)
 VALUES
   ('default', true, false, false),
   ('admin', true, true, true);

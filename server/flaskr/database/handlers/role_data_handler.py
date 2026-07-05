@@ -5,20 +5,20 @@ from flaskr.models import Role
 class RoleDataHandler:
     @classmethod
     def get_roles(cls):
-        query = "SELECT id, name, canWrite, canDelete, canUpdatePermissions FROM roles;"
+        query = "SELECT id, name, contribute, deleteContent, manageTeam FROM roles;"
         results = read_query(query)
         return [Role(*result) for result in results] 
 
     @classmethod
     def create_role(
-        cls, name: str, canWrite=False, canDelete=False, canUpdatePermissions=False
+        cls, name: str, contribute=False, deleteContent=False, manageTeam=False
     ) -> Role | None:
         try:
             with get_db_access() as conn:
                 cur = conn.cursor()
 
-                query = f"INSERT INTO roles (name, canWrite, canDelete, canUpdatePermissions) values (%s, %s, %s, %s) RETURNING id;"
-                params = (name, canWrite, canDelete, canUpdatePermissions)
+                query = f"INSERT INTO roles (name, contribute, deleteContent, manageTeam) values (%s, %s, %s, %s) RETURNING id;"
+                params = (name, contribute, deleteContent, manageTeam)
                 cur.execute(query, params)
                 roleId = cur.fetchone()[0]
 
@@ -30,7 +30,7 @@ class RoleDataHandler:
 
     @classmethod
     def get_role(cls, roleId: int) -> Role | None:
-        query = "SELECT id, name, canWrite, canDelete, canUpdatePermissions FROM roles WHERE id = %s;"
+        query = "SELECT id, name, contribute, deleteContent, manageTeam FROM roles WHERE id = %s;"
         params = (roleId,)
         results = read_query(query, params)
         return Role(*results[0]) if results else None

@@ -24,7 +24,7 @@ class SidebarWidget extends StatelessWidget {
           _SideBarItem(title: loc.agendasListPageTitle, path: '/agendas'),
           _SideBarItem(title: loc.decisionsListPageTitle, path: '/decisions'),
           PermissionRequired(
-            neededPermissions: Permissions(canUpdatePermissions: true),
+            neededPermissions: Permissions(manageTeam: true),
             child: _SideBarItem(title: loc.organizationPageTitle, path: '/organization'),
           ),
           Spacer(),

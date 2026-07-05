@@ -56,29 +56,32 @@ class _RoleCreationModal extends ConsumerState<RoleCreationModal> {
               ),
               const SizedBox(height: 16),
               CheckboxListTile(
-                title: Text(loc.roleCanWrite),
-                value: widget.role.canWrite,
+                title: Text(loc.roleContribute),
+                subtitle: Text(loc.roleContributeTooltip),
+                value: widget.role.contribute,
                 onChanged: (bool? value) {
-                  setState(() => widget.role.canWrite = value ?? false);
+                  setState(() => widget.role.contribute = value ?? false);
                 },
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: EdgeInsets.zero,
               ),
               CheckboxListTile(
-                title: Text(loc.roleCanDelete),
-                value: widget.role.canDelete,
+                title: Text(loc.roleDeleteContent),
+                subtitle: Text(loc.roleDeleteContentTooltip),
+                value: widget.role.deleteContent,
                 onChanged: (bool? value) {
-                  setState(() => widget.role.canDelete = value ?? false);
+                  setState(() => widget.role.deleteContent = value ?? false);
                 },
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: EdgeInsets.zero,
               ),
               CheckboxListTile(
-                title: Text(loc.roleCanUpdatePermissions),
-                value: widget.role.canUpdatePermissions,
+                title: Text(loc.roleManageTeam),
+                subtitle: Text(loc.roleManageTeamTooltip),
+                value: widget.role.manageTeam,
                 onChanged: (bool? value) {
                   setState(() {
-                    widget.role.canUpdatePermissions = value ?? false;
+                    widget.role.manageTeam = value ?? false;
                   });
                 },
                 controlAffinity: ListTileControlAffinity.leading,

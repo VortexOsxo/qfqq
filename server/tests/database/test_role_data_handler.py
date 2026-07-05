@@ -8,9 +8,9 @@ def test_create_role(app):
     assert role is not None
     assert isinstance(role, Role)
     assert role.name == "SuperAdmin"
-    assert role.canWrite is True
-    assert role.canDelete is True
-    assert role.canUpdatePermissions is True
+    assert role.contribute is True
+    assert role.deleteContent is True
+    assert role.manageTeam is True
 
     db_role = RoleDataHandler.get_role(role.id)
     assert db_role == role
@@ -24,17 +24,17 @@ def test_create_duplicate_role(app):
 def test_get_role(app):
     role = RoleDataHandler.get_role(3)
     assert role.name == "Manager"
-    assert role.canWrite is True
-    assert role.canDelete is True
-    assert role.canUpdatePermissions is False
+    assert role.contribute is True
+    assert role.deleteContent is True
+    assert role.manageTeam is False
 
 
 def test_get_default_role(app):
     role = RoleDataHandler.get_role(1)
     assert role.name == "default"
-    assert role.canWrite is True
-    assert role.canDelete is True
-    assert role.canUpdatePermissions is True
+    assert role.contribute is True
+    assert role.deleteContent is True
+    assert role.manageTeam is True
 
 
 def test_get_role_not_found(app):
@@ -44,19 +44,19 @@ def test_get_role_not_found(app):
 
 def test_update_role(app):
     role = RoleDataHandler.create_role("Moderator", False, False, False)
-    assert role.canWrite is False
+    assert role.contribute is False
 
-    RoleDataHandler.update_role(role.id, "canWrite", True)
+    RoleDataHandler.update_role(role.id, "contribute", True)
     updated_role = RoleDataHandler.get_role(role.id)
-    assert updated_role.canWrite is True
-    assert updated_role.canDelete is False
-    assert updated_role.canUpdatePermissions is False
+    assert updated_role.contribute is True
+    assert updated_role.deleteContent is False
+    assert updated_role.manageTeam is False
 
-    RoleDataHandler.update_role(role.id, "canDelete", True)
+    RoleDataHandler.update_role(role.id, "deleteContent", True)
     updated_role = RoleDataHandler.get_role(role.id)
-    assert updated_role.canWrite is True
-    assert updated_role.canDelete is True
-    assert updated_role.canUpdatePermissions is False
+    assert updated_role.contribute is True
+    assert updated_role.deleteContent is True
+    assert updated_role.manageTeam is False
 
 
 def test_delete_unused_role(app):

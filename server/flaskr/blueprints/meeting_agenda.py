@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import Blueprint, request, jsonify, g
 
 from flaskr.models import MeetingAgendaStatus
-from flaskr.database import MeetingDataHandler, UserDataHandler
+from flaskr.database import MeetingDataHandler
 from flaskr.services.inputs import (
     input_middleware,
     LambdaBuilder,
@@ -141,7 +141,7 @@ def patch_meeting_agenda_status(status, id: str):
 
 
 @meeting_agendas_bp.delete("/<int:id>")
-@permission_middleware(Permission.CanDelete)
+@permission_middleware(Permission.DeleteContent)
 def delete_meeting(id):
     try:
         MeetingDataHandler.delete_meeting(id)

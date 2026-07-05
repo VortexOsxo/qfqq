@@ -39,7 +39,7 @@ class RolesService extends StateNotifier<List<Role>> {
     return RoleErrors.fromJson(data);
   }
 
-  Future<void> updateRole(int roleId, String permission, bool value) async {
+  Future<bool> updateRole(int roleId, String permission, bool value) async {
     final response = await _http.patch(
       _http.getUri('roles/$roleId'),
       headers: {'Content-Type': 'application/json'},
@@ -54,12 +54,12 @@ class RolesService extends StateNotifier<List<Role>> {
         return role;
       }
 
-      if (permission == 'canWrite') {
-        role.canWrite = value;
-      } else if (permission == 'canDelete') {
-        role.canDelete = value;
-      } else if (permission == 'canUpdatePermissions') {
-        role.canUpdatePermissions = value;
+      if (permission == 'contribute') {
+        role.contribute = value;
+      } else if (permission == 'deleteContent') {
+        role.deleteContent = value;
+      } else if (permission == 'manageTeam') {
+        role.manageTeam = value;
       }
 
       return role;
@@ -67,10 +67,12 @@ class RolesService extends StateNotifier<List<Role>> {
 
     if (response.statusCode == 204) {
       state = state.map(update).toList();
+      return true;
     }
+    return false;
   }
 
-  Future<void> deleteRole(int roleId) async {
+  Future<bool> deleteRole(int roleId) async {
     final response = await _http.delete(
       _http.getUri('roles/$roleId'),
       headers: {'Content-Type': 'application/json'},
@@ -78,6 +80,8 @@ class RolesService extends StateNotifier<List<Role>> {
 
     if (response.statusCode == 204) {
       state = [...state].where((role) => role.id != roleId).toList();
+      return true;
     }
+    return false;
   }
 }

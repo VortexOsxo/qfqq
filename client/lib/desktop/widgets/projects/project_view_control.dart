@@ -17,12 +17,15 @@ class ProjectViewControl extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        TextButton(
-          onPressed: vm.goToModify,
-          child: Text(loc.commonModify),
+        PermissionRequired(
+          neededPermissions: Permissions(contribute: true),
+          child: TextButton(
+            onPressed: vm.goToModify,
+            child: Text(loc.commonModify),
+          ),
         ),
         PermissionRequired(
-          neededPermissions: Permissions(canDelete: true),
+          neededPermissions: Permissions(deleteContent: true),
           child: TextButton(
             onPressed: vm.deleteProject,
             child: Text(loc.commonDelete),

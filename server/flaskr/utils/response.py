@@ -11,9 +11,9 @@ def create_auth_response(session_token, refresh_token, user, hasOrg=False, permi
         | user.to_dict()
         | (
             {
-                "canWrite": permissions[0],
-                "canDelete": permissions[1],
-                "canUpdatePermissions": permissions[2],
+                "contribute": permissions[0],
+                "deleteContent": permissions[1],
+                "manageTeam": permissions[2],
             }
             if permissions is not None
             else {}

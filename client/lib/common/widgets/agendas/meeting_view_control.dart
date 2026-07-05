@@ -79,9 +79,12 @@ class MeetingViewControl extends ConsumerWidget {
   }
 
   Widget _modifyButton(BuildContext context, WidgetRef ref) {
-    return TextButton(
-      onPressed: () => context.go('/agendas/creation', extra: meeting),
-      child: Text(S.of(context).commonModify),
+    return PermissionRequired(
+      neededPermissions: Permissions(contribute: true),
+      child: TextButton(
+        onPressed: () => context.go('/agendas/creation', extra: meeting),
+        child: Text(S.of(context).commonModify),
+      ),
     );
   }
 
@@ -134,7 +137,7 @@ class MeetingViewControl extends ConsumerWidget {
 
   Widget _deleteButton(BuildContext context, WidgetRef ref) {
     return PermissionRequired(
-      neededPermissions: Permissions(canDelete: true),
+      neededPermissions: Permissions(deleteContent: true),
       child: TextButton(
         onPressed: () => deleteAgenda(context, ref),
         child: Text(S.of(context).commonDelete),

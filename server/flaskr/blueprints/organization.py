@@ -68,7 +68,7 @@ def join_organization(orgId):
     ("email", EmailValidator()),
     ("roleId", IntValidator()) # TODO: Better validation (the role actually exists ?)
 ))
-@permission_middleware(Permission.CanUpdatePermissions)
+@permission_middleware(Permission.ManageTeam)
 def invite_to_organization(email, roleId):
     orgId = g.org_id
     org = OrganizationDataHandler.get_org(orgId)
@@ -97,7 +97,7 @@ def invite_to_organization(email, roleId):
         return "", 500
     
 @organizations_bp.get("invitations")
-@permission_middleware(Permission.CanUpdatePermissions)
+@permission_middleware(Permission.ManageTeam)
 def get_invites():
     orgId = g.org_id
     if orgId is None:
@@ -107,7 +107,7 @@ def get_invites():
     return jsonify([i.to_dict() for i in invitations]), 200
 
 @organizations_bp.delete("invitations/<email>")
-@permission_middleware(Permission.CanUpdatePermissions)
+@permission_middleware(Permission.ManageTeam)
 def delete_invite(email):
     orgId = g.org_id
     if orgId is None:

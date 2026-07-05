@@ -14,6 +14,7 @@ decisions_bp.before_request(login_required)
 
 @decisions_bp.route("", methods=["POST"])
 @input_middleware(CreateDecisionBuilder())
+@permission_middleware(Permission.Contribute)
 def create_decision(description, responsibleId, meetingId, dueDate):
     data = request.get_json()
     dueDate = datetime.fromisoformat(dueDate) if dueDate is not None else None
@@ -62,7 +63,7 @@ def patch_meeting_agenda_status(status, id: str):
     return '', 404
 
 @decisions_bp.delete("/<int:id>")
-@permission_middleware(Permission.CanDelete)
+@permission_middleware(Permission.DeleteContent)
 def delete_decision(id):
     try:
         DecisionDataHandler.delete_decision(id)

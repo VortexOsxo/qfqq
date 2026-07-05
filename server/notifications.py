@@ -6,6 +6,6 @@ from flaskr.services.notifications import NotificationService
 
 if __name__ == '__main__':
     load_dotenv()
-    Database.set_uri(os.environ.get("DB_URL"))
+    Database.init_pool(os.environ.get("DB_URL"))
 
     NotificationService.send_loop()
