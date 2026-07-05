@@ -55,6 +55,7 @@ def patch_meeting_agenda_status(status, id: str):
         if status == 'completed':
             result = DecisionDataHandler.complete_decision(id)
         elif status == 'cancelled':
+            # TODO: Remove notification
             result = DecisionDataHandler.cancel_decision(id)
         if not result:
             return '', 404
