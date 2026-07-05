@@ -48,6 +48,13 @@ class MeetingStartNotificationHandler:
             token, locale = UserDataHandler.get_user_fcm(userId)
             if token is None: continue
             strings = _STRINGS.get(locale, _STRINGS['fr'])
-            notifications.append(Notification(token, strings['title'], strings['body']))
+            notifications.append(
+                Notification(
+                    token,
+                    strings['title'],
+                    strings['body'],
+                    data={"type": "MeetingStart", "id": str(job.targetId)},
+                )
+            )
         return notifications
 

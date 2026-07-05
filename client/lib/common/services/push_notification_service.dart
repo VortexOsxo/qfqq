@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/states/auth_state.dart';
 import 'package:qfqq/common/providers/locale_provider.dart';
+import 'package:qfqq/common/providers/router_provider.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
 
@@ -12,6 +14,7 @@ final pushNotificationServiceProvider = Provider((ref) {
     ref.read(qfqqHttpClientProvider),
     ref.read(authStateProvider.notifier),
     ref.read(localeProvider.notifier),
+    ref.read(routerProvider),
   );
 });
 
@@ -19,12 +22,13 @@ class PushNotificationService {
   static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final QfqqHttpClient _http;
   final LocaleNotifier _locale;
+  final GoRouter _router;
 
   StreamSubscription<RemoteMessage>? _foregroundSubscription;
   StreamSubscription<RemoteMessage>? _openedAppSubscription;
   StreamSubscription<String>? _tokenRefreshSubscription;
 
-  PushNotificationService(this._http, AuthService authService, this._locale) {
+  PushNotificationService(this._http, AuthService authService, this._locale, this._router) {
     authService.connectionNotifier.subscribe(_initialize);
     authService.disconnectionNotifier.subscribe(_clear);
   }
@@ -61,7 +65,17 @@ class PushNotificationService {
   }
 
   void _onMessageOpened(RemoteMessage message) {
-    // TODO
+    final data = message.data;
+    final type = data['type'];
+    final id = data['id'];
+
+    if (id == null) return;
+
+    if (type == 'MeetingStart') {
+      _router.go('/agendas/$id');
+    } else if (type == 'DecisionDue') {
+      _router.go('/decisions/$id');
+    }
   }
 
   Future<void> _requestPermissions(int userId) async {

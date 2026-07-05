@@ -40,7 +40,14 @@ class DecisionDueNotificationHandler:
         if token is None:
             return []
         strings = _STRINGS.get(locale, _STRINGS['fr'])
-        return [Notification(token, strings['title'], strings['body'])]
+        return [
+            Notification(
+                token,
+                strings['title'],
+                strings['body'],
+                data={"type": "DecisionDue", "id": str(job.targetId)},
+            )
+        ]
 
     def update(self, job: NotificationJob):
         pass
