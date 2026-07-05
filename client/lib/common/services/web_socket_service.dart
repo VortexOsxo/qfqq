@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+const _websocketUrl = String.fromEnvironment("WEBSOCKET_URL");
+
 class WebSocketService {
   static WebSocketChannel? channel;
   static Map<String, Function> handlers = {};
@@ -10,7 +12,7 @@ class WebSocketService {
       return;
     }
 
-    channel = WebSocketChannel.connect(Uri.parse('ws://localhost:8001'));
+    channel = WebSocketChannel.connect(Uri.parse(_websocketUrl));
     channel!.stream.listen(_onEvent); // Handle error and disconnect ?
   }
 
