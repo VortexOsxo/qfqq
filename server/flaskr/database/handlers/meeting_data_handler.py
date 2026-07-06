@@ -215,9 +215,7 @@ class MeetingDataHandler:
         # this could allow to support more than the animator role.
 
     @classmethod
-    def create_review(cls, meetingId, userId, objective, smoothRunning, preparation, length, respect, comments):
-        isAnonymous = False # TODO
-
+    def create_review(cls, meetingId, userId, objective, smoothRunning, preparation, length, respect, comments, isAnonymous=False):
         query = """
         INSERT INTO meetingsReviews
         (meetingId, userId, isAnonymous, objective, smoothRunning, preparation, length, respect, comments)

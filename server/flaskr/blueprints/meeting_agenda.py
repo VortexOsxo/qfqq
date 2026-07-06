@@ -10,6 +10,7 @@ from flaskr.services.inputs import (
     EnumValidator,
     IntValidator,
     StringValidator,
+    BooleanValidator
 )
 from flaskr.services.notifications import NotificationService, NotificationType
 from flaskr.blueprints.before_request import login_required
@@ -106,9 +107,10 @@ def get_meeting_reviews(id: int):
         ("length", IntValidator(1,5)),
         ("respect", IntValidator(1,5)),
         ("comments", StringValidator(allow_empty=True)),
+        ("isAnonymous", BooleanValidator())
     )
 )
-def create_meeting_review(objective, smoothRunning, preparation, length, respect, comments, id: int):
+def create_meeting_review(objective, smoothRunning, preparation, length, respect, comments, isAnonymous, id: int):
     try:
         MeetingDataHandler.create_review(
             meetingId=id,
@@ -119,6 +121,7 @@ def create_meeting_review(objective, smoothRunning, preparation, length, respect
             length=length,
             respect=respect,
             comments=comments,
+            isAnonymous=isAnonymous
         )
         return "", 201
     except Exception:
