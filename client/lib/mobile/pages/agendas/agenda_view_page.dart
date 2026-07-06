@@ -45,9 +45,16 @@ class _AgendaViewPage extends StatelessWidget {
         children: [
           _buildTopCard(context, agenda),
           const SizedBox(height: 8),
-          Flexible(fit: FlexFit.loose, child: _buildDetails(context, loc, agenda)),
-          Expanded(child: MeetingViewContent(meeting: agenda)),
-          const Spacer(),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Flexible(fit: FlexFit.loose, child: _buildDetails(context, loc, agenda)),
+                Expanded(child: MeetingViewContent(meeting: agenda)),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
           Center(child: MeetingViewControl(meeting: agenda)),
         ],
       ),
