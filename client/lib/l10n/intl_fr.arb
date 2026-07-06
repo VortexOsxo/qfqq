@@ -145,6 +145,8 @@
   "meetingReviewPreparation": "La préparation des participants",
   "meetingReviewLength": "La durée de la réunion ne dépasse pas le temps alloué",
   "meetingReviewRespect": "Il y a de l’écoute et du respect mutuel entre participants, chacun contribue selon ses forces",
+  "meetingReviewAnonymous": "Envoyer de manière anonyme",
+  "meetingReviewAnonymousUser": "Anonyme",
   "meetingReviewCommentsHint": "Commentaires et suggestions additionnels",
   "meetingReviewSend": "Envoyer",
 

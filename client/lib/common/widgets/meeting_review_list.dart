@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/meeting_review.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
+import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 final meetingReviewsProvider =
@@ -38,6 +39,8 @@ class MeetingReviewList extends ConsumerWidget {
           itemBuilder: (context, index) {
             final review = reviews[index];
 
+            final user = review.anonymous ? null : ref.read(userByIdProvider(review.userId));
+
             Widget scoreColumn(String fullLabel, String shortLabel, int value) => Expanded(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -67,6 +70,7 @@ class MeetingReviewList extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text(user?.displayName ?? loc.meetingReviewAnonymousUser, style: TextStyle(fontSize: 18)),
                     Row(
                       children: [
                         scoreColumn(loc.meetingReviewObjective, loc.meetingReviewObjectiveShort, review.objective),

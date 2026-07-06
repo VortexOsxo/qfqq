@@ -77,75 +77,82 @@ class _MeetingReviewModalState extends ConsumerState<MeetingReviewModal> {
   Widget build(BuildContext context) {
     final loc = S.of(context);
 
-
-    // TODO: Add a toggle for anonymous review
     final content = Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 800),
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              GradeInputWidget(
-                label: loc.meetingReviewObjective,
-                initialValue: widget.meetingReview.objective > 0 ? widget.meetingReview.objective : null,
-                errorText: _objectiveError,
-                onChanged: (value) {
-                  setState(() => _objectiveError = null);
-                  widget.meetingReview.objective = value;
-                },
-              ),
-              const SizedBox(height: 16),
-              GradeInputWidget(
-                label: loc.meetingReviewSmoothRunning,
-                initialValue: widget.meetingReview.smoothRunning > 0 ? widget.meetingReview.smoothRunning : null,
-                errorText: _smoothRunningError,
-                onChanged: (value) {
-                  setState(() => _smoothRunningError = null);
-                  widget.meetingReview.smoothRunning = value;
-                },
-              ),
-              const SizedBox(height: 16),
-              GradeInputWidget(
-                label: loc.meetingReviewPreparation,
-                initialValue: widget.meetingReview.preparation > 0 ? widget.meetingReview.preparation : null,
-                errorText: _preparationError,
-                onChanged: (value) {
-                  setState(() => _preparationError = null);
-                  widget.meetingReview.preparation = value;
-                },
-              ),
-              const SizedBox(height: 16),
-              GradeInputWidget(
-                label: loc.meetingReviewLength,
-                initialValue: widget.meetingReview.length > 0 ? widget.meetingReview.length : null,
-                errorText: _lengthError,
-                onChanged: (value) {
-                  setState(() => _lengthError = null);
-                  widget.meetingReview.length = value;
-                },
-              ),
-              const SizedBox(height: 16),
-              GradeInputWidget(
-                label: loc.meetingReviewRespect,
-                initialValue: widget.meetingReview.respect > 0 ? widget.meetingReview.respect : null,
-                errorText: _respectError,
-                onChanged: (value) {
-                  setState(() => _respectError = null);
-                  widget.meetingReview.respect = value;
-                },
-              ),
-              const SizedBox(height: 20),
-              DefaultTextField(
-                hintText: loc.meetingReviewCommentsHint,
-                onChanged: (value) => widget.meetingReview.comments = value,
-                maxLines: 5,
-              ),
-              const SizedBox(height: 16),
-            ],
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GradeInputWidget(
+              label: loc.meetingReviewObjective,
+              initialValue: widget.meetingReview.objective > 0 ? widget.meetingReview.objective : null,
+              errorText: _objectiveError,
+              onChanged: (value) {
+                setState(() => _objectiveError = null);
+                widget.meetingReview.objective = value;
+              },
+            ),
+            const SizedBox(height: 16),
+            GradeInputWidget(
+              label: loc.meetingReviewSmoothRunning,
+              initialValue: widget.meetingReview.smoothRunning > 0 ? widget.meetingReview.smoothRunning : null,
+              errorText: _smoothRunningError,
+              onChanged: (value) {
+                setState(() => _smoothRunningError = null);
+                widget.meetingReview.smoothRunning = value;
+              },
+            ),
+            const SizedBox(height: 16),
+            GradeInputWidget(
+              label: loc.meetingReviewPreparation,
+              initialValue: widget.meetingReview.preparation > 0 ? widget.meetingReview.preparation : null,
+              errorText: _preparationError,
+              onChanged: (value) {
+                setState(() => _preparationError = null);
+                widget.meetingReview.preparation = value;
+              },
+            ),
+            const SizedBox(height: 16),
+            GradeInputWidget(
+              label: loc.meetingReviewLength,
+              initialValue: widget.meetingReview.length > 0 ? widget.meetingReview.length : null,
+              errorText: _lengthError,
+              onChanged: (value) {
+                setState(() => _lengthError = null);
+                widget.meetingReview.length = value;
+              },
+            ),
+            const SizedBox(height: 16),
+            GradeInputWidget(
+              label: loc.meetingReviewRespect,
+              initialValue: widget.meetingReview.respect > 0 ? widget.meetingReview.respect : null,
+              errorText: _respectError,
+              onChanged: (value) {
+                setState(() => _respectError = null);
+                widget.meetingReview.respect = value;
+              },
+            ),
+            const SizedBox(height: 16),
+            CheckboxListTile(
+              contentPadding: EdgeInsets.zero,
+              controlAffinity: ListTileControlAffinity.leading,
+              horizontalTitleGap: 0,
+              value: widget.meetingReview.anonymous,
+              onChanged:
+                  (val) => setState(
+                    () => widget.meetingReview.anonymous = val ?? false,
+                  ),
+              title: Text(loc.meetingReviewAnonymous),
+            ),
+            const SizedBox(height: 20),
+            DefaultTextField(
+              hintText: loc.meetingReviewCommentsHint,
+              onChanged: (value) => widget.meetingReview.comments = value,
+              maxLines: 5,
+            ),
+            const SizedBox(height: 16),
+          ],
         ),
       ),
     );

@@ -144,6 +144,8 @@
   "meetingReviewPreparation": "Participant preparation",
   "meetingReviewLength": "The meeting duration does not exceed the allocated time",
   "meetingReviewRespect": "There is listening and mutual respect among participants, everyone contributes according to their strengths",
+  "meetingReviewAnonymous": "Send anonymously",
+  "meetingReviewAnonymousUser": "Anonymous",
   "meetingReviewCommentsHint": "Additional comments and suggestions",
   "meetingReviewSend": "Send",
 
