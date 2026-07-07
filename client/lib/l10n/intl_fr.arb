@@ -301,6 +301,7 @@
   "errorPasswordMinLength": "Le mot de passe doit contenir au moins 8 caractères",
   "errorPasswordInvalidFormat": "Le mot de passe doit contenir au moins une lettre, un chiffre et un caractère spécial",
   "errorUnknown": "Une erreur inconnue s'est produite.",
+  "errorEmailUnknown": "Une erreur inconnue est survenue avec l'adresse e-mail fournie.",
 
   "unsavedChangesTitle": "Modifications non enregistrées",
   "unsavedChangesMessage": "Vous avez des modifications non enregistrées. Si vous quittez maintenant, vos changements seront perdus.",

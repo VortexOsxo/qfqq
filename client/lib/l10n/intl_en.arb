@@ -300,6 +300,7 @@
   "errorPasswordMinLength": "Password cannot be shorter than 8 characters",
   "errorPasswordInvalidFormat": "The password must contain at least one letter, one number, and one special character",
   "errorUnknown": "An unknown error occurred.",
+  "errorEmailUnknown": "Unknown error with the provided email.",
 
   "unsavedChangesTitle": "Unsaved Changes",
   "unsavedChangesMessage": "You have unsaved changes. If you leave now, your changes will be lost.",
