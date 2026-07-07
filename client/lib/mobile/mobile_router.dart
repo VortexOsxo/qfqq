@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/pages/user_pages/organization_links_page.dart';
 import 'package:qfqq/common/providers/navigator_key.dart';
 import 'package:qfqq/common/templates/navigation_guard.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
@@ -111,6 +112,10 @@ final GoRouter mobileRouter = GoRouter(
           builder: (context, state) => const ForgottenPasswordPage(),
         ),
       ],
+    ),
+    GoRoute(
+      path: '/organizations/links',
+      builder: (context, state) => const OrganizationLinksPage(),
     ),
   ],
 );
