@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qfqq/common/models/errors/org_invite_errors.dart';
 import 'package:qfqq/common/models/invitation.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
@@ -11,23 +12,23 @@ class InvitationsService extends StateNotifier<List<Invitation>> {
     auth.connectionNotifier.subscribe((_) => loadInvitations());
   }
 
-  Future<void> addInvitation(String email, int roleId) async {
+  Future<OrgInviteErrors> addInvitation(String email, int roleId) async {
     final response = await _http.post(
       _http.getUri('organizations/invitations'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'email': email, 'roleId': roleId}),
     );
 
+    final data = jsonDecode(response.body);
     if (response.statusCode != 201) {
-      return;
+      return OrgInviteErrors.fromJson(data);
     }
 
-    final data = jsonDecode(response.body);
     Invitation invitation;
     try {
       invitation = Invitation.fromJson(data);
     } catch (e) {
-      return;
+      return OrgInviteErrors();
     }
 
     final updatedState = [...state];
@@ -43,6 +44,7 @@ class InvitationsService extends StateNotifier<List<Invitation>> {
     }
 
     state = updatedState;
+    return OrgInviteErrors();
   }
 
   Future<void> revokeInvitation(String email) async {

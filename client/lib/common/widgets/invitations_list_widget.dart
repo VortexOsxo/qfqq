@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/providers/invitations_provider.dart';
 import 'package:qfqq/common/providers/roles_provider.dart';
 import 'package:qfqq/common/templates/card_template.dart';
+import 'package:qfqq/common/utils/role.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class InvitationsListWidget extends ConsumerWidget {
@@ -67,9 +68,9 @@ class _RoleName extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final String? roleName = ref.watch(roleByIdProvider(roleId))?.name;
-    assert(roleName != null);
+    final role = ref.watch(roleByIdProvider(roleId));
+    assert(role != null);
 
-    return Text(roleName ?? "");
+    return Text(formatRoleName(role!));
   }
 }

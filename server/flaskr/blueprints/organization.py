@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, g
 
 from flaskr.errors.input_error import InputError
-from flaskr.services.inputs import input_middleware, LambdaBuilder, IntValidator, StringValidator,EmailValidator, TypedListValidator
+from flaskr.services.inputs import input_middleware, LambdaBuilder, RoleIdValidator, StringValidator,EmailValidator
 from flaskr.database import OrganizationDataHandler, UserDataHandler
 from flaskr.utils import create_auth_response, create_tokens 
 from flaskr.blueprints.before_request import login_optionnal
@@ -66,7 +66,7 @@ def join_organization(orgId):
 @organizations_bp.post("invitations")
 @input_middleware(LambdaBuilder(
     ("email", EmailValidator()),
-    ("roleId", IntValidator()) # TODO: Better validation (the role actually exists ?)
+    ("roleId", RoleIdValidator())
 ))
 @permission_middleware(Permission.ManageTeam)
 def invite_to_organization(email, roleId):
