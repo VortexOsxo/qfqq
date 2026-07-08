@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/templates/card_template.dart';
 import 'package:qfqq/common/theme/styles.dart';
+import 'package:qfqq/common/utils/text.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -61,9 +62,9 @@ class ProjectListWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   const SizedBox(width: 16),
-                  Expanded(flex: 1, child: Text(project.number.toString())),
-                  Expanded(flex: 3, child: Text(project.title)),
-                  if (showGoals) Expanded(flex: 7, child: Text(project.goals)),
+                  Expanded(flex: 1, child: listText(project.number.toString())),
+                  Expanded(flex: 3, child: listText(project.title)),
+                  if (showGoals) Expanded(flex: 7, child: listText(project.goals)),
                   Expanded(
                     flex: 3,
                     child: Text(

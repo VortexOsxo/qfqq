@@ -11,6 +11,7 @@ import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
+import 'package:qfqq/common/utils/text.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
 import 'package:qfqq/common/widgets/icon_status_chip.dart';
 import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
@@ -182,7 +183,7 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
                 children: [
                   SizedBox(width: widget.showDetails ? 16 : 8),
                   Expanded(flex: 1, child: Text(decision.number.toString())),
-                  Expanded(flex: 3, child: Text(decision.description)),
+                  Expanded(flex: 3, child: listText(decision.description)),
                   Expanded(
                     flex: 3,
                     child: Text(
@@ -194,7 +195,7 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
                   if (widget.showDetails)
                     Expanded(
                       flex: 3,
-                      child: Text(
+                      child: listText(
                         responsible != null
                             ? responsible.displayName
                             : loc.decisionListNoResponsibleSet,

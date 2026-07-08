@@ -4,6 +4,7 @@ import 'package:qfqq/common/templates/card_template.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
+import 'package:qfqq/common/utils/text.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
 import 'package:qfqq/common/widgets/icon_status_chip.dart';
 import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
@@ -69,7 +70,7 @@ class AgendasListWidget extends StatelessWidget {
                 children: [
                   SizedBox(width: showDetails ? 16 : 8),
                   Expanded(flex: 1, child: Text(agenda.number.toString())),
-                  Expanded(flex: 3, child: Text(agenda.title)),
+                  Expanded(flex: 3, child: listText(agenda.title)),
                   Expanded(
                     flex: 3,
                     child: Text(
@@ -86,7 +87,7 @@ class AgendasListWidget extends StatelessWidget {
                   ),
                   if (showDetails) Expanded(
                     flex: 3,
-                    child: Text(
+                    child: listText(
                       animatorName(
                         agenda.animatorId,
                         loc.commonNoAnimatorSet,
