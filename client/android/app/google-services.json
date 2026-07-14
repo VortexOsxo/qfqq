@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "781038914855",
+    "project_id": "qui-fait-quoi-quand",
+    "storage_bucket": "qui-fait-quoi-quand.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:781038914855:android:5cbdf56ed08e18c2812d02",
+        "android_client_info": {
+          "package_name": "com.example.qfqq"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkKeXRQa91hJKKNMLj-UBEbhaGm4bieEk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:781038914855:android:3eae45a35ccdb6da812d02",
+        "android_client_info": {
+          "package_name": "com.quifaitquoiquand.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkKeXRQa91hJKKNMLj-UBEbhaGm4bieEk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

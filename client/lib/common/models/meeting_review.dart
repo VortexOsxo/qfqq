@@ -1,4 +1,5 @@
 class MeetingReview {
+  int userId = -1;
   bool anonymous = true;
 
   int objective = -1;
@@ -13,6 +14,7 @@ class MeetingReview {
 
   factory MeetingReview.fromJson(Map<String, dynamic> json) {
     return MeetingReview()
+      ..userId = json['userId'] as int? ?? -1 
       ..anonymous = json['isAnonymous'] as bool? ?? true
       ..objective = json['objective'] as int? ?? -1
       ..smoothRunning = json['smoothRunning'] as int? ?? -1
@@ -33,4 +35,10 @@ class MeetingReview {
       'comments': comments,
     };
   }
+
+  static bool isValidGrade(int value) => value >= 1 && value <= 5;
+
+  bool get hasValidRatings =>
+      [objective, smoothRunning, preparation, length, respect]
+          .every(isValidGrade);
 }

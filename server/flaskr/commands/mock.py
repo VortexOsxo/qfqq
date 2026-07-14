@@ -3,6 +3,7 @@ import jwt
 
 from flask.cli import with_appcontext
 from flask import current_app
+from datetime import datetime
 
 def get_auth_headers(client, user_id=1, org_id=1):
     app = client.application
@@ -26,6 +27,45 @@ def add_project(client, headers, title, goals, supervisorId):
         click.echo(f"Failed to create {title}")
     else:
         click.echo(f"Created {title}")
+
+
+def add_meeting(
+    client,
+    headers,
+    title,
+    goals,
+    status,
+    projectId,
+    meetingLocation=None,
+    meetingDate=None,
+    animatorId=None,
+    participantsIds=None,
+):
+    body = {
+        "title": title,
+        "goals": goals,
+        "status": status,
+        "projectId": projectId,
+        "meetingLocation": meetingLocation,
+        "animatorId": animatorId,
+        "participantsIds": participantsIds or [],
+        "themes": []
+    }
+
+    if meetingDate is not None:
+        body["meetingDate"] = meetingDate
+
+    if animatorId is not None:
+        body["animatorId"] = animatorId
+    
+
+    result = client.post("/meeting-agendas", headers=headers, json=body)
+    if result.status_code != 201:
+        click.echo(f"Failed to create {title}")
+        print(result.json)
+    else:
+        click.echo(f"Created {title}")
+
 
 def create_user(client, firstname, lastname, email):
     signup_resp = client.post(
@@ -81,10 +121,11 @@ def mock_command():
                 headers = get_auth_headers(client, user_id=index)
             )
 
-            if join_resp.status_code == 201:
+            if join_resp.status_code == 200:
                 click.echo(f"User: {email} joined Organization1")
             else:
                 click.echo(f"User: {email} failed to join Organization1: {join_resp.get_json()}")
+                print(join_resp.status_code)
             index += 1
 
         # Create project
@@ -108,7 +149,58 @@ def mock_command():
         add_project(
             client=client,
             headers=headers,
-            title = "Troisieme lien",
-            goals = "Developement d'un troisieme pont pour la ville de quebec",
+            title="Troisieme lien",
+            goals="Developement d'un troisieme pont pour la ville de quebec",
             supervisorId = 2,
+        )
+
+        # Add Meeting
+
+        add_meeting(
+            client=client,
+            headers=headers,
+            title="Meeting1",
+            goals="Solve",
+            status="draft",
+            projectId=1,
+        )
+
+        add_meeting(
+            client=client,
+            headers=headers,
+            title="Meeting2",
+            goals="Solve x+y",
+            status="planned",
+            projectId=1,
+            meetingLocation="Here",
+            meetingDate=datetime.now().isoformat(),
+            animatorId=1,
+            participantsIds=[2,3]
+        )
+
+
+        add_meeting(
+            client=client,
+            headers=headers,
+            title="Meeting3",
+            goals="Solve x+y",
+            status="ongoing",
+            projectId=1,
+            meetingLocation="Here",
+            meetingDate=datetime.now().isoformat(),
+            animatorId=1,
+            participantsIds=[2,3]
+        )
+
+        add_meeting(
+            client=client,
+            headers=headers,
+            title="Meeting4",
+            goals="Solve x+y",
+            status="completed",
+            projectId=1,
+            meetingLocation="Here",
+            meetingDate=datetime.now().isoformat(),
+            animatorId=1,
+            participantsIds=[2,3]
         )

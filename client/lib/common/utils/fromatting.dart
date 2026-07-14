@@ -7,3 +7,10 @@ String formatDate(BuildContext context, DateTime? date) {
       locale,
     ).add_Hm().format(date ?? DateTime.now());
 }
+
+String formatDateDay(BuildContext context, DateTime? date) {
+   final locale = Localizations.localeOf(context).toString();
+    return DateFormat.yMMMd(
+      locale,
+    ).format(date ?? DateTime.now());
+}

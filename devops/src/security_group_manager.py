@@ -35,12 +35,18 @@ class SecurityGroupManager:
         group_name = "backend-sg"
         description = "Security group for Backend (Public Http, Public SSH)"
 
-        # Allows: HTTP (80) from anywhere
+        # Allows: HTTP (8000) and Socket Server (8001) from anywhere
         permissions = [
             {
                 "IpProtocol": "tcp",
                 "FromPort": 8000,
                 "ToPort": 8000,
+                "IpRanges": [{"CidrIp": "0.0.0.0/0"}],
+            },
+            {
+                "IpProtocol": "tcp",
+                "FromPort": 8001,
+                "ToPort": 8001,
                 "IpRanges": [{"CidrIp": "0.0.0.0/0"}],
             },
         ]
@@ -53,7 +59,7 @@ class SecurityGroupManager:
             self.backend_sg = self._ec2.create_security_group(
                 GroupName=group_name, Description=description, VpcId=self._vpc.id
             )
-            self._add_permissions(self.backend_sg, permissions)
+        self._add_permissions(self.backend_sg, permissions)
         return self.backend_sg
 
     def create_database_security_group(self):
@@ -77,7 +83,7 @@ class SecurityGroupManager:
             self.database_sg = self._ec2.create_security_group(
                 GroupName=group_name, Description=description, VpcId=self._vpc.id
             )
-            self._add_permissions(self.database_sg, permissions)
+        self._add_permissions(self.database_sg, permissions)
         return self.database_sg
 
     def _get_existing_sg(self, group_name):
@@ -92,11 +98,12 @@ class SecurityGroupManager:
         return sgs[0] if sgs else None
 
     def _add_permissions(self, sg, permissions):
-        try:
-            sg.authorize_ingress(IpPermissions=permissions)
-        except botocore.exceptions.ClientError as e:
-            if e.response["Error"]["Code"] != "InvalidPermission.Duplicate":
-                raise
+        for permission in permissions:
+            try:
+                sg.authorize_ingress(IpPermissions=[permission])
+            except botocore.exceptions.ClientError as e:
+                if e.response["Error"]["Code"] != "InvalidPermission.Duplicate":
+                    raise
 
 
 security_group_manager = SecurityGroupManager()

@@ -1,7 +1,7 @@
 from functools import wraps
 from flask import g
 
-from flaskr.database.postgres.handlers import UserDataHandler
+from flaskr.database import UserDataHandler
 from flaskr.models.permission import Permission
 
 def permission_middleware(required_permission: Permission):

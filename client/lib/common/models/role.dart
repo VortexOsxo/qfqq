@@ -3,33 +3,33 @@ import 'package:qfqq/common/utils/is_id_valid.dart';
 class Role {
   final int id;
   String name;
-  bool canWrite;
-  bool canDelete;
-  bool canUpdatePermissions;
+  bool contribute;
+  bool deleteContent;
+  bool manageTeam;
 
 
   Role({
     this.id = 0,
     this.name = "",
-    this.canWrite = false,
-    this.canDelete = false,
-    this.canUpdatePermissions = false,
+    this.contribute = false,
+    this.deleteContent = false,
+    this.manageTeam = false,
   });
 
   Role.fromJson(dynamic data)
     : id = data['id'],
       name = data['name'],
-      canWrite = data['canWrite'],
-      canDelete = data['canDelete'],
-      canUpdatePermissions = data['canUpdatePermissions'];
+      contribute = data['contribute'],
+      deleteContent = data['deleteContent'],
+      manageTeam = data['manageTeam'];
 
   Map<String, dynamic> toJson() {
     return {
       if (isIdValid(id)) 'id': id,
       'name': name,
-      'canWrite': canWrite,
-      'canDelete': canDelete,
-      'canUpdatePermissions': canUpdatePermissions,
+      'contribute': contribute,
+      'deleteContent': deleteContent,
+      'manageTeam': manageTeam,
     };
   }
 }

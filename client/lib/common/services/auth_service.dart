@@ -6,6 +6,7 @@ import 'package:qfqq/common/models/states/auth_state.dart';
 import 'package:qfqq/common/models/user.dart';
 import 'dart:convert';
 import 'package:qfqq/common/utils/events/event_notifier.dart';
+import 'package:qfqq/common/utils/storage.dart';
 
 final authStateProvider = StateNotifierProvider<AuthService, AuthState>(
   (_) => AuthService(),
@@ -23,7 +24,7 @@ class AuthService extends StateNotifier<AuthState> {
   String getSessionId() => state.sessionId;
   bool isAuthenticated() => state.isAuthenticated;
 
-  Future<AccountError> login(String email, String password) async {
+  Future<AccountError> login(String email, String password, bool stay) async {
     final response = await http.post(
       Uri.parse('$_apiUrl/auth/login'),
       headers: {'Content-Type': 'application/json', 'QfqqVersion': _version},
@@ -32,10 +33,32 @@ class AuthService extends StateNotifier<AuthState> {
     final data = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      _onSuccessfulAuth(data);
+      _onSuccessfulAuth(data, stay: stay, clear: !stay);
       return AccountError();
     }
     return AccountError.fromJson(data);
+  }
+
+  Future<bool> refresh() async {
+    String? token = await storage.read(key: 'refresh_token');
+    if (token == null) {
+      return false;
+    }
+
+    final response = await http.post(
+      Uri.parse('$_apiUrl/auth/refresh'),
+      headers: {
+        'Content-Type': 'application/json',
+        'QfqqVersion': _version,
+        'Refresh': token,
+      },
+    );
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      _onSuccessfulAuth(data);
+      return true;
+    }
+    return false;
   }
 
   Future<AccountError> signup(User user, String password) async {
@@ -63,13 +86,21 @@ class AuthService extends StateNotifier<AuthState> {
     _onSuccessfulAuth(data);
   }
 
-  void logout() {
+  void logout() async {
     // TODO: Clear loaded data on disconnection
+    await storage.delete(key: 'refresh_token');
+
     state = AuthState();
     disconnectionNotifier.notify(state);
   }
 
-  _onSuccessfulAuth(dynamic data) {
+  _onSuccessfulAuth(dynamic data, {bool stay= false, bool clear = false}) {
+    if (stay) {
+      storage.write(key: 'refresh_token', value: data['refresh_token']);
+    } else if (clear) {
+      storage.delete(key: 'refresh_token');
+    }
+
     state = AuthState(
       sessionId: data['session_token'],
       user: User.fromJson(data),

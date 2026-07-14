@@ -10,29 +10,48 @@ class AuthPageLayout extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: Container(
-            color: Theme.of(context).colorScheme.primary,
-            child: Center(
-              child: Text(
-                'QFQQ',
-                style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
-              ),
-            ),
+          flex: 2,
+          child: Column(
+            children: [
+              _tilteLine(context, 'Qui', 0),
+              _tilteLine(context, 'Fait', 1),
+              _tilteLine(context, 'Quoi', 2),
+              _tilteLine(context, 'Quand', 3),
+            ],
           ),
         ),
+
         Expanded(
+          flex: 2,
           child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 400),
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: child,
+            child: Padding(padding: const EdgeInsets.all(32), child: child),
+          ),
+        ),
+
+        Expanded(flex: 1, child: Container()),
+      ],
+    );
+  }
+
+  Widget _tilteLine(BuildContext context, String title, int index) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        SizedBox(width: index * 30),
+        Container(
+          color: Theme.of(context).colorScheme.primary,
+          width: 200,
+          child: Center(
+            child: Text(
+              title,
+              style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onPrimary,
               ),
             ),
           ),
         ),
+        SizedBox(width: (3 - index) * 30),
       ],
     );
   }

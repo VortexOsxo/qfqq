@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:qfqq/common/models/permissions.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/view_models/project_page_view_model.dart';
+import 'package:qfqq/common/widgets/permission_required.dart';
 import 'package:qfqq/common/widgets/projects/project_list_widget.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -10,9 +12,7 @@ class ProjectPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ProjectPageViewModel(
-      builder: (vm) => _ProjectPageView(vm: vm),
-    );
+    return ProjectPageViewModel(builder: (vm) => _ProjectPageView(vm: vm));
   }
 }
 
@@ -51,10 +51,13 @@ class _ProjectPageView extends StatelessWidget {
             ),
           ),
           Expanded(flex: 1, child: SizedBox()),
-          ElevatedButton(
-            onPressed: vm.goToProjectCreation,
-            style: squareButtonStyle(context),
-            child: Text(S.of(context).buttonCreateProject),
+          PermissionRequired(
+            neededPermissions: Permissions(contribute: true),
+            child: ElevatedButton(
+              onPressed: vm.goToProjectCreation,
+              style: squareButtonStyle(context),
+              child: Text(S.of(context).buttonCreateProject),
+            ),
           ),
         ],
       ),

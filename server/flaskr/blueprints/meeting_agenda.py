@@ -10,7 +10,9 @@ from flaskr.services.inputs import (
     EnumValidator,
     IntValidator,
     StringValidator,
+    BooleanValidator
 )
+from flaskr.services.notifications import NotificationService, NotificationType
 from flaskr.blueprints.before_request import login_required
 from flaskr.blueprints.middlewares import permission_middleware, Permission
 
@@ -28,11 +30,12 @@ def create_meeting_agenda(**obj):
     meetingDate = (
         datetime.fromisoformat(data["meetingDate"]) if "meetingDate" in data else None
     )
+    status = data.get('status')
 
     kwargs = {
         'title': data["title"],
         'goals': data.get("goals", ""),
-        'status': data.get("status"),
+        'status': status,
         'redactionDate': datetime.now(),
         'meetingDate': meetingDate,
         'meetingLocation': data["meetingLocation"] if "meetingLocation" in data else None,
@@ -45,13 +48,27 @@ def create_meeting_agenda(**obj):
     if request.method == "POST":
         previousMeetingId = data.get("previousMeetingId", -1)
         meeting = MeetingDataHandler.create_meeting_agenda(previousMeetingId=previousMeetingId, **kwargs)
+
+        if status == "planned":
+            NotificationService.add_notification(NotificationType.MeetingStart.value, g.org_id, meeting)
+
         return (jsonify(meeting.to_dict()), 201) if meeting is not None else ("", 400)
 
     elif request.method == "PUT":
         # TODO: Handle concurrent update reflects that could cause conflicts ?
         if not "id" in data:
             return jsonify({"error": "Missing/Invalid fields: id"}), 400
-        MeetingDataHandler.update_meeting_agenda(meetingId=data["id"], **kwargs)
+        id = data.get("id")
+
+        meeting = MeetingDataHandler.get_meeting_agenda(id)
+        MeetingDataHandler.update_meeting_agenda(meetingId=id, **kwargs)
+
+        if meeting.status != "planned" and status == "planned":
+            meeting = MeetingDataHandler.get_meeting_agenda(id)
+            NotificationService.add_notification(NotificationType.MeetingStart.value, g.org_id, meeting)
+        elif meeting.status == "planned" and data.get('meetingDate') is not None and meeting.meetingDate != datetime.fromisoformat(data.get('meetingDate')):
+            NotificationService.update_notification(NotificationType.MeetingStart.value, g.org_id, meeting.id, meeting)
+
         return "", 204
     return "", 405
 
@@ -89,10 +106,11 @@ def get_meeting_reviews(id: int):
         ("preparation", IntValidator(1,5)),
         ("length", IntValidator(1,5)),
         ("respect", IntValidator(1,5)),
-        ("comments", StringValidator()),
+        ("comments", StringValidator(allow_empty=True)),
+        ("isAnonymous", BooleanValidator())
     )
 )
-def create_meeting_review(objective, smoothRunning, preparation, length, respect, comments, id: int):
+def create_meeting_review(objective, smoothRunning, preparation, length, respect, comments, isAnonymous, id: int):
     try:
         MeetingDataHandler.create_review(
             meetingId=id,
@@ -103,6 +121,7 @@ def create_meeting_review(objective, smoothRunning, preparation, length, respect
             length=length,
             respect=respect,
             comments=comments,
+            isAnonymous=isAnonymous
         )
         return "", 201
     except Exception:
@@ -115,11 +134,17 @@ def patch_meeting_agenda_status(status, id: str):
     result = MeetingDataHandler.update_meeting_status(id, status)
     if not result:
         return jsonify({"error": "Meeting agenda not found"}), 404
+    if status=="planned":
+        meeting = MeetingDataHandler.get_meeting_agenda(id)
+        NotificationService.add_notification(NotificationType.MeetingStart.value, g.org_id, meeting)
+    elif status == "ongoing":
+        # TODO: remove meetingstart notification and add meeting started notification
+        pass
     return '', 204
 
 
 @meeting_agendas_bp.delete("/<int:id>")
-@permission_middleware(Permission.CanDelete)
+@permission_middleware(Permission.DeleteContent)
 def delete_meeting(id):
     try:
         MeetingDataHandler.delete_meeting(id)

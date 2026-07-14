@@ -13,6 +13,7 @@
   "attributeGoals": "Objectifs",
   "attributeLocation": "Lieu",
   "attributeDate": "Date",
+  "attributeLocationDate": "Lieu & date",
   "attributeAnimator": "Animateur",
   "attributeThemes": "Thèmes",
   "attributeAssitants": "Assistants",
@@ -89,6 +90,7 @@
   "loginPageButtonLogin": "Se connecter",
   "loginPageLinkSignup": "Pas de compte ? S'inscrire",
   "loginPageForgottenPasswordLink": "Mot de passe oublié ? Cliquez ici pour le réinitialiser.",
+  "loginPageStayLoggedIn": "Rester connecté",
 
   "homePageTitle": "Accueil",
   "homePageResponsabilities": "Responsabilités",
@@ -143,6 +145,8 @@
   "meetingReviewPreparation": "La préparation des participants",
   "meetingReviewLength": "La durée de la réunion ne dépasse pas le temps alloué",
   "meetingReviewRespect": "Il y a de l’écoute et du respect mutuel entre participants, chacun contribue selon ses forces",
+  "meetingReviewAnonymous": "Envoyer de manière anonyme",
+  "meetingReviewAnonymousUser": "Anonyme",
   "meetingReviewCommentsHint": "Commentaires et suggestions additionnels",
   "meetingReviewSend": "Envoyer",
 
@@ -239,6 +243,7 @@
   "commonRevoke": "Révoquer",
   "commonProfile": "Profil",
   "commonReport": "Rapport",
+  "commonTable": "Tableau",
 
   "commonNoGoalsSet": "Auncun objectif défini",
   "commonNoDateSet": "Aucune date définie",
@@ -296,6 +301,7 @@
   "errorPasswordMinLength": "Le mot de passe doit contenir au moins 8 caractères",
   "errorPasswordInvalidFormat": "Le mot de passe doit contenir au moins une lettre, un chiffre et un caractère spécial",
   "errorUnknown": "Une erreur inconnue s'est produite.",
+  "errorEmailUnknown": "Une erreur inconnue est survenue avec l'adresse e-mail fournie.",
 
   "unsavedChangesTitle": "Modifications non enregistrées",
   "unsavedChangesMessage": "Vous avez des modifications non enregistrées. Si vous quittez maintenant, vos changements seront perdus.",
@@ -309,12 +315,12 @@
   "roleNameAdmin": "Administrateur",
 
   "roleName": "Nom du rôle",
-  "roleCanWrite": "Peut écrire",
-  "roleCanDelete": "Peut supprimer",
-  "roleCanUpdatePermissions": "Peut modifier les permissions",
-  "rolePermissionWrite": "Écrire",
-  "rolePermissionDelete": "Supprimer",
-  "rolePermissionUpdate": "Modifier les permissions",
+  "roleContribute": "Contribuer",
+  "roleDeleteContent": "Supprimer du contenu",
+  "roleManageTeam": "Gérer l'équipe",
+  "rolePermissionContribute": "Contribuer",
+  "rolePermissionDeleteContent": "Supprimer du contenu",
+  "rolePermissionManageTeam": "Gérer l'équipe",
 
   "createRoleFormUniqueName": "Le nom du rôle doit être unique",
 
@@ -342,5 +348,18 @@
 
   "searchTitleIdHint": "Rechercher par id ou titre",
   "searchDescriptionIdHint": "Rechercher par id ou description",
-  "toggleAdvancedFilters": "Afficher les filtres avancés"
+  "toggleAdvancedFilters": "Afficher les filtres avancés",
+
+  "roleDeleteTitle": "Supprimer le rôle ?",
+  "roleDeleteMessage": "Êtes-vous sûr de vouloir supprimer ce rôle ? Cette action est irréversible.",
+  "roleDeleteConfirm": "Supprimer le rôle",
+  "roleDeleteErrorTitle": "Impossible de supprimer le rôle",
+  "roleDeleteErrorMessage": "Ce rôle est encore attribué à un ou plusieurs membres. Réaffectez-les avant de le supprimer.",
+
+  "selfLockoutErrorTitle": "Action bloquée",
+  "selfLockoutErrorMessage": "Vous ne pouvez pas supprimer votre propre permission de gestion des rôles. Demandez à un autre administrateur d'effectuer ce changement.",
+
+  "roleContributeTooltip": "Permet de créer et modifier les réunions, décisions et projets.",
+  "roleDeleteContentTooltip": "Permet de supprimer les réunions, décisions et projets.",
+  "roleManageTeamTooltip": "Permet d'inviter des membres, de créer/supprimer des rôles et de modifier les permissions."
 }

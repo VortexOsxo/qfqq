@@ -1,12 +1,14 @@
-from flask import Blueprint, jsonify, g
+from flask import Blueprint, jsonify, g, request, current_app
+
 from werkzeug.security import check_password_hash, generate_password_hash
+import jwt
 
 from flaskr.database import UserDataHandler, OrganizationDataHandler
 from flaskr.services.reset_password_service import ResetPasswordService
 from flaskr.services.inputs import input_middleware, SignupBuilder, LoginBuilder, LambdaBuilder, StringValidator, EmailValidator, PasswordValidator
 from flaskr.errors import InputError
-from flaskr.utils import create_auth_response, create_token
-from flaskr.database.postgres.tenant_context import set_tenant
+from flaskr.utils import create_auth_response, create_tokens
+from flaskr.database.tenant_context import set_tenant
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -27,12 +29,12 @@ def signup(firstName, lastName, email, password):
         set_tenant(orgId)
         permissions = UserDataHandler.get_user_permissions(userId=user.id)
         return (
-            create_auth_response(create_token(user.id, orgId), user, True, permissions),
+            create_auth_response(*create_tokens(user.id, orgId), user, True, permissions),
             201,
         )
 
     return (
-        create_auth_response(create_token(user.id, None), user),
+        create_auth_response(*create_tokens(user.id, None), user),
         201,
     )
 
@@ -48,7 +50,7 @@ def login(email, password):
     orgId = OrganizationDataHandler.get_user_org_id(user.id)
     if orgId is None:
         return (
-            create_auth_response(create_token(user.id, None), user),
+            create_auth_response(*create_tokens(user.id, None), user),
             200,
         )
 
@@ -56,7 +58,33 @@ def login(email, password):
     permissions = UserDataHandler.get_user_permissions(userId=user.id)
 
     return (
-        create_auth_response(create_token(user.id, orgId), user, True, permissions),
+        create_auth_response(*create_tokens(user.id, orgId), user, True, permissions),
+        200,
+    )
+
+
+@auth_bp.post("/refresh")
+def refresh():
+    if "Refresh" in request.headers:
+        token = request.headers.get("Refresh", "")
+
+    try:
+        data = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])
+    except Exception:
+        return "", 401
+    
+    userId = data.get("user_id")
+    if userId is None:
+        return "", 401
+
+    orgId = OrganizationDataHandler.get_user_org_id(userId)
+
+    set_tenant(orgId)
+    permissions = UserDataHandler.get_user_permissions(userId=userId)
+    user = UserDataHandler.get_user_by_id(userId)
+
+    return (
+        create_auth_response(*create_tokens(userId, orgId), user, True, permissions),
         200,
     )
 

@@ -1,15 +1,19 @@
 from flask import jsonify
 
 
-def create_auth_response(token, user, hasOrg=False, permissions=None):
+def create_auth_response(session_token, refresh_token, user, hasOrg=False, permissions=None):
     return jsonify(
-        {"session_token": token, "hasOrg": hasOrg}
+        {
+            "session_token": session_token,
+            "refresh_token": refresh_token,
+            "hasOrg": hasOrg,
+        }
         | user.to_dict()
         | (
             {
-                "canWrite": permissions[0],
-                "canDelete": permissions[1],
-                "canUpdatePermissions": permissions[2],
+                "contribute": permissions[0],
+                "deleteContent": permissions[1],
+                "manageTeam": permissions[2],
             }
             if permissions is not None
             else {}

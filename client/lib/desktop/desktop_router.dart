@@ -7,15 +7,14 @@ import 'package:qfqq/common/templates/navigation_guard.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/pages/agenda_modification_page.dart';
-import 'package:qfqq/common/pages/agenda_view_page.dart';
+import 'package:qfqq/desktop/pages/agendas/agenda_view_page.dart';
 import 'package:qfqq/common/pages/decisions_list_page.dart';
-import 'package:qfqq/common/pages/decision_view_page.dart';
+import 'package:qfqq/desktop/pages/decisions/decision_view_page.dart';
 import 'package:qfqq/desktop/pages/home_page.dart';
 import 'package:qfqq/common/pages/user_pages/forgotten_password_page.dart';
 import 'package:qfqq/common/pages/project_modification_page.dart';
 import 'package:qfqq/desktop/pages/projects/project_page.dart';
 import 'package:qfqq/desktop/pages/projects/project_view_page.dart';
-import 'package:qfqq/common/pages/decisions_report_page.dart';
 import 'package:qfqq/common/pages/user_pages/profile_page.dart';
 import 'package:qfqq/desktop/pages/user_pages/signup_page.dart';
 import 'package:qfqq/desktop/pages/agendas/agenda_list_page.dart';
@@ -72,10 +71,6 @@ final GoRouter desktopRouter = GoRouter(
           path: '/decisions',
           pageBuilder:
               (context, state) => _noTransition(const DecisionsListPage()),
-        ),
-        GoRoute(
-          path: '/decisions/report',
-          pageBuilder: (context, state) => _noTransition(const DecisionsReportPage()),
         ),
         GoRoute(
           path: '/decisions/:id',

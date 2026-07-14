@@ -7,11 +7,14 @@ from flaskr.services.inputs import input_middleware, CreateDecisionBuilder, Lamb
 from flaskr.blueprints.before_request import login_required
 from flaskr.blueprints.middlewares import permission_middleware, Permission
 
+from flaskr.services.notifications import NotificationService, NotificationType
+
 decisions_bp = Blueprint("decisions", __name__, url_prefix="/decisions")
 decisions_bp.before_request(login_required)
 
 @decisions_bp.route("", methods=["POST"])
 @input_middleware(CreateDecisionBuilder())
+@permission_middleware(Permission.Contribute)
 def create_decision(description, responsibleId, meetingId, dueDate):
     data = request.get_json()
     dueDate = datetime.fromisoformat(dueDate) if dueDate is not None else None
@@ -25,7 +28,11 @@ def create_decision(description, responsibleId, meetingId, dueDate):
         assistantsIds=data.get("assistantsIds", None),
         meetingId=meetingId,
     )
-    return (jsonify(decision.to_dict()), 201) if decision is not None else ("", 400)
+    if decision is not None:
+        NotificationService.add_notification(NotificationType.DecisionDue.value, g.org_id, decision)
+        return jsonify(decision.to_dict()), 201
+    
+    return "", 400
 
 
 @decisions_bp.route("/", methods=["GET"])
@@ -48,6 +55,7 @@ def patch_meeting_agenda_status(status, id: str):
         if status == 'completed':
             result = DecisionDataHandler.complete_decision(id)
         elif status == 'cancelled':
+            # TODO: Remove notification
             result = DecisionDataHandler.cancel_decision(id)
         if not result:
             return '', 404
@@ -56,7 +64,7 @@ def patch_meeting_agenda_status(status, id: str):
     return '', 404
 
 @decisions_bp.delete("/<int:id>")
-@permission_middleware(Permission.CanDelete)
+@permission_middleware(Permission.DeleteContent)
 def delete_decision(id):
     try:
         DecisionDataHandler.delete_decision(id)

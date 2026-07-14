@@ -20,6 +20,7 @@ class _OrganizationInviteState extends ConsumerState<OrganizationInvitePage> {
   late final TextEditingController _emailController;
   
   String _email = '';
+  String? _emailError;
   int _roleId = 1;
 
   @override
@@ -35,17 +36,26 @@ class _OrganizationInviteState extends ConsumerState<OrganizationInvitePage> {
   }
 
   void inviteMember() async {
-    if (_email.isEmpty) return; // TODO: better validation ?
+    if (_email.isEmpty) return;
 
     final email = _email;
 
-    setState(() {
-      _email = "";
-      _emailController.clear();
-    });
+    setState(()  => _emailError = null);
 
     final service = ref.read(invitationsProvider.notifier);
-    await service.addInvitation(email, _roleId);
+    final errors = await service.addInvitation(email, _roleId);
+    if (!mounted) {
+      return;
+    }
+
+    if (errors.emailError != null) {
+      setState(() => _emailError = errors.emailError);
+    } else {
+      setState(() {
+        _email = "";
+        _emailController.clear();
+      });
+    }
   }
 
   @override
@@ -88,6 +98,7 @@ class _OrganizationInviteState extends ConsumerState<OrganizationInvitePage> {
               Expanded(
                 child: DefaultTextField(
                   controller: _emailController,
+                  error: _emailError,
                   hintText: loc.inviteMemberEmailHint,
                   onChanged: (v) => _email = v,
                 ),

@@ -9,6 +9,7 @@ projects_bp = Blueprint("projects", __name__, url_prefix="/projects")
 projects_bp.before_request(login_required)
 
 @projects_bp.route("", methods=["POST", "PUT"])
+@permission_middleware(Permission.Contribute)
 @input_middleware(CreateProjectBuilder())
 def create_project(**kwargs):
     if request.method == 'POST':
@@ -33,7 +34,7 @@ def get_projects():
 
 
 @projects_bp.delete("/<int:id>")
-@permission_middleware(Permission.CanDelete)
+@permission_middleware(Permission.DeleteContent)
 def delete_project(id):
     try:
         ProjectDataHandler.delete_project_cascade(id)

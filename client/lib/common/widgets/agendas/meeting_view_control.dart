@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/permissions.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
+import 'package:qfqq/common/services/meeting_agenda_service.dart';
 import 'package:qfqq/common/services/modal_service.dart';
+import 'package:qfqq/common/utils/platform.dart';
 import 'package:qfqq/common/utils/validation.dart';
 import 'package:qfqq/common/widgets/agendas/agenda_next_creation.dart';
 import 'package:qfqq/common/widgets/permission_required.dart';
@@ -37,104 +39,109 @@ class MeetingViewControl extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    List<Widget> buttons = [];
+    final service = ref.read(meetingAgendaServiceProvider);
 
+    bool isDesktop = platformType == PlatformType.desktop;
+
+    List<Widget> buttons = [];
     switch (meeting.status) {
       case MeetingAgendaStatus.draft:
-        buttons = draftButtons(context, ref);
+        buttons = [
+          if (isDesktop) _modifyButton(context, ref),
+          _markAsPlannedButton(context, service),
+        ];
       case MeetingAgendaStatus.planned:
-        buttons = plannedButtons(context, ref);
+        buttons = [
+          if (isDesktop) _modifyButton(context, ref),
+          _startButton(context, service),
+        ];
       case MeetingAgendaStatus.ongoing:
-        buttons = ongoingButtons(context, ref);
+        buttons = [
+          if (isDesktop) _nextMeetingButton(context),
+          _completeButton(context, service),
+        ];
       case MeetingAgendaStatus.completed:
     }
 
-    buttons.add(
-      PermissionRequired(
-        neededPermissions: Permissions(canDelete: true),
-        child: TextButton(
-          onPressed: () => deleteAgenda(context, ref),
-          child: Text(S.of(context).commonDelete),
-        ),
-      ),
-    );
+    if (isDesktop) {
+      buttons.add(_deleteButton(context, ref));
+    }
+
+    if (buttons.isEmpty) {
+      return SizedBox.shrink();
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
       children: buttons,
     );
   }
 
-  List<Widget> draftButtons(BuildContext context, WidgetRef ref) {
-    final loc = S.of(context);
-
-    final errors = validateMeetingAgenda(
-      meeting,
-      wantedStatus: MeetingAgendaStatus.planned,
+  Widget _modifyButton(BuildContext context, WidgetRef ref) {
+    return PermissionRequired(
+      neededPermissions: Permissions(contribute: true),
+      child: TextButton(
+        onPressed: () => context.go('/agendas/creation', extra: meeting),
+        child: Text(S.of(context).commonModify),
+      ),
     );
-
-    final meetingsService = ref.read(meetingAgendaServiceProvider);
-
-    return [
-      TextButton(
-        onPressed: () => context.go('/agendas/creation', extra: meeting),
-        child: Text(loc.commonModify),
-      ),
-      TextButton(
-        onPressed:
-            errors.hasAny()
-                ? null
-                : () => meetingsService.updateMeetingAgendaStatus(
-                  meeting.id,
-                  MeetingAgendaStatus.planned,
-                ),
-        child: Text(loc.meetingViewControlPlan),
-      ),
-    ];
   }
 
-  List<Widget> plannedButtons(BuildContext context, WidgetRef ref) {
-    final loc = S.of(context);
+  Widget _markAsPlannedButton(BuildContext context, MeetingAgendaService service) {
+    final errors = validateMeetingAgenda(meeting, wantedStatus: MeetingAgendaStatus.planned);
 
-    final meetingsService = ref.read(meetingAgendaServiceProvider);
-
-    return [
-      TextButton(
-        child: Text(loc.commonModify),
-        onPressed: () => context.go('/agendas/creation', extra: meeting),
-      ),
-      TextButton(
-        child: Text(loc.commonStart),
-        onPressed: () => meetingsService.startMeeting(meeting.id),
-      ),
-    ];
+    return TextButton(
+      onPressed:
+          errors.hasAny()
+              ? null
+              : () => service.updateMeetingAgendaStatus(
+                meeting.id,
+                MeetingAgendaStatus.planned,
+              ),
+      child: Text(S.of(context).meetingViewControlPlan),
+    );
   }
 
-  List<Widget> ongoingButtons(BuildContext context, WidgetRef ref) {
-    final loc = S.of(context);
+  Widget _startButton(BuildContext context, MeetingAgendaService service) {
+    return TextButton(
+      child: Text(S.of(context).commonStart),
+      onPressed: () => service.startMeeting(meeting.id),
+    );
+  }
 
-    final meetingsService = ref.read(meetingAgendaServiceProvider);
+  Widget _completeButton(BuildContext context, MeetingAgendaService service) {
+    return TextButton(
+        child: Text(S.of(context).meetingViewControlTerminate),
+        onPressed: () => service.completeMeeting(meeting.id),
+    );
+  }
 
-    return [
-      TextButton(
-        child: Text(loc.agendaNextCreation),
-        onPressed: () {
-          var nextMeeting = meeting.copyWith(
-            newStatus: MeetingAgendaStatus.planned,
-          );
-          nextMeeting.meetingDate = null;
+  Widget _nextMeetingButton(BuildContext context) {
+    return TextButton(
+      child: Text(S.of(context).agendaNextCreation),
+      onPressed: () {
+        var nextMeeting = meeting.copyWith(
+          newStatus: MeetingAgendaStatus.planned,
+        );
+        nextMeeting.meetingDate = null;
 
-          showDialog(
-            context: context,
-            barrierDismissible: true,
-            builder: (_) => AgendaNextCreation(agenda: nextMeeting),
-          );
-        },
+        showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (_) => AgendaNextCreation(agenda: nextMeeting),
+        );
+      },
+    );
+  }        
+
+  Widget _deleteButton(BuildContext context, WidgetRef ref) {
+    return PermissionRequired(
+      neededPermissions: Permissions(deleteContent: true),
+      child: TextButton(
+        onPressed: () => deleteAgenda(context, ref),
+        child: Text(S.of(context).commonDelete),
       ),
-      TextButton(
-        child: Text(loc.meetingViewControlTerminate),
-        onPressed: () => meetingsService.completeMeeting(meeting.id),
-      ),
-    ];
+    );
   }
 }

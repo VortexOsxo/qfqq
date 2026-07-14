@@ -20,10 +20,7 @@ def create_app(config_name='development'):
     app = Flask(__name__)
     app.json = EnumJSONProvider(app)
 
-    # TODO: Add real secret key
-    app.config.from_mapping(
-        SECRET_KEY='dev',
-    )
+    app.config.from_mapping(SECRET_KEY=os.environ.get("SECRET_KEY"))
     
     if config_name == "testing":
         app.config["DATABASE_URL"] = "postgresql://postgres:user@localhost:5432/qfqq_test"
@@ -35,7 +32,7 @@ def create_app(config_name='development'):
     app.before_request(get_language)
 
 
-    init_db(app)
+    init_db(app, uri=app.config["DATABASE_URL"])
     app.cli.add_command(mock_command)
 
     return app

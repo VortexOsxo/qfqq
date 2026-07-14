@@ -1,14 +1,14 @@
 from flask import Blueprint, jsonify, g
 
 from flaskr.errors.input_error import InputError
-from flaskr.services.inputs import input_middleware, LambdaBuilder, IntValidator, StringValidator,EmailValidator, TypedListValidator
+from flaskr.services.inputs import input_middleware, LambdaBuilder, RoleIdValidator, StringValidator,EmailValidator
 from flaskr.database import OrganizationDataHandler, UserDataHandler
-from flaskr.utils import create_auth_response, create_token 
+from flaskr.utils import create_auth_response, create_tokens 
 from flaskr.blueprints.before_request import login_optionnal
 from flaskr.blueprints.middlewares import permission_middleware
 from flaskr.models import Permission, Invitation
 from flaskr.services.emails import EmailDrafter, EmailSender
-from flaskr.database.postgres.tenant_context import set_tenant
+from flaskr.database.tenant_context import set_tenant
 
 organizations_bp = Blueprint("organizations", __name__, url_prefix="/organizations")
 organizations_bp.before_request(login_optionnal)
@@ -27,14 +27,14 @@ def create_organization(organizationName: str):
     result = UserDataHandler.add_user_to_org(userId, orgId, 2)
     assert result, "Should not fail to join a just created org"
 
-    token = create_token(userId, orgId)
+    tokens = create_tokens(userId, orgId)
 
     user = UserDataHandler.get_user_by_id(userId)
     set_tenant(orgId)
     permissions = UserDataHandler.get_user_permissions(userId)
 
     return (
-        create_auth_response(token, user, True, permissions),
+        create_auth_response(*tokens, user, True, permissions),
         201
     )
 
@@ -52,23 +52,23 @@ def join_organization(orgId):
     if not result:
         return jsonify({"orgId": InputError.InvalidField}), 400
     
-    token = create_token(userId, orgId)
+    tokens = create_tokens(userId, orgId)
 
     user = UserDataHandler.get_user_by_id(userId)
     set_tenant(orgId)
     permissions = UserDataHandler.get_user_permissions(userId)
 
     return (
-        create_auth_response(token, user, True, permissions),
+        create_auth_response(*tokens, user, True, permissions),
         200
     )
 
 @organizations_bp.post("invitations")
 @input_middleware(LambdaBuilder(
     ("email", EmailValidator()),
-    ("roleId", IntValidator()) # TODO: Better validation (the role actually exists ?)
+    ("roleId", RoleIdValidator())
 ))
-@permission_middleware(Permission.CanUpdatePermissions)
+@permission_middleware(Permission.ManageTeam)
 def invite_to_organization(email, roleId):
     orgId = g.org_id
     org = OrganizationDataHandler.get_org(orgId)
@@ -97,7 +97,7 @@ def invite_to_organization(email, roleId):
         return "", 500
     
 @organizations_bp.get("invitations")
-@permission_middleware(Permission.CanUpdatePermissions)
+@permission_middleware(Permission.ManageTeam)
 def get_invites():
     orgId = g.org_id
     if orgId is None:
@@ -107,7 +107,7 @@ def get_invites():
     return jsonify([i.to_dict() for i in invitations]), 200
 
 @organizations_bp.delete("invitations/<email>")
-@permission_middleware(Permission.CanUpdatePermissions)
+@permission_middleware(Permission.ManageTeam)
 def delete_invite(email):
     orgId = g.org_id
     if orgId is None:

@@ -30,6 +30,7 @@ class _AgendaPageView extends StatelessWidget {
             agendas: vm.filteredAgendas,
             animatorName: vm.animatorName,
             goToAgenda: vm.goToAgenda,
+            showDetails: false,
           ),
         ),
       ],

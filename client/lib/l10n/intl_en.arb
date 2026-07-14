@@ -13,6 +13,7 @@
   "attributeGoals": "Goals",
   "attributeLocation": "Location",
   "attributeDate": "Date",
+  "attributeLocationDate": "Location & Date",
   "attributeAnimator": "Animator",
   "attributeThemes": "Themes",
   "attributeAssitants": "Assistants",
@@ -88,6 +89,7 @@
   "loginPageButtonLogin": "Login",
   "loginPageLinkSignup": "Don't have an account? Sign Up",
   "loginPageForgottenPasswordLink": "Forgot your password? Click here to reset it.",
+  "loginPageStayLoggedIn": "Stay logged in",
   
   "homePageTitle": "Home",
   "homePageResponsabilities": "Responsabilities",
@@ -142,6 +144,8 @@
   "meetingReviewPreparation": "Participant preparation",
   "meetingReviewLength": "The meeting duration does not exceed the allocated time",
   "meetingReviewRespect": "There is listening and mutual respect among participants, everyone contributes according to their strengths",
+  "meetingReviewAnonymous": "Send anonymously",
+  "meetingReviewAnonymousUser": "Anonymous",
   "meetingReviewCommentsHint": "Additional comments and suggestions",
   "meetingReviewSend": "Send",
 
@@ -238,6 +242,7 @@
   "commonRevoke": "Revoke",
   "commonProfile": "Profile",
   "commonReport": "Report",
+  "commonTable": "Table",
 
   "commonNoGoalsSet": "No goals set",
   "commonNoDateSet": "No date set",
@@ -295,6 +300,7 @@
   "errorPasswordMinLength": "Password cannot be shorter than 8 characters",
   "errorPasswordInvalidFormat": "The password must contain at least one letter, one number, and one special character",
   "errorUnknown": "An unknown error occurred.",
+  "errorEmailUnknown": "Unknown error with the provided email.",
 
   "unsavedChangesTitle": "Unsaved Changes",
   "unsavedChangesMessage": "You have unsaved changes. If you leave now, your changes will be lost.",
@@ -308,12 +314,12 @@
   "roleNameAdmin": "Admin",
 
   "roleName": "Role Name",
-  "roleCanWrite": "Can Write",
-  "roleCanDelete": "Can Delete",
-  "roleCanUpdatePermissions": "Can Update Permissions",
-  "rolePermissionWrite": "Write",
-  "rolePermissionDelete": "Delete",
-  "rolePermissionUpdate": "Update Permissions",
+  "roleContribute": "Contribute",
+  "roleDeleteContent": "Delete content",
+  "roleManageTeam": "Manage team",
+  "rolePermissionContribute": "Contribute",
+  "rolePermissionDeleteContent": "Delete content",
+  "rolePermissionManageTeam": "Manage team",
 
   "createRoleFormUniqueName": "Role name must be unique",
 
@@ -341,5 +347,18 @@
 
   "searchTitleIdHint": "Search by Id or title",
   "searchDescriptionIdHint": "Search by Id or description",
-  "toggleAdvancedFilters": "Toggle advanced filters"
+  "toggleAdvancedFilters": "Toggle advanced filters",
+
+  "roleDeleteTitle": "Delete role?",
+  "roleDeleteMessage": "Are you sure you want to delete this role? This action cannot be undone.",
+  "roleDeleteConfirm": "Delete role",
+  "roleDeleteErrorTitle": "Cannot delete role",
+  "roleDeleteErrorMessage": "This role is still assigned to one or more members. Reassign them before deleting it.",
+
+  "selfLockoutErrorTitle": "Action blocked",
+  "selfLockoutErrorMessage": "You cannot remove your own permission to manage roles. Ask another administrator to make this change.",
+
+  "roleContributeTooltip": "Allows creating and editing meetings, decisions, and projects.",
+  "roleDeleteContentTooltip": "Allows deleting meetings, decisions, and projects.",
+  "roleManageTeamTooltip": "Allows inviting members, creating/deleting roles, and modifying permissions."
 }
