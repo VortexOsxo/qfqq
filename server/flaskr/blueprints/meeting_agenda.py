@@ -140,6 +140,8 @@ def patch_meeting_agenda_status(status, id: str):
     elif status == "ongoing":
         # TODO: remove meetingstart notification and add meeting started notification
         pass
+    elif status == "canceled":
+        pass
     return '', 204
 
 

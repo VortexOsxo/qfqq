@@ -42,7 +42,7 @@ MeetingAgendaErrors validateMeetingAgenda(
       stringValidator(agenda.title) ? null : loc.commonFormsEnterTitle;
 
   wantedStatus ??= agenda.status;
-  if (wantedStatus == MeetingAgendaStatus.draft) {
+  if (wantedStatus == MeetingAgendaStatus.draft || wantedStatus == MeetingAgendaStatus.canceled) {
     return errors;
   }
 

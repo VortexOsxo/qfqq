@@ -16,6 +16,23 @@ def test_create_meeting_draft_missing_title(client):
     assert "title" in response.get_json()
 
 
+def test_create_meeting_cancelled_success(client):
+    headers = get_auth_headers(client)
+    payload = {
+        "title": "Canceled Meeting",
+        "status": "canceled",
+        "goals": "Discuss X",
+        "meetingDate": "2026-03-07T15:37:06",
+        "meetingLocation": "Room A",
+        "animatorId": 1,
+        "participantsIds": [1, 2],
+        "themes": [],
+        "projectId": 1,
+    }
+    response = client.post("/meeting-agendas", json=payload, headers=headers)
+    assert response.status_code == 201
+
+
 def test_create_meeting_ongoing_success(client):
     headers = get_auth_headers(client)
     payload = {
@@ -164,6 +181,7 @@ def test_create_meeting_review(client):
         "length": 4,
         "respect": 5,
         "comments": "Strong teamwork and clear follow-up",
+        "anonymous": True
     }
 
     response = client.post("/meeting-agendas/3/reviews", json=payload, headers=headers)

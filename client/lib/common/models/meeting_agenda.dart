@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-enum MeetingAgendaStatus { draft, planned, ongoing, completed }
+enum MeetingAgendaStatus { draft, planned, ongoing, canceled, completed }
 
 class MeetingAgenda {
   final int id;

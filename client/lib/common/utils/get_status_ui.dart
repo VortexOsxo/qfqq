@@ -19,6 +19,8 @@ StatusUIData getMeetingAgendaStatusUI(S loc, MeetingAgendaStatus status) {
       return StatusUIData(loc.agendaStatusPlanned, Colors.blue, Icons.calendar_today);
     case MeetingAgendaStatus.ongoing:
       return StatusUIData(loc.agendaStatusOngoing, Colors.red, Icons.hourglass_bottom);
+    case MeetingAgendaStatus.canceled:
+      return StatusUIData(loc.agendaStatusCanceled, Colors.grey, Icons.cancel);
     case MeetingAgendaStatus.completed:
       return StatusUIData(loc.agendaStatusCompleted, Colors.green, Icons.check_circle);
   }
