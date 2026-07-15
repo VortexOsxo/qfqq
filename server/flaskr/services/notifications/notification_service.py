@@ -32,6 +32,16 @@ class NotificationService:
             NotificationJobDataHandler.update_job(job.id, job)
 
     @classmethod
+    def remove_notification(cls, type, orgId, targetId,*arg, **kwarg):
+        handler = handlers.get(type)
+        assert handler is not None
+
+        jobs = NotificationJobDataHandler.get_jobs_by_target(orgId=orgId, targetId=targetId, type=type)
+        toRemove = handler.remove(jobs, *arg, **kwarg)
+        for job in toRemove:
+            NotificationJobDataHandler.remove_job(job.id)
+
+    @classmethod
     def send_loop(cls):
         while True:
             try:

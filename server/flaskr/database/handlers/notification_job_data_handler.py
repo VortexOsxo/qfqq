@@ -54,6 +54,12 @@ class NotificationJobDataHandler:
             return False
 
     @classmethod
+    def remove_job(cls, jobId: int):
+        query = "DELETE FROM public.notificationJobs WHERE id = %s;"
+        params = (jobId,)
+        write_query(query, params)
+
+    @classmethod
     def mark_as_sent(cls, jobId: int, sentAt: datetime = None):
         timestamp = sentAt or datetime.utcnow()
         query = "UPDATE public.notificationJobs SET sentAt = %s WHERE id = %s;"

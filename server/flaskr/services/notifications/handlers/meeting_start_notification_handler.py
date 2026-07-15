@@ -30,6 +30,7 @@ class MeetingStartNotificationHandler:
             None,
         )
 
+    # TODO: Do we need to verify the targetId ? I don't think so
     def update(self, jobs: list[NotificationJob], meeting: MeetingAgenda):
         newJobs = []
         for job in jobs:
@@ -38,6 +39,9 @@ class MeetingStartNotificationHandler:
             job.scheduledAt = meeting.meetingDate - timedelta(minutes=15)
             newJobs.append(job)
         return newJobs
+
+    def remove(self, jobs: list[NotificationJob], meeting: MeetingAgenda):
+        return [job for job in jobs if job.targetId == meeting.id]
 
     def get_notifications_from_job(self, job: NotificationJob):
         set_tenant(job.orgId)
