@@ -8,12 +8,27 @@ class WebSocketService {
   static Map<String, Function> handlers = {};
 
   static void connect() {
-    if (channel != null) {
+    if (channel != null || _websocketUrl.isEmpty) {
       return;
     }
 
-    channel = WebSocketChannel.connect(Uri.parse(_websocketUrl));
-    channel!.stream.listen(_onEvent); // Handle error and disconnect ?
+    final ws = WebSocketChannel.connect(Uri.parse(_websocketUrl));
+    channel = ws;
+
+    ws.ready.then((_) {
+      ws.stream.listen(
+        _onEvent,
+        onError: (_) => _onDisconnect(),
+        onDone: _onDisconnect,
+        cancelOnError: true,
+      );
+    }).catchError((_) {
+      _onDisconnect();
+    });
+  }
+
+  static void _onDisconnect() {
+    channel = null;
   }
 
   static void registerHandler(String name, Function handler) {
@@ -31,6 +46,7 @@ class WebSocketService {
 
   static void disconnect() {
     channel?.sink.close();
+    channel = null;
   }
 
   static void _onEvent(dynamic message) {
