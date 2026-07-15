@@ -7,6 +7,7 @@ class MeetingAgendaStatus(Enum):
     draft = 'draft'
     planned = 'planned'
     ongoing = 'ongoing'
+    canceled = 'canceled'
     completed = 'completed'
 
 @dataclass(slots=True)

@@ -51,6 +51,7 @@ class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
       case MeetingAgendaStatus.draft:
         return _draftContent(context, ref);
       case MeetingAgendaStatus.planned:
+      case MeetingAgendaStatus.canceled:
         return SizedBox();
       case MeetingAgendaStatus.ongoing:
         return MeetingViewContentOngoing(meeting: widget.meeting);

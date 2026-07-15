@@ -100,6 +100,7 @@
   "agendaStatusDraft": "Draft",
   "agendaStatusPlanned": "Planned",
   "agendaStatusOngoing": "In Progress",
+  "agendaStatusCanceled": "Canceled",
   "agendaStatusCompleted": "Completed",
 
   "agendasListPageTitle": "Meeting Agendas",
@@ -160,6 +161,7 @@
   "meetingViewContentMarkAsPlan": "Mark as planned",
 
   "meetingViewControlPlan": "Plan",
+  "meetingViewControlCancel": "Cancel",
   "meetingViewControlTerminate": "End meeting",
 
   "meetingNotFound": "Meeting not found",

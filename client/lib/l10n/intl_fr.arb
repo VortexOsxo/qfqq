@@ -101,6 +101,7 @@
   "agendaStatusDraft": "Brouillon",
   "agendaStatusPlanned": "Planifié",
   "agendaStatusOngoing": "En cours",
+  "agendaStatusCanceled": "Annulé",
   "agendaStatusCompleted": "Terminé",
 
   "agendasListPageTitle": "Ordres du jour",
@@ -161,6 +162,7 @@
   "meetingViewContentMarkAsPlan": "Marquer comme planifiée",
 
   "meetingViewControlPlan": "Planifier",
+  "meetingViewControlCancel": "Annuler",
   "meetingViewControlTerminate": "Terminer la réunion",
 
   "meetingNotFound": "Réunion introuvable",

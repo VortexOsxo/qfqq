@@ -49,10 +49,12 @@ class MeetingViewControl extends ConsumerWidget {
         buttons = [
           if (isDesktop) _modifyButton(context, ref),
           _markAsPlannedButton(context, service),
+          _markAsCanceled(context, service),
         ];
       case MeetingAgendaStatus.planned:
         buttons = [
           if (isDesktop) _modifyButton(context, ref),
+          _markAsCanceled(context, service),
           _startButton(context, service),
         ];
       case MeetingAgendaStatus.ongoing:
@@ -61,6 +63,7 @@ class MeetingViewControl extends ConsumerWidget {
           _completeButton(context, service),
         ];
       case MeetingAgendaStatus.completed:
+      case MeetingAgendaStatus.canceled:
     }
 
     if (isDesktop) {
@@ -100,6 +103,21 @@ class MeetingViewControl extends ConsumerWidget {
                 MeetingAgendaStatus.planned,
               ),
       child: Text(S.of(context).meetingViewControlPlan),
+    );
+  }
+
+  Widget _markAsCanceled(BuildContext context, MeetingAgendaService service) {
+    final errors = validateMeetingAgenda(meeting, wantedStatus: MeetingAgendaStatus.canceled);
+
+    return TextButton(
+      onPressed:
+          errors.hasAny()
+              ? null
+              : () => service.updateMeetingAgendaStatus(
+                meeting.id,
+                MeetingAgendaStatus.canceled,
+              ),
+      child: Text(S.of(context).meetingViewControlCancel),
     );
   }
 
