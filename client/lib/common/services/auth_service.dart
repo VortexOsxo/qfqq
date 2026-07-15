@@ -91,6 +91,7 @@ class AuthService extends StateNotifier<AuthState> {
       _onSuccessfulAuth(data);
       return AccountError();
     }
+    // TODO: Improve error messages to be more descriptive
     return AccountError.fromJson(data);
   }
 
