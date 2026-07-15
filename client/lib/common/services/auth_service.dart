@@ -7,6 +7,7 @@ import 'package:qfqq/common/models/user.dart';
 import 'dart:convert';
 import 'package:qfqq/common/utils/events/event_notifier.dart';
 import 'package:qfqq/common/utils/storage.dart';
+import 'package:qfqq/generated/l10n.dart';
 
 final authStateProvider = StateNotifierProvider<AuthService, AuthState>(
   (_) => AuthService(),
@@ -24,13 +25,28 @@ class AuthService extends StateNotifier<AuthState> {
   String getSessionId() => state.sessionId;
   bool isAuthenticated() => state.isAuthenticated;
 
+  static Map<String, String> get _headers => {
+    'Content-Type': 'application/json',
+    'QfqqVersion': _version,
+  };
+
+  static dynamic _safeJsonDecode(String body) {
+    try {
+      return jsonDecode(body);
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<AccountError> login(String email, String password, bool stay) async {
     final response = await http.post(
       Uri.parse('$_apiUrl/auth/login'),
-      headers: {'Content-Type': 'application/json', 'QfqqVersion': _version},
+      headers: _headers,
       body: jsonEncode({'email': email.toLowerCase().trim(), 'password': password}),
     );
-    final data = jsonDecode(response.body);
+
+    final data = _safeJsonDecode(response.body);
+    if (data == null) return AccountError(authError: S.current.commonServerError);
 
     if (response.statusCode == 200) {
       _onSuccessfulAuth(data, stay: stay, clear: !stay);
@@ -40,21 +56,16 @@ class AuthService extends StateNotifier<AuthState> {
   }
 
   Future<bool> refresh() async {
-    String? token = await storage.read(key: 'refresh_token');
-    if (token == null) {
-      return false;
-    }
+    final token = await storage.read(key: 'refresh_token');
+    if (token == null) return false;
 
     final response = await http.post(
       Uri.parse('$_apiUrl/auth/refresh'),
-      headers: {
-        'Content-Type': 'application/json',
-        'QfqqVersion': _version,
-        'Refresh': token,
-      },
+      headers: {..._headers, 'Refresh': token},
     );
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+      final data = _safeJsonDecode(response.body);
+      if (data == null) return false;
       _onSuccessfulAuth(data);
       return true;
     }
@@ -64,7 +75,7 @@ class AuthService extends StateNotifier<AuthState> {
   Future<AccountError> signup(User user, String password) async {
     final response = await http.post(
       Uri.parse('$_apiUrl/auth/signup'),
-      headers: {'Content-Type': 'application/json', 'QfqqVersion': _version},
+      headers: _headers,
       body: jsonEncode({
         'firstName': user.firstName,
         'lastName': user.lastName,
@@ -72,13 +83,14 @@ class AuthService extends StateNotifier<AuthState> {
         'password': password,
       }),
     );
-    final data = jsonDecode(response.body);
+
+    final data = _safeJsonDecode(response.body);
+    if (data == null) return AccountError(authError: S.current.commonServerError);
 
     if (response.statusCode == 201) {
       _onSuccessfulAuth(data);
       return AccountError();
     }
-    // TODO: Improve error messages to be more descriptive
     return AccountError.fromJson(data);
   }
 
