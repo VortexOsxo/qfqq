@@ -1,3 +1,5 @@
+from flaskr.database import NotificationJobDataHandler
+from flaskr.services.notifications import NotificationType
 from tests.api.utils import get_auth_headers
 
 
@@ -31,6 +33,74 @@ def test_create_meeting_cancelled_success(client):
     }
     response = client.post("/meeting-agendas", json=payload, headers=headers)
     assert response.status_code == 201
+
+
+def test_patch_meeting_status_to_ongoing_removes_meeting_start_notification(client):
+    headers = get_auth_headers(client)
+    payload = {
+        "title": "Planned Meeting",
+        "status": "planned",
+        "goals": "Discuss X",
+        "meetingDate": "2026-03-07T15:37:06",
+        "meetingLocation": "Room A",
+        "animatorId": 1,
+        "participantsIds": [1, 2],
+        "themes": [],
+        "projectId": 1,
+    }
+
+    response = client.post("/meeting-agendas", json=payload, headers=headers)
+    assert response.status_code == 201
+
+    meeting = response.get_json()
+    meeting_id = meeting["id"]
+
+    jobs = NotificationJobDataHandler.get_jobs_by_target(1, meeting_id, NotificationType.MeetingStart.value)
+    assert len(jobs) == 1
+
+    patch_response = client.patch(
+        f"/meeting-agendas/{meeting_id}/status",
+        json={"status": "ongoing"},
+        headers=headers,
+    )
+    assert patch_response.status_code == 204
+
+    jobs_after = NotificationJobDataHandler.get_jobs_by_target(1, meeting_id, NotificationType.MeetingStart.value)
+    assert len(jobs_after) == 0
+
+
+def test_patch_meeting_status_to_canceled_removes_meeting_start_notification(client):
+    headers = get_auth_headers(client)
+    payload = {
+        "title": "Planned Meeting",
+        "status": "planned",
+        "goals": "Discuss X",
+        "meetingDate": "2026-03-07T15:37:06",
+        "meetingLocation": "Room A",
+        "animatorId": 1,
+        "participantsIds": [1, 2],
+        "themes": [],
+        "projectId": 1,
+    }
+
+    response = client.post("/meeting-agendas", json=payload, headers=headers)
+    assert response.status_code == 201
+
+    meeting = response.get_json()
+    meeting_id = meeting["id"]
+
+    jobs = NotificationJobDataHandler.get_jobs_by_target(1, meeting_id, NotificationType.MeetingStart.value)
+    assert len(jobs) == 1
+
+    patch_response = client.patch(
+        f"/meeting-agendas/{meeting_id}/status",
+        json={"status": "canceled"},
+        headers=headers,
+    )
+    assert patch_response.status_code == 204
+
+    jobs_after = NotificationJobDataHandler.get_jobs_by_target(1, meeting_id, NotificationType.MeetingStart.value)
+    assert len(jobs_after) == 0
 
 
 def test_create_meeting_ongoing_success(client):
@@ -181,7 +251,7 @@ def test_create_meeting_review(client):
         "length": 4,
         "respect": 5,
         "comments": "Strong teamwork and clear follow-up",
-        "anonymous": True
+        "isAnonymous": True
     }
 
     response = client.post("/meeting-agendas/3/reviews", json=payload, headers=headers)

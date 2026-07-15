@@ -134,13 +134,16 @@ def patch_meeting_agenda_status(status, id: str):
     result = MeetingDataHandler.update_meeting_status(id, status)
     if not result:
         return jsonify({"error": "Meeting agenda not found"}), 404
+    
+    meeting = MeetingDataHandler.get_meeting_agenda(id)
     if status=="planned":
-        meeting = MeetingDataHandler.get_meeting_agenda(id)
         NotificationService.add_notification(NotificationType.MeetingStart.value, g.org_id, meeting)
     elif status == "ongoing":
-        # TODO: remove meetingstart notification and add meeting started notification
+        NotificationService.remove_notification(NotificationType.MeetingStart.value, g.org_id, meeting.id, meeting)
+        NotificationService.add_notification(NotificationType.MeetingStarted.value, g.org_id, meeting.id)
         pass
     elif status == "canceled":
+        NotificationService.remove_notification(NotificationType.MeetingStart.value, g.org_id, meeting.id, meeting)
         pass
     return '', 204
 

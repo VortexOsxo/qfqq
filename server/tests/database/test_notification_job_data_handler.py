@@ -176,6 +176,16 @@ def test_update_job_not_found_returns_true(app):
     assert result is True
 
 
+def test_remove_job_deletes_notification_job(app):
+    make_job(scheduledAt=datetime.now(timezone.utc) - timedelta(minutes=1))
+    job_id = NotificationJobDataHandler.get_pending_jobs()[0].id
+
+    NotificationJobDataHandler.remove_job(job_id)
+
+    jobs = NotificationJobDataHandler.get_jobs_by_target(ORG_ID, TARGET_ID, JOB_TYPE)
+    assert len(jobs) == 0
+
+
 # ---------------------------------------------------------------------------
 # mark_as_sent / mark_many_as_sent
 # ---------------------------------------------------------------------------
