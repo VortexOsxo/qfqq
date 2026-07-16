@@ -22,15 +22,21 @@ class AgendaLineHeader extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(agenda.title, style: TextStyle(fontSize: 16)),
-          const Spacer(),
+          Expanded(
+            child: Text(
+              agenda.title,
+              style: TextStyle(fontSize: 16),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: 8),
           Text(
             agendaDateText,
             style: TextStyle(fontSize: 14, color: Colors.grey),
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           TextButton(
             style: inplaceTextButtonStyle(context),
             child: Text(loc.commonView),

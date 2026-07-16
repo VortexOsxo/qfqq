@@ -79,6 +79,7 @@
 
   "authServiceInvalidCredentials": "Invalid email or password.",
   "authServiceUnknownError": "An unknown error occurred during authentication.",
+  "commonServerError": "A server error occurred. Please try again later.",
   "authServiceEmailError": "Email is invalid or already registered.",
   
   "signupPageTitle": "Sign Up",

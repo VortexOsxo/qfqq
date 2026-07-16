@@ -26,12 +26,19 @@ class DecisionLineHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(decision.description, style: TextStyle(fontSize: 16)),
+          Expanded(
+            child: Text(
+              decision.description,
+              style: TextStyle(fontSize: 16),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
           Spacer(),
           Text(statusText, style: TextStyle(fontSize: 14, color: Colors.grey)),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Text(dueDateText, style: TextStyle(fontSize: 14, color: Colors.grey)),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           TextButton(
             style: inplaceTextButtonStyle(context),
             child: Text(loc.commonView),
