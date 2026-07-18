@@ -33,7 +33,14 @@ source venv/bin/activate
 
 pip install -r requirements.txt
 pip install gunicorn
-nohup venv/bin/gunicorn --workers 4 --bind 0.0.0.0:8000 --access-logfile access.log --error-logfile error.log "flaskr:create_app()" &
+sudo nohup venv/bin/gunicorn --workers 4 --bind 0.0.0.0:443 --certfile=/etc/letsencrypt/live/quifaitquoiquand.com/fullchain.pem --keyfile=/etc/letsencrypt/live/quifaitquoiquand.com/privkey.pem --access-logfile access.log --error-logfile error.log "flaskr:create_app()" &
+"""
+
+# To give acces to the certificate to our user
+"""
+sudo apt install acl -y
+sudo setfacl -R -m u:ubuntu:rX /etc/letsencrypt/live/
+sudo setfacl -R -m u:ubuntu:rX /etc/letsencrypt/archive/
 """
 
 

@@ -7,7 +7,7 @@ ssh_debug_permissions = (
         "IpProtocol": "tcp",
         "FromPort": 22,
         "ToPort": 22,
-        "IpRanges": [{"CidrIp": f"{os.getenv('LOCAL_IP')}/32"}],
+        "IpRanges": [{"CidrIp": "0.0.0.0/0"}],
     },
 )
 
@@ -35,18 +35,18 @@ class SecurityGroupManager:
         group_name = "backend-sg"
         description = "Security group for Backend (Public Http, Public SSH)"
 
-        # Allows: HTTP (8000) and Socket Server (8001) from anywhere
+        # Allows: HTTP (443) and Socket Server (8001) from anywhere
         permissions = [
-            {
-                "IpProtocol": "tcp",
-                "FromPort": 8000,
-                "ToPort": 8000,
-                "IpRanges": [{"CidrIp": "0.0.0.0/0"}],
-            },
             {
                 "IpProtocol": "tcp",
                 "FromPort": 8001,
                 "ToPort": 8001,
+                "IpRanges": [{"CidrIp": "0.0.0.0/0"}],
+            },
+            {
+                "IpProtocol": "tcp",
+                "FromPort": 443,
+                "ToPort": 443,
                 "IpRanges": [{"CidrIp": "0.0.0.0/0"}],
             },
         ]
@@ -59,6 +59,8 @@ class SecurityGroupManager:
             self.backend_sg = self._ec2.create_security_group(
                 GroupName=group_name, Description=description, VpcId=self._vpc.id
             )
+        else:
+            self._clear_permissions(self.backend_sg)
         self._add_permissions(self.backend_sg, permissions)
         return self.backend_sg
 
@@ -83,6 +85,8 @@ class SecurityGroupManager:
             self.database_sg = self._ec2.create_security_group(
                 GroupName=group_name, Description=description, VpcId=self._vpc.id
             )
+        else:
+            self._clear_permissions(self.database_sg)
         self._add_permissions(self.database_sg, permissions)
         return self.database_sg
 
@@ -105,5 +109,10 @@ class SecurityGroupManager:
                 if e.response["Error"]["Code"] != "InvalidPermission.Duplicate":
                     raise
 
+    def _clear_permissions(self, sg):
+        sg.reload()
+
+        if sg.ip_permissions:
+            sg.revoke_ingress(IpPermissions=sg.ip_permissions)
 
 security_group_manager = SecurityGroupManager()
