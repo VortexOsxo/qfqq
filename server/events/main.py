@@ -1,4 +1,7 @@
 import json
+import ssl
+import sys
+
 from websockets.asyncio.server import serve
 
 from .meeting_handler import MeetingHandler
@@ -26,6 +29,17 @@ async def handler(websocket):
 
 
 async def main():
-    async with serve(handler, "", 8001) as server:
-        print("Server running on ws://localhost:8001")
+    is_dev = "--dev" in sys.argv
+
+    if not is_dev:
+        ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        ssl_context.load_cert_chain(
+            certfile="/etc/letsencrypt/live/quifaitquoiquand.com/fullchain.pem",
+            keyfile="/etc/letsencrypt/live/quifaitquoiquand.com/privkey.pem",
+        )
+    else:
+        ssl_context = None
+
+    async with serve(handler, "", 8001, ssl=ssl_context) as server:
+        print(f"Web socket server running in {'dev' if is_dev else 'prod'} mode")
         await server.serve_forever()
