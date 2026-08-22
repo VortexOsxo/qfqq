@@ -7,6 +7,7 @@ enum ForgottenPasswordStep {
 class ForgottenPasswordState {
   final ForgottenPasswordStep step;
   final bool isLoading;
+  final int loadingTask;
   final String email;
   final String code;
   final String? errorMessage;
@@ -14,6 +15,7 @@ class ForgottenPasswordState {
   const ForgottenPasswordState({
     required this.step,
     required this.isLoading,
+    this.loadingTask = 0,
     required this.email,
     required this.code,
     required this.errorMessage,
@@ -52,6 +54,7 @@ class ForgottenPasswordState {
   ForgottenPasswordState copyWith({
     ForgottenPasswordStep? step,
     bool? isLoading,
+    int? loadingTask,
     String? email,
     String? code,
     String? errorMessage,
@@ -59,6 +62,7 @@ class ForgottenPasswordState {
     return ForgottenPasswordState(
       step: step ?? this.step,
       isLoading: isLoading ?? this.isLoading,
+      loadingTask: loadingTask ?? this.loadingTask,
       email: email ?? this.email,
       code: code ?? this.code,
       errorMessage: errorMessage,

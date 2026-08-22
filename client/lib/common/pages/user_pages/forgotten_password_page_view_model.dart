@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/states/forgotten_password_state.dart';
 import 'package:qfqq/common/providers/router_provider.dart';
 import 'package:qfqq/common/services/forgotten_password_service.dart';
+import 'package:qfqq/generated/l10n.dart';
 
 class ForgottenPasswordPageViewModel extends ConsumerStatefulWidget {
   final Widget Function(ForgottenPasswordPageViewModelState vm) builder;
@@ -17,6 +18,21 @@ class ForgottenPasswordPageViewModelState extends ConsumerState<ForgottenPasswor
   ForgottenPasswordStep get step => ref.watch(forgottenPasswordStateProvider.select((s) => s.step));
 
   bool get isLoading => ref.watch(forgottenPasswordStateProvider.select((s) => s.isLoading));
+
+  String? get loadingMessage => ref.watch(
+    forgottenPasswordStateProvider.select((s) {
+      if (!s.isLoading || s.loadingTask == 0) {
+        return null;
+      }
+
+      if (s.loadingTask == 1) {
+        return S.current.forgottenPasswordPageRequestingCode;
+      } else if (s.loadingTask == 2) {
+        return S.current.forgottenPasswordPageValidatingCode;
+      }
+      return null;
+    }),
+  );
 
   String get email => ref.watch(forgottenPasswordStateProvider.select((s) => s.email));
 
