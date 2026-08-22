@@ -27,7 +27,7 @@ class _ForgottenPasswordView extends StatelessWidget {
         padding: const EdgeInsets.all(8),
         child: Column(
           children: [
-            Text(vm.loadingMessage ?? 'No loading message'),
+            Text(vm.loadingMessage ?? ''),
             const SizedBox(height: 12,),
             const CircularProgressIndicator(),
           ],
