@@ -23,19 +23,36 @@ class _ForgottenPasswordView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (vm.isLoading) {
-      return const Padding(
-        padding: EdgeInsets.all(8),
-        child: CircularProgressIndicator(),
+      return Padding(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          children: [
+            Text(vm.loadingMessage ?? ''),
+            const SizedBox(height: 12,),
+            const CircularProgressIndicator(),
+          ],
+        )
       );
     }
 
-    return switch (vm.step) {
+    var content = (switch (vm.step) {
       ForgottenPasswordStep.enterEmail =>
         ForgottenPasswordEnterEmailStateWidget(vm: vm),
-      ForgottenPasswordStep.enterCode =>
-        ForgottenPasswordEnterCodeStateWidget(vm: vm),
+      ForgottenPasswordStep.enterCode => ForgottenPasswordEnterCodeStateWidget(
+        vm: vm,
+      ),
       ForgottenPasswordStep.enterNewPassword =>
         ForgottenPasswordEnterPasswordStateWidget(vm: vm),
-    };
+    });
+
+    return Padding(
+      padding: EdgeInsets.all(8),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: 800.0, // Set your maximum width here
+        ),
+        child: content,
+      ),
+    );
   }
 }

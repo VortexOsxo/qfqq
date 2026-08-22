@@ -205,6 +205,8 @@
 
   "forgottenPasswordPageTitle": "Mot de passe oublié",
   "organizationPageTitle": "Organisation",
+  "forgottenPasswordPageRequestingCode": "Demande du code de réinitialisation du mot de passe",
+  "forgottenPasswordPageValidatingCode": "Validation du code de réinitialisation du mot de passe",
   "forgottenPasswordPageEnterEmail": "Saisissez l'adresse e-mail de votre compte",
   "forgottenPasswordPageResetPassword": "Réinitialiser le mot de passe",
   "forgottenPasswordPageLoginLink": "Retour à la page de connexion",

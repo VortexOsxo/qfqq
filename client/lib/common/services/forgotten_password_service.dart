@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/states/forgotten_password_state.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
+import 'package:qfqq/common/utils/errors_translation.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 final forgottenPasswordStateProvider =
@@ -38,7 +39,7 @@ class ForgottenPasswordService extends StateNotifier<ForgottenPasswordState> {
   }
 
   Future<void> requestCode() async {
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(isLoading: true, loadingTask: 1);
     final response = await _httpClient.post(
       _httpClient.getUri('auth/forgotten-password/request-code'),
       headers: {'Content-Type': 'application/json'},
@@ -68,7 +69,7 @@ class ForgottenPasswordService extends StateNotifier<ForgottenPasswordState> {
   }
 
   Future<void> validateCode() async {
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(isLoading: true, loadingTask: 2);
     final response = await _httpClient.post(
       _httpClient.getUri('auth/forgotten-password/validate-code'),
       headers: {'Content-Type': 'application/json'},
@@ -112,7 +113,13 @@ class ForgottenPasswordService extends StateNotifier<ForgottenPasswordState> {
       return true;
     }
 
-    state = state.copyWith(errorMessage: S.current.forgottenPasswordPageExpiredWindow, isLoading: false);
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+
+    final error = data.containsKey('password')
+      ? translatePasswordError(data['password'])
+      : S.current.forgottenPasswordPageExpiredWindow;
+
+    state = state.copyWith(errorMessage: error, isLoading: false);
     return false;
   }
 }

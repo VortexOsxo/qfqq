@@ -204,6 +204,8 @@
 
   "forgottenPasswordPageTitle": "Forgotten Password",
   "organizationPageTitle": "Organization",
+  "forgottenPasswordPageRequestingCode": "Requesting a password reset code",
+  "forgottenPasswordPageValidatingCode": "Validating the password reset code",
   "forgottenPasswordPageEnterEmail": "Enter the email of your account",
   "forgottenPasswordPageResetPassword": "Reset password",
   "forgottenPasswordPageLoginLink": "Go back to login page",
