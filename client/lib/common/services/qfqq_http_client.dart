@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:qfqq/common/providers/locale_provider.dart';
 import 'package:qfqq/common/services/auth_service.dart';
+import 'package:qfqq/common/services/modal_service.dart';
+import 'package:qfqq/generated/l10n.dart';
 
 var qfqqHttpClientProvider = Provider(
   (ref) => QfqqHttpClient(
@@ -41,7 +43,15 @@ class QfqqHttpClient extends http.BaseClient {
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
     addHeaders(request.headers);
-    return await _inner.send(request);
+    try {
+      return await _inner.send(request);
+    } on http.ClientException catch (error, stackTrace) {
+      ModalService.showInformation(
+        title: S.current.commonConnectionError,
+        message: S.current.commonNetworkConnectionError,
+      );
+      Error.throwWithStackTrace(error, stackTrace);
+    }
   }
 
   @override

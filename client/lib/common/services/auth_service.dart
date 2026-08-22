@@ -39,11 +39,17 @@ class AuthService extends StateNotifier<AuthState> {
   }
 
   Future<AccountError> login(String email, String password, bool stay) async {
-    final response = await http.post(
+    // TODO: Could we use the qfqq http service instead of using http.post directly ?
+    http.Response response;
+    try {
+      response = await http.post(
       Uri.parse('$_apiUrl/auth/login'),
       headers: _headers,
       body: jsonEncode({'email': email.toLowerCase().trim(), 'password': password}),
     );
+    } on http.ClientException {
+      return AccountError(authError: S.current.commonNetworkConnectionError);
+    }
 
     final data = _safeJsonDecode(response.body);
     if (data == null) return AccountError(authError: S.current.commonServerError);
@@ -73,16 +79,21 @@ class AuthService extends StateNotifier<AuthState> {
   }
 
   Future<AccountError> signup(User user, String password) async {
-    final response = await http.post(
-      Uri.parse('$_apiUrl/auth/signup'),
-      headers: _headers,
-      body: jsonEncode({
-        'firstName': user.firstName,
-        'lastName': user.lastName,
-        'email': user.email.toLowerCase().trim(),
-        'password': password,
-      }),
-    );
+    http.Response response;
+    try {
+      response = await http.post(
+        Uri.parse('$_apiUrl/auth/signup'),
+        headers: _headers,
+        body: jsonEncode({
+          'firstName': user.firstName,
+          'lastName': user.lastName,
+          'email': user.email.toLowerCase().trim(),
+          'password': password,
+        }),
+      );
+    } on http.ClientException {
+      return AccountError(authError: S.current.commonNetworkConnectionError);
+    }
 
     final data = _safeJsonDecode(response.body);
     if (data == null) return AccountError(authError: S.current.commonServerError);
