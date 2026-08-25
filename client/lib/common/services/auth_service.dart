@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
 import 'package:qfqq/common/models/errors/account_error.dart';
 import 'package:qfqq/common/models/permissions.dart';
 import 'package:qfqq/common/models/states/auth_state.dart';
@@ -40,16 +39,11 @@ class AuthService extends StateNotifier<AuthState> {
   }
 
   Future<AccountError> login(String email, String password, bool stay) async {
-    http.Response response;
-    try {
-      response = await _httpClient.post(
-        _httpClient.getUri('auth/login'),
-        headers: _headers,
-        body: jsonEncode({'email': email.toLowerCase().trim(), 'password': password}),
-      );
-    } on http.ClientException {
-      return AccountError(authError: S.current.commonNetworkConnectionError);
-    }
+    final response = await _httpClient.post(
+      _httpClient.getUri('auth/signup'),
+      headers: _headers,
+      body: jsonEncode({'email': email.toLowerCase().trim(), 'password': password}),
+    );
 
     final data = _safeJsonDecode(response.body);
     if (data == null) return AccountError(authError: S.current.commonServerError);
@@ -78,25 +72,18 @@ class AuthService extends StateNotifier<AuthState> {
     return false;
   }
 
-  Future<AccountError> signup(User user, String password) async {
-    http.Response response;
-    try {
-      response = await _httpClient.post(
-        _httpClient.getUri('auth/signup'),
-        headers: _headers,
-        body: jsonEncode({
-          'firstName': user.firstName,
-          'lastName': user.lastName,
-          'email': user.email.toLowerCase().trim(),
-          'password': password,
-        }),
-      );
-    } on http.ClientException {
-      return AccountError(authError: S.current.commonNetworkConnectionError);
-    }
-
-    final data = _safeJsonDecode(response.body);
-    if (data == null) return AccountError(authError: S.current.commonServerError);
+Future<AccountError> signup(User user, String password) async {
+    final response = await _httpClient.post(
+      _httpClient.getUri('auth/signup'),
+      headers: _headers,
+      body: jsonEncode({
+        'firstName': user.firstName,
+        'lastName': user.lastName,
+        'email': user.email.toLowerCase().trim(),
+        'password': password,
+      }),
+    );
+    final data = jsonDecode(response.body);
 
     if (response.statusCode == 201) {
       _onSuccessfulAuth(data);
