@@ -83,7 +83,8 @@ Future<AccountError> signup(User user, String password) async {
         'password': password,
       }),
     );
-    final data = jsonDecode(response.body);
+    final data = _safeJsonDecode(response.body);
+    if (data == null) return AccountError(authError: S.current.commonServerError);
 
     if (response.statusCode == 201) {
       _onSuccessfulAuth(data);
