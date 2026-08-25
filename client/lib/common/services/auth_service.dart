@@ -7,28 +7,29 @@ import 'package:qfqq/common/models/user.dart';
 import 'dart:convert';
 import 'package:qfqq/common/utils/events/event_notifier.dart';
 import 'package:qfqq/common/utils/storage.dart';
+import 'package:qfqq/common/services/qfqq_http_client.dart';
+import 'package:qfqq/common/services/session_token_store.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 final authStateProvider = StateNotifierProvider<AuthService, AuthState>(
-  (_) => AuthService(),
+  (ref) => AuthService(
+    ref.read(qfqqHttpClientProvider),
+    ref.read(sessionTokenStoreProvider),
+  ),
 );
 
-const _version = String.fromEnvironment("VERSION");
-
 class AuthService extends StateNotifier<AuthState> {
-  static const String _apiUrl = String.fromEnvironment("API_URL");
   final EventNotifier<AuthState> connectionNotifier = EventNotifier();
   final EventNotifier<AuthState> disconnectionNotifier = EventNotifier();
+  final QfqqHttpClient _httpClient;
+  final SessionTokenStore _sessionTokenStore;
 
-  AuthService() : super(AuthState());
+  AuthService(this._httpClient, this._sessionTokenStore) : super(AuthState());
 
   String getSessionId() => state.sessionId;
   bool isAuthenticated() => state.isAuthenticated;
 
-  static Map<String, String> get _headers => {
-    'Content-Type': 'application/json',
-    'QfqqVersion': _version,
-  };
+  static Map<String, String> get _headers => { 'Content-Type': 'application/json' };
 
   static dynamic _safeJsonDecode(String body) {
     try {
@@ -39,14 +40,13 @@ class AuthService extends StateNotifier<AuthState> {
   }
 
   Future<AccountError> login(String email, String password, bool stay) async {
-    // TODO: Could we use the qfqq http service instead of using http.post directly ?
     http.Response response;
     try {
-      response = await http.post(
-      Uri.parse('$_apiUrl/auth/login'),
-      headers: _headers,
-      body: jsonEncode({'email': email.toLowerCase().trim(), 'password': password}),
-    );
+      response = await _httpClient.post(
+        _httpClient.getUri('auth/login'),
+        headers: _headers,
+        body: jsonEncode({'email': email.toLowerCase().trim(), 'password': password}),
+      );
     } on http.ClientException {
       return AccountError(authError: S.current.commonNetworkConnectionError);
     }
@@ -65,8 +65,8 @@ class AuthService extends StateNotifier<AuthState> {
     final token = await storage.read(key: 'refresh_token');
     if (token == null) return false;
 
-    final response = await http.post(
-      Uri.parse('$_apiUrl/auth/refresh'),
+    final response = await _httpClient.post(
+      _httpClient.getUri('auth/refresh'),
       headers: {..._headers, 'Refresh': token},
     );
     if (response.statusCode == 200) {
@@ -81,8 +81,8 @@ class AuthService extends StateNotifier<AuthState> {
   Future<AccountError> signup(User user, String password) async {
     http.Response response;
     try {
-      response = await http.post(
-        Uri.parse('$_apiUrl/auth/signup'),
+      response = await _httpClient.post(
+        _httpClient.getUri('auth/signup'),
         headers: _headers,
         body: jsonEncode({
           'firstName': user.firstName,
@@ -114,6 +114,7 @@ class AuthService extends StateNotifier<AuthState> {
     // TODO: Clear loaded data on disconnection
     await storage.delete(key: 'refresh_token');
 
+    _sessionTokenStore.token = null;
     state = AuthState();
     disconnectionNotifier.notify(state);
   }
@@ -131,6 +132,7 @@ class AuthService extends StateNotifier<AuthState> {
       hasOrg: data['hasOrg'],
       permissions: Permissions.fromJson(data),
     );
+    _sessionTokenStore.token = state.sessionId;
     connectionNotifier.notify(state);
   }
 }
