@@ -79,7 +79,9 @@
 
   "authServiceInvalidCredentials": "Invalid email or password.",
   "authServiceUnknownError": "An unknown error occurred during authentication.",
+  "commonConnectionError": "Connection Error",
   "commonServerError": "A server error occurred. Please try again later.",
+  "commonNetworkConnectionError": "Unable to connect to the server. Please check your internet connection.",
   "authServiceEmailError": "Email is invalid or already registered.",
   
   "signupPageTitle": "Sign Up",
