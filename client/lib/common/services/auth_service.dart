@@ -40,7 +40,7 @@ class AuthService extends StateNotifier<AuthState> {
 
   Future<AccountError> login(String email, String password, bool stay) async {
     final response = await _httpClient.post(
-      _httpClient.getUri('auth/signup'),
+      _httpClient.getUri('auth/login'),
       headers: _headers,
       body: jsonEncode({'email': email.toLowerCase().trim(), 'password': password}),
     );

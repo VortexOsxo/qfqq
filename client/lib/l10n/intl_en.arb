@@ -347,6 +347,7 @@
   "organizationLinksTabJoin": "Join Organization",
   "organizationLinksCreateDummy": "Organization creation form (Coming soon)",
   "organizationLinksJoinDummy": "Organization joining form (Coming soon)",
+  "organizationLinksNoInvitation": "You have not been invited to an organization yet. An organization administrator must invite you before you can join.",
   "organizationLinksInputId": "Organization ID",
   "organizationLinksButtonJoin": "Join",
   "organizationJoinUserRequired": "User session is required. Please log in again.",

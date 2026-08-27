@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
-import 'package:qfqq/generated/l10n.dart';
 
 final organizationServiceProvider = Provider((ref) {
   final http = ref.watch(qfqqHttpClientProvider);
@@ -31,32 +30,5 @@ class OrganizationService {
       return;
     }
     _authService.onOrgJoined(data);
-  }
-
-  Future<String?> joinOrganisation(int orgId) async {
-    final response = await _http.post(
-      _http.getUri('organizations/$orgId/join'),
-      headers: {'Content-Type': 'application/json'},
-    );
-    final data = jsonDecode(response.body);
-
-    if (response.statusCode == 200) {
-      _authService.onOrgJoined(data);
-      return null;
-    }
-
-    final loc = S.current;
-    if (data['userId'] == 1) {
-      return loc.organizationJoinUserRequired;
-    }
-
-    switch (data['orgId']) {
-      case 1:
-        return loc.errorRequiredField;
-      case 15:
-        return loc.organizationJoinInvalidOrg;
-      default:
-        return loc.errorUnknown;
-    }
   }
 }

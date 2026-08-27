@@ -348,6 +348,7 @@
   "organizationLinksTabJoin": "Rejoindre une organisation",
   "organizationLinksCreateDummy": "Formulaire de création d'organisation (Bientôt disponible)",
   "organizationLinksJoinDummy": "Formulaire d'adhésion à une organisation (Bientôt disponible)",
+  "organizationLinksNoInvitation": "Vous n'avez pas encore été invité à rejoindre une organisation. Un administrateur doit vous inviter avant que vous puissiez la rejoindre.",
   "organizationLinksInputId": "Identifiant de l'organisation",
   "organizationLinksButtonJoin": "Rejoindre",
   "organizationJoinUserRequired": "La session utilisateur est requise. Veuillez vous reconnecter.",

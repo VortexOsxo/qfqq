@@ -38,31 +38,6 @@ def create_organization(organizationName: str):
         201
     )
 
-@organizations_bp.post("<int:orgId>/join")
-def join_organization(orgId):
-    userId = g.user_id
-
-    if userId is None:
-        return jsonify({"userId": InputError.RequiredField}), 400
-    
-    if orgId is None:
-        return jsonify({"orgId": InputError.RequiredField}), 400
-
-    result = UserDataHandler.add_user_to_org(userId, orgId)
-    if not result:
-        return jsonify({"orgId": InputError.InvalidField}), 400
-    
-    tokens = create_tokens(userId, orgId)
-
-    user = UserDataHandler.get_user_by_id(userId)
-    set_tenant(orgId)
-    permissions = UserDataHandler.get_user_permissions(userId)
-
-    return (
-        create_auth_response(*tokens, user, True, permissions),
-        200
-    )
-
 @organizations_bp.post("invitations")
 @input_middleware(LambdaBuilder(
     ("email", EmailValidator()),
