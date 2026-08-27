@@ -3,12 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/errors/org_invite_errors.dart';
 import 'package:qfqq/common/models/invitation.dart';
 import 'package:qfqq/common/services/auth_service.dart';
+import 'package:qfqq/common/services/modal_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
+import 'package:qfqq/generated/l10n.dart';
 
 class InvitationsService extends StateNotifier<List<Invitation>> {
   final QfqqHttpClient _http;
+  final Function? _onUserAdded;
 
-  InvitationsService(this._http, AuthService auth) : super([]) {
+  InvitationsService(this._http, this._onUserAdded, AuthService auth) : super([]) {
     auth.connectionNotifier.subscribe((_) => loadInvitations());
   }
 
@@ -19,15 +22,21 @@ class InvitationsService extends StateNotifier<List<Invitation>> {
       body: jsonEncode({'email': email, 'roleId': roleId}),
     );
 
-    final data = jsonDecode(response.body);
     if (response.statusCode != 201) {
+      final data = jsonDecode(response.body);
       return OrgInviteErrors.fromJson(data);
     }
 
     Invitation invitation;
     try {
+      final data = jsonDecode(response.body);
       invitation = Invitation.fromJson(data);
     } catch (e) {
+      _onUserAdded?.call();
+      await ModalService.showInformation(
+        title: S.current.organizationInviteUserAddedTitle,
+        message: S.current.organizationInviteUserAddedMessage(email),
+      );
       return OrgInviteErrors();
     }
 
@@ -59,7 +68,6 @@ class InvitationsService extends StateNotifier<List<Invitation>> {
 
     state = state.where((e) => e.email != email).toList();
   }
-
 
   Future<void> loadInvitations() async {
     final response = await _http.get(

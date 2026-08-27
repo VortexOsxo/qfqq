@@ -8,10 +8,10 @@ class UsersService extends StateNotifier<List<User>> {
   final QfqqHttpClient _http;
 
   UsersService(this._http, AuthService auth) : super([]) {
-    auth.connectionNotifier.subscribe((_) => _loadUsers());
+    auth.connectionNotifier.subscribe((_) => loadUsers());
   }
 
-  Future<void> _loadUsers() async {
+  Future<void> loadUsers() async {
     final response = await _http.get(
       _http.getUri("/users"),
       headers: {'Content-Type': 'application/json'},

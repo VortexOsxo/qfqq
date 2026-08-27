@@ -1,4 +1,4 @@
-from psycopg import sql
+from psycopg import sql, errors
 
 from ..postgres import read_query, write_query, get_db_access
 from flaskr.models import User
@@ -124,11 +124,16 @@ class UserDataHandler:
 
     @classmethod
     def get_user_permissions(cls, userId: int):
-        query = """
-            SELECT r.contribute, r.deleteContent, r.manageTeam FROM roles r
-            JOIN usersRoles ur ON ur.roleId = r.id WHERE userId = %s;
-        """
-        result = read_query(query, (userId,))
+        result = None
+        try:
+            query = """
+                SELECT r.contribute, r.deleteContent, r.manageTeam FROM roles r
+                JOIN usersRoles ur ON ur.roleId = r.id WHERE userId = %s;
+            """
+            result = read_query(query, (userId,))
+        except errors.UndefinedTable:
+            result = None
+
         return result[0] if result else (False, False, False)
 
     @classmethod

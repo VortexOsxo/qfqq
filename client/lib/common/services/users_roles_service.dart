@@ -7,10 +7,10 @@ class UsersRolesService extends StateNotifier<List<UserRole>> {
   final QfqqHttpClient _http;
 
   UsersRolesService(this._http) : super([]) {
-    _loadRoles();
+    loadRoles();
   }
 
-  Future<void> _loadRoles() async {
+  Future<void> loadRoles() async {
     final response = await _http.get(
       _http.getUri('users/roles'),
       headers: {'Content-Type': 'application/json'},
