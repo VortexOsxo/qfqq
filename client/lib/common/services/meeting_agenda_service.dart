@@ -18,6 +18,11 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
 
   MeetingAgendaService(this._http, AuthService auth, this.decisionsService) : super([]) {
     auth.connectionNotifier.subscribe((_) => _loadMeetingAgendas());
+    auth.disconnectionNotifier.subscribe((_) => _clearMeetingAgendas());
+  }
+
+  void _clearMeetingAgendas() {
+    state = [];
   }
 
   Future<bool> createMeetingAgenda(MeetingAgenda agenda, {int? previousMeetingId}) async {

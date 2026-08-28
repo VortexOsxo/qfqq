@@ -9,6 +9,11 @@ class UsersService extends StateNotifier<List<User>> {
 
   UsersService(this._http, AuthService auth) : super([]) {
     auth.connectionNotifier.subscribe((_) => loadUsers());
+    auth.disconnectionNotifier.subscribe((_) => _clearUsers());
+  }
+
+  void _clearUsers() {
+    state = [];
   }
 
   Future<void> loadUsers() async {

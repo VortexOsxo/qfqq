@@ -12,6 +12,11 @@ class ProjectsService extends StateNotifier<List<Project>> {
 
   ProjectsService(this._http, AuthService auth, this.meetingAgendaService) : super([]) {
     auth.connectionNotifier.subscribe((_) => _loadProjects());
+    auth.disconnectionNotifier.subscribe((_) => _clearProjects());
+  }
+
+  void _clearProjects() {
+    state = [];
   }
 
   Future<ProjectErrors> createProject(Project project) async {

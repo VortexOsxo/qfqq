@@ -13,6 +13,11 @@ class InvitationsService extends StateNotifier<List<Invitation>> {
 
   InvitationsService(this._http, this._onUserAdded, AuthService auth) : super([]) {
     auth.connectionNotifier.subscribe((_) => loadInvitations());
+    auth.disconnectionNotifier.subscribe((_) => _clearInvitations());
+  }
+
+  void _clearInvitations() {
+    state = [];
   }
 
   Future<OrgInviteErrors> addInvitation(String email, int roleId) async {

@@ -30,14 +30,14 @@ class PushNotificationService {
 
   PushNotificationService(this._http, AuthService authService, this._locale, this._router) {
     authService.connectionNotifier.subscribe(_initialize);
-    authService.disconnectionNotifier.subscribe(_clear);
+    authService.disconnectionNotifier.subscribe((_) => _clear());
   }
 
   Future<void> _initialize(AuthState auth) async {
     final id = auth.user?.id;
     assert(id != null);
 
-    _clear(null);
+    _clear();
     await _requestPermissions(id!);
 
     _foregroundSubscription = FirebaseMessaging.onMessage.listen(_onForegroundMessage);
@@ -46,7 +46,7 @@ class PushNotificationService {
     _checkInitialMessage();
   }
 
-  void _clear(_) {
+  void _clear() {
     _foregroundSubscription?.cancel();
     _openedAppSubscription?.cancel();
     _tokenRefreshSubscription?.cancel();

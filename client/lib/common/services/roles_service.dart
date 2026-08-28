@@ -2,13 +2,19 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/errors/role_errors.dart';
 import 'package:qfqq/common/models/role.dart';
+import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
 
 class RolesService extends StateNotifier<List<Role>> {
   final QfqqHttpClient _http;
 
-  RolesService(this._http) : super([]) {
+  RolesService(this._http, AuthService auth) : super([]) {
     _loadRoles();
+    auth.disconnectionNotifier.subscribe((_) => _clearRoles());
+  }
+
+  void _clearRoles() {
+    state = [];
   }
 
   Future<void> _loadRoles() async {

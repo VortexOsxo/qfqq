@@ -99,7 +99,6 @@ Future<AccountError> signup(User user, String password) async {
   }
 
   void logout() async {
-    // TODO: Clear loaded data on disconnection
     await storage.delete(key: 'refresh_token');
 
     _sessionTokenStore.token = null;

@@ -1,11 +1,15 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/role.dart';
+import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
 import 'package:qfqq/common/services/roles_service.dart';
 
 final rolesProvider = StateNotifierProvider<RolesService, List<Role>>(
-  (ref) => RolesService(ref.read(qfqqHttpClientProvider)),
+  (ref) => RolesService(
+    ref.read(qfqqHttpClientProvider),
+    ref.read(authStateProvider.notifier),
+  ),
 );
 
 final roleByIdProvider = Provider.family<Role?, int>((ref, id) {

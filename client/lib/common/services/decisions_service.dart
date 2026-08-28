@@ -11,6 +11,7 @@ class DecisionsService extends StateNotifier<List<Decision>> {
 
   DecisionsService(this._http, AuthService auth) : super([]) {
     auth.connectionNotifier.subscribe((_) => _loadDecisions());
+    auth.disconnectionNotifier.subscribe((_) => _clearDecisions());
   }
 
   Future<void> reload() async {
@@ -27,6 +28,10 @@ class DecisionsService extends StateNotifier<List<Decision>> {
 
     final List<dynamic> data = jsonDecode(response.body);
     state = data.map((item) => Decision.fromJson(item)).toList();
+  }
+
+  void _clearDecisions() {
+    state = [];
   }
 
   Future<DecisionErrors> createDecision(Decision decision) async {
