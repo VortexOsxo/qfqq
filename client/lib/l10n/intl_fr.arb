@@ -275,6 +275,8 @@
   "buttonInviteMemberSubmit": "Inviter",
   "organizationInviteUserAddedTitle": "Utilisateur ajouté",
   "organizationInviteUserAddedMessage": "L'utilisateur avec l'adresse e-mail {email} a été ajouté à l'organisation.",
+  "organizationInvitePendingTitle": "Invitation envoyée",
+  "organizationInvitePendingMessage": "L'utilisateur avec l'adresse e-mail {email} a été invité et sera ajouté à l'organisation lorsqu'il créera un compte.",
   "commonMeeting": "Réunion",
   "commonSelectDate": "Sélectionner une date",
   "commonTapToSelectDate": "Appuyer pour sélectionner une date",

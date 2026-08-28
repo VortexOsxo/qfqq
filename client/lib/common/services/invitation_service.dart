@@ -53,6 +53,10 @@ class InvitationsService extends StateNotifier<List<Invitation>> {
     }
 
     state = updatedState;
+    await ModalService.showInformation(
+      title: S.current.organizationInvitePendingTitle,
+      message: S.current.organizationInvitePendingMessage(email),
+    );
     return OrgInviteErrors();
   }
 
