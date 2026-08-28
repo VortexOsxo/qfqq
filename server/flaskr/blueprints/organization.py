@@ -9,6 +9,7 @@ from flaskr.blueprints.middlewares import permission_middleware
 from flaskr.models import Permission, Invitation
 from flaskr.services.emails import EmailDrafter, EmailSender
 from flaskr.database.tenant_context import set_tenant
+from threading import Thread
 
 organizations_bp = Blueprint("organizations", __name__, url_prefix="/organizations")
 organizations_bp.before_request(login_optionnal)
@@ -38,31 +39,6 @@ def create_organization(organizationName: str):
         201
     )
 
-@organizations_bp.post("<int:orgId>/join")
-def join_organization(orgId):
-    userId = g.user_id
-
-    if userId is None:
-        return jsonify({"userId": InputError.RequiredField}), 400
-    
-    if orgId is None:
-        return jsonify({"orgId": InputError.RequiredField}), 400
-
-    result = UserDataHandler.add_user_to_org(userId, orgId)
-    if not result:
-        return jsonify({"orgId": InputError.InvalidField}), 400
-    
-    tokens = create_tokens(userId, orgId)
-
-    user = UserDataHandler.get_user_by_id(userId)
-    set_tenant(orgId)
-    permissions = UserDataHandler.get_user_permissions(userId)
-
-    return (
-        create_auth_response(*tokens, user, True, permissions),
-        200
-    )
-
 @organizations_bp.post("invitations")
 @input_middleware(LambdaBuilder(
     ("email", EmailValidator()),
@@ -85,8 +61,9 @@ def invite_to_organization(email, roleId):
         OrganizationDataHandler.add_invite(orgId=orgId, email=email, roleId=roleId)
 
         email_obj = EmailDrafter.create_organization_invitation_email(email, orgId, org_name, lang)
-        success = EmailSender.send_email(email_obj)
+        Thread(target=EmailSender.send_email, args=(email_obj,), daemon=True).start()
         invitation = Invitation(orgId=orgId, email=email, roleId=roleId)
+        success = True
     else:
         success = UserDataHandler.add_user_to_org(user.id, orgId, roleId)
         invitation = None
