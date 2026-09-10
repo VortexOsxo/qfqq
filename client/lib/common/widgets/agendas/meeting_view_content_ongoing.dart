@@ -7,6 +7,7 @@ import 'package:qfqq/common/models/permissions.dart';
 import 'package:qfqq/common/models/user.dart';
 import 'package:qfqq/common/providers/decisions_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
+import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/utils/platform.dart';
 import 'package:qfqq/common/utils/validation.dart';
@@ -15,8 +16,6 @@ import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/selection_text_fields/user_text_field.dart';
 import 'package:qfqq/common/widgets/reusables/selection_text_fields/users_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
-
-String _formatDate(DateTime date) => date.toIso8601String().split('T').first;
 
 class MeetingViewContentOngoing extends StatelessWidget {
   final MeetingAgenda meeting;
@@ -57,26 +56,22 @@ class _DecisionsFeed extends ConsumerWidget {
       reverse: true,
       itemCount: decisions.length,
       separatorBuilder: (_, __) => const SizedBox(height: 6),
-      itemBuilder: (context, index) {
-        final decision = decisions[index];
-        final responsible = decision.responsibleId != null
-            ? ref.watch(userByIdProvider(decision.responsibleId!))
-            : null;
-
-        return _DecisionCard(decision: decision, responsible: responsible);
-      },
+      itemBuilder: (context, index) => _DecisionCard(decision: decisions[index]),
     );
   }
 }
 
-class _DecisionCard extends StatelessWidget {
+class _DecisionCard extends ConsumerWidget {
   final Decision decision;
-  final User? responsible;
 
-  const _DecisionCard({required this.decision, this.responsible});
+  const _DecisionCard({required this.decision});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    User? responsible = decision.responsibleId != null
+            ? ref.watch(userByIdProvider(decision.responsibleId!))
+            : null;
+
     final theme = Theme.of(context);
 
     return Container(
@@ -109,7 +104,7 @@ class _DecisionCard extends StatelessWidget {
           const SizedBox(width: 8),
           Icon(Icons.calendar_today_outlined, size: 13, color: theme.hintColor),
           const SizedBox(width: 3),
-          Text(_formatDate(decision.dueDate!)),
+          Text(formatDateDay(context, decision.dueDate!)),
         ],
       ),
     );
@@ -154,9 +149,14 @@ class _ComposeBarState extends ConsumerState<_ComposeBar> {
     }
 
     setState(() => isSending = true);
-    final serverErrors = await decisionsService.createDecision(decision);
+    DecisionErrors serverErrors;
+    try {
+      serverErrors = await decisionsService.createDecision(decision);
+    } finally {
+      if (mounted) setState(() => isSending = false);
+    }
+
     if (!mounted) return;
-    setState(() => isSending = false);
 
     if (serverErrors.hasAny()) {
       setState(() => errors = serverErrors);
@@ -278,7 +278,7 @@ class _ComposeBarState extends ConsumerState<_ComposeBar> {
           suffixIcon: const Icon(Icons.calendar_today_outlined, size: 18),
         ),
         child: Text(
-          hasDate ? _formatDate(decision.dueDate!) : '',
+          hasDate ? formatDateDay(context, decision.dueDate!) : '',
           style: TextStyle(
             color: hasDate
                 ? theme.textTheme.bodyLarge?.color
