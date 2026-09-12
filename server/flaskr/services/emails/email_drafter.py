@@ -37,6 +37,36 @@ class EmailDrafter:
         )
 
     @staticmethod
+    def create_verify_email_email(email: str, reset_code: str, lang: str = 'fr') -> Email:
+        if lang == 'en':
+            subject = "Verify your email address - QuiFaitQuoiQuand"
+            body = (
+                "Hello,\n"
+                "To verify your email address, please use the code below:\n\n"
+                f"{reset_code}\n\n"
+                "If you did not create this account, you can safely ignore this email.\n\n"
+                "Thank you,\n"
+                "The QuiFaitQuoiQuand Team"
+            )
+        else:
+            subject = "Vérifiez votre adresse e-mail - QuiFaitQuoiQuand"
+            body = (
+                "Bonjour,\n"
+                "Pour vérifier votre adresse e-mail, veuillez utiliser le code ci-dessous :\n\n"
+                f"{reset_code}\n\n"
+                "Si vous n'avez pas créé ce compte, vous pouvez ignorer cet e-mail en toute sécurité.\n\n"
+                "Merci,\n"
+                "L'équipe QuiFaitQuoiQuand"
+            )
+
+        return Email(
+            subject=subject,
+            recipient=email,
+            sender=os.getenv('MAIL_USER'),
+            body=body
+        )
+
+    @staticmethod
     def create_participants_report_email(recipient: str, report_bytes: bytes, lang: str = 'fr') -> Email:
         if lang == 'en':
             subject = "Participants Report - QuiFaitQuoiQuand"

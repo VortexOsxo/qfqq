@@ -57,3 +57,40 @@ def test_get_user_role_id(app):
     UserDataHandler.update_user_role(3, 1)
     roleId = UserDataHandler.get_user_role_id(3)
     assert roleId == 1
+
+
+def test_mark_email_as_verified_when_false(app):
+    email = "alice@example.com"
+    user = UserDataHandler.get_user_by_email(email)
+    assert user is not None
+    assert user.isValidated is False
+
+    UserDataHandler.mark_email_as_verified(email)
+
+    user_updated = UserDataHandler.get_user_by_email(email)
+    assert user_updated is not None
+    assert user_updated.isValidated is True
+
+
+def test_mark_email_as_verified_when_already_true(app):
+    email = "alice@example.com"
+
+    UserDataHandler.mark_email_as_verified(email)
+
+    UserDataHandler.mark_email_as_verified(email)
+
+    user_updated = UserDataHandler.get_user_by_email(email)
+    assert user_updated is not None
+    assert user_updated.isValidated is True
+
+
+def test_mark_email_as_verified_not_present(app):
+    email = "nonexistent@example.com"
+    user = UserDataHandler.get_user_by_email(email)
+    assert user is None
+
+    UserDataHandler.mark_email_as_verified(email)
+
+    user_after = UserDataHandler.get_user_by_email(email)
+    assert user_after is None
+

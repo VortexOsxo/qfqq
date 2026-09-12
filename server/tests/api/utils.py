@@ -8,3 +8,8 @@ def get_auth_headers(client, user_id=1, org_id=1):
         "Authorization": f"Bearer {token}",
         "QfqqVersion": "beta"
     }
+
+def get_default_headers():
+    return {
+        "QfqqVersion": "beta"
+    }

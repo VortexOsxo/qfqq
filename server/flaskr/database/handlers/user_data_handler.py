@@ -11,8 +11,8 @@ class UserDataHandler:
             with get_db_access() as conn:
                 cur = conn.cursor()
 
-                query = f"INSERT INTO public.users (firstName, lastName, passwordHash, email) values (%s, %s, %s, %s) RETURNING id;"
-                params = (firstName, lastName, passwordHash, email)
+                query = f"INSERT INTO public.users (firstName, lastName, passwordHash, email, isVerified) values (%s, %s, %s, %s, %s) RETURNING id;"
+                params = (firstName, lastName, passwordHash, email, False)
                 cur.execute(query, params)
                 userId = cur.fetchone()[0]
 
@@ -75,6 +75,12 @@ class UserDataHandler:
     def update_user_password(cls, email: str, newPasswordHash: str):
         query = "UPDATE users SET passwordHash = %s WHERE email = %s"
         params = (newPasswordHash, email)
+        write_query(query, params)
+
+    @classmethod
+    def mark_email_as_verified(cls, email: str):
+        query = "UPDATE users SET isVerified = true WHERE email = %s;"
+        params = (email,)
         write_query(query, params)
 
     @classmethod

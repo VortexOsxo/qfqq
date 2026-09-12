@@ -3,7 +3,8 @@ public.organizations,
 public.invitations,
 public.users,
 public.passwordRequests,
-public.notificationJobs CASCADE;
+public.notificationJobs,
+public.emailVerificationRequests CASCADE;
 
 CREATE TABLE
   public.organizations (
@@ -18,7 +19,8 @@ CREATE TABLE
     firstName TEXT NOT NULL,
     lastName TEXT NOT NULL,
     passwordHash TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL
+    email TEXT UNIQUE NOT NULL,
+    isVerified BOOLEAN NOT NULL DEFAULT FALSE
   );
 
 CREATE TABLE
@@ -38,6 +40,14 @@ CREATE TABLE
 
 CREATE TABLE
   public.passwordRequests (
+    email TEXT REFERENCES users (email),
+    code TEXT,
+    date TEXT,
+    PRIMARY KEY (email)
+  );
+
+CREATE TABLE
+  public.emailVerificationRequests (
     email TEXT REFERENCES users (email),
     code TEXT,
     date TEXT,

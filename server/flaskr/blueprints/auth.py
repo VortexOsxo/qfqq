@@ -4,10 +4,11 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import jwt
 
 from flaskr.database import UserDataHandler, OrganizationDataHandler
-from flaskr.services.reset_password_service import ResetPasswordService
+from flaskr.services.account_service import AccountService
 from flaskr.services.inputs import input_middleware, SignupBuilder, LoginBuilder, LambdaBuilder, StringValidator, EmailValidator, PasswordValidator
 from flaskr.errors import InputError
 from flaskr.utils import create_auth_response, create_tokens
+from flaskr.blueprints.before_request import login_required
 from flaskr.database.tenant_context import set_tenant
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -96,7 +97,7 @@ def request_code(email):
     if user is None:
         return jsonify({"email": InputError.EmailNotFound})
 
-    result = ResetPasswordService.reset_password(email, g.language)
+    result = AccountService.reset_password(email, g.language)
     return ("", 204) if result else (jsonify({"error": InputError.UnknownError}), 400)
 
 
@@ -104,8 +105,8 @@ def request_code(email):
 @input_middleware(
     LambdaBuilder(("email", EmailValidator()), ("code", StringValidator()))
 )
-def validate_code(email, code):
-    result = ResetPasswordService.is_code_valid(email, code)
+def validate_password_code(email, code):
+    result = AccountService.is_password_code_valid(email, code)
     return ("", 204) if result else (jsonify({"error": InputError.UnknownError}), 400)
 
 
@@ -117,10 +118,41 @@ def validate_code(email, code):
         ("password", PasswordValidator()),
     )
 )
-def update(email, code, password):
-    result = ResetPasswordService.is_code_valid(email, code)
+def update_password(email, code, password):
+    result = AccountService.is_password_code_valid(email, code)
     if not result:
         return jsonify({"error": InputError.UnknownError}), 400
 
-    ResetPasswordService.update_password(email, password)
+    AccountService.update_password(email, password)
     return "", 204
+
+
+email_verification_bp = Blueprint("email_verification", __name__, url_prefix="/email-verification")
+email_verification_bp.before_request(login_required)
+
+@email_verification_bp.post("/request-code")
+def request_email_validation():
+    user = UserDataHandler.get_user_by_id(g.user_id)
+    if user is None:
+        return "", 404
+
+    result = AccountService.verify_email(user.email, g.language)
+    return ("", 204) if result else (jsonify({"error": InputError.UnknownError}), 400)
+
+
+@email_verification_bp.post("/validate-code")
+@input_middleware(LambdaBuilder(("code", StringValidator())))
+def validate_email_code(code):
+    user = UserDataHandler.get_user_by_id(g.user_id)
+    if user is None:
+        return "", 404
+
+    result = AccountService.is_email_code_valid(user.email, code)
+    if not result:
+        return jsonify({"error": InputError.UnknownError}), 400
+
+    AccountService.mark_email_as_verified(user.email)
+    return "", 204
+
+
+auth_bp.register_blueprint(email_verification_bp)
