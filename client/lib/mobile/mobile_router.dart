@@ -10,6 +10,7 @@ import 'package:qfqq/common/pages/decisions_list_page.dart';
 import 'package:qfqq/mobile/pages/decisions/decision_view_page.dart';
 import 'package:qfqq/mobile/pages/home_page.dart';
 import 'package:qfqq/common/pages/user_pages/forgotten_password_page.dart';
+import 'package:qfqq/common/pages/user_pages/email_verification_page.dart';
 import 'package:qfqq/common/pages/project_modification_page.dart';
 import 'package:qfqq/mobile/pages/projects/project_page.dart';
 import 'package:qfqq/mobile/pages/projects/project_view_page.dart';
@@ -110,6 +111,10 @@ final GoRouter mobileRouter = GoRouter(
         GoRoute(
           path: '/forgotten-password',
           builder: (context, state) => const ForgottenPasswordPage(),
+        ),
+        GoRoute(
+          path: '/verify-email',
+          builder: (context, state) => const EmailVerificationPage(),
         ),
       ],
     ),

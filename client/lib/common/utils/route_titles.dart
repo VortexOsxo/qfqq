@@ -43,6 +43,8 @@ String? getTitleForRoute(BuildContext context, GoRouterState state) {
       return loc.organizationCreationPageTitle;
     case '/forgotten-password':
       return loc.forgottenPasswordPageTitle;
+    case '/verify-email':
+      return loc.emailVerificationPageTitle;
     case '/organization':
       return loc.organizationPageTitle;
     case '/organizations/links':

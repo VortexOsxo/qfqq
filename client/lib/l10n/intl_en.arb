@@ -204,6 +204,14 @@
   "profilePageLogout": "Logout",
   "profilePageLanguage": "Language",
 
+  "emailVerificationPageTitle": "Verify email",
+  "emailVerificationPageWaitingToSend": "Waiting to send the verification email",
+  "emailVerificationPageSendCode": "Send verification code",
+  "emailVerificationPageCodeSent": "A verification code has been sent to your email.",
+  "emailVerificationPageEnterCodeHint": "Enter the code",
+  "emailVerificationPageConfirm": "Confirm email",
+  "emailVerificationPageInvalidCode": "The code is invalid",
+
   "forgottenPasswordPageTitle": "Forgotten Password",
   "organizationPageTitle": "Organization",
   "forgottenPasswordPageRequestingCode": "Requesting a password reset code",

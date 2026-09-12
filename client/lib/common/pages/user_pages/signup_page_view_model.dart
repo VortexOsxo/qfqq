@@ -18,7 +18,7 @@ class SignupPageViewModel extends ConsumerStatefulWidget {
 class SignupPageViewModelState extends ConsumerState<SignupPageViewModel> {
   final formKey = GlobalKey<FormState>();
 
-  User newUser = User(id: 0, firstName: '', lastName: '', email: '');
+  User newUser = User(id: 0, firstName: '', lastName: '', email: '', isVerified: false);
   String newPassword = '';
   String confirmPassword = '';
   AccountError error = AccountError();

@@ -8,7 +8,7 @@ class User:
     lastName: str
     passwordHash: str
     email: str
-    isValidated: bool
+    isVerified: bool
 
     def to_dict(self):
         return {
@@ -16,5 +16,5 @@ class User:
             "firstName": self.firstName,
             "lastName": self.lastName,
             "email": self.email,
-            "isValidated": self.isValidated,
+            "isVerified": self.isVerified,
         }

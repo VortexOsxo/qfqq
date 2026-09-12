@@ -24,16 +24,7 @@ class UsersService extends StateNotifier<List<User>> {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
-      state = data
-          .map(
-            (item) => User(
-              id: item['id'],
-              firstName: item['firstName'],
-              lastName: item['lastName'],
-              email: item['email'],
-            ),
-          )
-          .toList();
+      state = data.map(User.fromJson).toList();
     }
   }
 }

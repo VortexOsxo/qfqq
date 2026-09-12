@@ -3,6 +3,7 @@ class User {
   String firstName;
   String lastName;
   String email;
+  bool isVerified;
 
   String get displayName => '$firstName $lastName';
 
@@ -11,11 +12,13 @@ class User {
     required this.firstName,
     required this.lastName,
     required this.email,
+    required this.isVerified
   });
 
   User.fromJson(dynamic data)
     : id = data['id'],
       firstName = data['firstName'],
       lastName = data['lastName'],
-      email = data['email'];
+      email = data['email'],
+      isVerified = data['isVerified'];
 }

@@ -105,6 +105,11 @@ class ProfilePage extends ConsumerWidget {
             label: loc.attributeEmail,
             value: authState.user?.email ?? '',
           ),
+          if (!authState.user!.isVerified)
+            TextButton(
+              onPressed: () => context.go('/verify-email'),
+              child: Text(loc.emailVerificationPageSendCode),
+            ),
           const SizedBox(height: 16),
           _buildLanguageSelector(context, ref, loc),
         ],

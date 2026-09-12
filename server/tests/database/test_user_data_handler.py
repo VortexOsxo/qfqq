@@ -69,7 +69,7 @@ def test_mark_email_as_verified_when_false(app):
 
     user_updated = UserDataHandler.get_user_by_email(email)
     assert user_updated is not None
-    assert user_updated.isValidated is True
+    assert user_updated.isVerified is True
 
 
 def test_mark_email_as_verified_when_already_true(app):
@@ -81,7 +81,7 @@ def test_mark_email_as_verified_when_already_true(app):
 
     user_updated = UserDataHandler.get_user_by_email(email)
     assert user_updated is not None
-    assert user_updated.isValidated is True
+    assert user_updated.isVerified is True
 
 
 def test_mark_email_as_verified_not_present(app):

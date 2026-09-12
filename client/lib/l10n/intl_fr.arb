@@ -205,6 +205,14 @@
   "profilePageLogout": "Déconnexion",
   "profilePageLanguage": "Langue",
 
+  "emailVerificationPageTitle": "Vérifier l'e-mail",
+  "emailVerificationPageWaitingToSend": "En attente de l'envoi de l'e-mail de vérification",
+  "emailVerificationPageSendCode": "Envoyer le code de vérification",
+  "emailVerificationPageCodeSent": "Un code de vérification a été envoyé à votre adresse e-mail.",
+  "emailVerificationPageEnterCodeHint": "Entrez le code",
+  "emailVerificationPageConfirm": "Confirmer l'e-mail",
+  "emailVerificationPageInvalidCode": "Le code est invalide",
+
   "forgottenPasswordPageTitle": "Mot de passe oublié",
   "organizationPageTitle": "Organisation",
   "forgottenPasswordPageRequestingCode": "Demande du code de réinitialisation du mot de passe",
