@@ -24,33 +24,46 @@ class AgendaViewPage extends StatelessWidget {
   }
 }
 
-class _AgendaViewPage extends StatelessWidget {
+class _AgendaViewPage extends StatefulWidget {
   final AgendaViewPageViewModelState vm;
 
   const _AgendaViewPage({required this.vm});
 
   @override
+  State<_AgendaViewPage> createState() => _AgendaViewPageState();
+}
+
+enum _MeetingTab { info, decisions }
+
+class _AgendaViewPageState extends State<_AgendaViewPage> {
+  _MeetingTab _tab = _MeetingTab.decisions;
+
+  @override
   Widget build(BuildContext context) {
     final loc = S.of(context);
-    final agenda = vm.agenda;
+    final agenda = widget.vm.agenda;
 
     if (agenda == null) {
       return Center(child: Text(loc.meetingNotFound));
     }
+
+    final isOngoing = agenda.status == MeetingAgendaStatus.ongoing;
 
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildTopCard(context, agenda),
+          _buildTopCard(context, agenda, isOngoing),
           const SizedBox(height: 8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Flexible(fit: FlexFit.loose, child: _buildDetails(context, loc, agenda)),
-                Expanded(child: MeetingViewContent(meeting: agenda)),
+                if (!isOngoing || _tab == _MeetingTab.info)
+                  Flexible(fit: FlexFit.loose, child: _buildDetails(context, loc, agenda)),
+                if (!isOngoing || _tab == _MeetingTab.decisions)
+                  Expanded(child: MeetingViewContent(meeting: agenda)),
               ],
             ),
           ),
@@ -61,7 +74,7 @@ class _AgendaViewPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTopCard(BuildContext context, MeetingAgenda agenda) {
+  Widget _buildTopCard(BuildContext context, MeetingAgenda agenda, bool isOngoing) {
     final statusUIData = getMeetingAgendaStatusUI(S.of(context), agenda.status);
 
     return Row(
@@ -74,8 +87,22 @@ class _AgendaViewPage extends StatelessWidget {
           )
         ),
 
-        if (vm.hasProject)
-          ProjectTitleLinkWidget(projectId: vm.projectId, minimized: true),
+        if (widget.vm.hasProject)
+          ProjectTitleLinkWidget(projectId: widget.vm.projectId, minimized: true),
+
+        if (isOngoing)
+          IconButton(
+            onPressed: () => setState(() => _tab = _tab == _MeetingTab.decisions
+                ? _MeetingTab.info
+                : _MeetingTab.decisions),
+            icon: Icon(
+              _tab == _MeetingTab.decisions
+                  ? Icons.info_outline
+                  : Icons.edit_note,
+              size: 22,
+            ),
+            visualDensity: VisualDensity.compact,
+          ),
       ],
     );
   }
@@ -98,8 +125,8 @@ class _AgendaViewPage extends StatelessWidget {
           DetailsAttributeWidget(
             label: loc.attributeAnimator,
             value:
-                vm.animatorName.isNotEmpty
-                    ? vm.animatorName
+                widget.vm.animatorName.isNotEmpty
+                    ? widget.vm.animatorName
                     : loc.commonNoAnimatorSet,
           ),
           DetailsListWidget(
@@ -111,7 +138,7 @@ class _AgendaViewPage extends StatelessWidget {
           DetailsListWidget(
             label: loc.attributeParticipants,
             emptyLabel: loc.attributeNoParticipants,
-            values: vm.participantNames.isNotEmpty ? vm.participantNames : [],
+            values: widget.vm.participantNames.isNotEmpty ? widget.vm.participantNames : [],
           ),
         ],
       ),
