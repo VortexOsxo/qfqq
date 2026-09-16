@@ -44,7 +44,7 @@ def login_optionnal():
     if g.org_id is not None:
         set_tenant(g.org_id)
 
-SUPPORTED_VERSIONS = ['beta']
+SUPPORTED_VERSIONS = ['0.0.1']
 
 def get_api_version():
     if request.method == "OPTIONS":

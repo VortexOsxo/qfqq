@@ -10,7 +10,7 @@ VALID_SIGNUP_PAYLOAD = {
 
 def signup(client, **overrides):
     payload = {**VALID_SIGNUP_PAYLOAD, **overrides}
-    return client.post("/auth/signup", json=payload, headers={"QfqqVersion": "beta"})
+    return client.post("/auth/signup", json=payload, headers={"QfqqVersion": "0.0.1"})
 
 
 # ── firstName length tests ──────────────────────────────────────────────

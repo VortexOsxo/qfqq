@@ -10,7 +10,7 @@ def get_auth_headers(client, user_id=1, org_id=1):
     token = jwt.encode(
         {"user_id": user_id, "org_id": org_id}, app.config["SECRET_KEY"], algorithm="HS256"
     )
-    return {"Authorization": f"Bearer {token}", "QfqqVersion": "beta"}
+    return {"Authorization": f"Bearer {token}", "QfqqVersion": "0.0.1"}
 
 
 def add_project(client, headers, title, goals, supervisorId):
@@ -70,7 +70,7 @@ def add_meeting(
 def create_user(client, firstname, lastname, email):
     signup_resp = client.post(
         "/auth/signup",
-        headers={"QfqqVersion": "beta"},
+        headers={"QfqqVersion": "0.0.1"},
         json={
             "firstName": firstname,
             "lastName": lastname,

@@ -12,6 +12,6 @@ def test_refuse_incorrect_version(client):
 
 
 def test_refuse_correct_version(client):
-    headers = {"QfqqVersion": "beta"}
+    headers = {"QfqqVersion": "0.0.1"}
     response = client.get("/users", headers=headers)
     assert response.get_json() != {"error": "Unsuported API Version"}

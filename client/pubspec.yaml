@@ -31,10 +31,13 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.14.3
+  msix: ^3.18.0
 
 flutter:
   uses-material-design: true
   generate: true
+  assets:
+    - assets/
 
 flutter_intl:
   enabled: true
@@ -46,3 +49,13 @@ flutter_intl:
 flutter_launcher_icons:
   android: true
   image_path: "assets/logo.png"
+
+msix_config:
+  display_name: QuiFaitQuoiQuand
+  publisher_display_name: QuiFaitQuoiQuand
+  identity_name: QuiFaitQuoiQuand.QuiFaitQuoiQuand
+  msix_version: 0.0.1.0
+  logo_path: assets/logo.png
+  capabilities: internetClient
+  publisher: CN=8D6BB0FA-AAEE-4D03-BDDF-85D891574C0A
+  store: true

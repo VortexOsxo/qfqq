@@ -6,5 +6,5 @@ def get_auth_headers(client, user_id=1, org_id=1):
     )
     return {
         "Authorization": f"Bearer {token}",
-        "QfqqVersion": "beta"
+        "QfqqVersion": "0.0.1"
     }

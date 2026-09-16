@@ -42,6 +42,7 @@ def signup(firstName, lastName, email, password):
 @auth_bp.route("/login", methods=(["POST"]))
 @input_middleware(LoginBuilder())
 def login(email, password):
+    print(login, email, password)
     user = UserDataHandler.get_user_by_email(email)
 
     if user is None or not check_password_hash(user.passwordHash, password):
