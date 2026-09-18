@@ -22,7 +22,7 @@ class OrganizationService {
       body: jsonEncode({'organizationName': name}),
     );
 
-    if (response.statusCode != 200) {
+    if (response.statusCode != 201) {
       return;
     }
     final Map<String, dynamic> data = jsonDecode(response.body);
