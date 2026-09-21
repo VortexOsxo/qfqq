@@ -3,7 +3,8 @@ public.organizations,
 public.invitations,
 public.users,
 public.passwordRequests,
-public.notificationJobs CASCADE;
+public.notificationJobs,
+public.notificationOffsets CASCADE;
 
 CREATE TABLE
   public.organizations (
@@ -58,3 +59,11 @@ CREATE TABLE
 CREATE INDEX notification_jobs_due_idx
   ON public.notificationJobs (scheduledAt)
   WHERE sentAt IS NULL;
+
+-- May want to move type to a separate table
+CREATE TABLE public.notificationOffsets (
+    userId INTEGER NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+    type TEXT NOT NULL,
+    nOffset INTERVAL NOT NULL,
+    PRIMARY KEY (userId, type)
+);

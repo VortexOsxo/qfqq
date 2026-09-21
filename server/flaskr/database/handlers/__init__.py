@@ -6,3 +6,4 @@ from .password_request_data_handler import PasswordRequestDataHandler
 from .role_data_handler import RoleDataHandler
 from .organization_data_handler import OrganizationDataHandler
 from .notification_job_data_handler import NotificationJobDataHandler
+from .notification_offset_data_handler import NotificationOffsetDataHandler

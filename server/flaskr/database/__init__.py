@@ -8,7 +8,8 @@ from .handlers import (
     RoleDataHandler,
     OrganizationDataHandler,
     PasswordRequestDataHandler,
-    NotificationJobDataHandler
+    NotificationJobDataHandler,
+    NotificationOffsetDataHandler
 )
 
 from .database import Database
