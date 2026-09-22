@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/errors/meeting_agenda_errors.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
+import 'package:qfqq/common/models/help_tooltip_creation.dart';
 import 'package:qfqq/common/providers/decisions_provider.dart';
 import 'package:qfqq/common/services/meeting_agenda_service.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_content_completed.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_content_ongoing.dart';
+import 'package:qfqq/common/widgets/reusables/help_button.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/utils/validation.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -70,15 +72,27 @@ class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
 
     final meetingsService = ref.read(meetingAgendaServiceProvider);
 
+    final titleRow = Row(
+      children: [
+        Expanded(
+          child: Text(
+            errors.hasAny()
+                ? loc.meetingViewContentDraftCorrectErrors
+                : loc.meetingViewContentDraftMarkPlanned,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        HelpButton(help: HelpTooltipCreation.meetingCreationHelp(loc)),
+      ],
+    );
+
+
     if (errors.hasAny()) {
       List<String> errorsMessages = errors.getErrorsMessages();
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            loc.meetingViewContentDraftCorrectErrors,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+          titleRow,
           ...errorsMessages.map((message) => Text('    $message')),
         ],
       );
@@ -86,10 +100,7 @@ class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            loc.meetingViewContentDraftMarkPlanned,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+          titleRow,
           TextButton(
             onPressed:
                 () => meetingsService.updateMeetingAgendaStatus(
