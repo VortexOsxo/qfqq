@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/errors/meeting_agenda_errors.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
-import 'package:qfqq/common/models/help_tooltip_creation.dart';
+import 'package:qfqq/common/utils/help_tooltip_creation.dart';
 import 'package:qfqq/common/providers/decisions_provider.dart';
 import 'package:qfqq/common/services/meeting_agenda_service.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_content_completed.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_content_ongoing.dart';
-import 'package:qfqq/common/widgets/reusables/help_button.dart';
+import 'package:qfqq/common/widgets/help/help_button.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/utils/validation.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -82,7 +82,10 @@ class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        HelpButton(help: HelpTooltipCreation.meetingCreationHelp(loc)),
+        HelpButton(
+          helpContent: HelpTooltipCreation.meetingCreationModalHelp(loc),
+          detailedHelpContent: HelpTooltipCreation.meetingCreationHelp(loc),
+        ),
       ],
     );
 

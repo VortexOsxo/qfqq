@@ -19,6 +19,8 @@ import 'package:qfqq/common/pages/user_pages/profile_page.dart';
 import 'package:qfqq/desktop/pages/user_pages/signup_page.dart';
 import 'package:qfqq/desktop/pages/agendas/agenda_list_page.dart';
 import 'package:qfqq/common/pages/user_pages/organization_links_page.dart';
+import 'package:qfqq/common/pages/help_page.dart';
+import 'package:qfqq/common/widgets/help/help_info.dart';
 import 'package:qfqq/common/widgets/scaffolds/auth_page_scaffold.dart';
 
 import 'package:qfqq/common/widgets/scaffolds/default_page_scaffold.dart';
@@ -115,6 +117,12 @@ final GoRouter desktopRouter = GoRouter(
         GoRoute(
           path: '/profile',
           pageBuilder: (context, state) => _noTransition(const ProfilePage()),
+        ),
+        GoRoute(
+          path: '/help',
+          pageBuilder: (context, state) => _noTransition(
+            HelpPage(content: state.extra as HelpContent),
+          ),
         ),
       ],
     ),

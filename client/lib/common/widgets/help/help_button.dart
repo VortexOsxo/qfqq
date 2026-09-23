@@ -1,26 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:qfqq/common/models/help_info.dart';
+import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/widgets/help/help_info.dart';
+import 'package:qfqq/common/widgets/help/help_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class HelpButton extends StatelessWidget {
-  final HelpContent help;
+  final HelpContent helpContent;
+  final HelpContent detailedHelpContent;
 
-  const HelpButton({super.key, required this.help});
+  const HelpButton({
+    super.key,
+    required this.helpContent,
+    required this.detailedHelpContent,
+  });
 
   void _showHelp(BuildContext context) {
     showDialog<void>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(help.title),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [for (final tip in help.tips) _HelpSection(info: tip)],
-            ),
-          ),
+          content: HelpWidget(content: helpContent),
           actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                context.push('/help', extra: detailedHelpContent);
+              },
+              child: Text(S.of(context).helpDialogLearnMore),
+            ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text(S.of(context).commonClose),
@@ -38,7 +45,7 @@ class HelpButton extends StatelessWidget {
     return IconButton(
       onPressed: () => _showHelp(context),
       icon: const Icon(Icons.help_outline_rounded),
-      tooltip: help.tooltip,
+      tooltip: helpContent.tooltip,
       style: IconButton.styleFrom(
         foregroundColor: colorScheme.primary,
         overlayColor: colorScheme.primary.withValues(alpha: 0.12),
@@ -46,27 +53,6 @@ class HelpButton extends StatelessWidget {
         shape: const CircleBorder(),
       ),
       visualDensity: VisualDensity.compact,
-    );
-  }
-}
-
-class _HelpSection extends StatelessWidget {
-  final HelpInfo info;
-
-  const _HelpSection({required this.info});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(info.title, style: Theme.of(context).textTheme.titleSmall),
-          const SizedBox(height: 4),
-          Text(info.description),
-        ],
-      ),
     );
   }
 }
