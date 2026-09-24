@@ -99,4 +99,4 @@ class OrganizationDataHandler:
         query = "SELECT orgId, roleId from public.invitations WHERE email = %s LIMIT 1;"
         params = (email,)
         result = read_query(query, params)
-        return result[0][0] if result else None, None
+        return result[0] if result else (None, None)
