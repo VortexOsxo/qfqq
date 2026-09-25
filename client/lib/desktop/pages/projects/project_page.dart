@@ -31,6 +31,8 @@ class _ProjectPageView extends StatelessWidget {
             projects: vm.filteredProjects,
             supervisorName: vm.supervisorName,
             onViewProject: vm.goToProject,
+            onRefresh: vm.refreshProjects,
+            isRefreshing: vm.isRefreshing,
             showGoals: true,
           ),
         ),

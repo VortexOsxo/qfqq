@@ -63,6 +63,8 @@ class ProjectsService extends StateNotifier<List<Project>> {
     return true;
   }
 
+  Future<void> refreshProjects() => _loadProjects();
+
   Future<void> _loadProjects() async {
     final response = await _http.get(
       _http.getUri('projects'),
