@@ -10,6 +10,8 @@ final organizationServiceProvider = Provider((ref) {
 });
 
 final organizationNameProvider = FutureProvider<String?>((ref) async {
+  ref.watch(authStateProvider);
+
   final service = ref.read(organizationServiceProvider);
   return service.getOrganizationName();
 });
