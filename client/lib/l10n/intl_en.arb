@@ -409,6 +409,7 @@
   "commonFormsEnterResponsible": "Please select a responsible",
   "commonFormsEnterDueDate": "Please select a due date",
   "commonFormsEnterPassword": "Please enter a password",
+  "commonFormsFixErrors": "Please fix the errors before submitting.",
   "commonFormsPasswordsDoNotMatch": "The passwords do not match",
 
   "commonObjectDecisions": "Decisions",

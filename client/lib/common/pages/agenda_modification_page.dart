@@ -186,9 +186,20 @@ class _AgendaModificationPageState extends ConsumerState<AgendaModificationPage>
 
                     const SizedBox(height: 40),
 
+                    if (errors.hasAny()) ...[
+                      Text(
+                          loc.commonFormsFixErrors,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                      
+                      const SizedBox(height: 8),
+                    ],
+
                     // Action Buttons
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         FormOutlinedButton(
                           text: loc.commonCancel,

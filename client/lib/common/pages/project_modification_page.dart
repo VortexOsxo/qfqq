@@ -129,6 +129,16 @@ class _ProjectModificationState extends ConsumerState<ProjectModificationPage> {
               ),
               const SizedBox(height: 20),
 
+              if (errors.hasAny()) ...[
+                Text(
+                  loc.commonFormsFixErrors,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
+
               Row(
                 children: [
                   FormOutlinedButton(text: loc.commonCancel, onPressed: goBack),

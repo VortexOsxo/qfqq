@@ -410,6 +410,7 @@
   "commonFormsEnterResponsible": "Veuillez sélectionner un responsable",
   "commonFormsEnterDueDate": "Veuillez sélectionner une date d'échéance",
   "commonFormsEnterPassword": "Veuillez saisir un mot de passe",
+  "commonFormsFixErrors": "Veuillez corriger les erreurs avant de valider.",
   "commonFormsPasswordsDoNotMatch": "Les mots de passe ne correspondent pas",
 
   "commonObjectDecisions": "Décisions",
