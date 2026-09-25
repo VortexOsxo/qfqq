@@ -3,6 +3,23 @@ from flaskr.database.handlers import OrganizationDataHandler
 from flaskr.services.emails import EmailSender
 from threading import Event
 
+
+def test_get_organization(client):
+    headers = get_auth_headers(client)
+
+    response = client.get("/organizations/", headers=headers)
+
+    assert response.status_code == 200
+    assert response.json == {"orgName": "Test"}
+
+def test_get_organization_not_found(client):
+    headers = get_auth_headers(client, user_id=1, org_id=1000)
+
+    response = client.get("/organizations/", headers=headers)
+
+    assert response.status_code == 404
+
+
 def test_invite_with_invalid_role_id(client):
     headers = get_auth_headers(client)
 

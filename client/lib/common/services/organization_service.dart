@@ -9,6 +9,11 @@ final organizationServiceProvider = Provider((ref) {
   return OrganizationService(http, auth);
 });
 
+final organizationNameProvider = FutureProvider<String?>((ref) async {
+  final service = ref.read(organizationServiceProvider);
+  return service.getOrganization();
+});
+
 class OrganizationService {
   final QfqqHttpClient _http;
   final AuthService _authService;
@@ -30,5 +35,19 @@ class OrganizationService {
       return;
     }
     _authService.onOrgJoined(data);
+  }
+
+  Future<String?> getOrganization() async {
+    final response = await _http.get(
+      _http.getUri('organizations/'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode != 200) {
+      return null;
+    }
+
+    final Map<String, dynamic> data = jsonDecode(response.body);
+    return data['orgName'];
   }
 }

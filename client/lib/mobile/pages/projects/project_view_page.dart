@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/view_models/project_view_page_view_model.dart';
 import 'package:qfqq/common/widgets/details_attribute_widget.dart';
 import 'package:qfqq/common/widgets/projects/project_content_widget.dart';
@@ -53,11 +54,7 @@ class _ProjectViewPageView extends StatelessWidget {
         children: [
           Text(
             '${project.number}: ${project.title}',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 24,
-              color: theme.primaryColor,
-            ),
+            style: pageTitleTextStyle(theme)
           ),
         ],
       ),
