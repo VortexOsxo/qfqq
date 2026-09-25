@@ -57,7 +57,7 @@ class OrganizationTitle extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final name = ref.read(organizationNameProvider);
+    final name = ref.watch(organizationNameProvider);
 
     return name.when(
       loading: () => const SizedBox.shrink(),
