@@ -436,6 +436,8 @@
 
   "buttonCreateAgenda": "Créer un ordre du jour",
   "buttonCreateProject": "Créer un projet",
+  "refreshProjects": "Actualiser les projets",
+  "refreshMeetings": "Actualiser les réunions",
   "buttonCreateRole": "Créer un rôle",
   "roleNameMember": "Membre",
   "roleNameAdmin": "Administrateur",
