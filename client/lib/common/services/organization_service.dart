@@ -11,7 +11,7 @@ final organizationServiceProvider = Provider((ref) {
 
 final organizationNameProvider = FutureProvider<String?>((ref) async {
   final service = ref.read(organizationServiceProvider);
-  return service.getOrganization();
+  return service.getOrganizationName();
 });
 
 class OrganizationService {
@@ -37,7 +37,7 @@ class OrganizationService {
     _authService.onOrgJoined(data);
   }
 
-  Future<String?> getOrganization() async {
+  Future<String?> getOrganizationName() async {
     final response = await _http.get(
       _http.getUri('organizations/'),
       headers: {'Content-Type': 'application/json'},

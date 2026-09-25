@@ -98,7 +98,7 @@ Future<AccountError> signup(User user, String password) async {
     _onSuccessfulAuth(data);
   }
 
-  void logout() async {
+  Future<void> logout() async {
     await storage.delete(key: 'refresh_token');
 
     _sessionTokenStore.token = null;
