@@ -5,6 +5,7 @@ import 'package:qfqq/common/providers/roles_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/providers/users_roles_provider.dart';
 import 'package:qfqq/common/services/modal_service.dart';
+import 'package:qfqq/common/services/organization_service.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/role.dart';
 import 'package:qfqq/common/utils/string.dart';
@@ -31,6 +32,7 @@ class OrganizationPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            OrganizationTitle(),
             TabBar(
               isScrollable: true,
               tabAlignment: TabAlignment.start,
@@ -46,6 +48,25 @@ class OrganizationPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class OrganizationTitle extends ConsumerWidget {
+  const OrganizationTitle({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final name = ref.watch(organizationNameProvider);
+
+    return name.when(
+      loading: () => const SizedBox.shrink(),
+      error: (error, stackTrace) => const SizedBox.shrink(),
+      data:
+          (name) =>
+              name == null
+                  ? const SizedBox.shrink()
+                  : Text(name, style: pageTitleTextStyle(Theme.of(context))),
     );
   }
 }

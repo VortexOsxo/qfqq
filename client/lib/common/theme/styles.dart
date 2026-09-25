@@ -27,3 +27,12 @@ ButtonStyle squareButtonStyleSmall(BuildContext context) {
 ButtonStyle inplaceTextButtonStyle(BuildContext context) {
   return TextButton.styleFrom(padding: EdgeInsets.zero);
 }
+
+TextStyle pageTitleTextStyle(ThemeData theme) {
+  return TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 24,
+    color: theme.primaryColor,
+  );
+} 
+

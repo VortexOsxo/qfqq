@@ -49,7 +49,7 @@ class OrganizationDataHandler:
     
     @classmethod
     def get_org(cls, id: int):
-        query = f"SELECT * from public.organizations WHERE id = %s LIMIT 1;"
+        query = f"SELECT id, slug, name from public.organizations WHERE id = %s LIMIT 1;"
         orgs = read_query(query, (id,))
         return orgs[0] if orgs else None
 
