@@ -453,7 +453,6 @@
   "organizationCreationPageTitle": "Créer une organisation",
   "organizationCreationPageButton": "Créer",
   "organizationCreationPageLabelName": "Nom de l'organisation",
-  "loginPageLinkCreateOrganization": "Créer une nouvelle organisation",
   "organizationCreationPageSuccessTitle": "Organisation rejointe",
   "organizationCreationPageSuccess": "Organisation créée avec succès !",
   "organizationCreationPageCodeInstruction": "Veuillez utiliser le code suivant pour créer votre compte :",

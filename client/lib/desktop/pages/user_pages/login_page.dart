@@ -62,10 +62,6 @@ class _DesktopLoginView extends StatelessWidget {
               child: Text(loc.loginPageLinkSignup),
             ),
             TextButton(
-              onPressed: vm.goToCreateOrganization,
-              child: Text(loc.loginPageLinkCreateOrganization),
-            ),
-            TextButton(
               onPressed: vm.goToForgottenPassword,
               child: Text(loc.loginPageForgottenPasswordLink),
             ),
