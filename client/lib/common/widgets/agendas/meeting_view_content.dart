@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/errors/meeting_agenda_errors.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
-import 'package:qfqq/common/utils/help_tooltip_creation.dart';
+import 'package:qfqq/common/utils/help_util.dart';
 import 'package:qfqq/common/providers/decisions_provider.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/meeting_agenda_service.dart';
@@ -67,14 +67,15 @@ class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
   Widget _plannedContent(BuildContext context, WidgetRef ref) {
     final loc = S.of(context);
     final currentUser = ref.watch(authStateProvider).user;
-    final isAnimator = currentUser != null && widget.meeting.animatorId == currentUser.id;
+    final isAnimator =
+        currentUser != null && widget.meeting.animatorId == currentUser.id;
 
-    final helpContent = isAnimator
-        ? HelpTooltipCreation.meetingAnimationModalHelp(loc)
-        : HelpTooltipCreation.meetingParticipationModalHelp(loc);
-    final detailedHelpContent = isAnimator
-        ? HelpTooltipCreation.meetingAnimationHelp(loc)
-        : HelpTooltipCreation.meetingParticipationHelp(loc);
+    final helpLink =
+        isAnimator
+            ? MeetingAnimationHelpLink(loc: loc)
+            : MeetingParticipationHelpLink(loc: loc);
+    final helpContent = helpLink.getModal();
+    final detailedHelpContent = helpLink.getContent();
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -103,13 +104,14 @@ class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
 
     final loc = S.of(context);
     final currentUser = ref.watch(authStateProvider).user;
-    final isAnimator = currentUser != null && widget.meeting.animatorId == currentUser.id;
-    final helpContent = isAnimator
-        ? HelpTooltipCreation.meetingAnimationModalHelp(loc)
-        : HelpTooltipCreation.meetingParticipationModalHelp(loc);
-    final detailedHelpContent = isAnimator
-        ? HelpTooltipCreation.meetingAnimationHelp(loc)
-        : HelpTooltipCreation.meetingParticipationHelp(loc);
+    final isAnimator =
+        currentUser != null && widget.meeting.animatorId == currentUser.id;
+    final helpLink =
+        isAnimator
+            ? MeetingAnimationHelpLink(loc: loc)
+            : MeetingParticipationHelpLink(loc: loc);
+    final helpContent = helpLink.getModal();
+    final detailedHelpContent = helpLink.getContent();
 
     final meetingsService = ref.read(meetingAgendaServiceProvider);
 
@@ -129,7 +131,6 @@ class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
         ),
       ],
     );
-
 
     if (errors.hasAny()) {
       List<String> errorsMessages = errors.getErrorsMessages();

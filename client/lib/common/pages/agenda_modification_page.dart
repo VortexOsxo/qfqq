@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/templates/form_template.dart';
 import 'package:qfqq/common/templates/navigation_guard.dart';
 import 'package:qfqq/common/models/errors/meeting_agenda_errors.dart';
-import 'package:qfqq/common/utils/help_tooltip_creation.dart';
+import 'package:qfqq/common/utils/help_util.dart';
 import 'package:qfqq/common/services/modal_service.dart';
 import 'package:qfqq/common/models/user.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
@@ -130,9 +130,9 @@ class _AgendaModificationPageState extends ConsumerState<AgendaModificationPage>
                         ),
                         HelpButton(
                           helpContent:
-                              HelpTooltipCreation.meetingCreationModalHelp(loc),
+                              MeetingCreationHelpLink(loc: loc).getModal(),
                           detailedHelpContent:
-                              HelpTooltipCreation.meetingCreationHelp(loc),
+                              MeetingCreationHelpLink(loc: loc).getContent(),
                         ),
                       ],
                     ),
