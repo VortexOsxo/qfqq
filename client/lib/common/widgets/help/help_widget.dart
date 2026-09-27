@@ -4,11 +4,13 @@ import 'package:qfqq/common/widgets/help/help_info.dart';
 class HelpWidget extends StatelessWidget {
   final HelpContent content;
   final bool showBackButton;
+  final Widget? titleAction;
 
   const HelpWidget({
     super.key,
     required this.content,
     this.showBackButton = false,
+    this.titleAction,
   });
 
   @override
@@ -40,6 +42,7 @@ class HelpWidget extends StatelessWidget {
                   ),
                 ),
               ),
+              if (titleAction != null) titleAction!,
             ],
           ),
           const SizedBox(height: 24),

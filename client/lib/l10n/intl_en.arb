@@ -167,6 +167,8 @@
   "helpContentMeetingParticipationAskForHelp": "Ask for help: to go further, together.",
   "helpDialogLearnMore": "Learn more",
   "helpPageTitle": "Help",
+  "helpSelectionHide": "Hide help selection",
+  "helpSelectionShow": "Show help selection",
   "agendaPageSelectProject": "Select project",
   "agendaPageUpdateDraft": "Update Agenda as draft",
   "agendaPageSaveDraft": "Save Agenda as draft",
