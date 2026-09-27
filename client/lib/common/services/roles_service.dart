@@ -9,7 +9,7 @@ class RolesService extends StateNotifier<List<Role>> {
   final QfqqHttpClient _http;
 
   RolesService(this._http, AuthService auth) : super([]) {
-    _loadRoles();
+    auth.connectionNotifier.subscribe((_) => _loadRoles());
     auth.disconnectionNotifier.subscribe((_) => _clearRoles());
   }
 
