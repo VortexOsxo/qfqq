@@ -98,9 +98,11 @@ class _LogOutButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return HoverTextButton(
       text: S.of(context).profilePageLogout,
-      onTap: () {
-        ref.read(authStateProvider.notifier).logout();
-        context.go('/login');
+      onTap: () async {
+        await ref.read(authStateProvider.notifier).logout();
+        if (context.mounted) {
+          context.go('/login');
+        }
       },
     );
   }
