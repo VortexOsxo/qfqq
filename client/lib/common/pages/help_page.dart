@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qfqq/common/widgets/help/help_info.dart';
+import 'package:qfqq/common/widgets/help/help_selection.dart';
 import 'package:qfqq/common/widgets/help/help_widget.dart';
 
 class HelpPage extends StatelessWidget {
@@ -9,7 +10,13 @@ class HelpPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HelpWidget(content: content, showBackButton: true);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(child: HelpWidget(content: content, showBackButton: true)),
+        const SizedBox(width: 220, child: HelpSelection()),
+      ],
+    );
   }
 }
 

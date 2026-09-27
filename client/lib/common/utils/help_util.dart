@@ -1,10 +1,24 @@
 import 'package:qfqq/common/widgets/help/help_info.dart';
 import 'package:qfqq/generated/l10n.dart';
 
-class HelpTooltipCreation {
-  const HelpTooltipCreation._();
+abstract class HelpLink {
+  final S loc;
 
-  static HelpContent meetingCreationHelp(S loc) {
+  const HelpLink({required this.loc});
+
+  String getTitle();
+  HelpContent getContent();
+  HelpContent getModal();
+}
+
+class MeetingCreationHelpLink extends HelpLink {
+  const MeetingCreationHelpLink({required super.loc});
+
+  @override
+  String getTitle() => loc.helpContentMeetingCreationTitle;
+
+  @override
+  HelpContent getContent() {
     return HelpContent(
       title: loc.helpContentMeetingCreationTitle,
       tooltip: loc.helpContentMeetingCreationTooltip,
@@ -64,7 +78,8 @@ class HelpTooltipCreation {
     );
   }
 
-  static HelpContent meetingCreationModalHelp(S loc) {
+  @override
+  HelpContent getModal() {
     return HelpContent(
       title: loc.helpContentMeetingCreationTitle,
       tooltip: loc.helpContentMeetingCreationTooltip,
@@ -72,17 +87,35 @@ class HelpTooltipCreation {
         HelpSectionTitle(title: loc.helpContentMeetingCreationMeetingsTitle),
         HelpParagraph(text: loc.helpContentMeetingCreationMeetingsParagraph),
 
-        HelpSectionTitle(title: loc.helpContentMeetingCreationCheckRelevanceTitle),
-        HelpParagraph(text: loc.helpContentMeetingCreationCheckRelevanceParagraph1),
-        HelpParagraph(text: loc.helpContentMeetingCreationCheckRelevanceParagraph2),
+        HelpSectionTitle(
+          title: loc.helpContentMeetingCreationCheckRelevanceTitle,
+        ),
+        HelpParagraph(
+          text: loc.helpContentMeetingCreationCheckRelevanceParagraph1,
+        ),
+        HelpParagraph(
+          text: loc.helpContentMeetingCreationCheckRelevanceParagraph2,
+        ),
 
-        HelpSectionTitle(title: loc.helpContentMeetingCreationPrepareMeetingTitle),
-        HelpParagraph(text: loc.helpContentMeetingCreationPrepareMeetingParagraph),
+        HelpSectionTitle(
+          title: loc.helpContentMeetingCreationPrepareMeetingTitle,
+        ),
+        HelpParagraph(
+          text: loc.helpContentMeetingCreationPrepareMeetingParagraph,
+        ),
       ],
     );
   }
+}
 
-  static HelpContent meetingAnimationHelp(S loc) {
+class MeetingAnimationHelpLink extends HelpLink {
+  const MeetingAnimationHelpLink({required super.loc});
+
+  @override
+  String getTitle() => loc.helpContentMeetingAnimationTitle;
+
+  @override
+  HelpContent getContent() {
     return HelpContent(
       title: loc.helpContentMeetingAnimationTitle,
       tooltip: loc.helpContentMeetingAnimationTooltip,
@@ -184,7 +217,8 @@ class HelpTooltipCreation {
     );
   }
 
-  static HelpContent meetingAnimationModalHelp(S loc) {
+  @override
+  HelpContent getModal() {
     return HelpContent(
       title: loc.helpContentMeetingAnimationTitle,
       tooltip: loc.helpContentMeetingAnimationTooltip,
@@ -217,8 +251,16 @@ class HelpTooltipCreation {
       ],
     );
   }
+}
 
-  static HelpContent meetingParticipationHelp(S loc) {
+class MeetingParticipationHelpLink extends HelpLink {
+  const MeetingParticipationHelpLink({required super.loc});
+
+  @override
+  String getTitle() => loc.helpContentMeetingParticipationTitle;
+
+  @override
+  HelpContent getContent() {
     return HelpContent(
       title: loc.helpContentMeetingParticipationTitle,
       tooltip: loc.helpContentMeetingParticipationTooltip,
@@ -238,7 +280,8 @@ class HelpTooltipCreation {
     );
   }
 
-  static HelpContent meetingParticipationModalHelp(S loc) {
+  @override
+  HelpContent getModal() {
     return HelpContent(
       title: loc.helpContentMeetingParticipationTitle,
       tooltip: loc.helpContentMeetingParticipationTooltip,
@@ -258,3 +301,9 @@ class HelpTooltipCreation {
     );
   }
 }
+
+final helpLinksFactories = [
+  (loc) => MeetingAnimationHelpLink(loc: loc),
+  (loc) => MeetingCreationHelpLink(loc: loc),
+  (loc) => MeetingParticipationHelpLink(loc: loc),
+];
