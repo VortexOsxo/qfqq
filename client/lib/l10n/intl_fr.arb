@@ -167,6 +167,8 @@
   "helpContentMeetingParticipationAskForHelp": "Demander de l’aide : pour aller plus loin, ensemble.",
   "helpDialogLearnMore": "En savoir plus",
   "helpPageTitle": "Aide",
+  "helpSelectionHide": "Masquer les rubriques d’aide",
+  "helpSelectionShow": "Afficher les rubriques d’aide",
   "agendaPageSelectProject": "Sélectionner un projet",
   "agendaPageUpdateDraft": "Mettre à jour comme brouillon",
   "agendaPageSaveDraft": "Enregistrer comme brouillon",
