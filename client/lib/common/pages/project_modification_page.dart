@@ -75,7 +75,7 @@ class _ProjectModificationState extends ConsumerState<ProjectModificationPage> {
 
     activeNavigationGuard = null;
     context.go(
-      widget.isNewProject ? '/projects' : '/project/${widget.project.id}',
+      widget.isNewProject ? '/projects' : '/projects/${widget.project.id}',
     );
   }
 
