@@ -52,8 +52,10 @@ class _HelpLink extends StatelessWidget {
       iconWidth: 14,
       spacing: 2,
       onTap: () {
+        final router = GoRouter.of(context);
+
         Navigator.of(context).pop();
-        context.push('/help', extra: content.getContent());
+        router.push('/help', extra: content.getContent());
       },
     );
   }
