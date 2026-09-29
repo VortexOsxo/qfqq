@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qfqq/common/pages/user_pages/forgotten_password_page_view_model.dart';
 import 'package:qfqq/common/theme/styles.dart';
+import 'package:qfqq/common/widgets/reusables/password_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class ForgottenPasswordEnterPasswordStateWidget extends StatelessWidget {
@@ -15,16 +16,14 @@ class ForgottenPasswordEnterPasswordStateWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(loc.forgottenPasswordPageEnterNewPassword),
-        TextField(
+        PasswordTextField(
           decoration: InputDecoration(labelText: loc.attributePassword),
-          obscureText: true,
           onChanged: vm.setPassword,
         ),
         const SizedBox(height: 32),
         Text(loc.forgottenPasswordPageConfirmNewPassword),
-        TextField(
+        PasswordTextField(
           decoration: InputDecoration(labelText: loc.attributePassword),
-          obscureText: true,
           onChanged: vm.setConfirmedPassword,
         ),
         if (vm.errorMessage != null)

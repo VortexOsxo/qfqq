@@ -28,6 +28,8 @@
   "attributeLastName": "Last Name",
   "attributeEmail": "Email",
   "attributePassword": "Password",
+  "showPassword": "Show password",
+  "hidePassword": "Hide password",
 
   "agendaPageActualName": "Redaction Date",
   "agendaPageTitle": "Meeting Title",
