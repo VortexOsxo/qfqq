@@ -26,15 +26,6 @@ class _HelpPageState extends State<HelpPage> {
       return HelpWidget(
         content: widget.content,
         showBackButton: true,
-        titleAction: IconButton(
-          tooltip:
-              _showHelpSelection
-                  ? loc.helpSelectionHide
-                  : loc.helpSelectionShow,
-          onPressed:
-              () => setState(() => _showHelpSelection = !_showHelpSelection),
-          icon: Icon(_showHelpSelection ? Icons.menu_open : Icons.menu),
-        ),
       );
     }
 
