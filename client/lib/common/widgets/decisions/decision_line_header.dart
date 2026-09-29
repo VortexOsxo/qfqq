@@ -34,7 +34,7 @@ class DecisionLineHeader extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          Spacer(),
+          SizedBox(width: 12),
           Text(statusText, style: TextStyle(fontSize: 14, color: Colors.grey)),
           const SizedBox(width: 8),
           Text(dueDateText, style: TextStyle(fontSize: 14, color: Colors.grey)),
