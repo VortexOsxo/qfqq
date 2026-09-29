@@ -30,8 +30,9 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
           visualDensity: VisualDensity.compact,
           tooltip: _isVisible ? loc.hidePassword : loc.showPassword,
           icon: Icon(
-            
-            _isVisible ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+            _isVisible
+                ? Icons.visibility_off_outlined
+                : Icons.visibility_outlined,
             size: 20,
           ),
           onPressed: () => setState(() => _isVisible = !_isVisible),
