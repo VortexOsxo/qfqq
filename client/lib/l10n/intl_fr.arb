@@ -28,6 +28,8 @@
   "attributeLastName": "Nom de famille",
   "attributeEmail": "Email",
   "attributePassword": "Mot de passe",
+  "showPassword": "Afficher le mot de passe",
+  "hidePassword": "Masquer le mot de passe",
 
   "agendaPageActualName": "Date de rédaction",
   "agendaPageTitle": "Titre de la réunion",

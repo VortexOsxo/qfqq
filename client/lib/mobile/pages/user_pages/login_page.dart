@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qfqq/common/pages/user_pages/login_page_view_model.dart';
 import 'package:qfqq/common/theme/styles.dart';
+import 'package:qfqq/common/widgets/reusables/password_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
 import 'package:qfqq/mobile/layouts/auth_page_layout.dart';
 
@@ -30,9 +31,8 @@ class _MobileLoginView extends StatelessWidget {
             onSaved: vm.saveEmail,
           ),
           const SizedBox(height: 8),
-          TextFormField(
+          PasswordTextField(
             decoration: InputDecoration(labelText: loc.attributePassword),
-            obscureText: true,
             onSaved: vm.savePassword,
           ),
           const SizedBox(height: 8),
