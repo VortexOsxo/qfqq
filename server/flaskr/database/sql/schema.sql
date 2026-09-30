@@ -14,7 +14,7 @@ decisionStatus CASCADE;
 
 CREATE TYPE meetingStatus AS ENUM ('draft', 'planned', 'ongoing', 'canceled', 'completed');
 
-CREATE TYPE decisionStatus AS ENUM ('inProgress', 'cancelled', 'completed');
+CREATE TYPE decisionStatus AS ENUM ('inProgress', 'pending', 'cancelled', 'completed');
 
 CREATE TABLE
   roles (

@@ -57,7 +57,7 @@ class _DecisionViewPageContent extends StatelessWidget {
                 
                 Spacer(),
 
-                if (vm.isInProgress) ...[
+                if (vm.isInProgress || vm.isPending) ...[
                   const SizedBox(height: 8),
                   IntrinsicWidth(
                     child: Column(
@@ -72,6 +72,13 @@ class _DecisionViewPageContent extends StatelessWidget {
                           onPressed: vm.markAsCancelled,
                           text: loc.decisionViewPageMarkAsCancelled,
                         ),
+                        if (!vm.isPending) ...[
+                          const SizedBox(height: 8),
+                          FormOutlinedButton(
+                            onPressed: vm.markAsPending,
+                            text: loc.decisionViewPageMarkAsPending,
+                          ),
+                        ]
                       ],
                     ),
                   ),

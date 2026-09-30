@@ -104,6 +104,15 @@ class DecisionDataHandler:
             return cur.rowcount == 1
 
     @classmethod
+    def pending_decision(cls, id: int):
+        query = "UPDATE decisions SET status = %s WHERE id = %s;"
+        params = ('pending', id)
+        with get_db_access() as conn:
+            cur = conn.cursor()
+            cur.execute(query, params)
+            return cur.rowcount == 1
+
+    @classmethod
     def cancel_decision(cls, id: int):
         query = "UPDATE decisions SET status = %s WHERE id = %s;"
         params = ('cancelled', id)

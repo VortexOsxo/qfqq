@@ -1,6 +1,6 @@
 import 'package:qfqq/common/utils/is_id_valid.dart';
 
-enum DecisionStatus { inProgress, cancelled, completed }
+enum DecisionStatus { inProgress, pending, cancelled, completed }
 
 class Decision {
   int id;

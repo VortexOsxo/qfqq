@@ -26,6 +26,7 @@ class DecisionViewPageViewModelState extends ConsumerState<DecisionViewPageViewM
   
   Decision? get decision => ref.watch(decisionByIdProvider(widget.decisionId));
   bool get isInProgress => decision?.status == DecisionStatus.inProgress;
+  bool get isPending => decision?.status == DecisionStatus.pending;
 
   String get responsibleName {
     final responsibleId = decision?.responsibleId;
@@ -46,17 +47,17 @@ class DecisionViewPageViewModelState extends ConsumerState<DecisionViewPageViewM
   bool get hasMeeting => isIdValid(decision?.meetingId);
   bool get hasProject => isIdValid(decision?.projectId);
 
-  Future<void> markAsCompleted() =>
-      ref.read(decisionsServiceProvider).updateDecisionStatus(
-        widget.decisionId,
-        DecisionStatus.completed,
-      );
+  Future<void> markAsCompleted() => ref
+      .read(decisionsServiceProvider)
+      .updateDecisionStatus(widget.decisionId, DecisionStatus.completed);
 
-  Future<void> markAsCancelled() =>
-      ref.read(decisionsServiceProvider).updateDecisionStatus(
-        widget.decisionId,
-        DecisionStatus.cancelled,
-      );
+  Future<void> markAsCancelled() => ref
+      .read(decisionsServiceProvider)
+      .updateDecisionStatus(widget.decisionId, DecisionStatus.cancelled);
+
+  Future<void> markAsPending() => ref
+      .read(decisionsServiceProvider)
+      .updateDecisionStatus(widget.decisionId, DecisionStatus.pending);
 
   void goToMeeting() => context.go('/agendas/${decision?.meetingId}');
   void goToDecisions() => context.go('/decisions');
