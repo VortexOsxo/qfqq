@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify, request, g
 
 from flaskr.models import DecisionStatus
 from flaskr.database import DecisionDataHandler
-from flaskr.services.inputs import input_middleware, CreateDecisionBuilder, LambdaBuilder, EnumValidator
+from flaskr.services.inputs import input_middleware, CreateDecisionBuilder, LambdaBuilder, EnumValidator, StringValidator
 from flaskr.blueprints.before_request import login_required
 from flaskr.blueprints.middlewares import permission_middleware, Permission
 
@@ -64,6 +64,17 @@ def patch_meeting_agenda_status(status, id: str):
         return '', 204
     except: pass
     return '', 404
+
+@decisions_bp.patch("/<string:id>/completion-message")
+@input_middleware(LambdaBuilder(("message", StringValidator())))
+def patch_decision_completion_message(message, id: str):
+    try:
+        result = DecisionDataHandler.set_completion_message(id, message)
+        if not result:
+            return '', 404
+        return '', 204
+    except Exception:
+        return '', 404
 
 @decisions_bp.delete("/<int:id>")
 @permission_middleware(Permission.DeleteContent)

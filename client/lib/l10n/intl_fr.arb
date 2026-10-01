@@ -308,12 +308,22 @@
   
   "decisionViewPageTitle": "Détails de la décision",
   "decisionNotFound": "Décision introuvable",
-  "decisionViewPageCompletedDate": "Date de fin",
+  "decisionViewPageCompletedDate": "Date de complétion",
+  "decisionViewPageOutcome": "Résultat",
+  "decisionViewPageCompletedOn": "Terminée le {date}",
+  "@decisionViewPageCompletedOn": {
+    "placeholders": {
+      "date": {}
+    }
+  },
   "decisionViewPageMeeting": "Réunion",
   "decisionViewPageGoToAgenda": "Voir l'ordre du jour",
   "decisionViewPageMarkAsCompleted": "Marquer comme terminée",
   "decisionViewPageMarkAsCancelled": "Marquer comme annulée",
   "decisionViewPageMarkAsPending": "Marquer comme en attente",
+  "decisionCompletionMessageTitle": "Terminer la décision",
+  "decisionCompletionMessageLabel": "Message de complétion",
+  "decisionCompletionMessageSaveFailed": "Impossible d'enregistrer le message de complétion.",
   "decisionDeleteTitle": "Supprimer la décision ?",
   "decisionDeleteMessage": "Êtes-vous sûr de vouloir supprimer cette décision ? Cette action est irréversible.",
   "decisionDeleteConfirm": "Supprimer la décision",

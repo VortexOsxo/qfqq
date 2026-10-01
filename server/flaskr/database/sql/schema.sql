@@ -131,6 +131,7 @@ CREATE TABLE
     initialDate DATE NOT NULL,
     dueDate DATE,
     completedDate DATE,
+    completionMessage TEXT DEFAULT NULL,
     responsibleId INTEGER REFERENCES users (id),
     meetingId INTEGER REFERENCES meetings (id) ON DELETE CASCADE
   );

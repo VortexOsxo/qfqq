@@ -11,6 +11,7 @@ class Decision {
   DateTime initialDate;
   DateTime? dueDate;
   DateTime? completedDate;
+  String? completedMessage;
 
   int? responsibleId;
   int? meetingId;
@@ -26,6 +27,7 @@ class Decision {
     required this.initialDate,
     required this.dueDate,
     required this.completedDate,
+    this.completedMessage,
     required this.responsibleId,
     required this.meetingId,
     required this.assistantsIds,
@@ -38,6 +40,7 @@ class Decision {
       description = '',
       status = DecisionStatus.inProgress,
       initialDate = DateTime.now(),
+      completedMessage = null,
       assistantsIds = [];
 
   Map<String, dynamic> toJson() {
@@ -48,6 +51,7 @@ class Decision {
       'initialDate': initialDate.toIso8601String(),
       if (dueDate != null) 'dueDate': dueDate?.toIso8601String(),
       if (completedDate != null) 'completedDate': completedDate?.toIso8601String(),
+      if (completedMessage != null) 'completionMessage': completedMessage,
       if (isIdValid(responsibleId)) 'responsibleId': responsibleId,
       if (isIdValid(meetingId)) 'meetingId': meetingId,
       'assistantsIds': assistantsIds,
@@ -64,6 +68,7 @@ class Decision {
       ),
       initialDate = DateTime.parse(data['initialDate']),
       completedDate = data['completedDate'] != null ? DateTime.parse(data['completedDate']) : null,
+      completedMessage = data['completionMessage'],
       dueDate =
           data['dueDate'] != null ? DateTime.parse(data['dueDate']) : null,
       responsibleId = data['responsibleId'],
@@ -83,6 +88,7 @@ class Decision {
       initialDate: initialDate,
       dueDate: dueDate,
       completedDate: completedDate,
+      completedMessage: completedMessage,
       responsibleId: responsibleId,
       meetingId: meetingId,
       assistantsIds: List<int>.from(assistantsIds),

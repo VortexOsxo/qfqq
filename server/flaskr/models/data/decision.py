@@ -42,6 +42,7 @@ class Decision:
     initialDate: datetime
     dueDate: datetime | None
     completedDate: datetime | None
+    completionMessage: str | None
 
     responsibleId: int
     meetingId: int
@@ -60,6 +61,7 @@ class Decision:
             "completedDate": (
                 self.completedDate.isoformat() if self.completedDate else None
             ),
+            "completionMessage": self.completionMessage,
             "responsibleId": self.responsibleId,
             "meetingId": self.meetingId,
             "assistantsIds": self.assistantsIds or [],
