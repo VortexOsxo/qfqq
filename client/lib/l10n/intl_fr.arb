@@ -212,6 +212,7 @@
   "loginPageLinkSignup": "Pas de compte ? S'inscrire",
   "loginPageForgottenPasswordLink": "Mot de passe oublié ? Cliquez ici pour le réinitialiser.",
   "loginPageStayLoggedIn": "Rester connecté",
+  "notFoundMessage": "Le contenu que vous recherchez est introuvable.",
 
   "homePageTitle": "Accueil",
   "homePageResponsabilities": "Responsabilités",

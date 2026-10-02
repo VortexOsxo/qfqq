@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/pages/user_pages/organization_links_page.dart';
+import 'package:qfqq/common/pages/not_found_page.dart';
 import 'package:qfqq/common/pages/help_page.dart';
 import 'package:qfqq/common/widgets/help/help_info.dart';
 import 'package:qfqq/common/providers/navigator_key.dart';
@@ -26,6 +27,7 @@ import 'package:qfqq/mobile/pages/user_pages/login_page.dart';
 final GoRouter mobileRouter = GoRouter(
   navigatorKey: navigatorKey,
   initialLocation: '/login',
+  errorBuilder: (context, state) => const NotFoundPage(),
   routes: [
     ShellRoute(
       builder: (context, state, child) => mobilePageScaffold(
