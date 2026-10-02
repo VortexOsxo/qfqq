@@ -137,10 +137,7 @@ class _DecisionViewPageContent extends StatelessWidget {
         ),
         DetailsAttributeWidget(
           label: loc.decisionListDueDate,
-          value:
-              decision.dueDate != null
-                  ? formatDateDay(context, decision.dueDate)
-                  : loc.commonNoDateSet,
+          value: formatDateDayIfPresent(context, decision.dueDate),
         ),
         DetailsAttributeWidget(
           label: loc.decisionListResponsible,

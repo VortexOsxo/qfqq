@@ -160,14 +160,11 @@ class _DecisionViewPageContent extends StatelessWidget {
         const SizedBox(height: 12),
         DetailsAttributeWidget(
           label: loc.attributeDate,
-          value: formatDate(context, decision.initialDate),
+          value: formatDateDay(context, decision.initialDate),
         ),
         DetailsAttributeWidget(
           label: loc.decisionListDueDate,
-          value:
-              decision.dueDate != null
-                  ? formatDate(context, decision.dueDate)
-                  : loc.commonNoDateSet,
+          value: formatDateDayIfPresent(context, decision.dueDate),
         ),
         DetailsAttributeWidget(
           label: loc.decisionListResponsible,

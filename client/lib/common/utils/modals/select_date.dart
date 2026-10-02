@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:qfqq/common/utils/date.dart';
+import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 Future<DateTime?> showDateTimePicker(BuildContext context, DateTime currentDateTime) async {
@@ -98,7 +98,7 @@ Future<DateTime?> showDateTimePicker(BuildContext context, DateTime currentDateT
                   ],
                   const SizedBox(height: 16),
                   Text(
-                    '${loc.selectDateSelected} ${DateFormat.yMd().add_Hm().format(composedDate)}',
+                    '${loc.selectDateSelected} ${formatDate(context, composedDate)}',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 16),

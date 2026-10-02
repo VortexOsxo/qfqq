@@ -149,7 +149,7 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
             SizedBox(width: widget.showDetails ? 16 : 8),
             Expanded(flex: 1, child: Text(loc.attributeNumber)),
             Expanded(flex: 3, child: Text(loc.decisionListDescription)),
-            Expanded(flex: 3, child: Text(loc.decisionListDueDate)),
+            Expanded(flex: 2, child: Text(loc.decisionListDueDate)),
             if (widget.showDetails)
               Expanded(flex: 3, child: Text(loc.decisionListResponsible)),
             if (widget.showDetails)
@@ -185,11 +185,8 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
                   Expanded(flex: 1, child: Text(decision.number.toString())),
                   Expanded(flex: 3, child: listText(decision.description)),
                   Expanded(
-                    flex: 3,
-                    child: Text(
-                      decision.dueDate != null
-                          ? formatDate(context, decision.dueDate)
-                          : loc.commonNoDateSet,
+                    flex: 2,
+                    child: Text(formatDateDayIfPresent(context, decision.dueDate),
                     ),
                   ),
                   if (widget.showDetails)

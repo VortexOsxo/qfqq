@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:qfqq/common/models/decision.dart';
 import 'package:qfqq/common/theme/styles.dart';
+import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -14,10 +14,7 @@ class DecisionLineHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loc = S.of(context);
-    final dueDateText =
-        decision.dueDate != null
-            ? DateFormat.yMMMd().format(decision.dueDate!)
-            : loc.commonNoDueDate;
+    final dueDateText = formatDateDayIfPresent(context, decision.dueDate);
 
     final statusText = getDecisionStatusUI(loc, decision.status).label;
 
