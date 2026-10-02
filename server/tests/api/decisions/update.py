@@ -26,7 +26,7 @@ def test_complete_decision_non_numeric_id(client):
 
 def test_pending_decision_success(client):
     headers = get_auth_headers(client)
-    response = client.patch("/decisions/1/status", headers=headers, json={"status": "waiting"})
+    response = client.patch("/decisions/1/status", headers=headers, json={"status": "pending"})
     assert response.status_code == 204
 
     decision = DecisionDataHandler.get_decision(1)
