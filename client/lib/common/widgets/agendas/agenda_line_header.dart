@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/theme/styles.dart';
+import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class AgendaLineHeader extends ConsumerWidget {
@@ -16,7 +16,7 @@ class AgendaLineHeader extends ConsumerWidget {
     final loc = S.of(context);
     final agendaDateText =
         agenda.meetingDate != null
-            ? DateFormat.yMMMd().format(agenda.meetingDate!)
+            ? formatDate(context, agenda.meetingDate)
             : loc.commonNoReunionDate;
 
     return Padding(
