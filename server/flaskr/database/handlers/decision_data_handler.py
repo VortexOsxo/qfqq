@@ -88,6 +88,18 @@ class DecisionDataHandler:
         return [(Decision(*d[:-2]), d[-2] + ' ' + d[-1]) for d in decisions]
 
     @classmethod
+    def get_decisions_and_responsible_by_responsible(cls, responsibleId: int) -> tuple[list[Decision], str] | None:
+        nameResult = read_query("SELECT u.firstName, u.lastName FROM users u WHERE u.id = %s;", (responsibleId,))
+        if len(nameResult) == 0: return None
+        name = nameResult[0][0] + ' ' + nameResult[0][1]
+
+        query = "SELECT dc.* from decisionsComplete dc WHERE dc.responsibleId = %s;"
+        decisions = read_query(query, (responsibleId,))
+        decisions = [Decision(*d) for d in decisions]
+
+        return decisions, name
+
+    @classmethod
     def get_decisions_and_responsible_by_meeting(cls, meetingId: int) -> list[tuple[Decision, str]]:
         query = "SELECT dc.*, u.firstName, u.lastName from decisionsComplete dc JOIN users u ON u.id = dc.responsibleId WHERE dc.meetingId = %s"
 

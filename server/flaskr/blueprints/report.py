@@ -4,7 +4,7 @@ from flaskr.services.emails.email_sender import EmailSender
 from flaskr.services.emails.email_drafter import EmailDrafter
 
 from flaskr.database import DecisionDataHandler, ProjectDataHandler, MeetingDataHandler, UserDataHandler
-from flaskr.reports import ParticipantsReportBuilder, ProjectReportBuilder, MeetingReportBuilder
+from flaskr.reports import ParticipantReportBuilder, ParticipantsReportBuilder, ProjectReportBuilder, MeetingReportBuilder
 from flaskr.blueprints.before_request import login_required
 
 reports_bp = Blueprint("reports", __name__, url_prefix="/reports")
@@ -31,6 +31,10 @@ def _get_participants_buffer():
     decisions = DecisionDataHandler.get_decisions_and_responsible()
     return ParticipantsReportBuilder(decisions, g.language).build()
 
+def _get_participant_buffer(participantId: int):
+    decisions, name = DecisionDataHandler.get_decisions_and_responsible_by_responsible(participantId)
+    return ParticipantReportBuilder(decisions, name, g.language).build()
+
 def _get_project_buffer(id: int):
     project = ProjectDataHandler.get_project_by_id(id)
     if project is None: return None, None
@@ -53,6 +57,15 @@ def _get_meeting_buffer(id: int):
 def get_participants_report():
     return send_file(
         _get_participants_buffer(),
+        mimetype="application/pdf",
+        as_attachment=False,
+        download_name="report.pdf",
+    )
+
+@reports_bp.route("/participants/<string:userId>")
+def get_participant_report(userId: str):
+    return send_file(
+        _get_participant_buffer(userId),
         mimetype="application/pdf",
         as_attachment=False,
         download_name="report.pdf",

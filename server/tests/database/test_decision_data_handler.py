@@ -6,7 +6,7 @@ from flaskr.models import Decision
 def test_get_all_decisions(app):
     decisions = DecisionDataHandler.get_decisions()
 
-    assert len(decisions) == 3
+    assert len(decisions) == 4  
     assert all(isinstance(d, Decision) for d in decisions)
 
 
@@ -54,25 +54,36 @@ def test_get_decisions_by_notfound_responsible(app):
 def test_get_decisions_by_project(app):
     decisions = DecisionDataHandler.get_decisions_by_project(1)
 
-    assert len(decisions) == 2
+    assert len(decisions) == 3
     decisions.sort(key=lambda x: x.description)
     assert decisions[0].description == "Create accessibility checklist"
     assert decisions[1].description == "Define MVP features"
+    assert decisions[2].description == "Review accessibility checklist"
 
 def test_get_decisions_and_responsible_by_project(app):
     decisions_with_responsibles = DecisionDataHandler.get_decisions_and_responsible_by_project(1)
     decisions = [dr[0] for dr in decisions_with_responsibles]
     responsibles = [dr[1] for dr in decisions_with_responsibles]
 
-    assert len(decisions) == 2
+    assert len(decisions) == 3
     decisions.sort(key=lambda x: x.description)
     assert decisions[0].description == "Create accessibility checklist"
     assert decisions[1].description == "Define MVP features"
+    assert decisions[2].description == "Review accessibility checklist"
 
     assert len(responsibles) == len(decisions)
-    responsibles.sort()
-    assert responsibles[0] == "Alice Smith"
-    assert responsibles[1] == "Carol Davis"
+    assert "Carol Davis" in responsibles
+    assert "Alice Smith" in responsibles
+
+def test_get_decisions_and_responsible_by_responsible(app):
+    decisions, name = DecisionDataHandler.get_decisions_and_responsible_by_responsible(3)
+
+    assert len(decisions) == 2
+    assert decisions[0].description == "Review accessibility checklist"
+    assert decisions[1].description == "Create accessibility checklist"
+    assert decisions[1].responsibleId == 3
+    assert name == "Carol Davis"
+
 
 def test_create_decision(app):
     dueDate = datetime.now() + timedelta(days=7)

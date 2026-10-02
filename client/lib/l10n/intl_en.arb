@@ -435,6 +435,7 @@
 
   "widgetProjectLabel": "Project",
   "widgetUserLabel": "User",
+  "participantsReportAll": "All participants",
 
   "errorRequiredField": "This field is required",
   "errorNameMaxLength": "Name cannot be longer than 50 characters",
