@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/pages/organizations/organization_invite_page.dart';
 import 'package:qfqq/common/pages/organizations/organization_page.dart';
+import 'package:qfqq/common/pages/not_found_page.dart';
 import 'package:qfqq/common/providers/navigator_key.dart';
 import 'package:qfqq/common/templates/navigation_guard.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
@@ -32,6 +33,7 @@ NoTransitionPage _noTransition(Widget child) => NoTransitionPage(child: child);
 final GoRouter desktopRouter = GoRouter(
   initialLocation: '/login',
   navigatorKey: navigatorKey,
+  errorBuilder: (context, state) => const NotFoundPage(),
   routes: [
     ShellRoute(
       builder:
