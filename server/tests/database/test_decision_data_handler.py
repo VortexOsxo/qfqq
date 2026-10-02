@@ -137,6 +137,23 @@ def test_set_status_as_completed_not_found(app):
     result = DecisionDataHandler.complete_decision(999)
     assert not result
 
+
+def test_set_completion_message(app):
+    result = DecisionDataHandler.set_completion_message(1, "Delivered during the sprint review")
+    assert result
+
+    decision = DecisionDataHandler.get_decision(1)
+    assert decision.completionMessage == "Delivered during the sprint review"
+
+
+def test_set_status_as_pending(app):
+    result = DecisionDataHandler.pending_decision(1)
+    assert result
+
+    decision = DecisionDataHandler.get_decision(1)
+    assert decision.status == 'pending'
+
+
 def test_set_status_as_cancelled(app):
     result = DecisionDataHandler.cancel_decision(1)
     assert result

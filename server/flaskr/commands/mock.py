@@ -131,6 +131,9 @@ def mock_command():
             "sophie.tremblay@ville-rivemont.example": create_user(
                 client, "Sophie", "Tremblay", "sophie.tremblay@ville-rivemont.example"
             ),
+            "salut@example.com": create_user(
+                client, "salut", "example", "salut@example.com"
+            ),
         }
         if any(user_id is None for user_id in user_ids.values()):
             click.echo("Could not resolve all seed user IDs")
@@ -139,6 +142,7 @@ def mock_command():
         owner_email = "camille.roy@ville-rivemont.example"
         alexandre_email = "alexandre.gagnon@ville-rivemont.example"
         sophie_email = "sophie.tremblay@ville-rivemont.example"
+        salut_email = "salut@example.com"
         owner_id = user_ids[owner_email]
         alexandre_id = user_ids[alexandre_email]
         sophie_id = user_ids[sophie_email]
@@ -157,7 +161,7 @@ def mock_command():
             "QfqqVersion": "0.0.1",
         }
 
-        for email in (alexandre_email, sophie_email):
+        for email in (alexandre_email, sophie_email, salut_email):
             invite_resp = client.post(
                 "/organizations/invitations",
                 headers=headers,

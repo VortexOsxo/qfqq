@@ -14,7 +14,7 @@ decisionStatus CASCADE;
 
 CREATE TYPE meetingStatus AS ENUM ('draft', 'planned', 'ongoing', 'canceled', 'completed');
 
-CREATE TYPE decisionStatus AS ENUM ('inProgress', 'cancelled', 'completed');
+CREATE TYPE decisionStatus AS ENUM ('inProgress', 'pending', 'cancelled', 'completed');
 
 CREATE TABLE
   roles (
@@ -131,6 +131,7 @@ CREATE TABLE
     initialDate DATE NOT NULL,
     dueDate DATE,
     completedDate DATE,
+    completionMessage TEXT DEFAULT NULL,
     responsibleId INTEGER REFERENCES users (id),
     meetingId INTEGER REFERENCES meetings (id) ON DELETE CASCADE
   );

@@ -5,6 +5,7 @@ from datetime import datetime
 
 class DecisionStatus(Enum):
     inProgress = "inProgress"
+    pending = "pending"
     cancelled = "cancelled"
     completed = "completed"
 
@@ -12,12 +13,14 @@ class DecisionStatus(Enum):
     def as_string(value: str, lang="fr"):
         fr_reprs = {
             "inProgress": "En cours",
+            "pending": "En attente",
             "cancelled": "Annulé",
             "completed": "Terminé",
         }
 
         en_reprs = {
             "inProgress": "In progress",
+            "pending": "Pending",
             "cancelled": "Cancelled",
             "completed": "Completed",
         }
@@ -39,6 +42,7 @@ class Decision:
     initialDate: datetime
     dueDate: datetime | None
     completedDate: datetime | None
+    completionMessage: str | None
 
     responsibleId: int
     meetingId: int
@@ -57,6 +61,7 @@ class Decision:
             "completedDate": (
                 self.completedDate.isoformat() if self.completedDate else None
             ),
+            "completionMessage": self.completionMessage,
             "responsibleId": self.responsibleId,
             "meetingId": self.meetingId,
             "assistantsIds": self.assistantsIds or [],
