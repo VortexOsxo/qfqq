@@ -57,7 +57,6 @@ class _ParticipantsReportState extends ConsumerState<ParticipantsReport> {
         ),
         Expanded(
           child: PdfViewerWidget(
-            key: ValueKey(pdfUrl),
             pdfUrl: pdfUrl,
             pdfName:
                 selectedUserId == null
