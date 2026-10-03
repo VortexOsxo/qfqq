@@ -4,7 +4,7 @@ import firebase_admin
 from firebase_admin import credentials, messaging
 
 from .handlers import handlers
-from flaskr.database.handlers import NotificationJobDataHandler
+from flaskr.database.handlers import NotificationDataHandler
 
 class NotificationService:
     @classmethod
@@ -17,62 +17,68 @@ class NotificationService:
         handler = handlers.get(type)
         assert handler is not None
 
-        job = handler.create(orgId, *arg, **kwarg)
-        NotificationJobDataHandler.create_notification_job(job)
+        target, scheduledNotifs = handler.create(orgId, *arg, **kwarg)
+
+        # TODO: Batch insert
+        targetId = NotificationDataHandler.create_notification_target(target)
+        assert targetId is not None, "Should be able to create notification target"
+
+        for scheduledNotif in scheduledNotifs:
+            scheduledNotif.targetId = targetId
+            NotificationDataHandler.create_scheduled_notification(scheduledNotif)
 
     @classmethod
     def update_notification(cls, type, orgId, targetId, *arg, **kwarg):
         handler = handlers.get(type)
         assert handler is not None
 
-        previousJobs = NotificationJobDataHandler.get_jobs_by_target(orgId=orgId, targetId=targetId, type=type)
+        target, scheduledNotifs = handler.create(orgId, *arg, **kwarg)
+        if target.orgId != orgId or target.targetId != targetId or target.type != type:
+            raise ValueError("Notification handler returned a mismatched target")
 
-        newJobs = handler.update(previousJobs, *arg, **kwarg)
-        for job in newJobs:
-            NotificationJobDataHandler.update_job(job.id, job)
+        NotificationDataHandler.replace_notification_target(target, scheduledNotifs)
 
     @classmethod
-    def remove_notification(cls, type, orgId, targetId,*arg, **kwarg):
-        handler = handlers.get(type)
-        assert handler is not None
-
-        jobs = NotificationJobDataHandler.get_jobs_by_target(orgId=orgId, targetId=targetId, type=type)
-        toRemove = handler.remove(jobs, *arg, **kwarg)
-        for job in toRemove:
-            NotificationJobDataHandler.remove_job(job.id)
+    def remove_notification(cls, type, orgId, targetId):
+        NotificationDataHandler.remove_notification_target(orgId, targetId, type)
 
     @classmethod
     def send_loop(cls):
         while True:
             try:
-                jobs = NotificationJobDataHandler.get_pending_jobs()
-                if jobs: print(f'Found jobs: {jobs}')
-                for job in jobs:
-                    handler = handlers.get(job.type)
+                pending = NotificationDataHandler.get_pending_notifications()
+                targets = [target for target, _ in pending]
+                if targets: print(f'Found targets: {targets}')
+                for target, scheduled in pending:
+                    handler = handlers.get(target.type)
                     assert handler is not None
 
-                    notifs = handler.get_notifications_from_job(job)
-                    cls._send_notifs(notifs)
+                    notif = handler.get_notification(target, scheduled)
+                    if notif is None:
+                        continue
+                    cls._send_notif(notif)
 
-                    NotificationJobDataHandler.mark_as_sent(job.id)
+                NotificationDataHandler.remove_notifications(
+                    [scheduled.id for _, scheduled in pending]
+                )
+                NotificationDataHandler.remove_empty_notification_targets()
             finally:
                 time.sleep(15)
-    
+
     @classmethod
-    def _send_notifs(cls, notifs):
-        for notif in notifs:
-            print(f"Sending notification to {notif.token}: {notif.title}")
+    def _send_notif(cls, notif):
+        print(f"Sending notification to {notif.token}: {notif.title}")
 
-            message = messaging.Message(
-                token=notif.token,
-                notification=messaging.Notification(
-                    title=notif.title,
-                    body=notif.body,
-                ),
-                data=notif.data or {},
-            )
+        message = messaging.Message(
+            token=notif.token,
+            notification=messaging.Notification(
+                title=notif.title,
+                body=notif.body,
+            ),
+            data=notif.data or {},
+        )
 
-            messaging.send(message)
+        messaging.send(message)
 
 
 NotificationService.init()

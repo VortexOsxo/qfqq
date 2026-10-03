@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, g
 
-from flaskr.database import UserDataHandler, RoleDataHandler
+from flaskr.database import UserDataHandler, RoleDataHandler, NotificationOffsetDataHandler
 from flaskr.blueprints.before_request import login_required
 from flaskr.blueprints.middlewares import permission_middleware, Permission
 from flaskr.services.inputs import input_middleware, LambdaBuilder, RoleIdValidator, StringValidator
@@ -28,6 +28,25 @@ def get_users_roles():
 @permission_middleware(Permission.ManageTeam)
 def get_user_permissions(id: str):
     return list(UserDataHandler.get_user_permissions(id)), 200
+
+
+@users_bp.post("/settings/notifications-offset") # TODO: Improve those two validators
+@input_middleware(LambdaBuilder(("type", StringValidator()), ("offset", StringValidator())))
+def update_user_notification_offset(type, offset):
+    result = NotificationOffsetDataHandler.create_notification_offset(userId=g.user_id, type=type, offset=offset)
+    return ("", 204) if result else ("", 400)
+
+
+@users_bp.get("/settings/notifications-offset/<string:type>")
+def get_user_notification_offset(type):
+    result = NotificationOffsetDataHandler.get_notification_offset(userId=g.user_id, type=type)
+    return (jsonify({'type': type, 'offset': result.total_seconds()}), 200) if result else ("", 404)
+
+
+@users_bp.get("/settings/notifications-offset")
+def get_user_notifications_offset():
+    results = NotificationOffsetDataHandler.get_notification_offsets(userId=g.user_id)
+    return (jsonify([{'type': result[0], 'offset': result[1].total_seconds()} for result in results]), 200)
 
 
 @users_bp.patch("/<int:userId>/role")
