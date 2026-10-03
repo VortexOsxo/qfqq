@@ -24,6 +24,28 @@ def test_complete_decision_non_numeric_id(client):
     assert response.status_code == 404
 
 
+def test_pending_decision_success(client):
+    headers = get_auth_headers(client)
+    response = client.patch("/decisions/1/status", headers=headers, json={"status": "pending"})
+    assert response.status_code == 204
+
+    decision = DecisionDataHandler.get_decision(1)
+    assert decision.status == "pending"
+
+
+def test_set_completion_message_success(client):
+    headers = get_auth_headers(client)
+    response = client.patch(
+        "/decisions/1/completion-message",
+        headers=headers,
+        json={"message": "Delivered during the sprint review"},
+    )
+    assert response.status_code == 204
+
+    decision = DecisionDataHandler.get_decision(1)
+    assert decision.completionMessage == "Delivered during the sprint review"
+
+
 def test_cancel_decision_success(client):
     headers = get_auth_headers(client)
     response = client.patch("/decisions/1/status", headers=headers, json={"status": "cancelled"})

@@ -4,12 +4,15 @@ import 'package:qfqq/common/templates/card_template.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/text.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
+import 'package:qfqq/common/widgets/reusables/refresh_button.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class ProjectListWidget extends StatelessWidget {
   final List<Project> projects;
   final String Function(int supervisorId, String fallback) supervisorName;
   final void Function(int projectId) onViewProject;
+  final VoidCallback onRefresh;
+  final bool isRefreshing;
   final bool showGoals;
 
   const ProjectListWidget({
@@ -17,6 +20,8 @@ class ProjectListWidget extends StatelessWidget {
     required this.projects,
     required this.supervisorName,
     required this.onViewProject,
+    required this.onRefresh,
+    required this.isRefreshing,
     this.showGoals = true,
   });
 
@@ -26,12 +31,16 @@ class ProjectListWidget extends StatelessWidget {
     final theme = Theme.of(context);
 
     if (projects.isEmpty) {
-      return buildContentListCardTemplate(
+      Widget cardContent = stackRefreshButton(
         EmptyListWidget(text: loc.projectPageEmpty),
+        onRefresh,
+        isRefreshing,
+        loc.refreshProjects,
       );
+      return buildContentListCardTemplate(cardContent);
     }
 
-    Widget cardContent = Column(
+    Widget listCardContent = Column(
       children: [
         Row(
           children: [
@@ -91,6 +100,12 @@ class ProjectListWidget extends StatelessWidget {
       ],
     );
 
+    Widget cardContent = stackRefreshButton(
+      listCardContent,
+      onRefresh,
+      isRefreshing,
+      loc.refreshProjects,
+    );
     return buildContentListCardTemplate(cardContent);
   }
 }

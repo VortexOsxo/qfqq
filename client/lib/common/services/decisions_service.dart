@@ -84,6 +84,26 @@ class DecisionsService extends StateNotifier<List<Decision>> {
     return true;
   }
 
+  Future<bool> updateDecisionCompletionMessage(
+    int decisionId,
+    String message,
+  ) async {
+    final response = await _http.patch(
+      _http.getUri('decisions/$decisionId/completion-message'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'message': message}),
+    );
+    if (response.statusCode != 204) return false;
+
+    for (final decision in state) {
+      if (decision.id == decisionId) {
+        decision.completedMessage = message;
+      }
+    }
+    state = [...state];
+    return true;
+  }
+
   Future<bool> deleteDecision(int decisionId) async {
     final response = await _http.delete(
       _http.getUri('decisions/$decisionId'),

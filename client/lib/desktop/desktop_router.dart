@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/pages/organizations/organization_invite_page.dart';
 import 'package:qfqq/common/pages/organizations/organization_page.dart';
+import 'package:qfqq/common/pages/not_found_page.dart';
 import 'package:qfqq/common/providers/navigator_key.dart';
 import 'package:qfqq/common/templates/navigation_guard.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
@@ -19,6 +20,8 @@ import 'package:qfqq/common/pages/user_pages/profile_page.dart';
 import 'package:qfqq/desktop/pages/user_pages/signup_page.dart';
 import 'package:qfqq/desktop/pages/agendas/agenda_list_page.dart';
 import 'package:qfqq/common/pages/user_pages/organization_links_page.dart';
+import 'package:qfqq/common/pages/help_page.dart';
+import 'package:qfqq/common/widgets/help/help_info.dart';
 import 'package:qfqq/common/widgets/scaffolds/auth_page_scaffold.dart';
 
 import 'package:qfqq/common/widgets/scaffolds/default_page_scaffold.dart';
@@ -30,6 +33,7 @@ NoTransitionPage _noTransition(Widget child) => NoTransitionPage(child: child);
 final GoRouter desktopRouter = GoRouter(
   initialLocation: '/login',
   navigatorKey: navigatorKey,
+  errorBuilder: (context, state) => const NotFoundPage(),
   routes: [
     ShellRoute(
       builder:
@@ -115,6 +119,12 @@ final GoRouter desktopRouter = GoRouter(
         GoRoute(
           path: '/profile',
           pageBuilder: (context, state) => _noTransition(const ProfilePage()),
+        ),
+        GoRoute(
+          path: '/help',
+          pageBuilder: (context, state) => _noTransition(
+            HelpPage(content: state.extra as HelpContent),
+          ),
         ),
       ],
     ),

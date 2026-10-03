@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/services/organization_service.dart';
 import 'package:qfqq/common/theme/styles.dart';
+import 'package:qfqq/common/widgets/reusables/return_login_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class CreateOrganizationWidget extends ConsumerStatefulWidget {
@@ -80,10 +81,7 @@ class _CreateOrganizationWidgetState
                 child: Text(loc.organizationCreationPageButton),
               ),
               const SizedBox(height: 24),
-              TextButton(
-                onPressed: () => context.go('/login'),
-                child: Text(loc.commonBack),
-              ),
+              ReturnLoginWidget()
             ],
           ),
         ),

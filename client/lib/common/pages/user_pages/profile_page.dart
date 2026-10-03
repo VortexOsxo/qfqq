@@ -53,10 +53,12 @@ class ProfilePage extends ConsumerWidget {
   Widget _buildTopCard(BuildContext context, WidgetRef ref) {
     final loc = S.of(context);
 
-    void logout() {
+    void logout() async {
       var authService = ref.read(authStateProvider.notifier);
-      authService.logout();
-      context.go('/login');
+      await authService.logout();
+      if (context.mounted) {
+        context.go('/login');
+      }
     }
 
     return Row(

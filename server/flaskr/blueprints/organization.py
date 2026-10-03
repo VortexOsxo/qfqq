@@ -39,6 +39,19 @@ def create_organization(organizationName: str):
         201
     )
 
+@organizations_bp.get("/")
+def get_organization():
+    orgId = g.org_id
+    if orgId is None:
+        return "", 400
+
+    org = OrganizationDataHandler.get_org(orgId)
+    if org is None:
+        return "", 404
+
+    return jsonify({'orgName': org[2]}), 200
+
+
 @organizations_bp.post("invitations")
 @input_middleware(LambdaBuilder(
     ("email", EmailValidator()),

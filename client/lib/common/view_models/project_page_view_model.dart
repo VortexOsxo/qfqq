@@ -18,6 +18,7 @@ class ProjectPageViewModel extends ConsumerStatefulWidget {
 
 class ProjectPageViewModelState extends ConsumerState<ProjectPageViewModel> {
   String searchQuery = '';
+  bool isRefreshing = false;
 
   List<Project> get filteredProjects {
     final projects = ref.watch(projectsProvider);
@@ -41,6 +42,17 @@ class ProjectPageViewModelState extends ConsumerState<ProjectPageViewModel> {
   }
 
   void onSearchQueryChanged(String value) => setState(() => searchQuery = value);
+
+  Future<void> refreshProjects() async {
+    if (isRefreshing) return;
+
+    setState(() => isRefreshing = true);
+    try {
+      await ref.read(projectsServiceProvider).refreshProjects();
+    } finally {
+      if (mounted) setState(() => isRefreshing = false);
+    }
+  }
 
   void goToProjectCreation() => context.go('/projects/creation');
 

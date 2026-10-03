@@ -21,6 +21,7 @@ class AgendaListPageViewModelState extends ConsumerState<AgendaListPageViewModel
   String searchQuery = '';
   MeetingAgendaStatus? statusQuery;
   int? projectIdQuery;
+  bool isRefreshing = false;
 
   List<MeetingAgenda> get filteredAgendas {
     var agendas = ref.watch(meetingsAgendasProvider);
@@ -68,6 +69,17 @@ class AgendaListPageViewModelState extends ConsumerState<AgendaListPageViewModel
   void onSearchQueryChanged(String value) => setState(() => searchQuery = value);
   void onStatusQueryChanged(MeetingAgendaStatus? value) => setState(() => statusQuery = value);
   void onProjectQueryChanged(int? value) => setState(() => projectIdQuery = value);
+
+  Future<void> refreshAgendas() async {
+    if (isRefreshing) return;
+
+    setState(() => isRefreshing = true);
+    try {
+      await ref.read(meetingAgendaServiceProvider).refreshMeetingAgendas();
+    } finally {
+      if (mounted) setState(() => isRefreshing = false);
+    }
+  }
 
   void goToAgendaCreation() => context.go('/agendas/creation');
   void goToAgenda(int agendaId) => context.go('/agendas/$agendaId');

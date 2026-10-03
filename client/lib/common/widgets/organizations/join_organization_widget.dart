@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qfqq/common/widgets/reusables/return_login_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class JoinOrganizationWidget extends StatelessWidget {
@@ -17,6 +18,8 @@ class JoinOrganizationWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(loc.organizationLinksNoInvitation),
+              const SizedBox(height: 24),
+              ReturnLoginWidget()
             ],
           ),
         ),

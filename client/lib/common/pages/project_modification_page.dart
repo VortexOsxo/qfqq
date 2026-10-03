@@ -75,7 +75,7 @@ class _ProjectModificationState extends ConsumerState<ProjectModificationPage> {
 
     activeNavigationGuard = null;
     context.go(
-      widget.isNewProject ? '/projects' : '/project/${widget.project.id}',
+      widget.isNewProject ? '/projects' : '/projects/${widget.project.id}',
     );
   }
 
@@ -128,6 +128,16 @@ class _ProjectModificationState extends ConsumerState<ProjectModificationPage> {
                 error: errors.supervisorError,
               ),
               const SizedBox(height: 20),
+
+              if (errors.hasAny()) ...[
+                Text(
+                  loc.commonFormsFixErrors,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
 
               Row(
                 children: [

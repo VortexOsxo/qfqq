@@ -8,7 +8,7 @@ class UsersRolesService extends StateNotifier<List<UserRole>> {
   final QfqqHttpClient _http;
 
   UsersRolesService(this._http, AuthService auth) : super([]) {
-    loadRoles();
+    auth.connectionNotifier.subscribe((_) => loadRoles());
     auth.disconnectionNotifier.subscribe((_) => _clearRoles());
   }
 

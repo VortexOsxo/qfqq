@@ -88,6 +88,20 @@ class DecisionDataHandler:
         return [(Decision(*d[:-2]), d[-2] + ' ' + d[-1]) for d in decisions]
 
     @classmethod
+    def get_decisions_and_responsible_by_responsible(cls, responsibleId: int) -> tuple[list[Decision], str] | tuple[None, None]:
+        nameResult = read_query("SELECT u.firstName, u.lastName FROM users u WHERE u.id = %s;", (responsibleId,))
+        if len(nameResult) == 0:
+            return None, None
+        
+        name = nameResult[0][0] + ' ' + nameResult[0][1]
+
+        query = "SELECT dc.* from decisionsComplete dc WHERE dc.responsibleId = %s;"
+        decisions = read_query(query, (responsibleId,))
+        decisions = [Decision(*d) for d in decisions]
+
+        return decisions, name
+
+    @classmethod
     def get_decisions_and_responsible_by_meeting(cls, meetingId: int) -> list[tuple[Decision, str]]:
         query = "SELECT dc.*, u.firstName, u.lastName from decisionsComplete dc JOIN users u ON u.id = dc.responsibleId WHERE dc.meetingId = %s"
 
@@ -98,6 +112,24 @@ class DecisionDataHandler:
     def complete_decision(cls, id: int):
         query = "UPDATE decisions SET status = %s, completedDate = %s WHERE id = %s;"
         params = ('completed',time_now_to_string(), id)
+        with get_db_access() as conn:
+            cur = conn.cursor()
+            cur.execute(query, params)
+            return cur.rowcount == 1
+
+    @classmethod
+    def pending_decision(cls, id: int):
+        query = "UPDATE decisions SET status = %s WHERE id = %s;"
+        params = ('pending', id)
+        with get_db_access() as conn:
+            cur = conn.cursor()
+            cur.execute(query, params)
+            return cur.rowcount == 1
+
+    @classmethod
+    def set_completion_message(cls, id: int, message: str):
+        query = "UPDATE decisions SET completionMessage = %s WHERE id = %s;"
+        params = (message, id)
         with get_db_access() as conn:
             cur = conn.cursor()
             cur.execute(query, params)

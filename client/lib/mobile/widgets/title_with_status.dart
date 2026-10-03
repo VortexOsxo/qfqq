@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/widgets/icon_status_chip.dart';
 
@@ -19,11 +20,7 @@ class TitleWithStatus extends StatelessWidget {
           title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-            color: theme.primaryColor,
-          ),
+          style: pageTitleTextStyle(theme),
         ),
         Transform.translate(
           offset: const Offset(0, -10),

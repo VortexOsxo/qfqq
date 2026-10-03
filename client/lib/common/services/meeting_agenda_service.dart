@@ -141,6 +141,8 @@ class MeetingAgendaService extends StateNotifier<List<MeetingAgenda>> {
     state = data.map(MeetingAgenda.fromJson).toList();
   }
 
+  Future<void> refreshMeetingAgendas() => _loadMeetingAgendas();
+
   Future<String> getMeetingCode(int meetingId) async {
     final response = await _http.get(
       _http.getUri('meeting-agendas/$meetingId/code'),

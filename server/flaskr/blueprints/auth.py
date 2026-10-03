@@ -42,7 +42,6 @@ def signup(firstName, lastName, email, password):
 @auth_bp.route("/login", methods=(["POST"]))
 @input_middleware(LoginBuilder())
 def login(email, password):
-    print(login, email, password)
     user = UserDataHandler.get_user_by_email(email)
 
     if user is None or not check_password_hash(user.passwordHash, password):
@@ -78,11 +77,17 @@ def refresh():
     if userId is None:
         return "", 401
 
+    user = UserDataHandler.get_user_by_id(userId)
+
     orgId = OrganizationDataHandler.get_user_org_id(userId)
+    if orgId is None:
+        return (
+            create_auth_response(*create_tokens(user.id, None), user),
+            200,
+        )
 
     set_tenant(orgId)
     permissions = UserDataHandler.get_user_permissions(userId=userId)
-    user = UserDataHandler.get_user_by_id(userId)
 
     return (
         create_auth_response(*create_tokens(userId, orgId), user, True, permissions),

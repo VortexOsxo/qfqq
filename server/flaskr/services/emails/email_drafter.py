@@ -37,7 +37,7 @@ class EmailDrafter:
         )
 
     @staticmethod
-    def create_participants_report_email(recipient: str, report_bytes: bytes, lang: str = 'fr') -> Email:
+    def create_participant_report_email(recipient: str, report_bytes: bytes, lang: str = 'fr') -> Email:
         if lang == 'en':
             subject = "Participants Report - QuiFaitQuoiQuand"
             body = (
@@ -52,6 +52,36 @@ class EmailDrafter:
             body = (
                 "Bonjour,\n"
                 "Veuillez trouver en pièce jointe le rapport contenant les tâches assignées à chaque participant.\n\n"
+                "Merci,\n"
+                "L'équipe QuiFaitQuoiQuand"
+            )
+            filename = "rapport_participants.pdf"
+
+        return Email(
+            subject=subject,
+            recipient=recipient,
+            sender=os.getenv('MAIL_USER'),
+            body=body,
+            attachments={filename: report_bytes}
+        )
+
+
+    @staticmethod
+    def create_participant_report_email(recipient: str, report_bytes: bytes, name: str, lang: str = 'fr') -> Email:
+        if lang == 'en':
+            subject = "Participant Report - QuiFaitQuoiQuand"
+            body = (
+                "Hello,\n"
+                f"Please find attached the report containing the tasks assigned to {name}.\n\n"
+                "Thank you,\n"
+                "The QuiFaitQuoiQuand Team"
+            )
+            filename = "participants_report.pdf"
+        else:
+            subject = "Rapport de participant - QuiFaitQuoiQuand"
+            body = (
+                "Bonjour,\n"
+                f"Veuillez trouver en pièce jointe le rapport contenant les tâches assignées à {name}.\n\n"
                 "Merci,\n"
                 "L'équipe QuiFaitQuoiQuand"
             )

@@ -34,5 +34,7 @@ StatusUIData getDecisionStatusUI(S loc, DecisionStatus status) {
       return StatusUIData(loc.decisionStatusCancelled, Colors.red, Icons.cancel);
     case DecisionStatus.completed:
       return StatusUIData(loc.decisionStatusCompleted, Colors.green, Icons.check_circle);
+    case DecisionStatus.pending:
+      return StatusUIData(loc.decisionStatusPending, Colors.orange, Icons.pending_actions);
   }
 }

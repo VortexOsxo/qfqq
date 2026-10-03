@@ -49,6 +49,8 @@ String? getTitleForRoute(BuildContext context, GoRouterState state) {
       return loc.organizationLinksPageTitle;
     case '/organization/invite':
       return loc.inviteMemberPageTitle;
+    case '/help':
+      return loc.helpPageTitle;
     default:
       return null;
   }

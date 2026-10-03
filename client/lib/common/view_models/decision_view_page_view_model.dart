@@ -26,6 +26,7 @@ class DecisionViewPageViewModelState extends ConsumerState<DecisionViewPageViewM
   
   Decision? get decision => ref.watch(decisionByIdProvider(widget.decisionId));
   bool get isInProgress => decision?.status == DecisionStatus.inProgress;
+  bool get isPending => decision?.status == DecisionStatus.pending;
 
   String get responsibleName {
     final responsibleId = decision?.responsibleId;
@@ -46,17 +47,69 @@ class DecisionViewPageViewModelState extends ConsumerState<DecisionViewPageViewM
   bool get hasMeeting => isIdValid(decision?.meetingId);
   bool get hasProject => isIdValid(decision?.projectId);
 
-  Future<void> markAsCompleted() =>
-      ref.read(decisionsServiceProvider).updateDecisionStatus(
-        widget.decisionId,
-        DecisionStatus.completed,
-      );
+  Future<void> markAsCompleted() async {
+    final loc = S.of(context);
+    final currentMessage = decision?.completedMessage;
+    final controller = TextEditingController(text: currentMessage ?? '');
+    final message = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(loc.decisionCompletionMessageTitle),
+        content: TextField(
+          controller: controller,
+          minLines: 2,
+          maxLines: 4,
+          decoration: InputDecoration(
+            labelText: loc.decisionCompletionMessageLabel,
+            border: const OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(loc.commonCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(controller.text),
+            child: Text(loc.decisionViewPageMarkAsCompleted),
+          ),
+        ],
+      ),
+    );
+    controller.dispose();
 
-  Future<void> markAsCancelled() =>
-      ref.read(decisionsServiceProvider).updateDecisionStatus(
+    if (message == null || !mounted) return;
+
+    final completionMessage = message.trim();
+    final decisionsService = ref.read(decisionsServiceProvider);
+    if (completionMessage.isNotEmpty || currentMessage != null) {
+      final saved = await decisionsService.updateDecisionCompletionMessage(
         widget.decisionId,
-        DecisionStatus.cancelled,
+        completionMessage,
       );
+      if (!saved) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(loc.decisionCompletionMessageSaveFailed)),
+          );
+        }
+        return;
+      }
+    }
+
+    await decisionsService.updateDecisionStatus(
+      widget.decisionId,
+      DecisionStatus.completed,
+    );
+  }
+
+  Future<void> markAsCancelled() => ref
+      .read(decisionsServiceProvider)
+      .updateDecisionStatus(widget.decisionId, DecisionStatus.cancelled);
+
+  Future<void> markAsPending() => ref
+      .read(decisionsServiceProvider)
+      .updateDecisionStatus(widget.decisionId, DecisionStatus.pending);
 
   void goToMeeting() => context.go('/agendas/${decision?.meetingId}');
   void goToDecisions() => context.go('/decisions');

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/permissions.dart';
 import 'package:qfqq/common/services/auth_service.dart';
+import 'package:qfqq/common/widgets/hover_text_button.dart';
 import 'package:qfqq/common/widgets/permission_required.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -35,72 +36,16 @@ class SidebarWidget extends StatelessWidget {
   }
 }
 
-class HoverTextButton extends StatefulWidget {
-  final String text;
-  final VoidCallback onTap;
-  final bool isActive;
-
-  const HoverTextButton({
-    required this.text,
-    required this.onTap,
-    this.isActive = false,
-    super.key,
-  });
-
-  @override
-  State<HoverTextButton> createState() => _HoverTextButtonState();
-}
-
-class _HoverTextButtonState extends State<HoverTextButton> {
-  bool _hovering = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = Theme.of(context).colorScheme.onPrimary;
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: MouseRegion(
-        onEnter: (_) => setState(() => _hovering = true),
-        onExit: (_) => setState(() => _hovering = false),
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: widget.onTap,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                width: 16,
-                child: widget.isActive
-                    ? Icon(Icons.arrow_right, color: color, size: 20)
-                    : null,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                widget.text,
-                style: TextStyle(
-                  color: color,
-                  fontSize: 18,
-                  fontWeight: widget.isActive || _hovering
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class _LogOutButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return HoverTextButton(
       text: S.of(context).profilePageLogout,
-      onTap: () {
-        ref.read(authStateProvider.notifier).logout();
-        context.go('/login');
+      onTap: () async {
+        await ref.read(authStateProvider.notifier).logout();
+        if (context.mounted) {
+          context.go('/login');
+        }
       },
     );
   }

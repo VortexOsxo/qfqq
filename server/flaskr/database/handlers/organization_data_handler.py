@@ -49,7 +49,7 @@ class OrganizationDataHandler:
     
     @classmethod
     def get_org(cls, id: int):
-        query = f"SELECT * from public.organizations WHERE id = %s LIMIT 1;"
+        query = f"SELECT id, slug, name from public.organizations WHERE id = %s LIMIT 1;"
         orgs = read_query(query, (id,))
         return orgs[0] if orgs else None
 
@@ -99,4 +99,4 @@ class OrganizationDataHandler:
         query = "SELECT orgId, roleId from public.invitations WHERE email = %s LIMIT 1;"
         params = (email,)
         result = read_query(query, params)
-        return result[0][0] if result else None, None
+        return result[0] if result else (None, None)

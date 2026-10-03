@@ -8,6 +8,7 @@ import 'package:qfqq/common/utils/text.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
 import 'package:qfqq/common/widgets/icon_status_chip.dart';
 import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
+import 'package:qfqq/common/widgets/reusables/refresh_button.dart';
 import 'package:qfqq/common/widgets/status_chip.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -15,6 +16,8 @@ class AgendasListWidget extends StatelessWidget {
   final List<MeetingAgenda> agendas;
   final String Function(int? animatorId, String fallback) animatorName;
   final void Function(int agendaId) goToAgenda;
+  final VoidCallback onRefresh;
+  final bool isRefreshing;
   final bool showDetails;
 
   const AgendasListWidget({
@@ -22,33 +25,40 @@ class AgendasListWidget extends StatelessWidget {
     required this.agendas,
     required this.animatorName,
     required this.goToAgenda,
+    required this.onRefresh,
+    required this.isRefreshing,
     this.showDetails = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    final loc = S.of(context);
+
     if (agendas.isEmpty) {
-      Widget cardContent = EmptyListWidget(
-        text: S.of(context).agendasListPageEmpty,
+      Widget cardContent = stackRefreshButton(
+        EmptyListWidget(text: loc.agendasListPageEmpty),
+        onRefresh,
+        isRefreshing,
+        loc.refreshMeetings,
       );
       return buildContentListCardTemplate(cardContent);
     }
 
-    Widget cardContent = Column(
+    Widget listCardContent = Column(
       children: [
         Row(
           children: [
             SizedBox(width: showDetails ? 16 : 8),
-            Expanded(flex: 1, child: Text(S.of(context).attributeNumber)),
-            Expanded(flex: 3, child: Text(S.of(context).agendaListTitle)),
+            Expanded(flex: 1, child: Text(loc.attributeNumber)),
+            Expanded(flex: 3, child: Text(loc.agendaListTitle)),
 
-            Expanded(flex: 3, child: Text(S.of(context).agendaListDate)),
-            if (showDetails) Expanded(flex: 3, child: Text(S.of(context).agendaListLocation)),
-            if (showDetails) Expanded(flex: 3, child: Text(S.of(context).agendaListAnimator)),
-            if (showDetails) Expanded(flex: 3, child: Text(S.of(context).agendaListProject)),
+            Expanded(flex: 3, child: Text(loc.agendaListDate)),
+            if (showDetails) Expanded(flex: 3, child: Text(loc.agendaListLocation)),
+            if (showDetails) Expanded(flex: 3, child: Text(loc.agendaListAnimator)),
+            if (showDetails) Expanded(flex: 3, child: Text(loc.agendaListProject)),
             if (showDetails) ...[
-              Expanded(flex: 3, child: Center(child: Text(S.of(context).attributeStatus))),
-              Expanded(flex: 2, child: Center(child: Text(S.of(context).commonAction))),
+              Expanded(flex: 3, child: Center(child: Text(loc.attributeStatus))),
+              Expanded(flex: 2, child: Center(child: Text(loc.commonAction))),
             ] else 
               Expanded(flex:2, child: SizedBox()),
             SizedBox(width: showDetails ? 16 : 8),
@@ -61,7 +71,6 @@ class AgendasListWidget extends StatelessWidget {
             separatorBuilder:
                 (BuildContext context, int index) => const Divider(),
             itemBuilder: (context, index) {
-              final loc = S.of(context);
               final agenda = agendas[index];
               final uiData = getMeetingAgendaStatusUI(loc, agenda.status);
 
@@ -110,6 +119,13 @@ class AgendasListWidget extends StatelessWidget {
           ),
         ),
       ],
+    );
+
+    Widget cardContent = stackRefreshButton(
+      listCardContent,
+      onRefresh,
+      isRefreshing,
+      loc.refreshMeetings,
     );
     return buildContentListCardTemplate(cardContent);
   }

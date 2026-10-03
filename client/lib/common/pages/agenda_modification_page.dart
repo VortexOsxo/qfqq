@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/templates/form_template.dart';
 import 'package:qfqq/common/templates/navigation_guard.dart';
 import 'package:qfqq/common/models/errors/meeting_agenda_errors.dart';
+import 'package:qfqq/common/utils/help_util.dart';
 import 'package:qfqq/common/services/modal_service.dart';
 import 'package:qfqq/common/models/user.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
@@ -14,6 +15,7 @@ import 'package:qfqq/common/widgets/agendas/inputs/meeting_people_input.dart';
 import 'package:qfqq/common/widgets/agendas/inputs/meeting_theme_input.dart';
 import 'package:qfqq/common/widgets/reusables/form_filled_button.dart';
 import 'package:qfqq/common/widgets/reusables/form_outlined_button.dart';
+import 'package:qfqq/common/widgets/help/help_button.dart';
 import 'package:qfqq/generated/l10n.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 
@@ -118,6 +120,22 @@ class _AgendaModificationPageState extends ConsumerState<AgendaModificationPage>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            loc.agendaPageSectionMeetingDetails,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                        ),
+                        HelpButton(
+                          helpContent:
+                              MeetingCreationHelpLink(loc: loc).getModal(),
+                          detailedHelpContent:
+                              MeetingCreationHelpLink(loc: loc).getContent(),
+                        ),
+                      ],
+                    ),
                     MeetingMainInfoInput(
                       meeting: widget.agenda,
                       errors: errors,
@@ -168,9 +186,20 @@ class _AgendaModificationPageState extends ConsumerState<AgendaModificationPage>
 
                     const SizedBox(height: 40),
 
+                    if (errors.hasAny()) ...[
+                      Text(
+                          loc.commonFormsFixErrors,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                      
+                      const SizedBox(height: 8),
+                    ],
+
                     // Action Buttons
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         FormOutlinedButton(
                           text: loc.commonCancel,

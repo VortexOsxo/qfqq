@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/errors/meeting_agenda_errors.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
+import 'package:qfqq/common/utils/help_util.dart';
 import 'package:qfqq/common/providers/decisions_provider.dart';
+import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/meeting_agenda_service.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_content_completed.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_content_ongoing.dart';
+import 'package:qfqq/common/widgets/help/help_button.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/utils/validation.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -51,6 +54,7 @@ class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
       case MeetingAgendaStatus.draft:
         return _draftContent(context, ref);
       case MeetingAgendaStatus.planned:
+        return _plannedContent(context, ref);
       case MeetingAgendaStatus.canceled:
         return SizedBox();
       case MeetingAgendaStatus.ongoing:
@@ -60,6 +64,38 @@ class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
     }
   }
 
+  Widget _plannedContent(BuildContext context, WidgetRef ref) {
+    final loc = S.of(context);
+    final currentUser = ref.watch(authStateProvider).user;
+    final isAnimator =
+        currentUser != null && widget.meeting.animatorId == currentUser.id;
+
+    final helpLink =
+        isAnimator
+            ? MeetingAnimationHelpLink(loc: loc)
+            : MeetingParticipationHelpLink(loc: loc);
+    final helpContent = helpLink.getModal();
+    final detailedHelpContent = helpLink.getContent();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              loc.agendaStatusPlanned,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          HelpButton(
+            helpContent: helpContent,
+            detailedHelpContent: detailedHelpContent,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _draftContent(BuildContext context, WidgetRef ref) {
     MeetingAgendaErrors errors = validateMeetingAgenda(
       widget.meeting,
@@ -67,18 +103,41 @@ class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
     );
 
     final loc = S.of(context);
+    final currentUser = ref.watch(authStateProvider).user;
+    final isAnimator =
+        currentUser != null && widget.meeting.animatorId == currentUser.id;
+    final helpLink =
+        isAnimator
+            ? MeetingAnimationHelpLink(loc: loc)
+            : MeetingParticipationHelpLink(loc: loc);
+    final helpContent = helpLink.getModal();
+    final detailedHelpContent = helpLink.getContent();
 
     final meetingsService = ref.read(meetingAgendaServiceProvider);
+
+    final titleRow = Row(
+      children: [
+        Expanded(
+          child: Text(
+            errors.hasAny()
+                ? loc.meetingViewContentDraftCorrectErrors
+                : loc.meetingViewContentDraftMarkPlanned,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        HelpButton(
+          helpContent: helpContent,
+          detailedHelpContent: detailedHelpContent,
+        ),
+      ],
+    );
 
     if (errors.hasAny()) {
       List<String> errorsMessages = errors.getErrorsMessages();
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            loc.meetingViewContentDraftCorrectErrors,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+          titleRow,
           ...errorsMessages.map((message) => Text('    $message')),
         ],
       );
@@ -86,10 +145,7 @@ class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            loc.meetingViewContentDraftMarkPlanned,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+          titleRow,
           TextButton(
             onPressed:
                 () => meetingsService.updateMeetingAgendaStatus(
