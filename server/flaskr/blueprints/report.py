@@ -4,7 +4,7 @@ from flaskr.services.emails.email_sender import EmailSender
 from flaskr.services.emails.email_drafter import EmailDrafter
 
 from flaskr.database import DecisionDataHandler, ProjectDataHandler, MeetingDataHandler, UserDataHandler
-from flaskr.reports import ParticipantsReportBuilder, ProjectReportBuilder, MeetingReportBuilder
+from flaskr.reports import ParticipantReportBuilder, ParticipantsReportBuilder, ProjectReportBuilder, MeetingReportBuilder
 from flaskr.blueprints.before_request import login_required
 
 reports_bp = Blueprint("reports", __name__, url_prefix="/reports")
@@ -13,7 +13,12 @@ reports_bp.before_request(login_required)
 
 def _send_participants_async(emails: list[str], report_bytes: bytes, lang: str):
     for email_addr in emails:
-        email = EmailDrafter.create_participants_report_email(email_addr, report_bytes, lang)
+        email = EmailDrafter.create_participant_report_email(email_addr, report_bytes, lang)
+        EmailSender.send_email(email)
+
+def _send_participant_async(emails: list[str], report_bytes: bytes, name: str, lang: str):
+    for email_addr in emails:
+        email = EmailDrafter.create_participant_report_email(email_addr, report_bytes, name, lang)
         EmailSender.send_email(email)
 
 def _send_project_async(emails: list[str], report_bytes: bytes, project_title: str, lang: str):
@@ -30,6 +35,12 @@ def _send_meeting_async(emails: list[str], report_bytes: bytes, meeting_title: s
 def _get_participants_buffer():
     decisions = DecisionDataHandler.get_decisions_and_responsible()
     return ParticipantsReportBuilder(decisions, g.language).build()
+
+def _get_participant_buffer(participantId: int):
+    decisions, name = DecisionDataHandler.get_decisions_and_responsible_by_responsible(participantId)
+    if decisions is None:
+        return None, None
+    return ParticipantReportBuilder(decisions, name, g.language).build(), name
 
 def _get_project_buffer(id: int):
     project = ProjectDataHandler.get_project_by_id(id)
@@ -64,6 +75,29 @@ def send_participants_report():
     threading.Thread(target=_send_participants_async, args=(emails, _get_participants_buffer().getvalue(), g.language)).start()
     return jsonify({"success": True})
 
+@reports_bp.route("/participants/<string:userId>")
+def get_participant_report(userId: str):
+    buffer, _ = _get_participant_buffer(userId)
+    if buffer is None:
+        return "", 404
+
+    return send_file(
+        buffer,
+        mimetype="application/pdf",
+        as_attachment=False,
+        download_name="report.pdf",
+    )
+
+@reports_bp.route("/participants/<string:userId>/send")
+def send_participant_report(userId: str):
+    emails = request.json.get("emails", [])
+
+    buffer, name = _get_participant_buffer(userId)
+    if buffer is None:
+        return "", 404
+
+    threading.Thread(target=_send_participant_async, args=(emails, buffer.getvalue(), name, g.language)).start()
+    return jsonify({"success": True})
 
 @reports_bp.route("/projects/<int:id>")
 def get_project_report(id: int):

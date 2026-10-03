@@ -9,7 +9,11 @@ class PdfViewerWidget extends ConsumerStatefulWidget {
   final String pdfUrl;
   final String pdfName;
 
-  const PdfViewerWidget({super.key, required this.pdfUrl, required this.pdfName});
+  const PdfViewerWidget({
+    super.key,
+    required this.pdfUrl,
+    required this.pdfName,
+  });
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
@@ -19,6 +23,15 @@ class PdfViewerWidget extends ConsumerStatefulWidget {
 
 class _PdfViewerState extends ConsumerState<PdfViewerWidget> {
   final PdfViewerController _controller = PdfViewerController();
+  double? _zoomFactor;
+
+  @override
+  void didUpdateWidget(covariant PdfViewerWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.pdfUrl != widget.pdfUrl && _controller.isReady) {
+      _zoomFactor = _controller.currentZoom / _controller.coverScale;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +48,9 @@ class _PdfViewerState extends ConsumerState<PdfViewerWidget> {
     final downloadButton = IconButton(
       icon: const Icon(Icons.download),
       onPressed: () async {
-        await ref.read(pdfServiceProvider).downloadPdfToDownloads(widget.pdfUrl, widget.pdfName);
+        await ref
+            .read(pdfServiceProvider)
+            .downloadPdfToDownloads(widget.pdfUrl, widget.pdfName);
       },
     );
 
@@ -69,6 +84,15 @@ class _PdfViewerState extends ConsumerState<PdfViewerWidget> {
       client.getUri(widget.pdfUrl),
       controller: _controller,
       headers: headers,
+      params: PdfViewerParams(
+        calculateInitialZoom: (_, controller, fitZoom, coverZoom) {
+          final zoomFactor = _zoomFactor;
+          final zoom = zoomFactor == null ? fitZoom : coverZoom * zoomFactor;
+          return zoom
+              .clamp(controller.minScale, controller.params.maxScale)
+              .toDouble();
+        },
+      ),
     );
 
     return Stack(
