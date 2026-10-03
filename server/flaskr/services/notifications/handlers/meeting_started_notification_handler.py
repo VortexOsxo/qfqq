@@ -37,6 +37,7 @@ class MeetingStartedNotificationHandler:
         return target, notifications
 
     def get_notification(self, target: NotificationTarget, scheduled: ScheduledNotification):
+        set_tenant(target.orgId)
         userId = scheduled.userId
 
         token, locale = UserDataHandler.get_user_fcm(userId)
