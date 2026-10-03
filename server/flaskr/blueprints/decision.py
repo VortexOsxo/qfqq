@@ -68,6 +68,11 @@ def patch_meeting_agenda_status(status, id: str):
 def delete_decision(id):
     try:
         DecisionDataHandler.delete_decision(id)
+        NotificationService.remove_notification(
+            NotificationType.DecisionDue.value,
+            g.org_id,
+            id,
+        )
         return "", 204
     except:
         return "", 500
