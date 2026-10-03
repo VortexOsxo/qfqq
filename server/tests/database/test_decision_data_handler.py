@@ -84,6 +84,11 @@ def test_get_decisions_and_responsible_by_responsible(app):
     assert decisions[1].responsibleId == 3
     assert name == "Carol Davis"
 
+def test_get_decisions_and_responsible_by_responsible(app):
+    decisions, name = DecisionDataHandler.get_decisions_and_responsible_by_responsible(5)
+
+    assert decisions is None
+    assert name is None
 
 def test_create_decision(app):
     dueDate = datetime.now() + timedelta(days=7)
