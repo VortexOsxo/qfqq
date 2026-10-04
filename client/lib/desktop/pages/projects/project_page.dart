@@ -5,6 +5,7 @@ import 'package:qfqq/common/view_models/project_page_view_model.dart';
 import 'package:qfqq/common/widgets/permission_required.dart';
 import 'package:qfqq/common/widgets/projects/project_list_widget.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
+import 'package:qfqq/common/widgets/reusables/filter_container.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class ProjectPage extends StatelessWidget {
@@ -44,12 +45,18 @@ class _ProjectPageView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             flex: 6,
-            child: DefaultTextField(
-              onChanged: vm.onSearchQueryChanged,
-              hintText: S.of(context).searchTitleIdHint,
+            child: FilterContainer(
+              child: Padding(
+                padding: EdgeInsetsGeometry.all(8),
+                child: DefaultTextField(
+                  onChanged: vm.onSearchQueryChanged,
+                  hintText: S.of(context).searchTitleIdHint,
+                ),
+              ),
             ),
           ),
           Expanded(flex: 1, child: SizedBox()),
