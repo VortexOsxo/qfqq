@@ -1,6 +1,7 @@
 from flaskr.database import DecisionDataHandler
 from flaskr.database.postgres import read_query
-from flaskr.services.notifications import NotificationService, NotificationType
+from flaskr.services.notifications.notification_service import NotificationService
+from flaskr.services.notifications.notification_type import NotificationType
 from tests.api.utils import get_auth_headers
 
 

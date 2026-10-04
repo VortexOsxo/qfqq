@@ -1,4 +1,4 @@
-from flaskr.services.notifications import NotificationType
+from flaskr.services.notifications.notification_type import NotificationType
 from flaskr.database.handlers import NotificationDataHandler
 from flaskr.database.postgres import read_query
 from tests.api.utils import get_auth_headers

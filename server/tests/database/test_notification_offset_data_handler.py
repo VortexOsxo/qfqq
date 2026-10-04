@@ -1,7 +1,12 @@
 from datetime import timedelta
 
 from flaskr.database.handlers.notification_offset_data_handler import NotificationOffsetDataHandler
+
 from flaskr.database.postgres import read_query
+from flaskr.services.notifications.notification_type import NotificationType, DEFAULT_NOTIFICATION_OFFSETS
+
+def test_every_notification_type_as_a_default_offset():
+    assert len(DEFAULT_NOTIFICATION_OFFSETS) == len(NotificationType), "Every notification type should have a default offset"
 
 def test_create_notification_offset_accepts_valid_duration_string(app):
     result = NotificationOffsetDataHandler.create_notification_offset(
@@ -120,16 +125,31 @@ def test_get_notification_offsets_returns_all_user_offsets(app):
         type="meeting_end",
         offset="20 minutes",
     )
+    NotificationOffsetDataHandler.create_notification_offset(
+        userId=1,
+        type=NotificationType.MeetingStart.value,
+        offset="30 minutes",
+    )
 
     result = NotificationOffsetDataHandler.get_notification_offsets(userId=1)
 
-    assert set(result) == {
-        ("meeting_start", timedelta(minutes=15)),
-        ("meeting_end", timedelta(minutes=30)),
+    assert dict(result) == {
+        **DEFAULT_NOTIFICATION_OFFSETS,
+        "meeting_start": timedelta(minutes=15),
+        "meeting_end": timedelta(minutes=30),
+        NotificationType.MeetingStart.value: timedelta(minutes=30),
     }
 
 
-def test_get_notification_offsets_returns_empty_for_user_without_offsets(app):
+def test_get_notification_offsets_returns_defaults_for_user_without_offsets(app):
     result = NotificationOffsetDataHandler.get_notification_offsets(userId=1)
 
-    assert result == []
+    assert dict(result) == {
+        NotificationType.DecisionDue.value: timedelta(days=1),
+        NotificationType.MeetingStarted.value: timedelta(0),
+        NotificationType.MeetingStart.value: timedelta(minutes=15),
+    }
+
+def test_get_notification_offset_return_default_value(app):
+    result = NotificationOffsetDataHandler.get_notification_offset(userId=1, type = NotificationType.MeetingStart.value)
+    assert result == DEFAULT_NOTIFICATION_OFFSETS[NotificationType.MeetingStart.value]

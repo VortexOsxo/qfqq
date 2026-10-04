@@ -12,7 +12,8 @@ from flaskr.services.inputs import (
     StringValidator,
     BooleanValidator
 )
-from flaskr.services.notifications import NotificationService, NotificationType
+from flaskr.services.notifications.notification_service import NotificationService
+from flaskr.services.notifications.notification_type import NotificationType
 from flaskr.blueprints.before_request import login_required
 from flaskr.blueprints.middlewares import permission_middleware, Permission
 

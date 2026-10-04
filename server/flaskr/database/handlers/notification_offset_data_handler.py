@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from ..postgres import write_query, read_query
+from flaskr.services.notifications.notification_type import DEFAULT_NOTIFICATION_OFFSETS
 
 
 class NotificationOffsetDataHandler:
@@ -21,9 +22,12 @@ class NotificationOffsetDataHandler:
         query = "SELECT nOffset from public.notificationOffsets WHERE userId = %s and type = %s;"
         params = (userId, type)
         results = read_query(query, params)
-        return results[0][0] if results else None
+        return results[0][0] if results else DEFAULT_NOTIFICATION_OFFSETS.get(type)
 
     @classmethod
     def get_notification_offsets(cls, userId) -> list[tuple[str, timedelta]]:
         query = "SELECT type, nOffset from public.notificationOffsets WHERE userId = %s;"
-        return read_query(query, (userId,))
+        result = read_query(query, (userId,))
+        offsets = dict(DEFAULT_NOTIFICATION_OFFSETS)
+        offsets.update(result)
+        return list(offsets.items())

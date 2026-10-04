@@ -72,13 +72,13 @@ def test_get_user_notifications_offset(client):
     headers = get_auth_headers(client, user_id=1)
     client.post(
         "/users/settings/notifications-offset",
-        json={"type": "meeting_start", "offset": "15 minutes"},
+        json={"type": "MeetingStart", "offset": "15 minutes"},
         headers=headers,
     )
 
     client.post(
         "/users/settings/notifications-offset",
-        json={"type": "meeting_end", "offset": "10 minutes"},
+        json={"type": "MeetingEnd", "offset": "10 minutes"},
         headers=headers,
     )
 
@@ -89,7 +89,10 @@ def test_get_user_notifications_offset(client):
 
     assert response.status_code == 200
     body = response.get_json()
-    assert body[0]['type'] == 'meeting_start'
-    assert body[0]['offset'] == 15*60
-    assert body[1]['type'] == 'meeting_end'
-    assert body[1]['offset'] == 10*60
+
+    assert len(body) == 4
+
+    assert body[0]['type'] == 'DecisionDue'
+    assert body[0]['offset'] == 60*60*24
+    assert body[1]['type'] == 'MeetingStarted'
+    assert body[1]['offset'] == 0

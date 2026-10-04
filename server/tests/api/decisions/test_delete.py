@@ -1,7 +1,8 @@
 from flaskr.database import DecisionDataHandler
 from tests.api.utils import get_auth_headers
 from flaskr.database.postgres import read_query
-from flaskr.services.notifications import NotificationService, NotificationType
+from flaskr.services.notifications.notification_service import NotificationService
+from flaskr.services.notifications.notification_type import NotificationType
 
 def test_delete_decision_success(client):
     headers = get_auth_headers(client)

@@ -5,7 +5,8 @@ from flaskr.database.postgres import read_query
 from flaskr.database import DecisionDataHandler
 from flaskr.database.handlers import UserDataHandler
 from flaskr.models import MeetingAgenda, MeetingAgendaStatus
-from flaskr.services.notifications import NotificationService, NotificationType
+from flaskr.services.notifications.notification_service import NotificationService
+from flaskr.services.notifications.notification_type import NotificationType
 import flaskr.services.notifications.notification_service as notification_service_module
 
 

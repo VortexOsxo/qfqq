@@ -7,7 +7,8 @@ from flaskr.services.inputs import input_middleware, CreateDecisionBuilder, Lamb
 from flaskr.blueprints.before_request import login_required
 from flaskr.blueprints.middlewares import permission_middleware, Permission
 
-from flaskr.services.notifications import NotificationService, NotificationType
+from flaskr.services.notifications.notification_service import NotificationService
+from flaskr.services.notifications.notification_type import NotificationType
 
 decisions_bp = Blueprint("decisions", __name__, url_prefix="/decisions")
 decisions_bp.before_request(login_required)
