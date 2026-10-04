@@ -16,6 +16,7 @@ class AgendaFilterWidget extends StatelessWidget {
     final filters = Column(
       children: [
         DefaultTextField(
+          initialValue: vm.searchQuery,
           onChanged: vm.onSearchQueryChanged,
           hintText: S.of(context).searchTitleIdHint,
         ),

@@ -53,6 +53,7 @@ class _ProjectPageView extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsetsGeometry.all(8),
                 child: DefaultTextField(
+                  initialValue: vm.searchQuery,
                   onChanged: vm.onSearchQueryChanged,
                   hintText: S.of(context).searchTitleIdHint,
                 ),
