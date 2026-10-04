@@ -57,12 +57,19 @@ def patch_meeting_agenda_status(status, id: str):
         elif status == 'pending':
             result = DecisionDataHandler.pending_decision(id)
         elif status == 'cancelled':
-            # TODO: Remove notification
             result = DecisionDataHandler.cancel_decision(id)
+        
         if not result:
             return '', 404
+
+        NotificationService.remove_notification(
+            NotificationType.DecisionDue.value,
+            g.org_id,
+            id,
+        )
         return '', 204
-    except: pass
+    except:
+        pass
     return '', 404
 
 @decisions_bp.patch("/<string:id>/completion-message")

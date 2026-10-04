@@ -34,7 +34,7 @@ class DecisionDueNotificationHandler:
     def get_notification(self, target: NotificationTarget, _: ScheduledNotification):
         set_tenant(target.orgId)
         decision = DecisionDataHandler.get_decision(target.targetId)
-        if decision.status != "inProgress":
+        if decision is None or decision.status != "inProgress":
             return None
 
         token, locale = UserDataHandler.get_user_fcm(decision.responsibleId)
