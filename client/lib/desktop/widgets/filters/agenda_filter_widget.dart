@@ -3,6 +3,7 @@ import 'package:qfqq/common/view_models/agenda_list_page_view_model.dart';
 import 'package:qfqq/common/widgets/dropdowns/agenda_status_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/dropdowns/project_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
+import 'package:qfqq/common/widgets/reusables/filter_container.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class AgendaFilterWidget extends StatelessWidget {
@@ -12,9 +13,10 @@ class AgendaFilterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    final filters = Column(
       children: [
         DefaultTextField(
+          initialValue: vm.searchQuery,
           onChanged: vm.onSearchQueryChanged,
           hintText: S.of(context).searchTitleIdHint,
         ),
@@ -33,6 +35,10 @@ class AgendaFilterWidget extends StatelessWidget {
           ],
         ),
       ],
+    );
+
+    return FilterContainer(
+      child: Padding(padding: EdgeInsetsGeometry.all(8), child: filters),
     );
   }
 }
