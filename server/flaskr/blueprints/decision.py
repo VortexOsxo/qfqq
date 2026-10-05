@@ -7,7 +7,8 @@ from flaskr.services.inputs import input_middleware, CreateDecisionBuilder, Lamb
 from flaskr.blueprints.before_request import login_required
 from flaskr.blueprints.middlewares import permission_middleware, Permission
 
-from flaskr.services.notifications import NotificationService, NotificationType
+from flaskr.services.notifications.notification_service import NotificationService
+from flaskr.services.notifications.notification_type import NotificationType
 
 decisions_bp = Blueprint("decisions", __name__, url_prefix="/decisions")
 decisions_bp.before_request(login_required)
@@ -57,12 +58,19 @@ def patch_meeting_agenda_status(status, id: str):
         elif status == 'pending':
             result = DecisionDataHandler.pending_decision(id)
         elif status == 'cancelled':
-            # TODO: Remove notification
             result = DecisionDataHandler.cancel_decision(id)
+        
         if not result:
             return '', 404
+
+        NotificationService.remove_notification(
+            NotificationType.DecisionDue.value,
+            g.org_id,
+            id,
+        )
         return '', 204
-    except: pass
+    except:
+        pass
     return '', 404
 
 @decisions_bp.patch("/<string:id>/completion-message")
@@ -81,6 +89,11 @@ def patch_decision_completion_message(message, id: str):
 def delete_decision(id):
     try:
         DecisionDataHandler.delete_decision(id)
+        NotificationService.remove_notification(
+            NotificationType.DecisionDue.value,
+            g.org_id,
+            id,
+        )
         return "", 204
     except:
         return "", 500

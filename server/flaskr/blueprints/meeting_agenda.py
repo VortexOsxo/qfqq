@@ -12,7 +12,8 @@ from flaskr.services.inputs import (
     StringValidator,
     BooleanValidator
 )
-from flaskr.services.notifications import NotificationService, NotificationType
+from flaskr.services.notifications.notification_service import NotificationService
+from flaskr.services.notifications.notification_type import NotificationType
 from flaskr.blueprints.before_request import login_required
 from flaskr.blueprints.middlewares import permission_middleware, Permission
 
@@ -60,13 +61,13 @@ def create_meeting_agenda(**obj):
             return jsonify({"error": "Missing/Invalid fields: id"}), 400
         id = data.get("id")
 
-        meeting = MeetingDataHandler.get_meeting_agenda(id)
+        previousMeeting = MeetingDataHandler.get_meeting_agenda(id)
         MeetingDataHandler.update_meeting_agenda(meetingId=id, **kwargs)
+        meeting = MeetingDataHandler.get_meeting_agenda(id)
 
-        if meeting.status != "planned" and status == "planned":
-            meeting = MeetingDataHandler.get_meeting_agenda(id)
+        if previousMeeting.status != "planned" and meeting.status == "planned":
             NotificationService.add_notification(NotificationType.MeetingStart.value, g.org_id, meeting)
-        elif meeting.status == "planned" and data.get('meetingDate') is not None and meeting.meetingDate != datetime.fromisoformat(data.get('meetingDate')):
+        elif (previousMeeting.status == "planned" and meeting.status == "planned"):
             NotificationService.update_notification(NotificationType.MeetingStart.value, g.org_id, meeting.id, meeting)
 
         return "", 204
@@ -139,11 +140,11 @@ def patch_meeting_agenda_status(status, id: str):
     if status=="planned":
         NotificationService.add_notification(NotificationType.MeetingStart.value, g.org_id, meeting)
     elif status == "ongoing":
-        NotificationService.remove_notification(NotificationType.MeetingStart.value, g.org_id, meeting.id, meeting)
+        NotificationService.remove_notification(NotificationType.MeetingStart.value, g.org_id, meeting.id)
         NotificationService.add_notification(NotificationType.MeetingStarted.value, g.org_id, meeting.id)
         pass
     elif status == "canceled":
-        NotificationService.remove_notification(NotificationType.MeetingStart.value, g.org_id, meeting.id, meeting)
+        NotificationService.remove_notification(NotificationType.MeetingStart.value, g.org_id, meeting.id)
         pass
     return '', 204
 

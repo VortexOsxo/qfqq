@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 
 from flaskr.database.database import Database
-from flaskr.services.notifications import NotificationService
+from flaskr.services.notifications.notification_service import NotificationService
 
 if __name__ == '__main__':
     load_dotenv()

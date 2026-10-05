@@ -333,6 +333,27 @@
   "profilePageTitle": "Profile",
   "profilePageLogout": "Logout",
   "profilePageLanguage": "Language",
+  "profilePageNotifications": "Notification offsets",
+  "profilePageNotificationMeetingStart": "Meeting reminder",
+  "profilePageNotificationMeetingStarted": "Meeting started",
+  "profilePageNotificationDecisionDue": "Decision due",
+  "profilePageNotificationSettingsLoadFailed": "Could not load notification settings.",
+  "profilePageNotificationOffsetSaveFailed": "Could not save this notification offset.",
+  "profilePageNotificationOffsetImmediate": "Immediately",
+  "profilePageNotificationOffsetFiveMinutes": "5 minutes",
+  "profilePageNotificationOffsetFifteenMinutes": "15 minutes",
+  "profilePageNotificationOffsetThirtyMinutes": "30 minutes",
+  "profilePageNotificationOffsetOneHour": "1 hour",
+  "profilePageNotificationOffsetTwoHours": "2 hours",
+  "profilePageNotificationOffsetOneDay": "1 day",
+  "profilePageNotificationOffsetCustom": "Other ({minutes} min)",
+  "@profilePageNotificationOffsetCustom": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
 
   "forgottenPasswordPageTitle": "Forgotten Password",
   "organizationPageTitle": "Organization",

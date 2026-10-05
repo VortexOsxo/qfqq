@@ -1,4 +1,4 @@
-from flaskr.models import NotificationJob, Notification, Decision
+from flaskr.models import Notification, NotificationTarget, ScheduledNotification, Decision
 from flaskr.database import DecisionDataHandler, set_tenant
 from flaskr.database.handlers import UserDataHandler
 
@@ -19,36 +19,31 @@ _STRINGS = {
 
 
 class DecisionDueNotificationHandler:
-    def create(self, orgId, decision: Decision):
-        return NotificationJob(
-            -1,
-            orgId,
-            decision.id,
-            NotificationType.DecisionDue.value,
-            "",
-            decision.dueDate - timedelta(days=1),
-            None,
+    def create(self, orgId, decision: Decision) -> tuple[NotificationTarget, list[ScheduledNotification]]:
+        target = NotificationTarget(
+            id=0, orgId=orgId, targetId=decision.id, type=NotificationType.DecisionDue.value, eventAt=decision.dueDate
         )
 
-    def get_notifications_from_job(self, job: NotificationJob):
-        set_tenant(job.orgId)
-        decision = DecisionDataHandler.get_decision(job.targetId)
-        if decision.status != "inProgress":
-            return []
+        notifications = [
+            ScheduledNotification(
+                id=0, userId=decision.responsibleId, targetId=target.id, nOffset=timedelta(days=1)
+            )            
+        ]
+        return target, notifications
+
+    def get_notification(self, target: NotificationTarget, _: ScheduledNotification):
+        set_tenant(target.orgId)
+        decision = DecisionDataHandler.get_decision(target.targetId)
+        if decision is None or decision.status != "inProgress":
+            return None
 
         token, locale = UserDataHandler.get_user_fcm(decision.responsibleId)
         if token is None:
-            return []
-        strings = _STRINGS.get(locale, _STRINGS['fr'])
-        return [
-            Notification(
-                token,
-                strings['title'],
-                strings['body'],
-                data={"type": "DecisionDue", "id": str(job.targetId)},
-            )
-        ]
-
-    def update(self, job: NotificationJob):
-        pass
-
+            return None
+        strings = _STRINGS.get(locale, _STRINGS["fr"])
+        return Notification(
+            token,
+            strings["title"],
+            strings["body"],
+            data={"type": "DecisionDue", "id": str(target.targetId)},
+        )

@@ -36,3 +36,63 @@ def test_get_users_roles(client):
         {"roleId": 4, "roleName": "Contributor", "userId": 3},
         {"roleId": 5, "roleName": "Viewer", "userId": 4},
     ]
+
+
+def test_update_user_notification_offset(client):
+    headers = get_auth_headers(client, user_id=1)
+    response = client.post(
+        "/users/settings/notifications-offset",
+        json={"type": "meeting_start", "offset": "15 minutes"},
+        headers=headers,
+    )
+
+    assert response.status_code == 204
+
+
+def test_get_user_notification_offset(client):
+    headers = get_auth_headers(client, user_id=1)
+    client.post(
+        "/users/settings/notifications-offset",
+        json={"type": "meeting_start", "offset": "15 minutes"},
+        headers=headers,
+    )
+
+    response = client.get(
+        "/users/settings/notifications-offset/meeting_start",
+        headers=headers,
+    )
+
+    assert response.status_code == 200
+    body = response.get_json()
+    assert body['type'] == 'meeting_start'
+    assert body['offset'] == 15*60
+
+
+def test_get_user_notifications_offset(client):
+    headers = get_auth_headers(client, user_id=1)
+    client.post(
+        "/users/settings/notifications-offset",
+        json={"type": "MeetingStart", "offset": "15 minutes"},
+        headers=headers,
+    )
+
+    client.post(
+        "/users/settings/notifications-offset",
+        json={"type": "MeetingEnd", "offset": "10 minutes"},
+        headers=headers,
+    )
+
+    response = client.get(
+        "/users/settings/notifications-offset",
+        headers=headers,
+    )
+
+    assert response.status_code == 200
+    body = response.get_json()
+
+    assert len(body) == 4
+
+    assert body[0]['type'] == 'DecisionDue'
+    assert body[0]['offset'] == 60*60*24
+    assert body[1]['type'] == 'MeetingStarted'
+    assert body[1]['offset'] == 0
