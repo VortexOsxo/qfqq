@@ -10,24 +10,18 @@ class HelpSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loc = S.of(context);
-    final colorScheme = Theme.of(context).colorScheme;
-    final railColor =
-        Color.lerp(Colors.grey.shade600, colorScheme.primaryContainer, 0.03)!;
     final children = [
       for (final factory in helpLinksFactories)
         _HelpLink(content: factory(loc)),
     ];
 
-    return Container(
-      color: railColor,
-      height: double.infinity,
-      padding: EdgeInsets.all(8),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: children,
-        ),
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        SizedBox(height: 8,),
+        ...children
+      ],
     );
   }
 }
@@ -39,10 +33,12 @@ class _HelpLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return HoverTextButton(
       text: content.getTitle(),
       isActive: false,
-      color: Colors.white,
+      color: colorScheme.primary,
       fontSize: 14,
       fontWeight: FontWeight.normal,
       activeFontWeight: FontWeight.normal,
