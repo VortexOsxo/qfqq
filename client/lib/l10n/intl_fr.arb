@@ -495,7 +495,6 @@
 
   "searchTitleIdHint": "Rechercher par id ou titre",
   "searchDescriptionIdHint": "Rechercher par id ou description",
-  "toggleAdvancedFilters": "Afficher les filtres avancés",
 
   "roleDeleteTitle": "Supprimer le rôle ?",
   "roleDeleteMessage": "Êtes-vous sûr de vouloir supprimer ce rôle ? Cette action est irréversible.",

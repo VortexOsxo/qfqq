@@ -5,7 +5,7 @@ import 'package:qfqq/common/view_models/project_page_view_model.dart';
 import 'package:qfqq/common/widgets/permission_required.dart';
 import 'package:qfqq/common/widgets/projects/project_list_widget.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
-import 'package:qfqq/common/widgets/reusables/filter_container.dart';
+import 'package:qfqq/desktop/widgets/filters/filter_container.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class ProjectPage extends StatelessWidget {

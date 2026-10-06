@@ -47,8 +47,9 @@ class ProjectListWidget extends StatelessWidget {
             const SizedBox(width: 16),
             Expanded(flex: 1, child: Text(loc.attributeNumber)),
             Expanded(flex: 3, child: Text(loc.attributeTitle)),
+            const SizedBox(width: 8),
             if (showGoals) Expanded(flex: 7, child: Text(loc.attributeGoals)),
-            Expanded(flex: 3, child: Text(loc.projectSupervisor)),
+            Expanded(flex: 2, child: Text(loc.projectSupervisor)),
             Expanded(
               flex: 2,
               child: Align(
@@ -72,10 +73,11 @@ class ProjectListWidget extends StatelessWidget {
                 children: [
                   const SizedBox(width: 16),
                   Expanded(flex: 1, child: listText(project.number.toString())),
-                  Expanded(flex: 3, child: listText(project.title)),
-                  if (showGoals) Expanded(flex: 7, child: listText(project.goals)),
+                  Expanded(flex: 3, child: listText(project.title, maxLines: 2)),
+                  const SizedBox(width: 8),
+                  if (showGoals) Expanded(flex: 7, child: listText(project.goals, maxLines: 2)),
                   Expanded(
-                    flex: 3,
+                    flex: 2,
                     child: Text(
                       supervisorName(project.supervisorId, loc.commonNoSupervisorSet),
                     ),

@@ -494,7 +494,6 @@
 
   "searchTitleIdHint": "Search by Id or title",
   "searchDescriptionIdHint": "Search by Id or description",
-  "toggleAdvancedFilters": "Toggle advanced filters",
 
   "roleDeleteTitle": "Delete role?",
   "roleDeleteMessage": "Are you sure you want to delete this role? This action cannot be undone.",

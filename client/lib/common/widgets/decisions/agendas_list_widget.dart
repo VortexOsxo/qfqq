@@ -79,7 +79,7 @@ class AgendasListWidget extends StatelessWidget {
                 children: [
                   SizedBox(width: showDetails ? 16 : 8),
                   Expanded(flex: 1, child: Text(agenda.number.toString())),
-                  Expanded(flex: 3, child: listText(agenda.title)),
+                  Expanded(flex: 3, child: listText(agenda.title, maxLines: 2)),
                   Expanded(
                     flex: 3,
                     child: Text(

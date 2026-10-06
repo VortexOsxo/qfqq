@@ -11,13 +11,17 @@ import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
+import 'package:qfqq/common/utils/platform.dart';
 import 'package:qfqq/common/utils/text.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
 import 'package:qfqq/common/widgets/icon_status_chip.dart';
 import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
 import 'package:qfqq/common/widgets/dropdowns/default_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
-import 'package:qfqq/common/widgets/reusables/filter_container.dart';
+import 'package:qfqq/desktop/widgets/filters/filter_container.dart'
+    as desktop_filter;
+import 'package:qfqq/mobile/widgets/filters/filter_container.dart'
+    as mobile_filter;
 import 'package:qfqq/common/widgets/status_chip.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -111,7 +115,10 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
 
     return Padding(
       padding: const EdgeInsets.only(right: 16, left: 16, bottom: 16),
-      child: FilterContainer(child: filters),
+      child:
+          platformType == PlatformType.mobile
+              ? mobile_filter.FilterContainer(child: filters)
+              : desktop_filter.FilterContainer(child: filters),
     );
   }
 
