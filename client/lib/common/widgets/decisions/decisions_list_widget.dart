@@ -11,12 +11,17 @@ import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
+import 'package:qfqq/common/utils/platform.dart';
 import 'package:qfqq/common/utils/text.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
 import 'package:qfqq/common/widgets/icon_status_chip.dart';
 import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
 import 'package:qfqq/common/widgets/dropdowns/default_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
+import 'package:qfqq/desktop/widgets/filters/filter_container.dart'
+    as desktop_filter;
+import 'package:qfqq/mobile/widgets/filters/filter_container.dart'
+    as mobile_filter;
 import 'package:qfqq/common/widgets/status_chip.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -38,8 +43,15 @@ class DecisionsListWidget extends ConsumerStatefulWidget {
 }
 
 class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
+  final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
   int? _selectedProjectId;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   List<Decision> _getFilteredDecisions() {
     var decisions = ref.watch(decisionsProvider);
@@ -84,12 +96,13 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
   }
 
   Widget _buildSearchAndFilterSection(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+    final filters = Padding(
+      padding: const EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           DefaultTextField(
+            controller: _searchController,
             onChanged: (value) => setState(() => _searchQuery = value),
             hintText: S.of(context).searchDescriptionIdHint,
           ),
@@ -98,6 +111,14 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
             Row(children: [_buildProjectFilterDropdown(context, ref)]),
         ],
       ),
+    );
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 16, left: 16, bottom: 16),
+      child:
+          platformType == PlatformType.mobile
+              ? mobile_filter.FilterContainer(child: filters)
+              : desktop_filter.FilterContainer(child: filters),
     );
   }
 

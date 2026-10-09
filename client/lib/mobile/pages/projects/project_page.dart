@@ -3,6 +3,7 @@ import 'package:qfqq/common/view_models/project_page_view_model.dart';
 import 'package:qfqq/common/widgets/projects/project_list_widget.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
+import 'package:qfqq/mobile/widgets/filters/filter_container.dart';
 
 class ProjectPage extends StatelessWidget {
   const ProjectPage({super.key});
@@ -40,10 +41,10 @@ class _ProjectPageView extends StatelessWidget {
   Widget _buildSearchSection(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: DefaultTextField(
+      child: FilterContainer(child: DefaultTextField(
         onChanged: vm.onSearchQueryChanged,
         hintText: S.of(context).searchTitleIdHint,
-      ),
+      ),)
     );
   }
 }

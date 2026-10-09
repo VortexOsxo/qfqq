@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
 
-Text listText(String text) {
-  return Text(text, maxLines: 1, overflow: TextOverflow.ellipsis);
+Text listText(String text, {int maxLines = 1}) {
+  return Text(text, maxLines: maxLines, overflow: TextOverflow.ellipsis);
 }
