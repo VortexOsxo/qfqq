@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/states/auth_state.dart';
 import 'package:qfqq/common/services/auth_service.dart';
+import 'package:qfqq/common/utils/platform.dart';
 import 'package:qfqq/generated/l10n.dart';
 import 'package:qfqq/common/providers/locale_provider.dart';
 import 'package:qfqq/common/services/notification_settings_service.dart';
@@ -27,6 +28,8 @@ class ProfilePage extends ConsumerWidget {
     AuthState authState,
   ) {
     final loc = S.of(context);
+
+    final isMobile = platformType == PlatformType.mobile;
 
     return SingleChildScrollView(
       child: Padding(
@@ -70,14 +73,20 @@ class ProfilePage extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 24),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Expanded(child: _NotificationSettings()),
-                const SizedBox(width: 32),
-                Expanded(child: _buildLanguageSelector(context, ref, loc)),
-              ],
-            ),
+            if (!isMobile)
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Expanded(child: _NotificationSettings()),
+                  const SizedBox(width: 32),
+                  Expanded(child: _buildLanguageSelector(context, ref, loc)),
+                ],
+              )
+            else ...[
+              const _NotificationSettings(),
+              const SizedBox(height: 32),
+              _buildLanguageSelector(context, ref, loc),
+            ]
           ],
         ),
       ),
