@@ -1,10 +1,11 @@
-from flaskr.models import NotificationJob, Notification, MeetingAgenda
+from flaskr.models import Notification, NotificationTarget, ScheduledNotification
+
 from flaskr.database import MeetingDataHandler, set_tenant
 from flaskr.database.handlers import UserDataHandler
 
 from ..notification_type import NotificationType
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 _STRINGS = {
     'en': {
@@ -19,39 +20,33 @@ _STRINGS = {
 
 
 class MeetingStartedNotificationHandler:
-    def create(self, orgId, meetingId: int):
-        return NotificationJob(
-            -1,
-            orgId,
-            meetingId,
-            NotificationType.MeetingStarted.value,
-            "",
-            datetime.now(),
-            None,
+    def create(self, orgId, meetingId: int) -> tuple[NotificationTarget, list[ScheduledNotification]]:
+        target = NotificationTarget(
+            id=0, orgId=orgId, targetId=meetingId, type=NotificationType.MeetingStarted.value, eventAt=datetime.now()
         )
 
-    def update(self, _: list[NotificationJob]):
-        assert False, "Can't update instant notifications"
+        set_tenant(target.orgId)
+        meeting = MeetingDataHandler.get_meeting_agenda(target.targetId)
 
-    def remove(self, _: list[NotificationJob]):
-        assert False, "Can't remove instant notifications"
-
-    def get_notifications_from_job(self, job: NotificationJob):
-        set_tenant(job.orgId)
-        usersIds = MeetingDataHandler.get_meeting_users(job.targetId)
-
-        notifications = []
-        for userId in usersIds:
-            token, locale = UserDataHandler.get_user_fcm(userId)
-            if token is None: continue
-            strings = _STRINGS.get(locale, _STRINGS['fr'])
-            notifications.append(
-                Notification(
-                    token,
-                    strings['title'],
-                    strings['body'],
-                    data={"type": "MeetingStarted", "id": str(job.targetId)},
-                )
+        notifications = [
+            ScheduledNotification(
+                id=0, userId=userId, targetId=target.id, nOffset=timedelta()
             )
-        return notifications
+            for userId in set(meeting.participantsIds + [meeting.animatorId])
+        ]
+        return target, notifications
 
+    def get_notification(self, target: NotificationTarget, scheduled: ScheduledNotification):
+        set_tenant(target.orgId)
+        userId = scheduled.userId
+
+        token, locale = UserDataHandler.get_user_fcm(userId)
+        if token is None:
+            return None
+        strings = _STRINGS.get(locale, _STRINGS["fr"])
+        return Notification(
+            token,
+            strings["title"],
+            strings["body"],
+            data={"type": "MeetingStarted", "id": str(target.targetId)},
+        )

@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime
-
+from datetime import datetime, timedelta
 
 @dataclass(slots=True)
 class Notification:
@@ -11,22 +10,17 @@ class Notification:
 
 
 @dataclass(slots=True)
-class NotificationJob:
+class NotificationTarget:
     id: int
     orgId: int
     targetId: int
     type: str
-    payload: str
-    scheduledAt: datetime
-    sentAt: datetime | None = None
+    eventAt: datetime
 
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "orgId": self.orgId,
-            "targetId": self.targetId,
-            "type": self.type,
-            "payload": self.payload,
-            "scheduledAt": self.scheduledAt.isoformat(),
-            "sentAt": self.sentAt.isoformat() if self.sentAt else None,
-        }
+
+@dataclass(slots=True)
+class ScheduledNotification:
+    id: int
+    userId: int
+    targetId: int
+    nOffset: timedelta

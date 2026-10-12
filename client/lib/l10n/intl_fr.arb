@@ -334,6 +334,27 @@
   "profilePageTitle": "Profil",
   "profilePageLogout": "Déconnexion",
   "profilePageLanguage": "Langue",
+  "profilePageNotifications": "Délais des notifications",
+  "profilePageNotificationMeetingStart": "Rappel de réunion",
+  "profilePageNotificationMeetingStarted": "Réunion commencée",
+  "profilePageNotificationDecisionDue": "Échéance de décision",
+  "profilePageNotificationSettingsLoadFailed": "Impossible de charger les paramètres de notification.",
+  "profilePageNotificationOffsetSaveFailed": "Impossible d'enregistrer ce délai de notification.",
+  "profilePageNotificationOffsetImmediate": "Immédiatement",
+  "profilePageNotificationOffsetFiveMinutes": "5 minutes",
+  "profilePageNotificationOffsetFifteenMinutes": "15 minutes",
+  "profilePageNotificationOffsetThirtyMinutes": "30 minutes",
+  "profilePageNotificationOffsetOneHour": "1 heure",
+  "profilePageNotificationOffsetTwoHours": "2 heures",
+  "profilePageNotificationOffsetOneDay": "1 jour",
+  "profilePageNotificationOffsetCustom": "Autre ({minutes} min)",
+  "@profilePageNotificationOffsetCustom": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
 
   "forgottenPasswordPageTitle": "Mot de passe oublié",
   "organizationPageTitle": "Organisation",

@@ -5,5 +5,9 @@ from .data.decision import Decision, DecisionStatus
 from .data.project import Project
 from .data.role import Role
 from .data.invitation import Invitation
-from .data.notification import NotificationJob, Notification
+from .data.notification import (
+	Notification,
+	NotificationTarget,
+	ScheduledNotification,
+)
 from .permission import Permission

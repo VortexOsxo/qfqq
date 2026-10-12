@@ -3,7 +3,9 @@ public.organizations,
 public.invitations,
 public.users,
 public.passwordRequests,
-public.notificationJobs CASCADE;
+public.notificationsTarget,
+public.notifications,
+public.notificationOffsets CASCADE;
 
 CREATE TABLE
   public.organizations (
@@ -44,17 +46,32 @@ CREATE TABLE
     PRIMARY KEY (email)
   );
 
+-- Need to delete those when the target is deleted :(
 CREATE TABLE
-  public.notificationJobs (
+  public.notificationsTarget (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     orgId INTEGER NOT NULL REFERENCES public.organizations (id) ON DELETE CASCADE,
     targetId INTEGER NOT NULL,
     type TEXT NOT NULL,
-    payload TEXT,
-    scheduledAt TIMESTAMPTZ NOT NULL,
-    sentAt TIMESTAMPTZ
+    eventAt TIMESTAMPTZ NOT NULL,
+    CONSTRAINT notifications_target_org_target_type_unique UNIQUE (orgId, targetId, type)
   );
 
-CREATE INDEX notification_jobs_due_idx
-  ON public.notificationJobs (scheduledAt)
-  WHERE sentAt IS NULL;
+CREATE TABLE
+  public.notifications (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    userId INTEGER NOT NULL REFERENCES public.users (id) ON DELETE CASCADE,
+    targetId INTEGER NOT NULL REFERENCES public.notificationsTarget (id) ON DELETE CASCADE
+  );
+
+CREATE INDEX ON notifications (targetId);
+CREATE INDEX ON notificationsTarget (orgId);
+
+
+-- May want to move type to a separate table
+CREATE TABLE public.notificationOffsets (
+  userId INTEGER NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  type TEXT NOT NULL,
+  nOffset INTERVAL NOT NULL,
+  PRIMARY KEY (userId, type)
+);
