@@ -10,8 +10,9 @@ final invitationsProvider = StateNotifierProvider<InvitationsService, List<Invit
   (ref) => InvitationsService(
     ref.read(qfqqHttpClientProvider),
     () {
+      final authState = ref.read(authStateProvider); 
       ref.read(usersProvider.notifier).loadUsers();
-      ref.read(usersRolesProvider.notifier).loadRoles();
+      ref.read(usersRolesProvider.notifier).loadRoles(authState);
     },
     ref.read(authStateProvider.notifier),
   ),
