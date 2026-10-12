@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/errors/org_invite_errors.dart';
 import 'package:qfqq/common/models/invitation.dart';
+import 'package:qfqq/common/models/states/auth_state.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/modal_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
@@ -12,7 +13,7 @@ class InvitationsService extends StateNotifier<List<Invitation>> {
   final Function? _onUserAdded;
 
   InvitationsService(this._http, this._onUserAdded, AuthService auth) : super([]) {
-    auth.connectionNotifier.subscribe((_) => loadInvitations());
+    auth.connectionNotifier.subscribe((state) => loadInvitations(state));
     auth.disconnectionNotifier.subscribe((_) => _clearInvitations());
   }
 
@@ -78,7 +79,12 @@ class InvitationsService extends StateNotifier<List<Invitation>> {
     state = state.where((e) => e.email != email).toList();
   }
 
-  Future<void> loadInvitations() async {
+  Future<void> loadInvitations(AuthState authState) async {
+    final permissions = authState.permissions;
+    if (permissions == null || !(permissions.manageTeam)) {
+      return;
+    }
+
     final response = await _http.get(
       _http.getUri('organizations/invitations'),
       headers: {'Content-Type': 'application/json'},

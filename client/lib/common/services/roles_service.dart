@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/errors/role_errors.dart';
 import 'package:qfqq/common/models/role.dart';
+import 'package:qfqq/common/models/states/auth_state.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
 
@@ -9,7 +10,7 @@ class RolesService extends StateNotifier<List<Role>> {
   final QfqqHttpClient _http;
 
   RolesService(this._http, AuthService auth) : super([]) {
-    auth.connectionNotifier.subscribe((_) => _loadRoles());
+    auth.connectionNotifier.subscribe((authState) => _loadRoles(authState));
     auth.disconnectionNotifier.subscribe((_) => _clearRoles());
   }
 
@@ -17,7 +18,12 @@ class RolesService extends StateNotifier<List<Role>> {
     state = [];
   }
 
-  Future<void> _loadRoles() async {
+  Future<void> _loadRoles(AuthState authState) async {
+    final permissions = authState.permissions;
+    if (permissions == null || !permissions.manageTeam) {
+      return;
+    }
+
     final response = await _http.get(
       _http.getUri('roles'),
       headers: {'Content-Type': 'application/json'},
