@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta, timezone
 
 from flaskr.database.handlers.notification_data_handler import NotificationDataHandler
+from flaskr.database.handlers.notification_offset_data_handler import NotificationOffsetDataHandler
 from flaskr.database.postgres import read_query
 from flaskr.models import NotificationTarget, ScheduledNotification
+from flaskr.services.notifications.notification_type import DEFAULT_NOTIFICATION_OFFSETS, NotificationType
 
 
 def create_target(event_at=None):
@@ -165,14 +167,14 @@ def test_replace_notification_target_preserves_id_and_replaces_event_and_schedul
     ) == [(target_id, updated_at)]
     assert read_query(
         """
-        SELECT userId, targetId, nOffset FROM public.notifications
+        SELECT userId, targetId FROM public.notifications
         WHERE targetId = %s ORDER BY userId;
         """,
         (target_id,),
     ) == [
-        (2, target_id, timedelta(hours=1)),
-        (3, target_id, timedelta(days=1)),
-        (4, target_id, timedelta(days=1)),
+        (2, target_id),
+        (3, target_id),
+        (4, target_id),
     ]
 
 
@@ -224,9 +226,9 @@ def test_create_and_remove_scheduled_notification(app):
 
     assert notification_id is not None
     assert read_query(
-        "SELECT userId, targetId, nOffset FROM public.notifications WHERE id = %s;",
+        "SELECT userId, targetId FROM public.notifications WHERE id = %s;",
         (notification_id,),
-    ) == [(1, target_id, timedelta(minutes=30))]
+    ) == [(1, target_id)]
 
     NotificationDataHandler.remove_notifications([notification_id])
 
@@ -256,6 +258,11 @@ def test_get_pending_notifications_returns_due_target_and_schedule_pairs(app):
             type="meeting_start",
             eventAt=now + timedelta(days=1),
         )
+    )
+    NotificationOffsetDataHandler.create_notification_offset(
+        userId=1,
+        type="meeting_start",
+        offset=timedelta(minutes=15),
     )
     due_notification_id = NotificationDataHandler.create_scheduled_notification(
         ScheduledNotification(
@@ -293,6 +300,58 @@ def test_get_pending_notifications_returns_due_target_and_schedule_pairs(app):
     )
 
 
+def test_get_pending_notifications_uses_default_offset_when_user_has_none(app):
+    notification_type = NotificationType.MeetingStart.value
+    default_offset = DEFAULT_NOTIFICATION_OFFSETS[notification_type]
+    event_at = datetime.now(timezone.utc) + timedelta(minutes=10)
+    target_id = NotificationDataHandler.create_notification_target(
+        NotificationTarget(
+            id=0,
+            orgId=1,
+            targetId=48,
+            type=notification_type,
+            eventAt=event_at,
+        )
+    )
+    notification_id = NotificationDataHandler.create_scheduled_notification(
+        ScheduledNotification(
+            id=0,
+            userId=1,
+            targetId=target_id,
+            nOffset=default_offset,
+        )
+    )
+
+    assert read_query(
+        "SELECT nOffset FROM public.notificationOffsets WHERE userId = %s AND type = %s;",
+        (1, notification_type),
+    ) == []
+
+    target_notification_pairs = [
+        (target, notification)
+        for target, notification in NotificationDataHandler.get_pending_notifications()
+        if target.id == target_id
+    ]
+
+    assert target_notification_pairs == [
+        (
+            NotificationTarget(
+                id=target_id,
+                orgId=1,
+                targetId=48,
+                type=notification_type,
+                eventAt=event_at,
+            ),
+            ScheduledNotification(
+                id=notification_id,
+                userId=1,
+                targetId=target_id,
+                nOffset=default_offset,
+            ),
+        )
+    ]
+
+
 def test_get_pending_notifications_returns_multiple_schedules_for_same_target(app):
     now = datetime.now(timezone.utc)
     target_id = NotificationDataHandler.create_notification_target(
@@ -308,6 +367,12 @@ def test_get_pending_notifications_returns_multiple_schedules_for_same_target(ap
         (1, timedelta(minutes=15)),
         (2, timedelta(minutes=30)),
     ]
+    for user_id, offset in schedules:
+        NotificationOffsetDataHandler.create_notification_offset(
+            userId=user_id,
+            type="meeting_start",
+            offset=offset,
+        )
     notification_ids = [
         NotificationDataHandler.create_scheduled_notification(
             ScheduledNotification(

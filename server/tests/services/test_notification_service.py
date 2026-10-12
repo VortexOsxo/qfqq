@@ -35,7 +35,7 @@ def test_add_notification_persists_target_and_scheduled_notifications(app):
     rows = read_query(
         """
         SELECT target.orgId, target.targetId, target.type, target.eventAt,
-               notification.userId, notification.targetId, notification.nOffset
+               notification.userId, notification.targetId
         FROM public.notificationsTarget AS target
         JOIN public.notifications AS notification ON notification.targetId = target.id
         WHERE target.orgId = %s AND target.targetId = %s;
@@ -56,9 +56,7 @@ def test_add_notification_persists_target_and_scheduled_notifications(app):
     }
     target_ids = {row[5] for row in rows}
     assert len(target_ids) == 1
-    assert {(row[4], row[6]) for row in rows} == {
-        (user_id, timedelta(days=1)) for user_id in (1, 2, 3)
-    }
+    assert {row[4] for row in rows} == {1, 2, 3}
 
 
 def test_update_notification_replaces_event_time_and_scheduled_recipients(app):
@@ -109,15 +107,11 @@ def test_update_notification_replaces_event_time_and_scheduled_recipients(app):
     assert target_rows == [(original_target_id, updated_meeting.meetingDate)]
     assert read_query(
         """
-        SELECT userId, nOffset FROM public.notifications
+        SELECT userId FROM public.notifications
         WHERE targetId = %s ORDER BY userId;
         """,
         (original_target_id,),
-    ) == [
-        (1, timedelta(days=1)),
-        (3, timedelta(days=1)),
-        (4, timedelta(days=1)),
-    ]
+    ) == [(1,), (3,), (4,)]
 
 
 def test_update_notification_keeps_schedules_only_for_current_participants(app):
@@ -331,8 +325,8 @@ def test_send_loop_sends_pending_notification_and_deletes_records(app, monkeypat
     assert len(sent_notifications) == 1
     notification = sent_notifications[0]
     assert notification.token == "test-fcm-token"
-    assert notification.title == "Decision Due Tomorrow"
-    assert notification.body == "A decision due tomorrow has not been completed yet."
+    assert notification.title == "Decision Due Soon"
+    assert notification.body == "A decision due in 1 day has not been completed yet."
     assert notification.data == {
         "type": NotificationType.DecisionDue.value,
         "id": str(decision.id),

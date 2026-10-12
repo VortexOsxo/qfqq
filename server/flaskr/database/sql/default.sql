@@ -61,16 +61,8 @@ CREATE TABLE
   public.notifications (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     userId INTEGER NOT NULL REFERENCES public.users (id) ON DELETE CASCADE,
-    targetId INTEGER NOT NULL REFERENCES public.notificationsTarget (id) ON DELETE CASCADE,
-    nOffset INTERVAL NOT NULL
+    targetId INTEGER NOT NULL REFERENCES public.notificationsTarget (id) ON DELETE CASCADE
   );
-
-CREATE VIEW public.notificationsToSend AS
-  SELECT t.orgId as orgId, t.targetId as targetId, t.type as type, n.userId as userId, n.nOffset as nOffset 
-  FROM public.notifications n
-  JOIN public.notificationsTarget t
-  ON n.targetId = t.id
-  WHERE t.eventAt - n.nOffset <= NOW();
 
 CREATE INDEX ON notifications (targetId);
 CREATE INDEX ON notificationsTarget (orgId);

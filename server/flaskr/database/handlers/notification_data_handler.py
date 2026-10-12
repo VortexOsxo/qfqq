@@ -2,6 +2,7 @@ from datetime import datetime
 
 from ..postgres import get_db_access, read_query, write_query
 from flaskr.models import NotificationTarget, ScheduledNotification
+from flaskr.services.notifications.notification_type import DEFAULT_NOTIFICATION_OFFSETS
 
 
 class NotificationDataHandler:
@@ -65,11 +66,11 @@ class NotificationDataHandler:
 
             conn.cursor().executemany(
                 """
-                INSERT INTO public.notifications (userId, targetId, nOffset)
-                VALUES (%s, %s, %s);
+                INSERT INTO public.notifications (userId, targetId)
+                VALUES (%s, %s);
                 """,
                 [
-                    (notification.userId, target_id, notification.nOffset)
+                    (notification.userId, target_id)
                     for notification in notifications
                 ],
             )
@@ -99,12 +100,12 @@ class NotificationDataHandler:
     def create_scheduled_notification(cls, notification: ScheduledNotification) -> int | None:
         query = (
             "INSERT INTO public.notifications "
-            "(userId, targetId, nOffset) "
-            "VALUES (%s, %s, %s) RETURNING id;"
+            "(userId, targetId) "
+            "VALUES (%s, %s) RETURNING id;"
         )
         try:
             with get_db_access() as conn:
-                params = (notification.userId, notification.targetId, notification.nOffset)
+                params = (notification.userId, notification.targetId)
                 row = conn.execute(query, params).fetchone()
                 return row[0]
         except Exception:
@@ -120,16 +121,27 @@ class NotificationDataHandler:
         
     @classmethod
     def get_pending_notifications(cls):
+        default_offsets = list(DEFAULT_NOTIFICATION_OFFSETS.items())
+        defaults_values = ", ".join(["(%s, %s)"] * len(default_offsets))
         query = """
+            WITH default_offsets(type, nOffset) AS (
+                VALUES {defaults_values}
+            )
             SELECT
                 target.id, target.orgId, target.targetId, target.type, target.eventAt,
-                notification.id, notification.userId, notification.targetId, notification.nOffset
+                notification.id, notification.userId, notification.targetId,
+                COALESCE(user_offset.nOffset, default_offsets.nOffset)
             FROM public.notifications AS notification
             JOIN public.notificationsTarget AS target
                 ON notification.targetId = target.id
-            WHERE target.eventAt - notification.nOffset <= NOW();
-        """
-        rows = read_query(query)
+            LEFT JOIN public.notificationOffsets AS user_offset
+                ON user_offset.userId = notification.userId AND user_offset.type = target.type
+            LEFT JOIN default_offsets
+                ON default_offsets.type = target.type
+            WHERE target.eventAt - COALESCE(user_offset.nOffset, default_offsets.nOffset) <= NOW();
+        """.format(defaults_values=defaults_values)
+        params = tuple(value for row in default_offsets for value in row)
+        rows = read_query(query, params)
         return [
             (NotificationTarget(*row[:5]), ScheduledNotification(*row[5:]))
             for row in rows

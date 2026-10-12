@@ -3,17 +3,18 @@ from flaskr.database import DecisionDataHandler, set_tenant
 from flaskr.database.handlers import UserDataHandler
 
 from ..notification_type import NotificationType
+from .duration_format import format_duration
 
 from datetime import timedelta
 
 _STRINGS = {
     'en': {
-        'title': 'Decision Due Tomorrow',
-        'body': 'A decision due tomorrow has not been completed yet.',
+        'title': 'Decision Due Soon',
+        'body': 'A decision due in {duration} has not been completed yet.',
     },
     'fr': {
-        'title': 'Décision à respecter',
-        'body': "Une décision due demain n'a pas encore été complétée.",
+        'title': 'Décision bientôt due',
+        'body': "Une décision due dans {duration} n'a pas encore été complétée.",
     },
 }
 
@@ -31,7 +32,7 @@ class DecisionDueNotificationHandler:
         ]
         return target, notifications
 
-    def get_notification(self, target: NotificationTarget, _: ScheduledNotification):
+    def get_notification(self, target: NotificationTarget, scheduled: ScheduledNotification):
         set_tenant(target.orgId)
         decision = DecisionDataHandler.get_decision(target.targetId)
         if decision is None or decision.status != "inProgress":
@@ -41,9 +42,10 @@ class DecisionDueNotificationHandler:
         if token is None:
             return None
         strings = _STRINGS.get(locale, _STRINGS["fr"])
+        duration = format_duration(scheduled.nOffset, locale)
         return Notification(
             token,
             strings["title"],
-            strings["body"],
+            strings["body"].format(duration=duration),
             data={"type": "DecisionDue", "id": str(target.targetId)},
         )

@@ -54,7 +54,7 @@ class NotificationService:
                     assert handler is not None
 
                     notif = handler.get_notification(target, scheduled)
-                    if notif is None:
+                    if notif is None or notif.token is None:
                         continue
                     cls._send_notif(notif)
 

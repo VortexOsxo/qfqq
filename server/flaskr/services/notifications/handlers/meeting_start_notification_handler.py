@@ -3,17 +3,18 @@ from flaskr.database import set_tenant
 from flaskr.database.handlers import UserDataHandler
 
 from ..notification_type import NotificationType
+from .duration_format import format_duration
 
 from datetime import timedelta
 
 _STRINGS = {
     'en': {
         'title': 'Meeting Starting Soon',
-        'body': "Your meeting is starting in 15 minutes, don't forget to join!",
+        'body': "Your meeting is starting in {duration}, don't forget to join!",
     },
     'fr': {
         'title': 'Réunion bientôt',
-        'body': "Votre réunion commence dans 15 minutes, n'oubliez pas de la rejoindre !",
+        'body': "Votre réunion commence dans {duration}, n'oubliez pas de la rejoindre !",
     },
 }
 
@@ -46,9 +47,10 @@ class MeetingStartNotificationHandler:
             None
 
         strings = _STRINGS.get(locale, _STRINGS["fr"])
+        duration = format_duration(scheduled.nOffset, locale)
         return Notification(
             token,
             strings["title"],
-            strings["body"],
+            strings["body"].format(duration=duration),
             data={"type": "MeetingStart", "id": str(target.targetId)},
         )
