@@ -69,6 +69,8 @@ def create_meeting_agenda(**obj):
             NotificationService.add_notification(NotificationType.MeetingStart.value, g.org_id, meeting)
         elif (previousMeeting.status == "planned" and meeting.status == "planned"):
             NotificationService.update_notification(NotificationType.MeetingStart.value, g.org_id, meeting.id, meeting)
+        if previousMeeting.status == "planned" and meeting.status != "planned":
+            NotificationService.remove_notification(NotificationType.MeetingStart.value, g.org_id, meeting.id)
 
         return "", 204
     return "", 405
@@ -142,10 +144,9 @@ def patch_meeting_agenda_status(status, id: str):
     elif status == "ongoing":
         NotificationService.remove_notification(NotificationType.MeetingStart.value, g.org_id, meeting.id)
         NotificationService.add_notification(NotificationType.MeetingStarted.value, g.org_id, meeting.id)
-        pass
     elif status == "canceled":
         NotificationService.remove_notification(NotificationType.MeetingStart.value, g.org_id, meeting.id)
-        pass
+
     return '', 204
 
 

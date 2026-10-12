@@ -40,7 +40,7 @@ def update_user_notification_offset(type, offset):
 @users_bp.get("/settings/notifications-offset/<string:type>")
 def get_user_notification_offset(type):
     result = NotificationOffsetDataHandler.get_notification_offset(userId=g.user_id, type=type)
-    return (jsonify({'type': type, 'offset': result.total_seconds()}), 200) if result else ("", 404)
+    return (jsonify({'type': type, 'offset': result.total_seconds()}), 200) if result is not None else ("", 404)
 
 
 @users_bp.get("/settings/notifications-offset")

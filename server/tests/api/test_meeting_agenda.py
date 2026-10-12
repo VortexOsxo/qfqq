@@ -136,8 +136,8 @@ def test_patch_meeting_status_to_canceled_removes_meeting_start_notification(cli
     meeting = response.get_json()
     meeting_id = meeting["id"]
 
-    # jobs = NotificationJobDataHandler.get_jobs_by_target(1, meeting_id, NotificationType.MeetingStart.value)
-    # assert len(jobs) == 1
+    jobs = NotificationDataHandler.get_notification_targets(1, meeting_id, NotificationType.MeetingStart.value)
+    assert len(jobs) == 1
 
     patch_response = client.patch(
         f"/meeting-agendas/{meeting_id}/status",
@@ -146,8 +146,8 @@ def test_patch_meeting_status_to_canceled_removes_meeting_start_notification(cli
     )
     assert patch_response.status_code == 204
 
-    # jobs_after = NotificationJobDataHandler.get_jobs_by_target(1, meeting_id, NotificationType.MeetingStart.value)
-    # assert len(jobs_after) == 0
+    jobs_after = NotificationDataHandler.get_notification_targets(1, meeting_id, NotificationType.MeetingStart.value)
+    assert len(jobs_after) == 0
 
 
 def test_create_meeting_ongoing_success(client):

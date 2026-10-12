@@ -56,7 +56,11 @@ class NotificationService:
                     notif = handler.get_notification(target, scheduled)
                     if notif is None or notif.token is None:
                         continue
-                    cls._send_notif(notif)
+
+                    try:
+                        cls._send_notif(notif)
+                    except Exception as e:
+                        print(f"Failed to send notification {scheduled.id}: {e}")
 
                 NotificationDataHandler.remove_notifications(
                     [scheduled.id for _, scheduled in pending]

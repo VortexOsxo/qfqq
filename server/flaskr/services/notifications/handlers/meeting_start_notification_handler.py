@@ -44,7 +44,7 @@ class MeetingStartNotificationHandler:
 
         token, locale = UserDataHandler.get_user_fcm(userId)
         if token is None:
-            None
+            return None
 
         strings = _STRINGS.get(locale, _STRINGS["fr"])
         duration = format_duration(scheduled.nOffset, locale)
