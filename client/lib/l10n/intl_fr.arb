@@ -187,6 +187,7 @@
   "agendaListView": "Voir",
   "agendaListStart": "Démarrer",
   "agendaListAnyStatus": "Tous les statuts",
+  "agendaListAnyAnimator": "Tous les animateurs",
   "agendaListStatusFilter": "Statut : {status}",
   "agendaListAnyProject": "Tous les projets",
   "agendaListNoProject": "Aucun projet",
@@ -296,6 +297,7 @@
   "decisionListDueDate": "Date d'échéance",
   "decisionListResponsible": "Responsable",
   "decisionListProject": "Projet",
+  "decisionListAnyResponsible": "Tous les responsables",
   "decisionListNoResponsibleSet": "Aucun responsable défini",
   "decisionListNoReporterSet": "Aucun rapporteur défini",
   
@@ -409,6 +411,7 @@
   "commonNoLocationSet": "Aucun lieu défini",
   "commonNoAnimatorSet": "Aucun animateur défini",
   "commonNoSupervisorSet": "Aucun superviseur défini",
+  "commonAllSupervisors": "Tous les superviseurs",
   "commonNoProjectSet": "Aucun projet défini",
   "commonNoDueDate": "Aucune date d'échéance",
   "commonNoReunionDate": "Aucune date de réunion",

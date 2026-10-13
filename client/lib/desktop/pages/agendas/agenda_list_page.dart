@@ -30,7 +30,7 @@ class _AgendaPageView extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(flex: 6, child: AgendaFilterWidget(vm: vm)),
+              Expanded(flex: 12, child: AgendaFilterWidget(vm: vm)),
               const Expanded(flex: 1, child: SizedBox()),
               PermissionRequired(
                 neededPermissions: Permissions(contribute: true),

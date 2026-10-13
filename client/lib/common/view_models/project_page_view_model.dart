@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/models/enums/id_selection_enum.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
@@ -19,21 +20,33 @@ class ProjectPageViewModel extends ConsumerStatefulWidget {
 class ProjectPageViewModelState extends ConsumerState<ProjectPageViewModel> {
   String searchQuery = '';
   bool isRefreshing = false;
+  int? userIdQuery;
 
   List<Project> get filteredProjects {
-    final projects = ref.watch(projectsProvider);
+    var projects = ref.watch(projectsProvider);
 
-    if (searchQuery.isEmpty) return projects;
+    if (searchQuery.isNotEmpty) {
+      projects = projects
+          .where(
+            (project) =>
+                project.title.toLowerCase().contains(
+                  searchQuery.toLowerCase(),
+                ) ||
+                project.number.toString().contains(searchQuery.toLowerCase()),
+          )
+          .toList();
+    }
 
-    return projects
-        .where(
-          (project) =>
-              project.title
-                  .toLowerCase()
-                  .contains(searchQuery.toLowerCase()) ||
-              project.number.toString().contains(searchQuery.toLowerCase()),
-        )
-        .toList();
+    if (userIdQuery == IdSelection.noId.value) {
+      projects = projects
+          .where((project) => !isIdValid(project.supervisorId))
+          .toList();
+    } else if (isIdValid(userIdQuery)) {
+      projects = projects
+          .where((project) => project.supervisorId == userIdQuery)
+          .toList();
+    }
+    return projects;
   }
 
   String supervisorName(int supervisorId, String fallback) {
@@ -42,6 +55,7 @@ class ProjectPageViewModelState extends ConsumerState<ProjectPageViewModel> {
   }
 
   void onSearchQueryChanged(String value) => setState(() => searchQuery = value);
+  void onUserQueryChanged(int? value) => setState(() => userIdQuery = value);
 
   Future<void> refreshProjects() async {
     if (isRefreshing) return;

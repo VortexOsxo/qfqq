@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/decision.dart';
+import 'package:qfqq/common/models/enums/id_selection_enum.dart';
 import 'package:qfqq/common/providers/decisions_provider.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
@@ -16,7 +17,9 @@ import 'package:qfqq/common/utils/text.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
 import 'package:qfqq/common/widgets/icon_status_chip.dart';
 import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
+import 'package:qfqq/common/widgets/dropdowns/decision_status_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/dropdowns/default_dropdown_menu.dart';
+import 'package:qfqq/common/widgets/dropdowns/user_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/desktop/widgets/filters/filter_container.dart'
     as desktop_filter;
@@ -46,6 +49,8 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
   int? _selectedProjectId;
+  int? _selectedResponsibleId;
+  DecisionStatus? _selectedStatus;
 
   @override
   void dispose() {
@@ -69,10 +74,31 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
               .toList();
     }
 
+    if (_selectedStatus != null) {
+      decisions =
+          decisions
+              .where((decision) => decision.status == _selectedStatus)
+              .toList();
+    }
+
     if (isIdValid(_selectedProjectId) && widget.isProjectFilterEnabled) {
       decisions =
           decisions
               .where((decision) => decision.projectId == _selectedProjectId)
+              .toList();
+    }
+
+    if (_selectedResponsibleId == IdSelection.noId.value) {
+      decisions =
+          decisions
+              .where((decision) => !isIdValid(decision.responsibleId))
+              .toList();
+    } else if (isIdValid(_selectedResponsibleId)) {
+      decisions =
+          decisions
+              .where(
+                (decision) => decision.responsibleId == _selectedResponsibleId,
+              )
               .toList();
     }
 
@@ -107,8 +133,26 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
             hintText: S.of(context).searchDescriptionIdHint,
           ),
           SizedBox(height: 8),
-          if (widget.isProjectFilterEnabled)
-            Row(children: [_buildProjectFilterDropdown(context, ref)]),
+          Row(
+            spacing: 8,
+            children: [
+              DecisionStatusDropdownMenu(
+                initialStatus: _selectedStatus,
+                valueChanged: (value) {
+                  setState(() => _selectedStatus = value);
+                },
+              ),
+              UserDropdownMenu(
+                initialUserId: _selectedResponsibleId,
+                valueChanged: (value) {
+                  setState(() => _selectedResponsibleId = value);
+                },
+                anyLabel: S.of(context).decisionListAnyResponsible,
+              ),
+              if (widget.isProjectFilterEnabled)
+                _buildProjectFilterDropdown(context, ref),
+            ],
+          ),
         ],
       ),
     );
@@ -176,14 +220,20 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
             if (widget.showDetails)
               Expanded(flex: 3, child: Text(loc.decisionListProject)),
             if (widget.showDetails) ...[
-              Expanded(flex: 3, child: Center(child: Text(S.of(context).attributeStatus))),
-              Expanded(flex: 2, child: Center(child: Text(S.of(context).commonAction))),
-            ] else 
-              Expanded(flex:2, child: SizedBox()),
+              Expanded(
+                flex: 3,
+                child: Center(child: Text(S.of(context).attributeStatus)),
+              ),
+              Expanded(
+                flex: 2,
+                child: Center(child: Text(S.of(context).commonAction)),
+              ),
+            ] else
+              Expanded(flex: 2, child: SizedBox()),
             SizedBox(width: widget.showDetails ? 16 : 8),
           ],
         ),
-        Divider(color: theme.colorScheme.primary, thickness: 2,),
+        Divider(color: theme.colorScheme.primary, thickness: 2),
         Expanded(
           child: ListView.separated(
             itemCount: decisions.length,
@@ -197,7 +247,10 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
                       ? ref.watch(userByIdProvider(decision.responsibleId!))
                       : null;
 
-              final statusUIData = getDecisionStatusUI(S.of(context), decision.status);
+              final statusUIData = getDecisionStatusUI(
+                S.of(context),
+                decision.status,
+              );
 
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -207,7 +260,8 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
                   Expanded(flex: 3, child: listText(decision.description)),
                   Expanded(
                     flex: 2,
-                    child: Text(formatDateDayIfPresent(context, decision.dueDate),
+                    child: Text(
+                      formatDateDayIfPresent(context, decision.dueDate),
                     ),
                   ),
                   if (widget.showDetails)
