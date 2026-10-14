@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qfqq/common/view_models/project_page_view_model.dart';
+import 'package:qfqq/common/widgets/dropdowns/user_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/projects/project_list_widget.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -41,10 +42,23 @@ class _ProjectPageView extends StatelessWidget {
   Widget _buildSearchSection(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: FilterContainer(child: DefaultTextField(
-        onChanged: vm.onSearchQueryChanged,
-        hintText: S.of(context).searchTitleIdHint,
-      ),)
+      child: FilterContainer(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            DefaultTextField(
+              onChanged: vm.onSearchQueryChanged,
+              hintText: S.of(context).searchTitleIdHint,
+            ),
+            SizedBox(height: 8),
+            UserDropdownMenu(
+              initialUserId: vm.userIdQuery,
+              valueChanged: vm.onUserQueryChanged,
+              anyLabel: S.of(context).commonAllSupervisors,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

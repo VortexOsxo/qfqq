@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qfqq/common/models/permissions.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/view_models/project_page_view_model.dart';
+import 'package:qfqq/common/widgets/dropdowns/user_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/permission_required.dart';
 import 'package:qfqq/common/widgets/projects/project_list_widget.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
@@ -48,14 +49,26 @@ class _ProjectPageView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            flex: 6,
+            flex: 12,
             child: FilterContainer(
               child: Padding(
                 padding: EdgeInsetsGeometry.all(8),
-                child: DefaultTextField(
-                  initialValue: vm.searchQuery,
-                  onChanged: vm.onSearchQueryChanged,
-                  hintText: S.of(context).searchTitleIdHint,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: DefaultTextField(
+                        initialValue: vm.searchQuery,
+                        onChanged: vm.onSearchQueryChanged,
+                        hintText: S.of(context).searchTitleIdHint,
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    UserDropdownMenu(
+                      initialUserId: vm.userIdQuery,
+                      valueChanged: vm.onUserQueryChanged,
+                      anyLabel: S.of(context).commonAllSupervisors,
+                    )
+                  ],
                 ),
               ),
             ),

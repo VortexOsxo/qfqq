@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qfqq/common/view_models/agenda_list_page_view_model.dart';
 import 'package:qfqq/common/widgets/dropdowns/agenda_status_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/dropdowns/project_dropdown_menu.dart';
+import 'package:qfqq/common/widgets/dropdowns/user_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/desktop/widgets/filters/filter_container.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -22,15 +23,23 @@ class AgendaFilterWidget extends StatelessWidget {
         ),
         SizedBox(height: 8),
         Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             AgendaStatusDropdownMenu(
               initialStatus: vm.statusQuery,
               valueChanged: vm.onStatusQueryChanged,
             ),
-            SizedBox(width: 16),
+            SizedBox(width: 12,),
             ProjectDropdownMenu(
               initialProject: vm.projectIdQuery,
               valueChanged: vm.onProjectQueryChanged,
+            ),
+            SizedBox(width: 12,),
+            UserDropdownMenu(
+              initialUserId: vm.animatorIdQuery,
+              valueChanged: vm.onAnimatorQueryChanged,
+              anyLabel: S.of(context).agendaListAnyAnimator,
+              noneLabel: S.of(context).commonNoAnimatorSet,
             ),
           ],
         ),
