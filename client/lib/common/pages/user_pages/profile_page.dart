@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/states/auth_state.dart';
 import 'package:qfqq/common/services/auth_service.dart';
+import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/platform.dart';
 import 'package:qfqq/generated/l10n.dart';
 import 'package:qfqq/common/providers/locale_provider.dart';
@@ -19,22 +21,34 @@ class ProfilePage extends ConsumerWidget {
       return SizedBox.shrink(); // TODO: Had an explaition message and allow to 'disconnect' and go to login page
     }
 
-    return _buildTopBar(context, ref, authState);
+    return _build(context, ref, authState);
   }
 
-  Widget _buildTopBar(
+  Widget _build(
     BuildContext context,
     WidgetRef ref,
     AuthState authState,
   ) {
     final loc = S.of(context);
 
+    void logout() async {
+      var authService = ref.read(authStateProvider.notifier);
+      await authService.logout();
+      if (context.mounted) {
+        context.go('/login');
+      }
+    }
+
     final isMobile = platformType == PlatformType.mobile;
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
+    return LayoutBuilder(
+      builder: (context, constraints) => SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+          child: IntrinsicHeight(
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
@@ -86,11 +100,17 @@ class ProfilePage extends ConsumerWidget {
               const _NotificationSettings(),
               const SizedBox(height: 32),
               _buildLanguageSelector(context, ref, loc),
+              const Spacer(),
+              ElevatedButton(
+                onPressed: logout,
+                style: squareButtonStyle(context),
+                child: Text(S.of(context).profilePageLogout),
+              ),
             ]
           ],
         ),
       ),
-    );
+    ))));
   }
 
   Widget _buildLanguageSelector(BuildContext context, WidgetRef ref, S loc) {
@@ -233,6 +253,7 @@ class _NotificationSettingsState extends ConsumerState<_NotificationSettings> {
 
             final offsets = snapshot.data!;
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children:
                   _configurableNotificationTypes
                       .map(
@@ -292,6 +313,7 @@ class _NotificationSettingsState extends ConsumerState<_NotificationSettings> {
           ),
           if (_saving.contains(type))
             const LinearProgressIndicator(minHeight: 2),
+          SizedBox(height: 8),
         ],
       ),
     );
