@@ -129,10 +129,7 @@ class _AgendaModificationPageState extends ConsumerState<AgendaModificationPage>
                           ),
                         ),
                         HelpButton(
-                          helpContent:
-                              MeetingCreationHelpLink(loc: loc).getModal(),
-                          detailedHelpContent:
-                              MeetingCreationHelpLink(loc: loc).getContent(),
+                          helpLink: MeetingCreationHelpLink(loc: loc),
                         ),
                       ],
                     ),
