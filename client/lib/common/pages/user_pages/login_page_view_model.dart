@@ -20,12 +20,6 @@ class LoginPageViewModelState extends ConsumerState<LoginPageViewModel> {
   String error = '';
   bool stay = false;
 
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback(_checkRefresh);
-    super.initState();
-  }
-
   void submit() async {
     setState(() => error = '');
     formKey.currentState?.save();
@@ -56,22 +50,6 @@ class LoginPageViewModelState extends ConsumerState<LoginPageViewModel> {
   void savePassword(String? val) => password = val ?? '';
   void saveEmail(String? val) => email = val ?? '';
   void saveStay(bool? val) => setState(() => stay = val ?? false);
-
-  void _checkRefresh(_) async {
-    final service = ref.read(authStateProvider.notifier);
-
-    final result = await service.refresh();
-    if (!result || !mounted) {
-      return;
-    }
-
-    final authState = ref.read(authStateProvider);
-    if (authState.hasOrg) {
-      ref.read(routerProvider).go('/');
-    } else {
-      ref.read(routerProvider).go('/organizations/links');
-    }
-  }
 
   @override
   Widget build(BuildContext context) => widget.builder(this);
