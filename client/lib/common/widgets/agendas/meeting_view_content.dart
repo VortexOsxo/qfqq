@@ -74,9 +74,6 @@ class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
         isAnimator
             ? MeetingAnimationHelpLink(loc: loc)
             : MeetingParticipationHelpLink(loc: loc);
-    final helpContent = helpLink.getModal();
-    final detailedHelpContent = helpLink.getContent();
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Row(
@@ -87,10 +84,7 @@ class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          HelpButton(
-            helpContent: helpContent,
-            detailedHelpContent: detailedHelpContent,
-          ),
+          HelpButton(helpLink: helpLink),
         ],
       ),
     );
@@ -110,9 +104,6 @@ class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
         isAnimator
             ? MeetingAnimationHelpLink(loc: loc)
             : MeetingParticipationHelpLink(loc: loc);
-    final helpContent = helpLink.getModal();
-    final detailedHelpContent = helpLink.getContent();
-
     final meetingsService = ref.read(meetingAgendaServiceProvider);
 
     final titleRow = Row(
@@ -125,10 +116,7 @@ class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        HelpButton(
-          helpContent: helpContent,
-          detailedHelpContent: detailedHelpContent,
-        ),
+        HelpButton(helpLink: helpLink),
       ],
     );
 

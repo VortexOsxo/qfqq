@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:qfqq/common/widgets/help/help_info.dart';
+import 'package:qfqq/common/utils/help_util.dart';
 import 'package:qfqq/common/widgets/help/help_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class HelpButton extends StatelessWidget {
-  final HelpContent helpContent;
-  final HelpContent detailedHelpContent;
+  final HelpLink helpLink;
 
-  const HelpButton({
-    super.key,
-    required this.helpContent,
-    required this.detailedHelpContent,
-  });
+  const HelpButton({super.key, required this.helpLink});
 
   void _showHelp(BuildContext context) {
+    final helpContent = helpLink.getModal();
+
     showDialog<void>(
       context: context,
       builder: (context) {
@@ -24,7 +21,7 @@ class HelpButton extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                context.push('/help', extra: detailedHelpContent);
+                context.push('/help', extra: helpLink.getContent());
               },
               child: Text(S.of(context).helpDialogLearnMore),
             ),
@@ -45,7 +42,7 @@ class HelpButton extends StatelessWidget {
     return IconButton(
       onPressed: () => _showHelp(context),
       icon: const Icon(Icons.help_outline_rounded),
-      tooltip: helpContent.tooltip,
+      tooltip: helpLink.getModal().tooltip,
       style: IconButton.styleFrom(
         foregroundColor: colorScheme.primary,
         overlayColor: colorScheme.primary.withValues(alpha: 0.12),
