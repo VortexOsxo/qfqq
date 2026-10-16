@@ -9,18 +9,44 @@ class HelpSelection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loc = S.of(context);
-    final children = [
-      for (final factory in helpLinksFactories)
-        _HelpLink(content: factory(loc)),
-    ];
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        SizedBox(height: 8,),
-        ...children
+        const SizedBox(height: 8),
+        for (final section in helpSections)
+          _HelpSection(section: section),
+      ],
+    );
+  }
+}
+
+class _HelpSection extends StatelessWidget {
+  final HelpSection section;
+
+  const _HelpSection({required this.section});
+
+  @override
+  Widget build(BuildContext context) {
+    final loc = S.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: Text(
+            section.getName(loc),
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: colorScheme.primary,
+            ),
+          ),
+        ),
+        for (final link in section.getSections(loc))
+          _HelpLink(content: link),
       ],
     );
   }
