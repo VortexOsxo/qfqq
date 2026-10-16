@@ -9,8 +9,11 @@ meetingsParticipants,
 decisions,
 decisionsAssistants CASCADE;
 
-DROP TYPE IF EXISTS meetingStatus,
+DROP TYPE IF EXISTS projectStatus,
+meetingStatus,
 decisionStatus CASCADE;
+
+CREATE TYPE projectStatus AS ENUM ('inProgress', 'completed');
 
 CREATE TYPE meetingStatus AS ENUM ('draft', 'planned', 'ongoing', 'canceled', 'completed');
 
@@ -45,6 +48,7 @@ CREATE TABLE
     nb INTEGER GENERATED ALWAYS AS IDENTITY,
     title TEXT NOT NULL,
     goals TEXT NOT NULL,
+    status projectStatus NOT NULL DEFAULT 'inProgress',
     supervisorId INTEGER REFERENCES users (id)
   );
 

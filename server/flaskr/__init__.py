@@ -6,7 +6,9 @@ from flask.json.provider import DefaultJSONProvider
 
 from .database import init_db
 from .blueprints import register_blueprints, get_api_version, get_language
-from.commands.mock import mock_command
+
+from .commands.mock import mock_command
+from .commands.migrate import migrate_command
 
 class EnumJSONProvider(DefaultJSONProvider):
     def default(self, obj):
@@ -34,5 +36,6 @@ def create_app(config_name='development'):
 
     init_db(app, uri=app.config["DATABASE_URL"])
     app.cli.add_command(mock_command)
+    app.cli.add_command(migrate_command)
 
     return app
