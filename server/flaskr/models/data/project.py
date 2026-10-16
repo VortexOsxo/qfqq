@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 
-class ProjectStatusEnum(Enum):
+class ProjectStatus(Enum):
     inProgress = "inProgress"
     completed = "completed"
 
@@ -13,7 +13,7 @@ class Project:
     number: int
     title: str
     goals: str
-    status: ProjectStatusEnum
+    status: ProjectStatus
     supervisorId: int
 
     def to_dict(self) -> dict[str, str | int]:

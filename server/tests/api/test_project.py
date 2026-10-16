@@ -99,3 +99,32 @@ def test_create_project_missing_supervisor_not_found(client):
     response = client.post("/projects", json=payload, headers=headers)
     assert response.status_code == 400
     assert "supervisorId" in response.get_json()
+
+
+def test_update_project_status(client):
+    headers = get_auth_headers(client)
+
+    payload = {"status": "completed"}
+
+    response = client.patch("/projects/2/status", json=payload, headers=headers)
+    assert response.status_code == 204
+
+    project = client.get("/projects", headers=headers)
+    projects = project.get_json()
+    
+    found = False
+    for project in projects:
+        if project['id'] == 2:
+            assert project["status"] == "completed"
+            found = True
+    assert found
+
+
+def test_update_project_invalid_status(client):
+    headers = get_auth_headers(client)
+
+    payload = {"status": "invalid"}
+
+    response = client.patch("/projects/2/status", json=payload, headers=headers)
+    assert response.status_code == 400
+    assert "status" in response.get_json()
