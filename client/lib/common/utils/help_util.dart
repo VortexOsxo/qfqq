@@ -302,8 +302,78 @@ class MeetingParticipationHelpLink extends HelpLink {
   }
 }
 
+class ProjectEvaluationHelpLink extends HelpLink {
+  const ProjectEvaluationHelpLink({required super.loc});
+
+  @override
+  String getTitle() => loc.helpContentProjectEvaluationLinkTitle;
+
+  @override
+  HelpContent getContent() {
+    return HelpContent(
+      title: loc.helpContentProjectEvaluationTitle,
+      tooltip: loc.helpContentProjectEvaluationTooltip,
+      components: [
+        HelpParagraph(text: loc.helpContentProjectEvaluationIntro),
+        HelpParagraph(text: loc.helpContentProjectEvaluationAssessment),
+        HelpParagraph(text: loc.helpContentProjectEvaluationDateNote),
+        HelpBulletList(
+          title: loc.helpContentProjectEvaluationQuestionsTitle,
+          bulletPoints: [
+            loc.helpContentProjectEvaluationProblemQuestion,
+            loc.helpContentProjectEvaluationSolutionQuestion,
+            loc.helpContentProjectEvaluationBenefitsQuestion,
+            loc.helpContentProjectEvaluationInvestmentQuestion,
+            loc.helpContentProjectEvaluationAnnualBenefitsQuestion,
+            loc.helpContentProjectEvaluationRisksQuestion,
+          ],
+        ),
+        HelpParagraph(text: loc.helpContentProjectEvaluationScoring),
+      ],
+    );
+  }
+
+  @override
+  HelpContent getModal() {
+    return HelpContent(
+      title: loc.helpContentProjectEvaluationTitle,
+      tooltip: loc.helpContentProjectEvaluationTooltip,
+      components: [
+        HelpParagraph(text: loc.helpContentProjectEvaluationIntro),
+        HelpParagraph(text: loc.helpContentProjectEvaluationAssessment),
+      ],
+    );
+  }
+}
+
+class ProjectPlanningHelpLink extends HelpLink {
+  const ProjectPlanningHelpLink({required super.loc});
+
+  @override
+  String getTitle() => loc.helpContentProjectPlanningTitle;
+
+  @override
+  HelpContent getContent() {
+    return HelpContent(
+      title: loc.helpContentProjectPlanningTitle,
+      tooltip: loc.helpContentProjectPlanningTooltip,
+      components: [
+        HelpSectionTitle(title: loc.helpContentProjectPlanningTitleSection),
+        HelpParagraph(text: loc.helpContentProjectPlanningTitleGuidance),
+        HelpSectionTitle(title: loc.helpContentProjectPlanningGoalsSection),
+        HelpParagraph(text: loc.helpContentProjectPlanningGoalsGuidance),
+      ],
+    );
+  }
+
+  @override
+  HelpContent getModal() => getContent();
+}
+
 final helpLinksFactories = [
   (loc) => MeetingAnimationHelpLink(loc: loc),
   (loc) => MeetingCreationHelpLink(loc: loc),
   (loc) => MeetingParticipationHelpLink(loc: loc),
+  (loc) => ProjectEvaluationHelpLink(loc: loc),
+  (loc) => ProjectPlanningHelpLink(loc: loc),
 ];
