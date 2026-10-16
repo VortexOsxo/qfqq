@@ -4,6 +4,8 @@ import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/view_models/project_page_view_model.dart';
 import 'package:qfqq/common/widgets/dropdowns/user_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/permission_required.dart';
+import 'package:qfqq/common/utils/help_util.dart';
+import 'package:qfqq/common/widgets/help/help_button.dart';
 import 'package:qfqq/common/widgets/projects/project_list_widget.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/desktop/widgets/filters/filter_container.dart';
@@ -67,7 +69,7 @@ class _ProjectPageView extends StatelessWidget {
                       initialUserId: vm.userIdQuery,
                       valueChanged: vm.onUserQueryChanged,
                       anyLabel: S.of(context).commonAllSupervisors,
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -76,10 +78,18 @@ class _ProjectPageView extends StatelessWidget {
           Expanded(flex: 1, child: SizedBox()),
           PermissionRequired(
             neededPermissions: Permissions(contribute: true),
-            child: ElevatedButton(
-              onPressed: vm.goToProjectCreation,
-              style: squareButtonStyle(context),
-              child: Text(S.of(context).buttonCreateProject),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton(
+                  onPressed: vm.goToProjectCreation,
+                  style: squareButtonStyle(context),
+                  child: Text(S.of(context).buttonCreateProject),
+                ),
+                HelpButton(
+                  helpLink: ProjectEvaluationHelpLink(loc: S.of(context)),
+                ),
+              ],
             ),
           ),
         ],

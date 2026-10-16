@@ -6,7 +6,9 @@ import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
 import 'package:qfqq/common/services/modal_service.dart';
 import 'package:qfqq/common/templates/navigation_guard.dart';
+import 'package:qfqq/common/utils/help_util.dart';
 import 'package:qfqq/common/utils/validation.dart';
+import 'package:qfqq/common/widgets/help/help_button.dart';
 import 'package:qfqq/common/widgets/reusables/form_filled_button.dart';
 import 'package:qfqq/common/widgets/reusables/form_outlined_button.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
@@ -104,6 +106,12 @@ class _ProjectModificationState extends ConsumerState<ProjectModificationPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                children: [
+                  const Spacer(),
+                  HelpButton(helpLink: ProjectPlanningHelpLink(loc: loc)),
+                ],
+              ),
               DefaultTextField(
                 initialValue: widget.project.title,
                 hintText: loc.projectCreationPageTitleHint,
