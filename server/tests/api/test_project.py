@@ -11,6 +11,10 @@ def test_create_project_success(client):
     response = client.post("/projects", json=payload, headers=headers)
     assert response.status_code == 201
 
+    project = response.get_json()
+    assert project["title"] == "Test Project"
+    assert project["status"] == "inProgress"
+
 def test_create_project_missing_title(client):
     headers = get_auth_headers(client)
     payload = {

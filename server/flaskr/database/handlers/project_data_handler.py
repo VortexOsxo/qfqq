@@ -1,5 +1,5 @@
 from ..postgres import read_query, write_query, get_db_access
-from flaskr.models import Project
+from flaskr.models import Project, ProjectStatusEnum
 
 
 class ProjectDataHandler:
@@ -13,9 +13,9 @@ class ProjectDataHandler:
                 cur.execute(query, params)
                 if (result := cur.fetchone()) is None: return
                 id, nb = result
-                return Project(id, nb, *params)
-        except:
-            pass
+                return Project(id, nb, title, goals, ProjectStatusEnum.inProgress, supervisorId)
+        except Exception as e:
+            print(f'[ERROR]: {e}')
         return None
 
     @classmethod
@@ -28,12 +28,12 @@ class ProjectDataHandler:
 
     @classmethod
     def get_projects(cls):
-        query = f"SELECT * from projects;"
+        query = f"SELECT id, nb, title, goals, status, supervisorId from projects;"
         return [Project(*item) for item in read_query(query)]
 
     @classmethod
     def get_project_by_id(cls, id: int):
-        query = f"SELECT * from projects WHERE id = %s LIMIT 1;"
+        query = f"SELECT id, nb, title, goals, status, supervisorId from projects WHERE id = %s LIMIT 1;"
         projects = read_query(query, (id,))
         return Project(*projects[0]) if projects else None
 
