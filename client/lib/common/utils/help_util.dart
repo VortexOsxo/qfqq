@@ -370,10 +370,35 @@ class ProjectPlanningHelpLink extends HelpLink {
   HelpContent getModal() => getContent();
 }
 
-final helpLinksFactories = [
-  (loc) => MeetingAnimationHelpLink(loc: loc),
-  (loc) => MeetingCreationHelpLink(loc: loc),
-  (loc) => MeetingParticipationHelpLink(loc: loc),
-  (loc) => ProjectEvaluationHelpLink(loc: loc),
-  (loc) => ProjectPlanningHelpLink(loc: loc),
+class HelpSection {
+  final String Function(S loc) name;
+  final List _sectionsFactories;
+
+  String getName(S loc) => name(loc);
+
+  List<HelpLink> getSections(S loc) {
+    return [for (final factory in _sectionsFactories) factory(loc)];
+  }
+
+  const HelpSection({required this.name, required List sectionsFactories})
+    : _sectionsFactories = sectionsFactories;
+}
+
+final helpSections = [
+  HelpSection(
+    name: (loc) => loc.helpSectionMeetings,
+    sectionsFactories: [
+      (loc) => MeetingAnimationHelpLink(loc: loc),
+      (loc) => MeetingCreationHelpLink(loc: loc),
+      (loc) => MeetingParticipationHelpLink(loc: loc),
+    ],
+  ),
+
+  HelpSection(
+    name: (loc) => loc.helpSectionProjects,
+    sectionsFactories: [
+      (loc) => ProjectEvaluationHelpLink(loc: loc),
+      (loc) => ProjectPlanningHelpLink(loc: loc),
+    ],
+  ),
 ];
