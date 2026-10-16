@@ -88,6 +88,10 @@ class Database:
     def run_sql_file(cls, filename: str):
         with cls._get_db() as conn:
             cursor = conn.cursor()
-            path = os.path.join("flaskr", "database", "sql", f"{filename}.sql")
-            with open(path, "r", encoding="utf-8") as f:
-                cursor.execute(f.read())
+            cls.run_sql_file_from_cursor(filename=filename, cursor=cursor)
+
+    @classmethod
+    def run_sql_file_from_cursor(cls, filename: str, cursor):
+        path = os.path.join("flaskr", "database", "sql", f"{filename}.sql")
+        with open(path, "r", encoding="utf-8") as f:
+            cursor.execute(f.read())
