@@ -3,7 +3,14 @@ from flask import Blueprint, jsonify, request
 from flaskr.database import ProjectDataHandler
 from flaskr.blueprints.before_request import login_required
 from flaskr.blueprints.middlewares import permission_middleware, Permission
-from flaskr.services.inputs import input_middleware, CreateProjectBuilder
+from flaskr.services.inputs import (
+    input_middleware,
+    CreateProjectBuilder,
+    LambdaBuilder,
+    EnumValidator,
+)
+
+from flaskr.models import ProjectStatus
 
 projects_bp = Blueprint("projects", __name__, url_prefix="/projects")
 projects_bp.before_request(login_required)
@@ -33,6 +40,12 @@ def get_projects():
     return jsonify([project.to_dict() for project in projects])
 
 
+@projects_bp.patch("/<string:id>/status")
+@input_middleware(LambdaBuilder(("status", EnumValidator(ProjectStatus))))
+def patch_meeting_agenda_status(status, id: str):
+    ProjectDataHandler.update_project_status(id, status)
+    return '', 204
+
 @projects_bp.delete("/<int:id>")
 @permission_middleware(Permission.DeleteContent)
 def delete_project(id):
@@ -41,4 +54,3 @@ def delete_project(id):
         return "", 204
     except:
         return "", 500
-

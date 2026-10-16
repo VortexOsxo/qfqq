@@ -1,5 +1,5 @@
 from ..postgres import read_query, write_query, get_db_access
-from flaskr.models import Project, ProjectStatusEnum
+from flaskr.models import Project, ProjectStatus
 
 
 class ProjectDataHandler:
@@ -13,7 +13,7 @@ class ProjectDataHandler:
                 cur.execute(query, params)
                 if (result := cur.fetchone()) is None: return
                 id, nb = result
-                return Project(id, nb, title, goals, ProjectStatusEnum.inProgress, supervisorId)
+                return Project(id, nb, title, goals, ProjectStatus.inProgress, supervisorId)
         except Exception as e:
             print(f'[ERROR]: {e}')
         return None
@@ -24,6 +24,12 @@ class ProjectDataHandler:
     ):
         query = f"UPDATE projects SET title = %s, goals = %s, supervisorId = %s WHERE id = %s;"
         params = (title, goals, supervisorId, id)
+        write_query(query, params)
+
+    @classmethod
+    def update_project_status(cls, id: int, status: str):
+        query = "UPDATE projects SET status = %s WHERE id = %s;"
+        params = (status, id)
         write_query(query, params)
 
     @classmethod
