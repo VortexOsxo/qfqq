@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qfqq/common/view_models/project_page_view_model.dart';
+import 'package:qfqq/common/widgets/dropdowns/project_status_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/dropdowns/user_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/projects/project_list_widget.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
@@ -50,7 +51,12 @@ class _ProjectPageView extends StatelessWidget {
               onChanged: vm.onSearchQueryChanged,
               hintText: S.of(context).searchTitleIdHint,
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
+            ProjectStatusDropdownMenu(
+              initialStatus: vm.statusQuery,
+              valueChanged: vm.onStatusQueryChanged,
+            ),
+            const SizedBox(height: 8),
             UserDropdownMenu(
               initialUserId: vm.userIdQuery,
               valueChanged: vm.onUserQueryChanged,
