@@ -31,6 +31,14 @@ class ProjectViewControl extends ConsumerWidget {
             child: Text(loc.commonDelete),
           ),
         ),
+        if (vm.canMarkAsCompleted())
+          PermissionRequired(
+            neededPermissions: Permissions(contribute: true),
+            child: TextButton(
+              onPressed: vm.markAsCompleted,
+              child: Text(loc.projectViewPageCloseProject),
+            ),
+          ),
       ],
     );
   }

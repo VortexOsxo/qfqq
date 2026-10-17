@@ -51,6 +51,25 @@ class ProjectsService extends StateNotifier<List<Project>> {
     return ProjectErrors.fromJson(data);
   }
 
+  Future<void> updateProjectStatus(int projectId, ProjectStatus status) async {
+    final _ = await _http.patch(
+      _http.getUri('projects/$projectId/status'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({"status": status.toString()}),
+    );
+
+    Project update(Project project) {
+      if (project.id != projectId) {
+        return project;
+      }
+      project = project.copy();
+      project.status = status;
+      return project;
+    }
+
+    state = state.map(update).toList();
+  }
+
   Future<bool> deleteProject(int projectId) async {
     final response = await _http.delete(
       _http.getUri('projects/$projectId'),

@@ -271,6 +271,7 @@
   "projectDeleteConfirm": "Supprimer le projet",
   
   "projectViewPageTitle": "Détails du projet",
+  "projectViewPageCloseProject": "Clôturer",
   "projectPageEmpty": "Aucun projet trouvé",
   
   "meetingInProgressPageTitle": "Réunion en cours",
