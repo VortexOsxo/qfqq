@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qfqq/common/providers/initializer_provider.dart';
 import 'package:qfqq/common/providers/router_provider.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/web_socket_service.dart';
@@ -17,6 +18,7 @@ void main() async {
   WebSocketService.connect();
 
   final container = ProviderContainer();
+  container.read(initializationProvider);
 
   try {
     final restored = await container.read(authStateProvider.notifier).refresh();
