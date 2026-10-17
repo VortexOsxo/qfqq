@@ -169,7 +169,9 @@ class _NotificationSettingsState extends ConsumerState<_NotificationSettings> {
 
   late Future<List<NotificationOffset>> _offsetsFuture;
   final Map<NotificationType, Duration> _selectedOffsets = {};
+  final Map<NotificationType, bool> _selectedActives = {};
   final Set<NotificationType> _saving = {};
+  final Set<NotificationType> _savingActive = {};
 
   @override
   void initState() {
@@ -187,7 +189,10 @@ class _NotificationSettingsState extends ConsumerState<_NotificationSettings> {
 
       if (!mounted) return;
       if (saved) {
-        setState(() => _selectedOffsets[type] = offset);
+        setState(() {
+          _selectedOffsets[type] = offset;
+          _selectedActives[type] = true;
+        });
       } else {
         _showSaveError();
       }
@@ -198,10 +203,38 @@ class _NotificationSettingsState extends ConsumerState<_NotificationSettings> {
     }
   }
 
+  Future<void> _saveIsActive(NotificationType type, bool isActive) async {
+    setState(() => _savingActive.add(type));
+    try {
+      final saved = await ref
+          .read(notificationSettingsServiceProvider)
+          .updateNotificationIsActive(type, isActive);
+
+      if (!mounted) return;
+      if (saved) {
+        setState(() => _selectedActives[type] = isActive);
+      } else {
+        _showActiveSaveError();
+      }
+    } on Exception {
+      if (mounted) _showActiveSaveError();
+    } finally {
+      if (mounted) setState(() => _savingActive.remove(type));
+    }
+  }
+
   void _showSaveError() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(S.of(context).profilePageNotificationOffsetSaveFailed),
+      ),
+    );
+  }
+
+  void _showActiveSaveError() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(S.of(context).profilePageNotificationIsActiveSaveFailed),
       ),
     );
   }
@@ -274,9 +307,12 @@ class _NotificationSettingsState extends ConsumerState<_NotificationSettings> {
     NotificationType type,
     List<NotificationOffset> offsets,
   ) {
-    final typeOffsets = offsets.where((item) => item.type == type);
+    final typeOffsets = offsets.where((item) => item.type == type).toList();
     final savedOffset = typeOffsets.isEmpty ? null : typeOffsets.first.offset;
+    final savedIsActive =
+        typeOffsets.isEmpty ? true : typeOffsets.first.isActive;
     final selectedOffset = _selectedOffsets[type] ?? savedOffset;
+    final selectedIsActive = _selectedActives[type] ?? savedIsActive;
     final options = [..._offsetOptions];
     if (selectedOffset != null && !options.contains(selectedOffset)) {
       options.insert(0, selectedOffset);
@@ -287,9 +323,22 @@ class _NotificationSettingsState extends ConsumerState<_NotificationSettings> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            _notificationTypeLabel(loc, type),
-            style: Theme.of(context).textTheme.titleMedium,
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  _notificationTypeLabel(loc, type),
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
+              Switch(
+                value: selectedIsActive,
+                onChanged:
+                    _savingActive.contains(type)
+                        ? null
+                        : (isActive) => _saveIsActive(type, isActive),
+              ),
+            ],
           ),
           DefaultDropdownMenu<Duration>(
             initialSelection: selectedOffset,

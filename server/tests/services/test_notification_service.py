@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 from flaskr.database.postgres import read_query
 from flaskr.database import DecisionDataHandler
 from flaskr.database.handlers import UserDataHandler
+from flaskr.database.handlers.notification_offset_data_handler import NotificationOffsetDataHandler
 from flaskr.models import MeetingAgenda, MeetingAgendaStatus
 from flaskr.services.notifications.notification_service import NotificationService
 from flaskr.services.notifications.notification_type import NotificationType
@@ -332,6 +333,68 @@ def test_send_loop_sends_pending_notification_and_deletes_records(app, monkeypat
         "id": str(decision.id),
     }
 
+    assert read_query(
+        "SELECT id FROM public.notifications WHERE id = %s;",
+        (scheduled_id,),
+    ) == []
+    assert read_query(
+        "SELECT id FROM public.notificationsTarget WHERE id = %s;",
+        (target_id,),
+    ) == []
+
+
+def test_send_loop_skips_inactive_notification_and_deletes_records(app, monkeypatch):
+    decision = DecisionDataHandler.get_decision(1)
+    assert decision is not None
+    user_id = decision.responsibleId
+    UserDataHandler.upsert_user_fcm(user_id, "test-fcm-token", "en")
+
+    notification_type = NotificationType.DecisionDue.value
+    NotificationService.add_notification(notification_type, 1, decision)
+    NotificationOffsetDataHandler.create_notification_offset(
+        userId=user_id,
+        type=notification_type,
+        offset=timedelta(days=1),
+    )
+    NotificationOffsetDataHandler.update_is_active(
+        userId=user_id,
+        type=notification_type,
+        isActive=False,
+    )
+
+    target_id = read_query(
+        "SELECT id FROM public.notificationsTarget WHERE orgId = %s AND targetId = %s AND type = %s;",
+        (1, decision.id, notification_type),
+    )[0][0]
+    scheduled_id = read_query(
+        "SELECT id FROM public.notifications WHERE targetId = %s;",
+        (target_id,),
+    )[0][0]
+    sent_notifications = []
+
+    class StopAfterOneIteration(Exception):
+        pass
+
+    def stop_after_iteration(_):
+        raise StopAfterOneIteration
+
+    monkeypatch.setattr(
+        NotificationService,
+        "_send_notif",
+        staticmethod(sent_notifications.append),
+    )
+    monkeypatch.setattr(
+        notification_service_module.time,
+        "sleep",
+        stop_after_iteration,
+    )
+
+    try:
+        NotificationService.send_loop()
+    except StopAfterOneIteration:
+        pass
+
+    assert sent_notifications == []
     assert read_query(
         "SELECT id FROM public.notifications WHERE id = %s;",
         (scheduled_id,),

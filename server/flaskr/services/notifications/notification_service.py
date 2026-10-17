@@ -50,6 +50,9 @@ class NotificationService:
                 targets = [target for target, _ in pending]
                 if targets: print(f'Found targets: {targets}')
                 for target, scheduled in pending:
+                    if not scheduled.isActive:
+                        continue
+
                     handler = handlers.get(target.type)
                     assert handler is not None
 

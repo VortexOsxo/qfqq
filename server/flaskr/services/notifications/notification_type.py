@@ -7,7 +7,7 @@ class NotificationType(Enum):
     DecisionDue = 'DecisionDue'
 
 DEFAULT_NOTIFICATION_OFFSETS = {
-    NotificationType.DecisionDue.value: timedelta(days=1),
-    NotificationType.MeetingStarted.value: timedelta(0),
-    NotificationType.MeetingStart.value: timedelta(minutes=15),
+    NotificationType.DecisionDue.value: (timedelta(days=1), True),
+    NotificationType.MeetingStarted.value: (timedelta(0), True),
+    NotificationType.MeetingStart.value: (timedelta(minutes=15), True)
 }

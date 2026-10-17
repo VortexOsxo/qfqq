@@ -24,3 +24,4 @@ class ScheduledNotification:
     userId: int
     targetId: int
     nOffset: timedelta
+    isActive: bool = True

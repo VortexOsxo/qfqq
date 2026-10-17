@@ -122,15 +122,16 @@ class NotificationDataHandler:
     @classmethod
     def get_pending_notifications(cls):
         default_offsets = list(DEFAULT_NOTIFICATION_OFFSETS.items())
-        defaults_values = ", ".join(["(%s, %s)"] * len(default_offsets))
+        defaults_values = ", ".join(["(%s, %s, %s)"] * len(default_offsets))
         query = """
-            WITH default_offsets(type, nOffset) AS (
+            WITH default_offsets(type, nOffset, isActive) AS (
                 VALUES {defaults_values}
             )
             SELECT
                 target.id, target.orgId, target.targetId, target.type, target.eventAt,
                 notification.id, notification.userId, notification.targetId,
-                COALESCE(user_offset.nOffset, default_offsets.nOffset)
+                COALESCE(user_offset.nOffset, default_offsets.nOffset),
+                COALESCE(user_offset.isActive, default_offsets.isActive, FALSE)
             FROM public.notifications AS notification
             JOIN public.notificationsTarget AS target
                 ON notification.targetId = target.id
@@ -140,7 +141,11 @@ class NotificationDataHandler:
                 ON default_offsets.type = target.type
             WHERE target.eventAt - COALESCE(user_offset.nOffset, default_offsets.nOffset) <= NOW();
         """.format(defaults_values=defaults_values)
-        params = tuple(value for row in default_offsets for value in row)
+        params = tuple(
+            value
+            for notification_type, (offset, is_active) in default_offsets
+            for value in (notification_type, offset, is_active)
+        )
         rows = read_query(query, params)
         return [
             (NotificationTarget(*row[:5]), ScheduledNotification(*row[5:]))

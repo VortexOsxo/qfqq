@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify, g
 from flaskr.database import UserDataHandler, RoleDataHandler, NotificationOffsetDataHandler
 from flaskr.blueprints.before_request import login_required
 from flaskr.blueprints.middlewares import permission_middleware, Permission
-from flaskr.services.inputs import input_middleware, LambdaBuilder, RoleIdValidator, StringValidator
+from flaskr.services.inputs import input_middleware, LambdaBuilder, RoleIdValidator, StringValidator, BooleanValidator
 
 users_bp = Blueprint('users', __name__, url_prefix='/users')
 users_bp.before_request(login_required)
@@ -30,23 +30,28 @@ def get_user_permissions(id: str):
     return list(UserDataHandler.get_user_permissions(id)), 200
 
 
-@users_bp.post("/settings/notifications-offset") # TODO: Improve those two validators
+@users_bp.post("/settings/notifications-offset") # TODO: Improve the type and offset validator
 @input_middleware(LambdaBuilder(("type", StringValidator()), ("offset", StringValidator())))
 def update_user_notification_offset(type, offset):
     result = NotificationOffsetDataHandler.create_notification_offset(userId=g.user_id, type=type, offset=offset)
     return ("", 204) if result else ("", 400)
 
+@users_bp.patch("/settings/notifications-offset/is-active")
+@input_middleware(LambdaBuilder(("type", StringValidator()), ("isActive", BooleanValidator())))
+def update_user_notification_is_active(type, isActive):
+    NotificationOffsetDataHandler.update_is_active(userId=g.user_id, type=type, isActive=isActive)
+    return "", 204
 
 @users_bp.get("/settings/notifications-offset/<string:type>")
 def get_user_notification_offset(type):
-    result = NotificationOffsetDataHandler.get_notification_offset(userId=g.user_id, type=type)
-    return (jsonify({'type': type, 'offset': result.total_seconds()}), 200) if result is not None else ("", 404)
+    offset, isActive = NotificationOffsetDataHandler.get_notification_offset(userId=g.user_id, type=type)
+    return (jsonify({'type': type, 'offset': offset.total_seconds(), 'isActive': isActive}), 200) if offset is not None else ("", 404)
 
 
 @users_bp.get("/settings/notifications-offset")
 def get_user_notifications_offset():
     results = NotificationOffsetDataHandler.get_notification_offsets(userId=g.user_id)
-    return (jsonify([{'type': result[0], 'offset': result[1].total_seconds()} for result in results]), 200)
+    return (jsonify([{'type': result[0], 'offset': result[1][0].total_seconds(), 'isActive': result[1][1]} for result in results]), 200)
 
 
 @users_bp.patch("/<int:userId>/role")
