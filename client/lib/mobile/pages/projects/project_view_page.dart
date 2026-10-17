@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:qfqq/common/models/permissions.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/view_models/project_view_page_view_model.dart';
 import 'package:qfqq/common/widgets/details_attribute_widget.dart';
+import 'package:qfqq/common/widgets/permission_required.dart';
 import 'package:qfqq/common/widgets/projects/project_content_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -79,6 +81,15 @@ class _ProjectViewPageView extends StatelessWidget {
               label: loc.projectSupervisor,
               value: vm.supervisorName,
             ),
+            Spacer(),
+            if (vm.canMarkAsCompleted())
+              PermissionRequired(
+                neededPermissions: Permissions(contribute: true),
+                child: TextButton(
+                  onPressed: vm.markAsCompleted,
+                  child: Text(loc.projectViewPageCloseProject),
+                ),
+              ),
           ],
         ),
       ),

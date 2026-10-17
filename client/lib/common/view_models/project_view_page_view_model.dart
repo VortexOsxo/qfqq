@@ -31,6 +31,14 @@ class ProjectViewPageViewModelState extends ConsumerState<ProjectViewPageViewMod
 
   void goBackToProjects() => context.go('/projects');
 
+  bool canMarkAsCompleted() => project != null && project!.status != ProjectStatus.completed;
+
+  Future<void> markAsCompleted() async {
+    await ref
+        .read(projectsServiceProvider)
+        .updateProjectStatus(widget.projectId, ProjectStatus.completed);
+  }
+
   Future<void> deleteProject() async {
     final loc = S.of(context);
 
