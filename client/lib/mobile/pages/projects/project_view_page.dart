@@ -84,7 +84,6 @@ class _ProjectViewPageView extends StatelessWidget {
               label: loc.projectSupervisor,
               value: vm.supervisorName,
             ),
-            Spacer(),
             if (vm.canMarkAsCompleted())
               PermissionRequired(
                 neededPermissions: Permissions(contribute: true),

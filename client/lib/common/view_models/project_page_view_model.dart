@@ -21,6 +21,7 @@ class ProjectPageViewModelState extends ConsumerState<ProjectPageViewModel> {
   String searchQuery = '';
   bool isRefreshing = false;
   int? userIdQuery;
+  ProjectStatus? statusQuery = ProjectStatus.inProgress;
 
   List<Project> get filteredProjects {
     var projects = ref.watch(projectsProvider);
@@ -34,6 +35,12 @@ class ProjectPageViewModelState extends ConsumerState<ProjectPageViewModel> {
                 ) ||
                 project.number.toString().contains(searchQuery.toLowerCase()),
           )
+          .toList();
+    }
+
+    if (statusQuery != null) {
+      projects = projects
+          .where((project) => project.status == statusQuery)
           .toList();
     }
 
@@ -56,6 +63,8 @@ class ProjectPageViewModelState extends ConsumerState<ProjectPageViewModel> {
 
   void onSearchQueryChanged(String value) => setState(() => searchQuery = value);
   void onUserQueryChanged(int? value) => setState(() => userIdQuery = value);
+  void onStatusQueryChanged(ProjectStatus? value) =>
+      setState(() => statusQuery = value);
 
   Future<void> refreshProjects() async {
     if (isRefreshing) return;

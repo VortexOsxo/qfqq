@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qfqq/common/models/permissions.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/view_models/project_page_view_model.dart';
+import 'package:qfqq/common/widgets/dropdowns/project_status_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/dropdowns/user_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/permission_required.dart';
 import 'package:qfqq/common/utils/help_util.dart';
@@ -69,6 +70,11 @@ class _ProjectPageView extends StatelessWidget {
                       initialUserId: vm.userIdQuery,
                       valueChanged: vm.onUserQueryChanged,
                       anyLabel: S.of(context).commonAllSupervisors,
+                    ),
+                    SizedBox(width: 12),
+                    ProjectStatusDropdownMenu(
+                      initialStatus: vm.statusQuery,
+                      valueChanged: vm.onStatusQueryChanged,
                     ),
                   ],
                 ),

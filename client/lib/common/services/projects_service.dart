@@ -55,7 +55,7 @@ class ProjectsService extends StateNotifier<List<Project>> {
     final _ = await _http.patch(
       _http.getUri('projects/$projectId/status'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({"status": status.toString()}),
+      body: jsonEncode({"status": status.name}),
     );
 
     Project update(Project project) {
