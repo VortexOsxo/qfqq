@@ -255,6 +255,8 @@
   "agendasListPageNoReunionDate": "No meeting date set",
   
   "projectSupervisor": "Supervisor",
+  "projectStatusInProgress": "In Progress",
+  "projectStatusCompleted": "Completed",
 
   "projectPageTitle": "Projects",
   "projectNotFound": "Project not found",
