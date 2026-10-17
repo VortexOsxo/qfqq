@@ -26,10 +26,15 @@ enum NotificationType {
 }
 
 class NotificationOffset {
-  const NotificationOffset({required this.type, required this.offset});
+  const NotificationOffset({
+    required this.type,
+    required this.offset,
+    required this.isActive,
+  });
 
   final NotificationType type;
   final Duration offset;
+  final bool isActive;
 
   factory NotificationOffset.fromJson(Map<String, dynamic> json) {
     final seconds = json['offset'];
@@ -42,6 +47,7 @@ class NotificationOffset {
       offset: Duration(
         microseconds: (seconds * Duration.microsecondsPerSecond).round(),
       ),
+      isActive: json['isActive'] as bool,
     );
   }
 }
@@ -62,6 +68,19 @@ class NotificationSettingsService {
       _http.getUri(_route),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'type': type.value, 'offset': '$seconds seconds'}),
+    );
+
+    return response.statusCode == 204;
+  }
+
+  Future<bool> updateNotificationIsActive(
+    NotificationType type,
+    bool isActive,
+  ) async {
+    final response = await _http.patch(
+      _http.getUri('$_route/is-active'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'type': type.value, 'isActive': isActive}),
     );
 
     return response.statusCode == 204;

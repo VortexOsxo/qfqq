@@ -302,7 +302,7 @@ def test_get_pending_notifications_returns_due_target_and_schedule_pairs(app):
 
 def test_get_pending_notifications_uses_default_offset_when_user_has_none(app):
     notification_type = NotificationType.MeetingStart.value
-    default_offset = DEFAULT_NOTIFICATION_OFFSETS[notification_type]
+    default_offset = DEFAULT_NOTIFICATION_OFFSETS[notification_type][0]
     event_at = datetime.now(timezone.utc) + timedelta(minutes=10)
     target_id = NotificationDataHandler.create_notification_target(
         NotificationTarget(
@@ -350,6 +350,48 @@ def test_get_pending_notifications_uses_default_offset_when_user_has_none(app):
             ),
         )
     ]
+
+
+def test_get_pending_notifications_returns_inactive_user_offset_status(app):
+    event_at = datetime.now(timezone.utc) - timedelta(minutes=30)
+    notification_type = NotificationType.MeetingStart.value
+    target_id = NotificationDataHandler.create_notification_target(
+        NotificationTarget(
+            id=0,
+            orgId=1,
+            targetId=49,
+            type=notification_type,
+            eventAt=event_at,
+        )
+    )
+    NotificationOffsetDataHandler.create_notification_offset(
+        userId=1,
+        type=notification_type,
+        offset=timedelta(minutes=15),
+    )
+    NotificationOffsetDataHandler.update_is_active(
+        userId=1,
+        type=notification_type,
+        isActive=False,
+    )
+    NotificationDataHandler.create_scheduled_notification(
+        ScheduledNotification(
+            id=0,
+            userId=1,
+            targetId=target_id,
+            nOffset=timedelta(minutes=15),
+        )
+    )
+
+    pending_for_target = [
+        (target, notification)
+        for target, notification in NotificationDataHandler.get_pending_notifications()
+        if target.id == target_id
+    ]
+
+    assert len(pending_for_target) == 1
+    _, notification = pending_for_target[0]
+    assert notification.isActive is False
 
 
 def test_get_pending_notifications_returns_multiple_schedules_for_same_target(app):

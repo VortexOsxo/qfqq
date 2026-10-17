@@ -1,4 +1,7 @@
+from datetime import timedelta
+
 from tests.api.utils import get_auth_headers
+from flaskr.database.handlers.notification_offset_data_handler import NotificationOffsetDataHandler
 
 
 def test_get_users_permissions(client):
@@ -49,6 +52,27 @@ def test_update_user_notification_offset(client):
     assert response.status_code == 204
 
 
+def test_update_user_notification_offset_is_active(client):
+    headers = get_auth_headers(client, user_id=1)
+    client.post(
+        "/users/settings/notifications-offset",
+        json={"type": "meeting_start", "offset": "15 minutes"},
+        headers=headers,
+    )
+
+    response = client.patch(
+        "/users/settings/notifications-offset/is-active",
+        json={"type": "meeting_start", "isActive": False},
+        headers=headers,
+    )
+
+    assert response.status_code == 204
+    assert NotificationOffsetDataHandler.get_notification_offset(
+        userId=1,
+        type="meeting_start",
+    ) == (timedelta(minutes=15), False)
+
+
 def test_get_user_notification_offset(client):
     headers = get_auth_headers(client, user_id=1)
     client.post(
@@ -66,6 +90,7 @@ def test_get_user_notification_offset(client):
     body = response.get_json()
     assert body['type'] == 'meeting_start'
     assert body['offset'] == 15*60
+    assert body['isActive']
 
 
 def test_get_user_notifications_offset(client):
@@ -94,5 +119,7 @@ def test_get_user_notifications_offset(client):
 
     assert body[0]['type'] == 'DecisionDue'
     assert body[0]['offset'] == 60*60*24
+    assert body[0]['isActive']
     assert body[1]['type'] == 'MeetingStarted'
     assert body[1]['offset'] == 0
+    assert body[1]['isActive']

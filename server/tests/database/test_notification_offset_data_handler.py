@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from flaskr.database.handlers.notification_offset_data_handler import NotificationOffsetDataHandler
 
-from flaskr.database.postgres import read_query
+from flaskr.database.postgres import read_query, write_query
 from flaskr.services.notifications.notification_type import NotificationType, DEFAULT_NOTIFICATION_OFFSETS
 
 def test_every_notification_type_as_a_default_offset():
@@ -17,11 +17,11 @@ def test_create_notification_offset_accepts_valid_duration_string(app):
 
     assert result is True
     rows = read_query(
-        'SELECT userId, type, nOffset FROM public.notificationOffsets '
+        'SELECT userId, type, nOffset, isActive FROM public.notificationOffsets '
         "WHERE userId = %s AND type = %s;",
         (1, "meeting_start"),
     )
-    assert rows == [(1, "meeting_start", timedelta(seconds=900))]
+    assert rows == [(1, "meeting_start", timedelta(seconds=900), True)]
 
 
 def test_create_notification_offset_rejects_invalid_duration_string(app):
@@ -46,7 +46,7 @@ def test_get_notification_offser_returns_existing_offset(app):
         type="meeting_start",
     )
 
-    assert result == timedelta(minutes=15)
+    assert result == (timedelta(minutes=15), True)
 
 
 def test_get_notification_offser_returns_empty_when_offset_does_not_exist(app):
@@ -55,7 +55,7 @@ def test_get_notification_offser_returns_empty_when_offset_does_not_exist(app):
         type="meeting_end",
     )
 
-    assert result is None
+    assert result == (None, None)
 
 
 def test_create_notification_offset_upserts_existing_offset(app):
@@ -69,7 +69,7 @@ def test_create_notification_offset_upserts_existing_offset(app):
     assert NotificationOffsetDataHandler.get_notification_offset(
         userId=1,
         type="upsert_test",
-    ) == timedelta(minutes=10)
+    ) == (timedelta(minutes=10), True)
 
     result = NotificationOffsetDataHandler.create_notification_offset(
         userId=1,
@@ -81,7 +81,60 @@ def test_create_notification_offset_upserts_existing_offset(app):
     assert NotificationOffsetDataHandler.get_notification_offset(
         userId=1,
         type="upsert_test",
-    ) == timedelta(minutes=30)
+    ) == (timedelta(minutes=30), True)
+
+
+def test_create_notification_offset_reactivates_existing_offset(app):
+    NotificationOffsetDataHandler.create_notification_offset(
+        userId=1,
+        type="reactivate_test",
+        offset="10 minutes",
+    )
+    write_query(
+        "UPDATE public.notificationOffsets SET isActive = FALSE "
+        "WHERE userId = %s AND type = %s;",
+        (1, "reactivate_test"),
+    )
+
+    result = NotificationOffsetDataHandler.create_notification_offset(
+        userId=1,
+        type="reactivate_test",
+        offset="30 minutes",
+    )
+
+    assert result is True
+    assert NotificationOffsetDataHandler.get_notification_offset(
+        userId=1,
+        type="reactivate_test",
+    ) == (timedelta(minutes=30), True)
+
+
+def test_update_is_active_updates_existing_offset_status(app):
+    NotificationOffsetDataHandler.create_notification_offset(
+        userId=1,
+        type="active_status_test",
+        offset="15 minutes",
+    )
+
+    NotificationOffsetDataHandler.update_is_active(
+        userId=1,
+        type="active_status_test",
+        isActive=False,
+    )
+    assert NotificationOffsetDataHandler.get_notification_offset(
+        userId=1,
+        type="active_status_test",
+    ) == (timedelta(minutes=15), False)
+
+    NotificationOffsetDataHandler.update_is_active(
+        userId=1,
+        type="active_status_test",
+        isActive=True,
+    )
+    assert NotificationOffsetDataHandler.get_notification_offset(
+        userId=1,
+        type="active_status_test",
+    ) == (timedelta(minutes=15), True)
 
 
 def test_create_notification_offset_allows_same_user_with_different_type(app):
@@ -101,11 +154,11 @@ def test_create_notification_offset_allows_same_user_with_different_type(app):
     assert NotificationOffsetDataHandler.get_notification_offset(
         userId=1,
         type="first_type",
-    ) == timedelta(minutes=15)
+    ) == (timedelta(minutes=15), True)
     assert NotificationOffsetDataHandler.get_notification_offset(
         userId=1,
         type="second_type",
-    ) == timedelta(minutes=30)
+    ) == (timedelta(minutes=30), True)
 
 
 def test_get_notification_offsets_returns_all_user_offsets(app):
@@ -135,9 +188,9 @@ def test_get_notification_offsets_returns_all_user_offsets(app):
 
     assert dict(result) == {
         **DEFAULT_NOTIFICATION_OFFSETS,
-        "meeting_start": timedelta(minutes=15),
-        "meeting_end": timedelta(minutes=30),
-        NotificationType.MeetingStart.value: timedelta(minutes=30),
+        "meeting_start": (timedelta(minutes=15), True),
+        "meeting_end": (timedelta(minutes=30), True),
+        NotificationType.MeetingStart.value: (timedelta(minutes=30), True)
     }
 
 
@@ -145,9 +198,9 @@ def test_get_notification_offsets_returns_defaults_for_user_without_offsets(app)
     result = NotificationOffsetDataHandler.get_notification_offsets(userId=1)
 
     assert dict(result) == {
-        NotificationType.DecisionDue.value: timedelta(days=1),
-        NotificationType.MeetingStarted.value: timedelta(0),
-        NotificationType.MeetingStart.value: timedelta(minutes=15),
+        NotificationType.DecisionDue.value: (timedelta(days=1), True),
+        NotificationType.MeetingStarted.value: (timedelta(0), True),
+        NotificationType.MeetingStart.value: (timedelta(minutes=15), True)
     }
 
 def test_get_notification_offset_return_default_value(app):

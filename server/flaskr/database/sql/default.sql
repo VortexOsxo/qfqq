@@ -73,5 +73,6 @@ CREATE TABLE public.notificationOffsets (
   userId INTEGER NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
   type TEXT NOT NULL,
   nOffset INTERVAL NOT NULL,
+  isActive BOOLEAN NOT NULL DEFAULT TRUE,
   PRIMARY KEY (userId, type)
 );
