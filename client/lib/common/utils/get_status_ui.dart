@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qfqq/common/models/decision.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
+import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class StatusUIData {
@@ -36,5 +37,22 @@ StatusUIData getDecisionStatusUI(S loc, DecisionStatus status) {
       return StatusUIData(loc.decisionStatusCompleted, Colors.green, Icons.check_circle);
     case DecisionStatus.pending:
       return StatusUIData(loc.decisionStatusPending, Colors.orange, Icons.pending_actions);
+  }
+}
+
+StatusUIData getProjectStatusUI(S loc, ProjectStatus status) {
+  switch (status) {
+    case ProjectStatus.inProgress:
+      return StatusUIData(
+        loc.projectStatusInProgress,
+        Colors.blue,
+        Icons.hourglass_bottom,
+      );
+    case ProjectStatus.completed:
+      return StatusUIData(
+        loc.projectStatusCompleted,
+        Colors.green,
+        Icons.check_circle,
+      );
   }
 }

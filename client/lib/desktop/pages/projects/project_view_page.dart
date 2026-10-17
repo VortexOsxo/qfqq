@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/view_models/project_view_page_view_model.dart';
 import 'package:qfqq/common/widgets/details_attribute_widget.dart';
 import 'package:qfqq/common/widgets/projects/project_content_widget.dart';
+import 'package:qfqq/common/widgets/status_chip.dart';
 import 'package:qfqq/desktop/widgets/projects/project_view_control.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -84,10 +86,14 @@ class _ProjectViewPageView extends StatelessWidget {
   Widget _buildProjectInfo(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
+        StatusChip(
+          statusUIData: getProjectStatusUI(S.of(context), vm.project!.status),
+        ),
+        SizedBox(height: 8),
         Flexible(child: _buildDetails(context)),
-        const SizedBox(height: 16),
+        const Spacer(),
         Center(child: ProjectViewControl(vm: vm)),
       ],
     );

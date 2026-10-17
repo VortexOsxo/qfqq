@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:qfqq/common/models/permissions.dart';
-import 'package:qfqq/common/theme/styles.dart';
+import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/view_models/project_view_page_view_model.dart';
 import 'package:qfqq/common/widgets/details_attribute_widget.dart';
 import 'package:qfqq/common/widgets/permission_required.dart';
 import 'package:qfqq/common/widgets/projects/project_content_widget.dart';
+import 'package:qfqq/mobile/widgets/title_with_status.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class ProjectViewPage extends StatelessWidget {
@@ -46,17 +47,19 @@ class _ProjectViewPageView extends StatelessWidget {
   }
 
   Widget _buildTopCard(BuildContext context) {
-    final theme = Theme.of(context);
     final project = vm.project!;
+    final statusUIData = getProjectStatusUI(S.of(context), project.status);
 
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            '${project.number}: ${project.title}',
-            style: pageTitleTextStyle(theme)
+          Expanded(
+            child: TitleWithStatus(
+              title: '${project.number}: ${project.title}',
+              uiData: statusUIData,
+            ),
           ),
         ],
       ),
