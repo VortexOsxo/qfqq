@@ -1,33 +1,43 @@
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.application import MIMEApplication
+import base64
 import os
 
 from flaskr.models.email import Email
+
+from brevo import Brevo
+from brevo.transactional_emails import (
+    SendTransacEmailRequestAttachmentItem,
+    SendTransacEmailRequestSender,
+    SendTransacEmailRequestToItem,
+)
+from brevo.core.api_error import ApiError
+
+
+client = Brevo(api_key=os.getenv('BREVO_API_KEY'))
 
 
 class EmailSender:
     @staticmethod
     def send_email(email: Email) -> bool:
-        msg = MIMEMultipart()
-        msg["From"] = email.sender
-        msg["To"] = email.recipient
-        msg["Subject"] = email.subject
-
-        body = email.body
-        msg.attach(MIMEText(body, "plain"))
-
-        if email.attachments:
-            for filename, content in email.attachments.items():
-                part = MIMEApplication(content, Name=filename)
-                part['Content-Disposition'] = f'attachment; filename="{filename}"'
-                msg.attach(part)
-
         try:
-            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-                server.login(os.getenv('MAIL_USER'), os.getenv('MAIL_PASSWORD'))
-                server.sendmail(email.sender, email.recipient, msg.as_string())
+            attachments = [
+                SendTransacEmailRequestAttachmentItem(
+                    name=filename,
+                    content=base64.b64encode(content).decode("ascii"),
+                )
+                for filename, content in email.attachments.items()
+            ]
+            result = client.transactional_emails.send_transac_email(
+                subject=email.subject,
+                html_content=email.body,
+                sender=SendTransacEmailRequestSender(
+                    name="QuiFaitQuoiQuand",
+                    email="noreply@quifaitquoiquand.com",
+                ),
+                to=[SendTransacEmailRequestToItem(email=email.recipient)],
+                attachment=attachments,
+            )
+            print("Email sent successfully! Message ID:", result.message_id)
             return True
-        except Exception as e:
-            return False
+        except ApiError as e:
+            print(f"Error sending email: {e.status_code} - {e.body}")
+        return False
