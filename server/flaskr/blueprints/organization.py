@@ -73,7 +73,7 @@ def invite_to_organization(email, roleId):
     if user is None:
         OrganizationDataHandler.add_invite(orgId=orgId, email=email, roleId=roleId)
 
-        email_obj = EmailDrafter.create_organization_invitation_email(email, orgId, org_name, lang)
+        email_obj = EmailDrafter.create_organization_invitation_email(email, org_name, lang)
         Thread(target=EmailSender.send_email, args=(email_obj,), daemon=True).start()
         invitation = Invitation(orgId=orgId, email=email, roleId=roleId)
         success = True

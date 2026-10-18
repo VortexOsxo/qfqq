@@ -13,7 +13,7 @@ reports_bp.before_request(login_required)
 
 def _send_participants_async(emails: list[str], report_bytes: bytes, lang: str):
     for email_addr in emails:
-        email = EmailDrafter.create_participant_report_email(email_addr, report_bytes, lang)
+        email = EmailDrafter.create_participant_report_email(email_addr, report_bytes, lang=lang)
         EmailSender.send_email(email)
 
 def _send_participant_async(emails: list[str], report_bytes: bytes, name: str, lang: str):
@@ -88,7 +88,7 @@ def get_participant_report(userId: str):
         download_name="report.pdf",
     )
 
-@reports_bp.route("/participants/<string:userId>/send")
+@reports_bp.post("/participants/<string:userId>/send")
 def send_participant_report(userId: str):
     emails = request.json.get("emails", [])
 

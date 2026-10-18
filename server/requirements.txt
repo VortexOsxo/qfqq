@@ -7,3 +7,4 @@ pytest
 reportlab
 firebase-admin
 websockets
+brevo-python
