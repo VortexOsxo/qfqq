@@ -36,6 +36,18 @@ class NotificationOffset {
   final Duration offset;
   final bool isActive;
 
+  NotificationOffset copyWith({
+    NotificationType? type,
+    Duration? offset,
+    bool? isActive,
+  }) {
+    return NotificationOffset(
+      type: type ?? this.type,
+      offset: offset ?? this.offset,
+      isActive: isActive ?? this.isActive,
+    );
+  }
+
   factory NotificationOffset.fromJson(Map<String, dynamic> json) {
     final seconds = json['offset'];
     if (seconds is! num) {
