@@ -1,7 +1,9 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/pages/user_pages/organization_links_page.dart';
 import 'package:qfqq/common/pages/not_found_page.dart';
 import 'package:qfqq/common/pages/help_page.dart';
+import 'package:qfqq/common/router.dart';
 import 'package:qfqq/common/widgets/help/help_info.dart';
 import 'package:qfqq/common/providers/navigator_key.dart';
 import 'package:qfqq/common/templates/navigation_guard.dart';
@@ -24,107 +26,109 @@ import 'package:qfqq/common/widgets/scaffolds/mobile_page_scaffold.dart';
 import 'package:qfqq/common/utils/route_titles.dart';
 import 'package:qfqq/mobile/pages/user_pages/login_page.dart';
 
-final GoRouter mobileRouter = GoRouter(
-  navigatorKey: navigatorKey,
-  initialLocation: '/login',
-  errorBuilder: (context, state) => const NotFoundPage(),
-  routes: [
-    ShellRoute(
+GoRouter createMobileRouter(Ref ref) {
+  return GoRouter(
+    navigatorKey: navigatorKey,
+    initialLocation: '/login',
+    errorBuilder: (context, state) => const NotFoundPage(),
+    redirect: (context, state) => redirect(ref, context, state),
+    routes: [
+      ShellRoute(
       builder: (context, state, child) => mobilePageScaffold(
-        context,
-        child,
-        title: getTitleForRoute(context, state),
-      ),
-      routes: [
+              context,
+              child,
+              title: getTitleForRoute(context, state),
+            ),
+        routes: [
         GoRoute(
           path: '/',
           builder: (context, state) => const HomePage(),
         ),
-        GoRoute(
-          path: '/agenda',
+          GoRoute(
+            path: '/agenda',
           onExit: (context, state) => activeNavigationGuard?.call(context) ?? Future.value(true),
-          builder: (context, state) {
-            final agenda = state.extra as MeetingAgenda?;
-            return AgendaModificationPage(agendaToModify: agenda);
-          },
-        ),
-        GoRoute(
-          path: '/agendas',
-          builder: (context, state) => const AgendasListPage(),
-        ),
-        GoRoute(
-          path: '/agendas/:id',
-          builder: (context, state) {
-            final id = state.pathParameters['id']!;
-            return AgendaViewPage(agendaId: int.tryParse(id) ?? 0);
-          },
-        ),
-        GoRoute(
-          path: '/decisions',
-          builder: (context, state) => const DecisionsListPage(),
-        ),
-        GoRoute(
-          path: '/decisions/:id',
-          builder: (context, state) {
-            final id = state.pathParameters['id']!;
-            return DecisionViewPage(decisionId: int.tryParse(id) ?? 0);
-          },
-        ),
-        GoRoute(
-          path: '/projects',
-          builder: (context, state) => const ProjectPage(),
-        ),
-        GoRoute(
-          path: '/project/creation',
+            builder: (context, state) {
+              final agenda = state.extra as MeetingAgenda?;
+              return AgendaModificationPage(agendaToModify: agenda);
+            },
+          ),
+          GoRoute(
+            path: '/agendas',
+            builder: (context, state) => const AgendasListPage(),
+          ),
+          GoRoute(
+            path: '/agendas/:id',
+            builder: (context, state) {
+              final id = state.pathParameters['id']!;
+              return AgendaViewPage(agendaId: int.tryParse(id) ?? 0);
+            },
+          ),
+          GoRoute(
+            path: '/decisions',
+            builder: (context, state) => const DecisionsListPage(),
+          ),
+          GoRoute(
+            path: '/decisions/:id',
+            builder: (context, state) {
+              final id = state.pathParameters['id']!;
+              return DecisionViewPage(decisionId: int.tryParse(id) ?? 0);
+            },
+          ),
+          GoRoute(
+            path: '/projects',
+            builder: (context, state) => const ProjectPage(),
+          ),
+          GoRoute(
+            path: '/project/creation',
           onExit: (context, state) => activeNavigationGuard?.call(context) ?? Future.value(true),
-          builder: (context, state) {
-            final project = state.extra as Project?;
-            return ProjectModificationPage(projectToModify: project);
-          },
-        ),
-        GoRoute(
-          path: '/projects/:id',
-          builder: (context, state) {
-            final id = state.pathParameters['id']!;
-            return ProjectViewPage(projectId: int.tryParse(id) ?? 0);
-          },
-        ),
-        GoRoute(
-          path: '/profile',
-          builder: (context, state) => const ProfilePage(),
-        ),
-        GoRoute(
-          path: '/help',
+            builder: (context, state) {
+              final project = state.extra as Project?;
+              return ProjectModificationPage(projectToModify: project);
+            },
+          ),
+          GoRoute(
+            path: '/projects/:id',
+            builder: (context, state) {
+              final id = state.pathParameters['id']!;
+              return ProjectViewPage(projectId: int.tryParse(id) ?? 0);
+            },
+          ),
+          GoRoute(
+            path: '/profile',
+            builder: (context, state) => const ProfilePage(),
+          ),
+          GoRoute(
+            path: '/help',
           builder: (context, state) => HelpPage(content: state.extra as HelpContent),
-        ),
-      ],
-    ),
-
-    ShellRoute(
-      builder: (context, state, child) => authPageScaffold(
-        context,
-        child,
-        title: getTitleForRoute(context, state),
+          ),
+        ],
       ),
-      routes: [
-        GoRoute(
-          path: '/login',
-          builder: (context, state) => const LoginPage(),
-        ),
-        GoRoute(
-          path: '/signup',
-          builder: (context, state) => const SignupPage(),
-        ),
-        GoRoute(
-          path: '/forgotten-password',
-          builder: (context, state) => const ForgottenPasswordPage(),
-        ),
-      ],
-    ),
-    GoRoute(
-      path: '/organizations/links',
-      builder: (context, state) => const OrganizationLinksPage(),
-    ),
-  ],
-);
 
+      ShellRoute(
+      builder: (context, state, child) => authPageScaffold(
+              context,
+              child,
+              title: getTitleForRoute(context, state),
+            ),
+        routes: [
+          GoRoute(
+            path: '/login',
+            builder: (context, state) => const LoginPage(),
+          ),
+          GoRoute(
+            path: '/signup',
+            builder: (context, state) => const SignupPage(),
+          ),
+          GoRoute(
+            path: '/forgotten-password',
+            builder: (context, state) => const ForgottenPasswordPage(),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: '/organizations/links',
+        builder: (context, state) => const OrganizationLinksPage(),
+      ),
+    ],
+  );
+}

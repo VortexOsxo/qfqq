@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/pages/organizations/organization_invite_page.dart';
 import 'package:qfqq/common/pages/organizations/organization_page.dart';
 import 'package:qfqq/common/pages/not_found_page.dart';
 import 'package:qfqq/common/providers/navigator_key.dart';
+import 'package:qfqq/common/router.dart';
 import 'package:qfqq/common/templates/navigation_guard.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/project.dart';
@@ -30,131 +32,136 @@ import 'package:qfqq/desktop/pages/user_pages/login_page.dart';
 
 NoTransitionPage _noTransition(Widget child) => NoTransitionPage(child: child);
 
-final GoRouter desktopRouter = GoRouter(
-  initialLocation: '/login',
-  navigatorKey: navigatorKey,
-  errorBuilder: (context, state) => const NotFoundPage(),
-  routes: [
-    ShellRoute(
-      builder:
-          (context, state, child) => defaultPageScaffold(
-            context,
-            child,
-            title: getTitleForRoute(context, state),
-          ),
-      routes: [
-        GoRoute(
-          path: '/',
-          pageBuilder: (context, state) => _noTransition(const HomePage()),
-        ),
-        GoRoute(
-          path: '/agendas/creation',
-          onExit: (context, state) => activeNavigationGuard?.call(context) ?? Future.value(true),
-          pageBuilder: (context, state) {
-            final agenda = state.extra as MeetingAgenda?;
-            return _noTransition(
-              AgendaModificationPage(agendaToModify: agenda),
-            );
-          },
-        ),
-        GoRoute(
-          path: '/agendas',
-          pageBuilder:
-              (context, state) => _noTransition(const AgendasListPage()),
-        ),
-        GoRoute(
-          path: '/agendas/:id',
-          pageBuilder: (context, state) {
-            final id = state.pathParameters['id']!;
-            return _noTransition(
-              AgendaViewPage(agendaId: int.tryParse(id) ?? 0),
-            );
-          },
-        ),
-        GoRoute(
-          path: '/decisions',
-          pageBuilder:
-              (context, state) => _noTransition(const DecisionsListPage()),
-        ),
-        GoRoute(
-          path: '/decisions/:id',
-          pageBuilder: (context, state) {
-            final id = state.pathParameters['id']!;
-            return _noTransition(
-              DecisionViewPage(decisionId: int.tryParse(id) ?? 0),
-            );
-          },
-        ),
-        GoRoute(
-          path: '/projects',
-          pageBuilder: (context, state) => _noTransition(const ProjectPage()),
-        ),
-        GoRoute(
-          path: '/projects/creation',
-          onExit: (context, state) => activeNavigationGuard?.call(context) ?? Future.value(true),
-          pageBuilder: (context, state) {
-            final project = state.extra as Project?;
-            return _noTransition(
-              ProjectModificationPage(projectToModify: project),
-            );
-          },
-        ),
-        GoRoute(
-          path: '/projects/:id',
-          pageBuilder: (context, state) {
-            final id = state.pathParameters['id']!;
-            return _noTransition(
-              ProjectViewPage(projectId: int.tryParse(id) ?? 0),
-            );
-          },
-        ),
-        GoRoute(
-          path: '/organization',
-          pageBuilder: (context, state) => _noTransition(const OrganizationPage()),
-        ),
-        GoRoute(
-          path: '/organization/invite',
-          pageBuilder: (context, state) => _noTransition(const OrganizationInvitePage()),
-        ),
-        GoRoute(
-          path: '/profile',
-          pageBuilder: (context, state) => _noTransition(const ProfilePage()),
-        ),
-        GoRoute(
-          path: '/help',
-          pageBuilder: (context, state) => _noTransition(
-            HelpPage(content: state.extra as HelpContent),
-          ),
-        ),
-      ],
-    ),
 
-    ShellRoute(
-      builder:
-          (context, state, child) => authPageScaffold(
-            context,
-            child,
-            title: getTitleForRoute(context, state),
+
+GoRouter createDesktopRouter(Ref ref) {
+  return GoRouter(
+    initialLocation: '/login',
+    navigatorKey: navigatorKey,
+    errorBuilder: (context, state) => const NotFoundPage(),
+    redirect: (context, state) => redirect(ref, context, state),
+    routes: [
+      ShellRoute(
+        builder:
+            (context, state, child) => defaultPageScaffold(
+              context,
+              child,
+              title: getTitleForRoute(context, state),
+            ),
+        routes: [
+          GoRoute(
+            path: '/',
+            pageBuilder: (context, state) => _noTransition(const HomePage()),
           ),
-      routes: [
-        GoRoute(
-          path: '/login',
-          pageBuilder: (context, state) => _noTransition(const LoginPage()),
-        ),
-        GoRoute(
-          path: '/signup',
-          pageBuilder: (context, state) => _noTransition(const SignupPage()),
-        ),
-        GoRoute(
-          path: '/forgotten-password',
+          GoRoute(
+            path: '/agendas/creation',
+          onExit: (context, state) => activeNavigationGuard?.call(context) ?? Future.value(true),
+            pageBuilder: (context, state) {
+              final agenda = state.extra as MeetingAgenda?;
+              return _noTransition(
+                AgendaModificationPage(agendaToModify: agenda),
+              );
+            },
+          ),
+          GoRoute(
+            path: '/agendas',
+            pageBuilder:
+                (context, state) => _noTransition(const AgendasListPage()),
+          ),
+          GoRoute(
+            path: '/agendas/:id',
+            pageBuilder: (context, state) {
+              final id = state.pathParameters['id']!;
+              return _noTransition(
+                AgendaViewPage(agendaId: int.tryParse(id) ?? 0),
+              );
+            },
+          ),
+          GoRoute(
+            path: '/decisions',
+            pageBuilder:
+                (context, state) => _noTransition(const DecisionsListPage()),
+          ),
+          GoRoute(
+            path: '/decisions/:id',
+            pageBuilder: (context, state) {
+              final id = state.pathParameters['id']!;
+              return _noTransition(
+                DecisionViewPage(decisionId: int.tryParse(id) ?? 0),
+              );
+            },
+          ),
+          GoRoute(
+            path: '/projects',
+            pageBuilder: (context, state) => _noTransition(const ProjectPage()),
+          ),
+          GoRoute(
+            path: '/projects/creation',
+          onExit: (context, state) => activeNavigationGuard?.call(context) ?? Future.value(true),
+            pageBuilder: (context, state) {
+              final project = state.extra as Project?;
+              return _noTransition(
+                ProjectModificationPage(projectToModify: project),
+              );
+            },
+          ),
+          GoRoute(
+            path: '/projects/:id',
+            pageBuilder: (context, state) {
+              final id = state.pathParameters['id']!;
+              return _noTransition(
+                ProjectViewPage(projectId: int.tryParse(id) ?? 0),
+              );
+            },
+          ),
+          GoRoute(
+            path: '/organization',
+          pageBuilder: (context, state) => _noTransition(const OrganizationPage()),
+          ),
+          GoRoute(
+            path: '/organization/invite',
+          pageBuilder: (context, state) => _noTransition(const OrganizationInvitePage()),
+          ),
+          GoRoute(
+            path: '/profile',
+            pageBuilder: (context, state) => _noTransition(const ProfilePage()),
+          ),
+          GoRoute(
+            path: '/help',
+          pageBuilder: (context, state) => _noTransition(
+                  HelpPage(content: state.extra as HelpContent),
+                ),
+          ),
+        ],
+      ),
+
+      ShellRoute(
+        builder:
+            (context, state, child) => authPageScaffold(
+              context,
+              child,
+              title: getTitleForRoute(context, state),
+            ),
+        routes: [
+          GoRoute(
+            path: '/login',
+            pageBuilder: (context, state) => _noTransition(const LoginPage()),
+          ),
+          GoRoute(
+            path: '/signup',
+            pageBuilder: (context, state) => _noTransition(const SignupPage()),
+          ),
+          GoRoute(
+            path: '/forgotten-password',
           pageBuilder: (context, state) => _noTransition(const ForgottenPasswordPage()),
-        ),
-      ],
-    ),
-    GoRoute(
-      path: '/organizations/links',
+          ),
+        ],
+      ),
+      GoRoute(
+        path: '/organizations/links',
       pageBuilder: (context, state) => _noTransition(const OrganizationLinksPage()),
-    ),
-  ],
-);
+      ),
+    ],
+  );
+}
 
