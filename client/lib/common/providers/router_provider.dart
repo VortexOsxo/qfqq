@@ -6,9 +6,9 @@ import 'package:qfqq/mobile/mobile_router.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   if (platformType == PlatformType.desktop) {
-    return desktopRouter;
+    return DesktopRouterBuilder().buildRouter(ref);
   } else if (platformType == PlatformType.mobile) {
-    return mobileRouter;
+    return MobileRouterBuilder().buildRouter(ref);
   }
   throw Exception('Unsupported platform: $platformType');
 });
