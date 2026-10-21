@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
+import 'package:qfqq/common/utils/platform.dart';
 
 var pdfServiceProvider = Provider<PdfService>(
   (ref) => PdfService(ref.read(qfqqHttpClientProvider)),
@@ -19,13 +20,16 @@ class PdfService {
       return; // TODO: Show error message
     }
 
+    final isMobile = platformType == PlatformType.mobile;
+
     final result = await FilePicker.platform.saveFile(
       fileName: _formatPdfName(name),
       type: FileType.custom,
       allowedExtensions: ['pdf'],
+      bytes: isMobile ? response.bodyBytes : null,
     );
 
-    if (result == null) {
+    if (result == null || isMobile) {
       return;
     }
 
