@@ -468,6 +468,8 @@
   "commonSelectDate": "Select Date",
   "commonTapToSelectDate": "Tap to select date",
   "commonTooltipHome": "Home",
+  "commonHideSidebar": "Hide sidebar",
+  "commonShowSidebar": "Show sidebar",
   "commonErrorWithContent": "Error: {error}",
   
   "commonFormsEnterTitle": "Please enter a title",

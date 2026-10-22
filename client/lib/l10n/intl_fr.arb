@@ -469,6 +469,8 @@
   "commonSelectDate": "Sélectionner une date",
   "commonTapToSelectDate": "Appuyer pour sélectionner une date",
   "commonTooltipHome": "Accueil",
+  "commonHideSidebar": "Masquer le menu latéral",
+  "commonShowSidebar": "Afficher le menu latéral",
   "commonErrorWithContent": "Erreur : {error}",
   
   "commonFormsEnterTitle": "Veuillez saisir un titre",
