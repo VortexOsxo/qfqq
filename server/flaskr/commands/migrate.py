@@ -12,6 +12,13 @@ def migrate_command():
     with Database._get_db() as conn:
         cur = conn.cursor()
 
+        cur.execute(
+            sql.SQL("SET search_path TO {}").format(sql.Identifier("publid"))
+        )
+        
+        Database.run_sql_file_from_cursor(filename="public_migration", cursor=cur)
+        print("\t Ran public migration")
+
         cur.execute("""
             SELECT nspname
             FROM pg_catalog.pg_namespace
