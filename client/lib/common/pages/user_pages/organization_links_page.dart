@@ -15,7 +15,7 @@ class OrganizationLinksPage extends StatelessWidget {
     return Scaffold(
       appBar: CommonAppBar(
         title: loc.organizationLinksPageTitle,
-        showHomeButton: false,
+        showLeadingButton: false,
       ),
       body: DefaultTabController(
         length: 2,

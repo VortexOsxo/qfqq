@@ -133,7 +133,7 @@ class MembersTab extends ConsumerWidget {
         ),
         const SizedBox(height: 16),
         ElevatedButton(
-          onPressed: () => context.go('/organization/invite'),
+          onPressed: () => context.push('/organization/invite'),
           style: squareButtonStyle(context),
           child: Text(loc.buttonInvitePeople),
         ),

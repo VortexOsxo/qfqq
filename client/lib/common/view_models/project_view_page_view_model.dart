@@ -27,9 +27,9 @@ class ProjectViewPageViewModelState extends ConsumerState<ProjectViewPageViewMod
   String get supervisorName =>
       ref.watch(userByIdProvider(project?.supervisorId ?? 0))?.displayName ?? '';
 
-  void goToModify() => context.go('/projects/creation', extra: project);
+  void goToModify() => context.push('/projects/creation', extra: project);
 
-  void goBackToProjects() => context.go('/projects');
+  void goBackToProjects() => context.push('/projects');
 
   bool canMarkAsCompleted() => project != null && project!.status != ProjectStatus.completed;
 

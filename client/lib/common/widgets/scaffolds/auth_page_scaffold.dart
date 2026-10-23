@@ -13,7 +13,7 @@ Scaffold authPageScaffold(
   final isMobile = platformType == PlatformType.mobile;
 
   return Scaffold(
-    appBar: CommonAppBar(title: pageTitle, showHomeButton: false),
+    appBar: CommonAppBar(title: pageTitle, showLeadingButton: false),
     body: Center(
       child: SingleChildScrollView(
         child: ConstrainedBox(

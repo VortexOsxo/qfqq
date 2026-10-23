@@ -304,7 +304,7 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
             Center(child: IconStatusChip(statusUIData: uiData)),
             TextButton(
               style: inplaceTextButtonStyle(context),
-              onPressed: () => context.go('/decisions/${decision.id}'),
+              onPressed: () => context.push('/decisions/${decision.id}'),
               child: Text(loc.agendaListView),
             ),
           ],
@@ -325,7 +325,7 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
           alignment: Alignment.center,
           child: TextButton(
             style: inplaceTextButtonStyle(context),
-            onPressed: () => context.go('/decisions/${decision.id}'),
+            onPressed: () => context.push('/decisions/${decision.id}'),
             child: Text(loc.agendaListView),
           ),
         ),

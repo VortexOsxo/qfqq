@@ -85,7 +85,7 @@ class MeetingViewControl extends ConsumerWidget {
     return PermissionRequired(
       neededPermissions: Permissions(contribute: true),
       child: TextButton(
-        onPressed: () => context.go('/agendas/creation', extra: meeting),
+        onPressed: () => context.push('/agendas/creation', extra: meeting),
         child: Text(S.of(context).commonModify),
       ),
     );

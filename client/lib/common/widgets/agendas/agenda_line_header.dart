@@ -40,7 +40,7 @@ class AgendaLineHeader extends ConsumerWidget {
           TextButton(
             style: inplaceTextButtonStyle(context),
             child: Text(loc.commonView),
-            onPressed: () => context.go('/agendas/${agenda.id}'),
+            onPressed: () => context.push('/agendas/${agenda.id}'),
           ),
         ],
       ),
