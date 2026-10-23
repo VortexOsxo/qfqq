@@ -94,8 +94,8 @@ class AgendaListPageViewModelState extends ConsumerState<AgendaListPageViewModel
     }
   }
 
-  void goToAgendaCreation() => context.go('/agendas/creation');
-  void goToAgenda(int agendaId) => context.go('/agendas/$agendaId');
+  void goToAgendaCreation() => context.push('/agendas/creation');
+  void goToAgenda(int agendaId) => context.push('/agendas/$agendaId');
 
   @override
   Widget build(BuildContext context) => widget.builder(this);

@@ -1,33 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/providers/router_provider.dart';
 import 'package:qfqq/common/services/auth_service.dart';
+import 'package:qfqq/common/utils/platform.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  final bool showHomeButton;
+  final bool showLeadingButton;
 
   const CommonAppBar({
     super.key,
     required this.title,
-    this.showHomeButton = true,
+    this.showLeadingButton = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    final loc = S.of(context);
+    final length = platformType == PlatformType.mobile ? 100.0 : 80.0;
+
     return AppBar(
       backgroundColor: Theme.of(context).colorScheme.primary,
-      leading:
-          showHomeButton
-              ? IconButton(
-                icon: const Icon(Icons.home),
-                onPressed: () => context.go('/'),
-                tooltip: loc.commonTooltipHome,
-                color: Theme.of(context).colorScheme.onPrimary,
-              )
-              : null,
+      leading: showLeadingButton ? _LeadingButton() : null,
+      leadingWidth: length,
       title: Text(
         title,
         style: TextStyle(color: Theme.of(context).colorScheme.onPrimary, fontSize: 18),
@@ -45,6 +41,29 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
+class _LeadingButton extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.read(routerProvider);
+
+    final homeButton = IconButton(
+      icon: const Icon(Icons.home),
+      onPressed: () => context.go('/'),
+      tooltip: S.of(context).commonTooltipHome,
+      color: Theme.of(context).colorScheme.onPrimary,
+    );
+
+    final backButton = IconButton(
+      icon: const Icon(Icons.chevron_left),
+      onPressed: router.canPop() ? () => router.pop() : null,
+      tooltip: S.of(context).commonBack,
+      color: Theme.of(context).colorScheme.onPrimary,
+    );
+
+    return Row(children: [homeButton, backButton]);
+  }
+}
+
 class _ProfileLink extends ConsumerWidget {
   
   @override
@@ -56,7 +75,7 @@ class _ProfileLink extends ConsumerWidget {
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: () => context.go('/profile'),
+      onTap: () => context.push('/profile'),
       child: Row(
         children: [
           Text(

@@ -111,8 +111,8 @@ class DecisionViewPageViewModelState extends ConsumerState<DecisionViewPageViewM
       .read(decisionsServiceProvider)
       .updateDecisionStatus(widget.decisionId, DecisionStatus.pending);
 
-  void goToMeeting() => context.go('/agendas/${decision?.meetingId}');
-  void goToDecisions() => context.go('/decisions');
+  void goToMeeting() => context.push('/agendas/${decision?.meetingId}');
+  void goToDecisions() => context.push('/decisions');
 
   Future<void> deleteDecision() async {
     final loc = S.of(context);

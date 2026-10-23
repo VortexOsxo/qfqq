@@ -76,7 +76,7 @@ class HomePageContent extends StatelessWidget {
                 Expanded(
                   child: TextButton(
                     child: Text(S.of(context).commonViewAll),
-                    onPressed: () => context.go(route),
+                    onPressed: () => context.push(route),
                   ),
                 ),
               ],

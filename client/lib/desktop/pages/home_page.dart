@@ -20,14 +20,14 @@ class HomePage extends StatelessWidget {
             children: [
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () => context.go('/projects/creation'),
+                  onPressed: () => context.push('/projects/creation'),
                   style: squareButtonStyle(context),
                   child: Text(S.of(context).homePageProjectButton),
                 ),
               ),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () => context.go('/agendas/creation'),
+                  onPressed: () => context.push('/agendas/creation'),
                   style: squareButtonStyle(context),
                   child: Text(S.of(context).homePageMeetingButton),
                 ),

@@ -39,7 +39,7 @@ class DecisionLineHeader extends StatelessWidget {
           TextButton(
             style: inplaceTextButtonStyle(context),
             child: Text(loc.commonView),
-            onPressed: () => context.go('/decisions/${decision.id}'),
+            onPressed: () => context.push('/decisions/${decision.id}'),
           ),
         ],
       ),

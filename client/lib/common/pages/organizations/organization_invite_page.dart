@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/providers/invitations_provider.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/widgets/invitations_list_widget.dart';
@@ -69,25 +68,12 @@ class _OrganizationInviteState extends ConsumerState<OrganizationInvitePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            children: [
-              IconButton(
-                onPressed: () => context.go('/organization'),
-                icon: Icon(
-                  Icons.chevron_left,
-                  color: theme.primaryColor,
-                  size: 32,
-                ),
-                tooltip: loc.commonBack,
-              ),
-              Text(
-                loc.inviteMemberLabel,
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: theme.primaryColor,
-                ),
-              ),
-            ],
+          Text(
+            loc.inviteMemberLabel,
+            style: theme.textTheme.headlineMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: theme.primaryColor,
+            ),
           ),
           SizedBox(height: 12),
           Padding(

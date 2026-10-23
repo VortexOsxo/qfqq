@@ -77,9 +77,9 @@ class ProjectPageViewModelState extends ConsumerState<ProjectPageViewModel> {
     }
   }
 
-  void goToProjectCreation() => context.go('/projects/creation');
+  void goToProjectCreation() => context.push('/projects/creation');
 
-  void goToProject(int projectId) => context.go('/projects/$projectId');
+  void goToProject(int projectId) => context.push('/projects/$projectId');
 
   @override
   Widget build(BuildContext context) => widget.builder(this);
