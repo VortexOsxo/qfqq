@@ -50,7 +50,7 @@ def get_api_version():
     if request.method == "OPTIONS":
         return
     
-    version = request.headers.get("QfqqVersion", "")
+    version = request.headers.get("QfqqVersion", SUPPORTED_VERSIONS[-1])
     if version not in SUPPORTED_VERSIONS:
         return jsonify({"error": "Unsuported API Version"}), 400
     
