@@ -10,6 +10,13 @@ import 'package:qfqq/common/services/qfqq_http_client.dart';
 import 'package:qfqq/common/services/session_token_store.dart';
 import 'package:qfqq/generated/l10n.dart';
 
+class RequestEmailVerificationResult {
+  final bool bypass;
+  final String? error;
+
+  const RequestEmailVerificationResult({this.bypass = false, this.error});
+}
+
 final authStateProvider = StateNotifierProvider<AuthService, AuthState>(
   (ref) => AuthService(
     ref.read(qfqqHttpClientProvider),
@@ -72,7 +79,44 @@ class AuthService extends StateNotifier<AuthState> {
     return false;
   }
 
-Future<AccountError> signup(User user, String password) async {
+  Future<RequestEmailVerificationResult> requestEmailVerification(String email) async {
+    final response = await _httpClient.post(
+      _httpClient.getUri('auth/email-verification/request-code'),
+      headers: _headers,
+      body: jsonEncode({'email': email.toLowerCase().trim()}),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      final data = _safeJsonDecode(response.body);
+      final bypass = data is Map && data['bypass'] == true;
+      return RequestEmailVerificationResult(bypass: bypass);
+    }
+
+    final data = _safeJsonDecode(response.body);
+    if (data is Map && data['email'] != null) {
+      return RequestEmailVerificationResult(error: S.current.authServiceEmailError);
+    }
+    return RequestEmailVerificationResult(error: S.current.commonServerError);
+  }
+
+  Future<String?> validateEmailVerificationCode(String email, String code) async {
+    final response = await _httpClient.post(
+      _httpClient.getUri('auth/email-verification/validate-code'),
+      headers: _headers,
+      body: jsonEncode({
+        'email': email.toLowerCase().trim(),
+        'code': code.trim(),
+      }),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      return null;
+    }
+
+    return S.current.signupPageInvalidCode;
+  }
+
+  Future<AccountError> signup(User user, String password, String code) async {
     final response = await _httpClient.post(
       _httpClient.getUri('auth/signup'),
       headers: _headers,
@@ -81,6 +125,7 @@ Future<AccountError> signup(User user, String password) async {
         'lastName': user.lastName,
         'email': user.email.toLowerCase().trim(),
         'password': password,
+        'code': code.trim(),
       }),
     );
     final data = _safeJsonDecode(response.body);

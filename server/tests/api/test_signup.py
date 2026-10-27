@@ -1,11 +1,21 @@
+import pytest
 from flaskr.errors import InputError
+from flaskr.services.account_service import AccountService
 
 VALID_SIGNUP_PAYLOAD = {
     "firstName": "John",
     "lastName": "Doe",
     "email": "newuser@example.com",
     "password": "securepassword123!",
+    "code": "123456",
 }
+
+
+@pytest.fixture(autouse=True)
+def mock_email_validation(monkeypatch):
+    monkeypatch.setattr(
+        AccountService, "is_email_code_valid", lambda email, code: code == "123456"
+    )
 
 
 def signup(client, **overrides):
@@ -92,3 +102,20 @@ def test_signup_default(client):
     assert body["firstName"] == 'Salut'
     assert body["lastName"] == 'Joe'
     assert body["email"] == 'salut@gmail.com'
+
+
+def test_signup_invalid_code(client):
+    response = signup(client, email="invalid_code@example.com", code="WRONG_CODE")
+    assert response.status_code == 400
+    body = response.get_json()
+    assert "code" in body
+
+
+def test_signup_missing_code(client):
+    payload = {**VALID_SIGNUP_PAYLOAD, "email": "missing_code@example.com"}
+    payload.pop("code")
+    response = client.post("/auth/signup", json=payload, headers={"QfqqVersion": "0.0.1"})
+    assert response.status_code == 400
+    body = response.get_json()
+    assert "code" in body
+    assert body["code"] == InputError.RequiredField.value

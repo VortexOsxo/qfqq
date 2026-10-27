@@ -18,7 +18,11 @@ def test_refresh_for_user_with_organization(client):
     assert body["refresh_token"]
 
 
+from flaskr.database import EmailValidationDataHandler
+
+
 def test_refresh_for_user_without_organization(client):
+    EmailValidationDataHandler.create_request("unaffiliated@example.com", "123456")
     signup_response = client.post(
         "/auth/signup",
         json={
@@ -26,6 +30,7 @@ def test_refresh_for_user_without_organization(client):
             "lastName": "User",
             "email": "unaffiliated@example.com",
             "password": "securepassword123!",
+            "code": "123456",
         },
         headers={"QfqqVersion": "0.0.1"},
     )

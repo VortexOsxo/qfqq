@@ -35,7 +35,7 @@ class EmailSender:
                     email="noreply@quifaitquoiquand.com",
                 ),
                 to=[SendTransacEmailRequestToItem(email=email.recipient)],
-                attachment=attachments,
+                attachment=attachments if len(attachments) else None,
             )
             print("Email sent successfully! Message ID:", result.message_id)
             return True

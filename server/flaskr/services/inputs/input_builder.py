@@ -41,6 +41,7 @@ class SignupBuilder(InputBuilder):
             ("lastName", StringValidator(max_length=50)),
             ("password", PasswordValidator()),
             ("email", EmailValidator()),
+            ("code", StringValidator(allow_empty=True)),
         )
 
 
