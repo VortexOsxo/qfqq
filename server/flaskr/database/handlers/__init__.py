@@ -3,6 +3,8 @@ from .project_data_handler import ProjectDataHandler
 from .decision_data_handler import DecisionDataHandler
 from .meeting_data_handler import MeetingDataHandler
 from .password_request_data_handler import PasswordRequestDataHandler
+from .email_verification_data_handler import EmailValidationDataHandler
+
 from .role_data_handler import RoleDataHandler
 from .organization_data_handler import OrganizationDataHandler
 from .notification_offset_data_handler import NotificationOffsetDataHandler

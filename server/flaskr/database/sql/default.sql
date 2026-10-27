@@ -3,6 +3,7 @@ public.organizations,
 public.invitations,
 public.users,
 public.passwordRequests,
+public.emailVerificationRequests,
 public.notificationsTarget,
 public.notifications,
 public.notificationOffsets CASCADE;
@@ -43,6 +44,13 @@ CREATE TABLE
     email TEXT REFERENCES users (email),
     code TEXT,
     date TEXT,
+    PRIMARY KEY (email)
+  );
+
+CREATE TABLE
+  public.emailVerificationRequests (
+    email TEXT,
+    code TEXT,
     PRIMARY KEY (email)
   );
 

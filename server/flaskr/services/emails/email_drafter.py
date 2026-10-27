@@ -77,6 +77,41 @@ class EmailDrafter:
         return Email(subject=subject, recipient=email, body=body)
 
     @staticmethod
+    def create_verify_email_email(email: str, verification_code: str, lang: str = 'fr') -> Email:
+        if lang == 'en':
+            subject = "Verify your email address - QuiFaitQuoiQuand"
+            greeting = 'Hello,'
+            message = 'To verify your email address, please use the code below:'
+            ignore_message = (
+                'If you did not create this account, you can safely ignore '
+                'this email.'
+            )
+            sign_off = 'Thank you,<br>The QuiFaitQuoiQuand Team'
+        else:
+            subject = "Vérifiez votre adresse e-mail - QuiFaitQuoiQuand"
+            greeting = 'Bonjour,'
+            message = (
+                'Pour vérifier votre adresse e-mail, veuillez utiliser le '
+                'code ci-dessous :'
+            )
+            ignore_message = (
+                "Si vous n'avez pas créé ce compte, vous pouvez ignorer cet "
+                'e-mail en toute sécurité.'
+            )
+            sign_off = 'Merci,<br>L’équipe QuiFaitQuoiQuand'
+
+        body = EmailDrafter._format_email_card(
+            f"""\
+<p style="margin:0 0 16px;">{greeting}</p>
+<p style="margin:0 0 20px;">{message}</p>
+<p style="margin:0 0 20px;">{ignore_message}</p>
+<p style="margin:0 0 24px; padding:14px 18px; background-color:#f3f5f9; color:#0175C2; font-size:22px; font-weight:bold; letter-spacing:2px; text-align:center;">{escape(verification_code)}</p>
+<p style="margin:0;">{sign_off}</p>"""
+        )
+
+        return Email(subject=subject, recipient=email, body=body)
+
+    @staticmethod
     def create_participant_report_email(
         recipient: str, report_bytes: bytes, name: str = '', lang: str = 'fr'
     ) -> Email:

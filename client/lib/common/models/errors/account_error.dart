@@ -7,6 +7,7 @@ class AccountError {
   final String? emailError;
   final String? passwordError;
   final String? authError;
+  final String? codeError;
 
   AccountError({
     this.firstNameError,
@@ -14,10 +15,11 @@ class AccountError {
     this.emailError,
     this.passwordError,
     this.authError,
+    this.codeError,
   });
 
   String? getFirstError() {
-    return firstNameError ?? lastNameError ?? emailError ?? passwordError ?? authError;
+    return firstNameError ?? lastNameError ?? emailError ?? passwordError ?? authError ?? codeError;
   }
 
   static AccountError fromJson(dynamic data) {
@@ -29,6 +31,7 @@ class AccountError {
       emailError: data['email'] != null ? loc.authServiceEmailError : null,
       passwordError: translatePasswordError(data['password']),
       authError: data['auth'] != null ? loc.authServiceInvalidCredentials : null,
+      codeError: data['code'] != null ? loc.signupPageInvalidCode : null,
     );
   }
 }

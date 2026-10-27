@@ -26,8 +26,12 @@ def create_app(config_name='development'):
     
     if config_name == "testing":
         app.config["DATABASE_URL"] = "postgresql://postgres:user@localhost:5432/qfqq_test"
+        app.config["REQUIRE_EMAIL_VERIFICATION"] = True
     else:
         app.config["DATABASE_URL"] = os.environ.get("DB_URL")
+        require_email_verification = os.environ.get("REQUIRE_EMAIL_VERIFICATION", "")
+        require_email_verification = require_email_verification.lower() != 'false'
+        app.config["REQUIRE_EMAIL_VERIFICATION"] = require_email_verification
 
     register_blueprints(app)
     app.before_request(get_api_version)
