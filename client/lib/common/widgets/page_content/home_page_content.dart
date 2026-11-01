@@ -68,12 +68,12 @@ class HomePageContent extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            Stack(
+              alignment: Alignment.center,
               children: [
-                Spacer(),
                 Text(title, style: Theme.of(context).textTheme.titleSmall),
-                Expanded(
+                Align(
+                  alignment: Alignment.centerRight,
                   child: TextButton(
                     child: Text(S.of(context).commonViewAll),
                     onPressed: () => context.push(route),

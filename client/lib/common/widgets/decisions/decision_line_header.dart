@@ -20,28 +20,54 @@ class DecisionLineHeader extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Text(
-              decision.description,
-              style: TextStyle(fontSize: 16),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          SizedBox(width: 12),
-          Text(statusText, style: TextStyle(fontSize: 14, color: Colors.grey)),
-          const SizedBox(width: 8),
-          Text(dueDateText, style: TextStyle(fontSize: 14, color: Colors.grey)),
-          const SizedBox(width: 8),
-          TextButton(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final title = Text(
+            decision.description,
+            style: TextStyle(fontSize: 16),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          );
+          final viewButton = TextButton(
             style: inplaceTextButtonStyle(context),
             child: Text(loc.commonView),
             onPressed: () => context.push('/decisions/${decision.id}'),
-          ),
-        ],
+          );
+
+          if (constraints.maxWidth < 600) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                title,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '$statusText · $dueDateText',
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                      ),
+                    ),
+                    viewButton,
+                  ],
+                ),
+              ],
+            );
+          }
+
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(child: title),
+              SizedBox(width: 12),
+              Text(
+                '$statusText · $dueDateText',
+                style: TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+              const SizedBox(width: 8),
+              viewButton,
+            ],
+          );
+        },
       ),
     );
   }

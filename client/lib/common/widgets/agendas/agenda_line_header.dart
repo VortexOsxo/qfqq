@@ -21,28 +21,55 @@ class AgendaLineHeader extends ConsumerWidget {
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              agenda.title,
-              style: TextStyle(fontSize: 16),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            agendaDateText,
-            style: TextStyle(fontSize: 14, color: Colors.grey),
-          ),
-          const SizedBox(width: 8),
-          TextButton(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final title = Text(
+            agenda.title,
+            style: TextStyle(fontSize: 16),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          );
+          final viewButton = TextButton(
             style: inplaceTextButtonStyle(context),
             child: Text(loc.commonView),
             onPressed: () => context.push('/agendas/${agenda.id}'),
-          ),
-        ],
+          );
+
+          if (constraints.maxWidth < 600) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                title,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        agendaDateText,
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    viewButton,
+                  ],
+                ),
+              ],
+            );
+          }
+
+          return Row(
+            children: [
+              Expanded(child: title),
+              const SizedBox(width: 8),
+              Text(
+                agendaDateText,
+                style: TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+              const SizedBox(width: 8),
+              viewButton,
+            ],
+          );
+        },
       ),
     );
   }
