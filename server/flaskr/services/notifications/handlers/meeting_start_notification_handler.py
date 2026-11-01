@@ -1,6 +1,6 @@
 from flaskr.models import Notification, NotificationTarget, ScheduledNotification, MeetingAgenda
 from flaskr.database import set_tenant
-from flaskr.database.handlers import UserDataHandler
+from flaskr.database.handlers import UserDataHandler, MeetingDataHandler
 
 from ..notification_type import NotificationType
 from .duration_format import format_duration
@@ -41,6 +41,9 @@ class MeetingStartNotificationHandler:
         set_tenant(target.orgId)
 
         userId = scheduled.userId
+        meeting = MeetingDataHandler.get_meeting_agenda(target.targetId)
+        if meeting is None:
+            return None
 
         token, locale = UserDataHandler.get_user_fcm(userId)
         if token is None:
