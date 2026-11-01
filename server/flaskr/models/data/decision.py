@@ -1,35 +1,31 @@
 from dataclasses import dataclass
-from enum import Enum
 from datetime import datetime
+from typing import Literal, TypeAlias
 
 
-class DecisionStatus(Enum):
-    inProgress = "inProgress"
-    pending = "pending"
-    cancelled = "cancelled"
-    completed = "completed"
+DecisionStatus: TypeAlias = Literal["inProgress", "pending", "cancelled", "completed"]
 
-    @staticmethod
-    def as_string(value: str, lang="fr"):
-        fr_reprs = {
-            "inProgress": "En cours",
-            "pending": "En attente",
-            "cancelled": "Annulé",
-            "completed": "Terminé",
-        }
 
-        en_reprs = {
-            "inProgress": "In progress",
-            "pending": "Pending",
-            "cancelled": "Cancelled",
-            "completed": "Completed",
-        }
+def decision_status_as_string(value: DecisionStatus, lang: str = "fr") -> str:
+    fr_reprs = {
+        "inProgress": "En cours",
+        "pending": "En attente",
+        "cancelled": "Annulé",
+        "completed": "Terminé",
+    }
 
-        if lang == "fr":
-            return fr_reprs.get(value, value)
-        elif lang == "en":
-            return en_reprs.get(value, value)
-        return value
+    en_reprs = {
+        "inProgress": "In progress",
+        "pending": "Pending",
+        "cancelled": "Cancelled",
+        "completed": "Completed",
+    }
+
+    if lang == "fr":
+        return fr_reprs.get(value, value)
+    if lang == "en":
+        return en_reprs.get(value, value)
+    return value
 
 
 @dataclass(slots=True)

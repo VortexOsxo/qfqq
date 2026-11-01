@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Callable, Optional
+from typing import Callable, Optional, get_args
 import re
 
 from flaskr.errors import InputError
@@ -142,18 +142,19 @@ class RoleIdValidator(_ObjectIdValidator):
 class OrganizationIdValidator(_ObjectIdValidator):
     dataHandler = OrganizationDataHandler.get_org
 
-# TODO: Test it :)
-class EnumValidator(InputValidator):
-    def __init__(self, enum):
-        self.enum = enum
+class LiteralValidator(InputValidator):
+    def __init__(self, literal_type):
+        self.allowed_values = get_args(literal_type)
 
     def validate(self, value) -> InputError:
         if value is None or value == "":
             return InputError.RequiredField
+        if not isinstance(value, str):
+            return InputError.InvalidType
 
         return (
             InputError.NoError
-            if value in self.enum.__members__
+            if value in self.allowed_values
             else InputError.EnumMemberNotFound
         )
 

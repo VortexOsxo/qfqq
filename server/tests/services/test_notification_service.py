@@ -5,7 +5,7 @@ from flaskr.database.postgres import read_query
 from flaskr.database import DecisionDataHandler
 from flaskr.database.handlers import UserDataHandler
 from flaskr.database.handlers.notification_offset_data_handler import NotificationOffsetDataHandler
-from flaskr.models import MeetingAgenda, MeetingAgendaStatus
+from flaskr.models import MeetingAgenda
 from flaskr.services.notifications.notification_service import NotificationService
 from flaskr.services.notifications.notification_type import NotificationType
 import flaskr.services.notifications.notification_service as notification_service_module
@@ -17,7 +17,7 @@ def test_add_notification_persists_target_and_scheduled_notifications(app):
         number=1,
         title="Test meeting",
         goals="Discuss the test",
-        status=MeetingAgendaStatus.planned,
+        status="planned",
         redactionDate=datetime(2026, 10, 1, tzinfo=timezone.utc),
         meetingDate=datetime(2026, 10, 3, tzinfo=timezone.utc),
         meetingLocation="Room A",
@@ -66,7 +66,7 @@ def test_update_notification_replaces_event_time_and_scheduled_recipients(app):
         number=5,
         title="Meeting notification update",
         goals="Verify notification update",
-        status=MeetingAgendaStatus.planned,
+        status="planned",
         redactionDate=datetime(2026, 10, 1, tzinfo=timezone.utc),
         meetingDate=datetime(2026, 10, 3, tzinfo=timezone.utc),
         meetingLocation="Room E",
@@ -121,7 +121,7 @@ def test_update_notification_keeps_schedules_only_for_current_participants(app):
         number=6,
         title="Meeting participant update",
         goals="Verify scheduled recipients",
-        status=MeetingAgendaStatus.planned,
+        status="planned",
         redactionDate=datetime(2026, 10, 1, tzinfo=timezone.utc),
         meetingDate=datetime(2026, 10, 6, tzinfo=timezone.utc),
         meetingLocation="Room F",
@@ -165,7 +165,7 @@ def test_remove_notification_deletes_target_and_scheduled_notifications(app):
         number=2,
         title="Notification removal test",
         goals="Verify notification cleanup",
-        status=MeetingAgendaStatus.planned,
+        status="planned",
         redactionDate=datetime(2026, 10, 1, tzinfo=timezone.utc),
         meetingDate=datetime(2026, 10, 3, tzinfo=timezone.utc),
         meetingLocation="Room B",
@@ -213,7 +213,7 @@ def test_remove_notification_preserves_other_targets_and_scheduled_notifications
             number=3,
             title="Meeting to remove",
             goals="Verify selective removal",
-            status=MeetingAgendaStatus.planned,
+            status="planned",
             redactionDate=datetime(2026, 10, 1, tzinfo=timezone.utc),
             meetingDate=datetime(2026, 10, 3, tzinfo=timezone.utc),
             meetingLocation="Room C",
@@ -227,7 +227,7 @@ def test_remove_notification_preserves_other_targets_and_scheduled_notifications
             number=4,
             title="Meeting to preserve",
             goals="Verify unrelated notification remains",
-            status=MeetingAgendaStatus.planned,
+            status="planned",
             redactionDate=datetime(2026, 10, 1, tzinfo=timezone.utc),
             meetingDate=datetime(2026, 10, 4, tzinfo=timezone.utc),
             meetingLocation="Room D",

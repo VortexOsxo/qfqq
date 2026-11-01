@@ -1,6 +1,8 @@
 import pytest
-from flaskr.services.inputs.input_validator import PasswordValidator
+
 from flaskr.errors import InputError
+from flaskr.models import ProjectStatus
+from flaskr.services.inputs.input_validator import LiteralValidator, PasswordValidator
 
 @pytest.fixture
 def validator():
@@ -40,3 +42,12 @@ def test_password_empty_or_none(validator):
 def test_password_only_spaces_with_valid_chars(validator):
     assert validator.validate(" a B 1 ! ") == InputError.InvalidFormat
     assert validator.validate(" aaaaaaaaaaa B 1 ! ") == InputError.InvalidFormat
+
+
+def test_literal_validator_accepts_values_and_rejects_invalid_types():
+    validator = LiteralValidator(ProjectStatus)
+
+    assert validator.validate("completed") == InputError.NoError
+    assert validator.validate("fake") == InputError.EnumMemberNotFound
+    assert validator.validate(["completed"]) == InputError.InvalidType
+    assert validator.validate({"status": "completed"}) == InputError.InvalidType

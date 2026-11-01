@@ -1,10 +1,8 @@
 from dataclasses import dataclass
-from enum import Enum
+from typing import Literal, TypeAlias
 
 
-class ProjectStatus(Enum):
-    inProgress = "inProgress"
-    completed = "completed"
+ProjectStatus: TypeAlias = Literal["inProgress", "completed"]
 
 
 @dataclass(slots=True)

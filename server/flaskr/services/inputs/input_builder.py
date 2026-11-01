@@ -71,9 +71,7 @@ class CreateDecisionBuilder(InputBuilder):
 
 class CreateMeetingAgendaBuilder(InputBuilder):
     def build(self, data):
-        from flaskr.models import MeetingAgendaStatus
-
-        is_draft = data.get("status") == MeetingAgendaStatus.draft.value
+        is_draft = data.get("status") == "draft"
         return super().build(data, is_draft)
 
     def get_fields_validators(self, is_draft):
@@ -81,7 +79,7 @@ class CreateMeetingAgendaBuilder(InputBuilder):
 
         validators = [
             ("title", StringValidator()),
-            ("status", EnumValidator(MeetingAgendaStatus)),
+            ("status", LiteralValidator(MeetingAgendaStatus)),
         ]
         if not is_draft:
             validators.extend(

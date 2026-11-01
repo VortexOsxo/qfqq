@@ -1,5 +1,5 @@
 from .report_builder import ReportBuilder
-from flaskr.models import Decision, DecisionStatus
+from flaskr.models import Decision, decision_status_as_string
 from io import BytesIO
 
 
@@ -34,7 +34,7 @@ class ParticipantReportBuilder:
                 str(decision.number),
                 decision.description,
                 decision.dueDate.strftime("%Y-%m-%d") if decision.dueDate else " ",
-                DecisionStatus.as_string(decision.status, self.lang),
+                decision_status_as_string(decision.status, self.lang),
                 (
                     decision.completedDate.strftime("%Y-%m-%d")
                     if decision.completedDate

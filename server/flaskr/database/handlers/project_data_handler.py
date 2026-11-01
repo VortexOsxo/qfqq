@@ -13,7 +13,7 @@ class ProjectDataHandler:
                 cur.execute(query, params)
                 if (result := cur.fetchone()) is None: return
                 id, nb = result
-                return Project(id, nb, title, goals, ProjectStatus.inProgress, supervisorId)
+                return Project(id, nb, title, goals, "inProgress", supervisorId)
         except Exception as e:
             print(f'[ERROR]: {e}')
         return None
@@ -27,7 +27,7 @@ class ProjectDataHandler:
         write_query(query, params)
 
     @classmethod
-    def update_project_status(cls, id: int, status: str):
+    def update_project_status(cls, id: int, status: ProjectStatus):
         query = "UPDATE projects SET status = %s WHERE id = %s;"
         params = (status, id)
         write_query(query, params)

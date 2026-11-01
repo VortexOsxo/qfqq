@@ -7,7 +7,7 @@ from flaskr.services.inputs import (
     input_middleware,
     CreateProjectBuilder,
     LambdaBuilder,
-    EnumValidator,
+    LiteralValidator,
 )
 
 from flaskr.models import ProjectStatus
@@ -41,7 +41,7 @@ def get_projects():
 
 
 @projects_bp.patch("/<string:id>/status")
-@input_middleware(LambdaBuilder(("status", EnumValidator(ProjectStatus))))
+@input_middleware(LambdaBuilder(("status", LiteralValidator(ProjectStatus))))
 @permission_middleware(Permission.Contribute)
 def patch_meeting_agenda_status(status, id: str):
     ProjectDataHandler.update_project_status(id, status)

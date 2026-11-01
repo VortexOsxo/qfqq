@@ -130,7 +130,7 @@ class MeetingDataHandler:
             cur.executemany(query, params)
 
     @classmethod
-    def update_meeting_status(cls, meetingId: int, status: str):
+    def update_meeting_status(cls, meetingId: int, status: MeetingAgendaStatus):
         query = "UPDATE meetings SET status = %s WHERE id = %s;"
         params = (status, meetingId)
         try:

@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify, request, g
 
 from flaskr.models import DecisionStatus
 from flaskr.database import DecisionDataHandler
-from flaskr.services.inputs import input_middleware, CreateDecisionBuilder, LambdaBuilder, EnumValidator, StringValidator
+from flaskr.services.inputs import input_middleware, CreateDecisionBuilder, LambdaBuilder, LiteralValidator, StringValidator
 from flaskr.blueprints.before_request import login_required
 from flaskr.blueprints.middlewares import permission_middleware, Permission
 
@@ -22,7 +22,7 @@ def create_decision(description, responsibleId, meetingId, dueDate):
 
     decision = DecisionDataHandler.create_decision(
         description=description,
-        status=DecisionStatus.inProgress,
+        status="inProgress",
         dueDate=dueDate,
         responsibleId=responsibleId,
         initialDate=datetime.now(),
@@ -49,7 +49,7 @@ def get_decisions():
     return jsonify([decision.to_dict() for decision in decisions]), 200
 
 @decisions_bp.patch("/<string:id>/status")
-@input_middleware(LambdaBuilder(("status", EnumValidator(DecisionStatus))))
+@input_middleware(LambdaBuilder(("status", LiteralValidator(DecisionStatus))))
 def patch_meeting_agenda_status(status, id: str):
     try:
         result = False
