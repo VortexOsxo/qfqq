@@ -7,6 +7,7 @@ import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/utils/text.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
 import 'package:qfqq/common/widgets/icon_status_chip.dart';
+import 'package:qfqq/common/widgets/mobile_list_action_button.dart';
 import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
 import 'package:qfqq/common/widgets/reusables/refresh_button.dart';
 import 'package:qfqq/common/widgets/status_chip.dart';
@@ -61,12 +62,9 @@ class AgendasListWidget extends StatelessWidget {
                 width: 100,
                 child: Center(child: Text(loc.attributeStatus)),
               ),
-              SizedBox(
-                width: 80,
-                child: Center(child: Text(loc.commonAction)),
-              ),
-            ] else 
-              const SizedBox(width: 80),
+              SizedBox(width: 80, child: Center(child: Text(loc.commonAction))),
+            ] else
+              const SizedBox(width: 48),
             SizedBox(width: showDetails ? 16 : 8),
           ],
         ),
@@ -94,26 +92,26 @@ class AgendasListWidget extends StatelessWidget {
                     ),
                   ),
                   if (showDetails) Expanded(
-                    flex: 3,
-                    child: Text(
-                      agenda.meetingLocation ?? loc.commonNoLocationSet,
-                    ),
-                  ),
-                  if (showDetails) Expanded(
-                    flex: 3,
-                    child: listText(
-                      animatorName(
-                        agenda.animatorId,
-                        loc.commonNoAnimatorSet,
+                      flex: 3,
+                      child: Text(
+                        agenda.meetingLocation ?? loc.commonNoLocationSet,
                       ),
                     ),
-                  ),
                   if (showDetails) Expanded(
-                    flex: 3,
-                    child: ProjectClickableTextWidget(
-                      projectId: agenda.projectId,
+                      flex: 3,
+                      child: listText(
+                        animatorName(
+                          agenda.animatorId,
+                          loc.commonNoAnimatorSet,
+                        ),
+                      ),
                     ),
-                  ),
+                  if (showDetails) Expanded(
+                      flex: 3,
+                      child: ProjectClickableTextWidget(
+                        projectId: agenda.projectId,
+                      ),
+                    ),
                   if (showDetails) ..._desktopOther(context, loc, agenda, uiData)
                   else ..._mobileOther(context, loc, agenda, uiData),
 
@@ -135,18 +133,16 @@ class AgendasListWidget extends StatelessWidget {
     return buildContentListCardTemplate(cardContent);
   }
 
-
   List<Widget> _mobileOther(context, loc, agenda, uiData) {
     return [
       SizedBox(
-        width: 80,
+        width: 48,
         child: Row(
           children: [
-            Center(child: IconStatusChip(statusUIData: uiData)),
-            TextButton(
-              style: inplaceTextButtonStyle(context),
+            IconStatusChip(statusUIData: uiData),
+            MobileListActionButton(
+              tooltip: loc.agendaListView,
               onPressed: () => goToAgenda(agenda.id),
-              child: Text(loc.agendaListView),
             ),
           ],
         ),

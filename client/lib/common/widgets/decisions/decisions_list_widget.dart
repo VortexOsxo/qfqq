@@ -16,6 +16,7 @@ import 'package:qfqq/common/utils/platform.dart';
 import 'package:qfqq/common/utils/text.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
 import 'package:qfqq/common/widgets/icon_status_chip.dart';
+import 'package:qfqq/common/widgets/mobile_list_action_button.dart';
 import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
 import 'package:qfqq/common/widgets/dropdowns/decision_status_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/dropdowns/default_dropdown_menu.dart';
@@ -229,7 +230,7 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
                 child: Center(child: Text(S.of(context).commonAction)),
               ),
             ] else
-              const SizedBox(width: 80),
+              const SizedBox(width: 48),
             SizedBox(width: widget.showDetails ? 16 : 8),
           ],
         ),
@@ -300,14 +301,13 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
   List<Widget> _mobileOther(BuildContext context, loc, decision, uiData) {
     return [
       SizedBox(
-        width: 80,
+        width: 48,
         child: Row(
           children: [
             Center(child: IconStatusChip(statusUIData: uiData)),
-            TextButton(
-              style: inplaceTextButtonStyle(context),
+            MobileListActionButton(
+              tooltip: loc.agendaListView,
               onPressed: () => context.push('/decisions/${decision.id}'),
-              child: Text(loc.agendaListView),
             ),
           ],
         ),

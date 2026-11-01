@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/templates/card_template.dart';
 import 'package:qfqq/common/theme/styles.dart';
+import 'package:qfqq/common/utils/platform.dart';
 import 'package:qfqq/common/utils/text.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
+import 'package:qfqq/common/widgets/mobile_list_action_button.dart';
 import 'package:qfqq/common/widgets/reusables/refresh_button.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -51,11 +53,14 @@ class ProjectListWidget extends StatelessWidget {
             if (showGoals) Expanded(flex: 7, child: Text(loc.attributeGoals)),
             Expanded(flex: 2, child: Text(loc.projectSupervisor)),
             SizedBox(
-              width: 80,
-              child: Align(
-                alignment: Alignment.center,
-                child: Text(loc.commonAction),
-              ),
+              width: platformType == PlatformType.mobile ? 48 : 80,
+              child:
+                  platformType == PlatformType.mobile
+                      ? const SizedBox()
+                      : Align(
+                        alignment: Alignment.center,
+                        child: Text(loc.commonAction),
+                      ),
             ),
             const SizedBox(width: 16),
           ],
@@ -85,14 +90,20 @@ class ProjectListWidget extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    width: 80,
+                    width: platformType == PlatformType.mobile ? 48 : 80,
                     child: Align(
                       alignment: Alignment.center,
-                      child: TextButton(
-                        style: inplaceTextButtonStyle(context),
-                        onPressed: () => onViewProject(project.id),
-                        child: Text(loc.agendaListView),
-                      ),
+                      child:
+                          platformType == PlatformType.mobile
+                              ? MobileListActionButton(
+                                tooltip: loc.agendaListView,
+                                onPressed: () => onViewProject(project.id),
+                              )
+                              : TextButton(
+                                style: inplaceTextButtonStyle(context),
+                                onPressed: () => onViewProject(project.id),
+                                child: Text(loc.agendaListView),
+                              ),
                     ),
                   ),
                   const SizedBox(width: 16),
