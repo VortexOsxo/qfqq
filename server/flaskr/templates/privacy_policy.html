@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="{{ language }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ policy.title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
+</head>
+<body>
+  <main>
+    <p>QuiFaitQuoiQuand</p>
+    <h1>{{ policy.title }}</h1>
+    <p class="status">{{ policy.status }}</p>
+    {% for section in sections %}
+      {% if section.heading %}
+    <h2>{{ section.text }}</h2>
+      {% else %}
+    <p>{{ section.text }}</p>
+      {% endif %}
+    {% endfor %}
+    <p>{{ policy.account_deletion }} <a href="{{ account_deletion_url }}">{{ account_deletion_url }}</a>.</p>
+    <p>{{ policy.deletion_notice }}</p>
+  </main>
+</body>
+</html>

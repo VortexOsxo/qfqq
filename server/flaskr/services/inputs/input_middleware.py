@@ -9,7 +9,7 @@ def input_middleware(input_builder):
             data = request.get_json() or {}
 
             if not isinstance(data, dict):
-                return False, {"error": InputError.InvalidType}
+                return jsonify({"error": InputError.InvalidType}), 400
 
             result, obj = input_builder.build(data)
             if not result: 

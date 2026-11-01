@@ -41,7 +41,7 @@ CREATE TABLE
 
 CREATE TABLE
   public.passwordRequests (
-    email TEXT REFERENCES users (email),
+    email TEXT REFERENCES users (email) ON DELETE CASCADE,
     code TEXT,
     date TEXT,
     PRIMARY KEY (email)
