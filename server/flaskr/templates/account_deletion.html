@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="{{ language }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ copy.title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
+  <script src="{{ url_for('static', filename='account_deletion.js') }}" defer></script>
+</head>
+<body>
+  <main>
+    <p>QuiFaitQuoiQuand</p>
+    <h1>{{ copy.title }}</h1>
+    <p class="status">{{ copy.warning }}</p>
+    <p>{{ copy.data_removal }}</p>
+    <form
+      id="account-deletion-form"
+      action="{{ url_for('auth.account.delete_account') }}"
+      method="post"
+      data-confirm="{{ copy.confirm }}"
+      data-deleting="{{ copy.deleting }}"
+      data-success="{{ copy.success }}"
+      data-invalid-credentials="{{ copy.invalid_credentials }}"
+      data-failure="{{ copy.failure }}"
+      data-connection-failure="{{ copy.connection_failure }}"
+    >
+      <label for="email">{{ copy.email }}</label>
+      <input id="email" name="email" type="email" autocomplete="username" required>
+      <label for="password">{{ copy.password }}</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required>
+      <button class="danger" type="submit">{{ copy.button }}</button>
+    </form>
+    <p id="account-deletion-message" class="status" role="status" aria-live="polite"></p>
+    <noscript>{{ copy.noscript }}</noscript>
+  </main>
+</body>
+</html>

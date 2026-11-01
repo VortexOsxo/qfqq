@@ -157,3 +157,79 @@ class UserDataHandler:
             return None, 'fr'
         fcm, locale = result[0]
         return fcm, locale
+
+    @classmethod
+    def delete_user(cls, userId: int) -> bool:
+        with get_db_access() as conn:
+            cur = conn.cursor()
+            cur.execute("SET LOCAL search_path TO public;")
+            cur.execute(
+                "SELECT email FROM public.users WHERE id = %s FOR UPDATE;",
+                (userId,),
+            )
+            account = cur.fetchone()
+            if account is None:
+                return False
+
+            email = account[0]
+            cur.execute(
+                "SELECT orgId FROM public.memberships WHERE userId = %s;",
+                (userId,),
+            )
+            org_ids = [row[0] for row in cur.fetchall()]
+
+            for org_id in org_ids:
+                cur.execute(
+                    sql.SQL("SET LOCAL search_path TO {}, public;").format(
+                        sql.Identifier(str(org_id))
+                    )
+                )
+                cur.execute(
+                    """
+                    WITH deleted_meetings AS (
+                        SELECT id FROM meetings
+                        WHERE animatorId = %s
+                           OR projectId IN (
+                               SELECT id FROM projects WHERE supervisorId = %s
+                           )
+                    )
+                    UPDATE meetings SET nextMeetingId = NULL
+                    WHERE nextMeetingId IN (SELECT id FROM deleted_meetings);
+                    """,
+                    (userId, userId),
+                )
+                cur.execute(
+                    "DELETE FROM meetingsParticipants WHERE userId = %s;",
+                    (userId,),
+                )
+                cur.execute(
+                    "DELETE FROM meetingsReviews WHERE userId = %s;",
+                    (userId,),
+                )
+                cur.execute(
+                    "DELETE FROM decisionsAssistants WHERE userId = %s;",
+                    (userId,),
+                )
+                cur.execute(
+                    "DELETE FROM decisions WHERE responsibleId = %s;",
+                    (userId,),
+                )
+                cur.execute(
+                    "DELETE FROM projects WHERE supervisorId = %s;",
+                    (userId,),
+                )
+                cur.execute(
+                    "DELETE FROM meetings WHERE animatorId = %s;",
+                    (userId,),
+                )
+                cur.execute("DELETE FROM usersRoles WHERE userId = %s;", (userId,))
+                cur.execute("DELETE FROM usersFCM WHERE userId = %s;", (userId,))
+
+            cur.execute(
+                "DELETE FROM public.invitations WHERE email = %s;", (email,)
+            )
+            cur.execute(
+                "DELETE FROM public.emailVerificationRequests WHERE email = %s;", (email,)
+            )
+            cur.execute("DELETE FROM public.users WHERE id = %s;", (userId,))
+            return cur.rowcount == 1

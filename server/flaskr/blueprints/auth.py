@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, g, request, current_app
+from flask import Blueprint, jsonify, g, request, current_app, render_template
 
 from werkzeug.security import check_password_hash, generate_password_hash
 import jwt
@@ -9,6 +9,7 @@ from flaskr.services.inputs import input_middleware, SignupBuilder, LoginBuilder
 from flaskr.errors import InputError
 from flaskr.utils import create_auth_response, create_tokens
 from flaskr.database.tenant_context import set_tenant
+from flaskr.translations import ACCOUNT_DELETION_COPY
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -69,6 +70,36 @@ def login(email, password):
     )
 
 
+account_bp = Blueprint("account", __name__, url_prefix="/account")
+
+def _account_with_valid_credentials(email, password):
+    user = UserDataHandler.get_user_by_email(email)
+    if user is None or not check_password_hash(user.passwordHash, password):
+        return None
+    return user
+
+
+@account_bp.delete("")
+@input_middleware(LoginBuilder())
+def delete_account(email, password):
+    user = _account_with_valid_credentials(email, password)
+    if user is None:
+        return jsonify({"auth": InputError.InvalidLogin}), 401
+
+    UserDataHandler.delete_user(user.id)
+    return "", 204
+
+
+@account_bp.get("/delete")
+def account_deletion_form():
+    language = request.accept_languages.best_match(["fr", "en"], default="fr")
+    return render_template(
+        "account_deletion.html",
+        language=language,
+        copy=ACCOUNT_DELETION_COPY[language],
+    )
+
+
 @auth_bp.post("/refresh")
 def refresh():
     if "Refresh" in request.headers:
@@ -84,6 +115,8 @@ def refresh():
         return "", 401
 
     user = UserDataHandler.get_user_by_id(userId)
+    if user is None:
+        return "", 401
 
     orgId = OrganizationDataHandler.get_user_org_id(userId)
     if orgId is None:
@@ -164,3 +197,4 @@ def validate_email_code(email, code):
 
 
 auth_bp.register_blueprint(email_verification_bp)
+auth_bp.register_blueprint(account_bp)

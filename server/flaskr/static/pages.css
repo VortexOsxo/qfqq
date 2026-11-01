@@ -1,0 +1,47 @@
+body {
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+  margin: 2rem auto;
+  max-width: 48rem;
+  padding: 0 1rem;
+}
+
+h1,
+h2 {
+  line-height: 1.25;
+}
+
+.status {
+  color: #555;
+  font-size: 0.9rem;
+}
+
+form {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 28rem;
+}
+
+input,
+button {
+  box-sizing: border-box;
+  font: inherit;
+  padding: 0.5rem 0.65rem;
+}
+
+button {
+  cursor: pointer;
+  justify-self: start;
+}
+
+button.danger {
+  background: #a32121;
+  border: 1px solid #871b1b;
+  border-radius: 0.25rem;
+  color: white;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}

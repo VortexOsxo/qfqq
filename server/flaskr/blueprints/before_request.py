@@ -2,6 +2,7 @@ from flask import request, jsonify, g, current_app
 import jwt
 
 from flaskr.errors import AuthError
+from flaskr.database import UserDataHandler
 from flaskr.database.tenant_context import set_tenant
 
 def get_authorization():
@@ -29,7 +30,11 @@ def login_required():
         return
 
     userId, orgId = get_authorization()
-    if userId is None or orgId is None:
+    if (
+        userId is None
+        or orgId is None
+        or UserDataHandler.get_user_by_id(userId) is None
+    ):
         return jsonify({"auth": AuthError.mustBeLoggedIn}), 401
 
     g.user_id = userId
@@ -41,6 +46,9 @@ def login_optionnal():
         return
 
     g.user_id, g.org_id = get_authorization()
+    if g.user_id is not None and UserDataHandler.get_user_by_id(g.user_id) is None:
+        g.user_id, g.org_id = None, None
+
     if g.org_id is not None:
         set_tenant(g.org_id)
 
