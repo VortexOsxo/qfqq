@@ -2,7 +2,9 @@ venv
 flaskr.sqlite
 instance
 __pycache__
+
 .env
+.env.prod
 
 .vscode
 .pytest_cache

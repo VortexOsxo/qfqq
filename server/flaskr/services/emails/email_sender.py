@@ -13,7 +13,6 @@ from brevo.core.api_error import ApiError
 
 api_key = os.getenv('BREVO_API_KEY')
 client = Brevo(api_key=api_key)
-print(f"Brevo api key: {api_key}")
 
 
 class EmailSender:

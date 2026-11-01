@@ -1,0 +1,22 @@
+[Unit]
+Description=QFQQ Application
+After=network.target
+
+[Service]
+Type=simple
+
+User=ubuntu
+WorkingDirectory=/home/ubuntu/qfqq/server
+
+EnvironmentFile=/etc/qfqq/qfqq.env
+
+ExecStart=/home/ubuntu/qfqq/server/start.sh
+
+Restart=on-failure
+RestartSec=5
+
+KillMode=control-group
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target
