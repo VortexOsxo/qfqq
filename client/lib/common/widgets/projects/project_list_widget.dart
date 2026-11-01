@@ -45,13 +45,13 @@ class ProjectListWidget extends StatelessWidget {
         Row(
           children: [
             const SizedBox(width: 16),
-            Expanded(flex: 1, child: Text(loc.attributeNumber)),
+            SizedBox(width: 40, child: Text(loc.attributeNumber)),
             Expanded(flex: 3, child: Text(loc.attributeTitle)),
             const SizedBox(width: 8),
             if (showGoals) Expanded(flex: 7, child: Text(loc.attributeGoals)),
             Expanded(flex: 2, child: Text(loc.projectSupervisor)),
-            Expanded(
-              flex: 2,
+            SizedBox(
+              width: 80,
               child: Align(
                 alignment: Alignment.center,
                 child: Text(loc.commonAction),
@@ -69,10 +69,12 @@ class ProjectListWidget extends StatelessWidget {
               final project = projects[index];
 
               return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   const SizedBox(width: 16),
-                  Expanded(flex: 1, child: listText(project.number.toString())),
+                  SizedBox(
+                    width: 40,
+                    child: listText(project.number.toString()),
+                  ),
                   Expanded(flex: 3, child: listText(project.title, maxLines: 2)),
                   const SizedBox(width: 8),
                   if (showGoals) Expanded(flex: 7, child: listText(project.goals, maxLines: 2)),
@@ -82,8 +84,8 @@ class ProjectListWidget extends StatelessWidget {
                       supervisorName(project.supervisorId, loc.commonNoSupervisorSet),
                     ),
                   ),
-                  Expanded(
-                    flex: 2,
+                  SizedBox(
+                    width: 80,
                     child: Align(
                       alignment: Alignment.center,
                       child: TextButton(

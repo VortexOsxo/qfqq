@@ -212,24 +212,24 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
         Row(
           children: [
             SizedBox(width: widget.showDetails ? 16 : 8),
-            Expanded(flex: 1, child: Text(loc.attributeNumber)),
+            SizedBox(width: 40, child: Text(loc.attributeNumber)),
             Expanded(flex: 3, child: Text(loc.decisionListDescription)),
-            Expanded(flex: 2, child: Text(loc.decisionListDueDate)),
+            SizedBox(width: 100, child: Text(loc.decisionListDueDate)),
             if (widget.showDetails)
               Expanded(flex: 3, child: Text(loc.decisionListResponsible)),
             if (widget.showDetails)
               Expanded(flex: 3, child: Text(loc.decisionListProject)),
             if (widget.showDetails) ...[
-              Expanded(
-                flex: 3,
+              SizedBox(
+                width: 120,
                 child: Center(child: Text(S.of(context).attributeStatus)),
               ),
-              Expanded(
-                flex: 2,
+              SizedBox(
+                width: 80,
                 child: Center(child: Text(S.of(context).commonAction)),
               ),
             ] else
-              Expanded(flex: 2, child: SizedBox()),
+              const SizedBox(width: 80),
             SizedBox(width: widget.showDetails ? 16 : 8),
           ],
         ),
@@ -253,13 +253,15 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
               );
 
               return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   SizedBox(width: widget.showDetails ? 16 : 8),
-                  Expanded(flex: 1, child: Text(decision.number.toString())),
+                  SizedBox(
+                    width: 40,
+                    child: Text(decision.number.toString()),
+                  ),
                   Expanded(flex: 3, child: listText(decision.description)),
-                  Expanded(
-                    flex: 2,
+                  SizedBox(
+                    width: 100,
                     child: Text(
                       formatDateDayIfPresent(context, decision.dueDate),
                     ),
@@ -297,8 +299,8 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
 
   List<Widget> _mobileOther(BuildContext context, loc, decision, uiData) {
     return [
-      Expanded(
-        flex: 2,
+      SizedBox(
+        width: 80,
         child: Row(
           children: [
             Center(child: IconStatusChip(statusUIData: uiData)),
@@ -315,12 +317,12 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
 
   List<Widget> _desktopOther(BuildContext context, loc, decision, uiData) {
     return [
-      Expanded(
-        flex: 3,
+      SizedBox(
+        width: 120,
         child: StatusChip(statusUIData: uiData, alignement: Alignment.center),
       ),
-      Expanded(
-        flex: 2,
+      SizedBox(
+        width: 80,
         child: Align(
           alignment: Alignment.center,
           child: TextButton(

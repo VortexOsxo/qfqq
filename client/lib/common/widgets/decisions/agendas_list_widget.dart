@@ -49,18 +49,24 @@ class AgendasListWidget extends StatelessWidget {
         Row(
           children: [
             SizedBox(width: showDetails ? 16 : 8),
-            Expanded(flex: 1, child: Text(loc.attributeNumber)),
+            SizedBox(width: 40, child: Text(loc.attributeNumber)),
             Expanded(flex: 3, child: Text(loc.agendaListTitle)),
 
-            Expanded(flex: 3, child: Text(loc.agendaListDate)),
+            SizedBox(width: 150, child: Text(loc.agendaListDate)),
             if (showDetails) Expanded(flex: 3, child: Text(loc.agendaListLocation)),
             if (showDetails) Expanded(flex: 3, child: Text(loc.agendaListAnimator)),
             if (showDetails) Expanded(flex: 3, child: Text(loc.agendaListProject)),
             if (showDetails) ...[
-              Expanded(flex: 3, child: Center(child: Text(loc.attributeStatus))),
-              Expanded(flex: 2, child: Center(child: Text(loc.commonAction))),
+              SizedBox(
+                width: 100,
+                child: Center(child: Text(loc.attributeStatus)),
+              ),
+              SizedBox(
+                width: 80,
+                child: Center(child: Text(loc.commonAction)),
+              ),
             ] else 
-              Expanded(flex:2, child: SizedBox()),
+              const SizedBox(width: 80),
             SizedBox(width: showDetails ? 16 : 8),
           ],
         ),
@@ -75,13 +81,12 @@ class AgendasListWidget extends StatelessWidget {
               final uiData = getMeetingAgendaStatusUI(loc, agenda.status);
 
               return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   SizedBox(width: showDetails ? 16 : 8),
-                  Expanded(flex: 1, child: Text(agenda.number.toString())),
+                  SizedBox(width: 40, child: Text(agenda.number.toString())),
                   Expanded(flex: 3, child: listText(agenda.title, maxLines: 2)),
-                  Expanded(
-                    flex: 3,
+                  SizedBox(
+                    width: 150,
                     child: Text(
                       agenda.meetingDate != null
                           ? formatDate(context, agenda.meetingDate)
@@ -133,8 +138,8 @@ class AgendasListWidget extends StatelessWidget {
 
   List<Widget> _mobileOther(context, loc, agenda, uiData) {
     return [
-      Expanded(
-        flex: 2,
+      SizedBox(
+        width: 80,
         child: Row(
           children: [
             Center(child: IconStatusChip(statusUIData: uiData)),
@@ -151,12 +156,12 @@ class AgendasListWidget extends StatelessWidget {
 
   List<Widget> _desktopOther(context, loc, agenda, uiData) {
     return [
-      Expanded(
-        flex: 3,
+      SizedBox(
+        width: 100,
         child: StatusChip(statusUIData: uiData, alignement: Alignment.center),
       ),
-      Expanded(
-        flex: 2,
+      SizedBox(
+        width: 80,
         child: Align(
           alignment: Alignment.center,
           child: TextButton(
