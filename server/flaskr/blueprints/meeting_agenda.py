@@ -7,7 +7,7 @@ from flaskr.services.inputs import (
     input_middleware,
     LambdaBuilder,
     CreateMeetingAgendaBuilder,
-    EnumValidator,
+    LiteralValidator,
     IntValidator,
     StringValidator,
     BooleanValidator
@@ -132,7 +132,7 @@ def create_meeting_review(objective, smoothRunning, preparation, length, respect
 
 
 @meeting_agendas_bp.patch("/<string:id>/status")
-@input_middleware(LambdaBuilder(("status", EnumValidator(MeetingAgendaStatus))))
+@input_middleware(LambdaBuilder(("status", LiteralValidator(MeetingAgendaStatus))))
 def patch_meeting_agenda_status(status, id: str):
     result = MeetingDataHandler.update_meeting_status(id, status)
     if not result:

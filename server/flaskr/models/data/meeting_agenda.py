@@ -1,14 +1,11 @@
 from dataclasses import dataclass
-from enum import Enum
 from datetime import datetime
+from typing import Literal, TypeAlias
 
 
-class MeetingAgendaStatus(Enum):
-    draft = 'draft'
-    planned = 'planned'
-    ongoing = 'ongoing'
-    canceled = 'canceled'
-    completed = 'completed'
+MeetingAgendaStatus: TypeAlias = Literal[
+    "draft", "planned", "ongoing", "canceled", "completed"
+]
 
 @dataclass(slots=True)
 class MeetingAgenda:

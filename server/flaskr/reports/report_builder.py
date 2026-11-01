@@ -12,7 +12,7 @@ from reportlab.lib.enums import TA_LEFT, TA_RIGHT
 from reportlab.lib.colors import Color, lightgrey
 from reportlab.pdfbase.pdfmetrics import stringWidth
 
-from flaskr.models import DecisionStatus
+from flaskr.models import decision_status_as_string
 
 
 styles = getSampleStyleSheet()
@@ -195,7 +195,7 @@ class ReportBuilder:
                 decision.description,
                 responsible_name,
                 decision.dueDate.strftime("%Y-%m-%d") if decision.dueDate else " ",
-                DecisionStatus.as_string(decision.status, lang),
+                decision_status_as_string(decision.status, lang),
                 (
                     decision.completedDate.strftime("%Y-%m-%d")
                     if decision.completedDate
@@ -222,7 +222,7 @@ class ReportBuilder:
                 decision.description,
                 responsible_name,
                 decision.dueDate.strftime("%Y-%m-%d") if decision.dueDate else " ",
-                DecisionStatus.as_string(decision.status, lang),
+                decision_status_as_string(decision.status, lang),
                 (
                     decision.completedDate.strftime("%Y-%m-%d")
                     if decision.completedDate

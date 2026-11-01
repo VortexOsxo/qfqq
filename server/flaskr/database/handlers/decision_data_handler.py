@@ -1,5 +1,5 @@
 from datetime import datetime
-from flaskr.models import Decision
+from flaskr.models import Decision, DecisionStatus
 from ..postgres import read_query, write_query, get_db_access
 from flaskr.utils.time import time_now_to_string
 
@@ -7,13 +7,13 @@ class DecisionDataHandler:
     @classmethod
     def create_decision(
         cls,
-        description,
-        status,
-        dueDate,
-        responsibleId,
-        initialDate=None,
-        assistantsIds=None,
-        meetingId=None,
+        description: str,
+        status: DecisionStatus,
+        dueDate: datetime | None,
+        responsibleId: int,
+        initialDate: datetime | None = None,
+        assistantsIds: list[int] | None = None,
+        meetingId: int | None = None,
     ):
         initialDate = initialDate or datetime.now()
         assistantsIds = assistantsIds or []
