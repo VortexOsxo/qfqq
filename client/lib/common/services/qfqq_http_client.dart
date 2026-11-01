@@ -40,7 +40,14 @@ class QfqqHttpClient extends http.BaseClient {
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
     addHeaders(request.headers);
     try {
-      return await _inner.send(request);
+      final response = await _inner.send(request);
+      if (response.statusCode == 403) {
+        ModalService.showInformation(
+          title: S.current.commonPermissionErrorTitle,
+          message: S.current.commonPermissionErrorMessage,
+        );
+      }
+      return response;
     } on http.ClientException catch (error, stackTrace) {
       ModalService.showInformation(
         title: S.current.commonConnectionError,
