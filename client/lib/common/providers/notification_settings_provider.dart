@@ -28,12 +28,18 @@ class NotificationSettingsState {
   }
 }
 
-class NotificationSettingsNotifier
-    extends AsyncNotifier<NotificationSettingsState> {
+class NotificationSettingsNotifier extends AsyncNotifier<NotificationSettingsState> {
   static const List<NotificationType> configurableTypes = [
     NotificationType.meetingStart,
+    NotificationType.meetingStarted,
     NotificationType.decisionDue,
   ];
+
+  static const List<NotificationType> typesWithoutOffset = [
+    NotificationType.meetingStarted,
+  ];
+
+  static bool hasOffset(NotificationType type) =>!typesWithoutOffset.contains(type);
 
   static const List<Duration> defaultOffsetOptions = [
     Duration.zero,
@@ -52,12 +58,7 @@ class NotificationSettingsNotifier
 
     final settings = configurableTypes.map((type) {
       final existing = offsets.where((item) => item.type == type).firstOrNull;
-      return existing ??
-          NotificationOffset(
-            type: type,
-            offset: const Duration(minutes: 15),
-            isActive: true,
-          );
+      return existing!;
     }).toList();
 
     return NotificationSettingsState(settings: settings);

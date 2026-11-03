@@ -71,7 +71,7 @@ class PushNotificationService {
 
     if (id == null) return;
 
-    if (type == 'MeetingStart') {
+    if (type == 'MeetingStart' || type == 'MeetingStarted') {
       _router.go('/agendas/$id');
     } else if (type == 'DecisionDue') {
       _router.go('/decisions/$id');

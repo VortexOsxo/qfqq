@@ -107,7 +107,7 @@ class NotificationTile extends StatelessWidget {
                 duration: const Duration(milliseconds: 200),
                 curve: Curves.easeInOut,
                 child:
-                    setting.isActive
+                    setting.isActive && NotificationSettingsNotifier.hasOffset(setting.type)
                         ? Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
