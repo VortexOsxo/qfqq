@@ -258,6 +258,13 @@
   "homePageNoFutureMeetings": "Aucune réunion à venir.",
   "homePageProjectButton": "Définir un Projet",
   "homePageMeetingButton": "Préparer des Ordres du jour",
+  "decisionDueToday": "Échéance aujourd’hui",
+  "decisionOverdue": "En retard · {date}",
+  "@decisionOverdue": {
+    "placeholders": {
+      "date": {}
+    }
+  },
 
   "agendaStatusDraft": "Brouillon",
   "agendaStatusPlanned": "Planifié",
