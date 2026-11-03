@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/view_models/project_view_page_view_model.dart';
-import 'package:qfqq/common/widgets/details_attribute_widget.dart';
 import 'package:qfqq/common/widgets/projects/project_content_widget.dart';
-import 'package:qfqq/common/widgets/status_chip.dart';
 import 'package:qfqq/desktop/widgets/projects/project_view_control.dart';
 import 'package:qfqq/generated/l10n.dart';
+import 'package:qfqq/common/widgets/project_view_page/project_description_widget.dart';
 
 class ProjectViewPage extends StatelessWidget {
   final int projectId;
@@ -85,38 +83,10 @@ class _ProjectViewPageView extends StatelessWidget {
 
   Widget _buildProjectInfo(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        StatusChip(
-          statusUIData: getProjectStatusUI(S.of(context), vm.project!.status),
-        ),
-        SizedBox(height: 8),
-        Flexible(child: _buildDetails(context)),
-        const Spacer(),
-        Center(child: ProjectViewControl(vm: vm)),
+        Expanded(child: ProjectDescriptionWidget(vm: vm)),
+        ProjectViewControl(vm: vm),
       ],
-    );
-  }
-
-  Widget _buildDetails(BuildContext context) {
-    final loc = S.of(context);
-    final project = vm.project!;
-
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          DetailsAttributeWidget(
-            label: loc.attributeGoals,
-            value: project.goals,
-          ),
-          DetailsAttributeWidget(
-            label: loc.projectSupervisor,
-            value: vm.supervisorName,
-          ),
-        ],
-      ),
     );
   }
 }

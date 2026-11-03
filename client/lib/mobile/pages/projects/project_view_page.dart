@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:qfqq/common/models/permissions.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/view_models/project_view_page_view_model.dart';
-import 'package:qfqq/common/widgets/details_attribute_widget.dart';
-import 'package:qfqq/common/widgets/permission_required.dart';
 import 'package:qfqq/common/widgets/projects/project_content_widget.dart';
+import 'package:qfqq/common/widgets/project_view_page/project_description_widget.dart';
+import 'package:qfqq/desktop/widgets/projects/project_view_control.dart';
 import 'package:qfqq/mobile/widgets/title_with_status.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -35,13 +34,21 @@ class _ProjectViewPageView extends StatelessWidget {
       return Center(child: Text(loc.projectNotFound));
     }
 
+    final tab = Column(
+      children: [
+        Expanded(child: ProjectDescriptionWidget(vm: vm, padding: 16)),
+        ProjectViewControl(vm: vm),
+      ],
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildTopCard(context),
         const SizedBox(height: 16),
-        _buildDetails(context),
-        Expanded(child: ProjectContentWidget(project: project)),
+        Expanded(
+          child: ProjectContentWidget(project: project, tab: tab),
+        ),
       ],
     );
   }
@@ -62,38 +69,6 @@ class _ProjectViewPageView extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildDetails(BuildContext context) {
-    final loc = S.of(context);
-    final project = vm.project!;
-
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            DetailsAttributeWidget(
-              label: loc.attributeGoals,
-              value: project.goals,
-            ),
-            DetailsAttributeWidget(
-              label: loc.projectSupervisor,
-              value: vm.supervisorName,
-            ),
-            if (vm.canMarkAsCompleted())
-              PermissionRequired(
-                neededPermissions: Permissions(contribute: true),
-                child: TextButton(
-                  onPressed: vm.markAsCompleted,
-                  child: Text(loc.projectViewPageCloseProject),
-                ),
-              ),
-          ],
-        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/permissions.dart';
+import 'package:qfqq/common/utils/platform.dart';
 import 'package:qfqq/common/view_models/project_view_page_view_model.dart';
 import 'package:qfqq/common/widgets/permission_required.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -17,7 +18,7 @@ class ProjectViewControl extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        PermissionRequired(
+        if (platformType == PlatformType.desktop) PermissionRequired(
           neededPermissions: Permissions(contribute: true),
           child: TextButton(
             onPressed: vm.goToModify,

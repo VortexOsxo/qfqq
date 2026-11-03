@@ -9,15 +9,20 @@ import 'package:qfqq/generated/l10n.dart';
 
 class ProjectContentWidget extends ConsumerWidget {
   final Project project;
+  final Widget? tab;
 
-  const ProjectContentWidget({super.key, required this.project});
+  const ProjectContentWidget({
+    super.key,
+    required this.project,
+    this.tab,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final loc = S.of(context);
 
     return DefaultTabController(
-      length: 2,
+      length: tab == null ? 2 : 3,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -25,6 +30,7 @@ class ProjectContentWidget extends ConsumerWidget {
             isScrollable: true,
             tabAlignment: TabAlignment.start,
             tabs: [
+              if (tab != null) Tab(text: loc.commonObjectInfo),
               Tab(text: loc.commonObjectDecisions),
               Tab(text: loc.commonObjectReports),
             ],
@@ -33,6 +39,7 @@ class ProjectContentWidget extends ConsumerWidget {
           Expanded(
             child: TabBarView(
               children: [
+                if (tab != null) tab!,
                 buildDecisionLists(context),
                 buildReportViewer(context),
               ],
