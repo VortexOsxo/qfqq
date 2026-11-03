@@ -257,6 +257,13 @@
   "homePageNoFutureMeetings": "No upcoming meetings.",
   "homePageProjectButton": "Define a Project",
   "homePageMeetingButton": "Prepare Agendas",
+  "decisionDueToday": "Due today",
+  "decisionOverdue": "Overdue · {date}",
+  "@decisionOverdue": {
+    "placeholders": {
+      "date": {}
+    }
+  },
 
   "agendaStatusDraft": "Draft",
   "agendaStatusPlanned": "Planned",
