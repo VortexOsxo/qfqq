@@ -41,25 +41,16 @@ class _DecisionViewPageContent extends StatelessWidget {
       return Center(child: Text(loc.decisionNotFound));
     }
 
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildTopCard(context, decision),
           const SizedBox(height: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildDecisionInfo(context, decision),
-
-                Spacer(),
-
-                DecisionsStatusControlWidget(vm: vm),
-              ],
-            ),
-          ),
+          _buildDecisionInfo(context, decision),
+          const SizedBox(height: 16),
+          DecisionsStatusControlWidget(vm: vm),
         ],
       ),
     );
@@ -70,42 +61,34 @@ class _DecisionViewPageContent extends StatelessWidget {
 
     final uiData = getDecisionStatusUI(loc, decision.status);
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: TitleWithStatus(
-            title: '${loc.attributeNumber}: ${decision.number}',
-            uiData: uiData,
+        TitleWithStatus(
+          title: '${loc.attributeNumber}: ${decision.number}',
+          uiData: uiData,
+        ),
+        if (vm.hasProject)
+          ProjectTitleLinkWidget(
+            projectId: decision.projectId!,
+            minimized: true,
           ),
-        ),
-
-        Column(
-          children: [
-            if (vm.hasProject)
-              ProjectTitleLinkWidget(
-                projectId: decision.projectId!,
-                minimized: true,
-              ),
-            if (vm.hasMeeting)
-              TextButton(
-                onPressed: vm.goToMeeting,
-                style: TextButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                  alignment: Alignment.centerLeft,
-                  minimumSize: Size(0, 30),
-                ),
-                child: Row(
-                  children: [
-                    Text(loc.decisionViewPageGoToAgenda),
-                    const SizedBox(width: 4),
-                    const Icon(Icons.arrow_forward, size: 16),
-                  ],
-                ),
-              ),
-          ],
-        ),
+        if (vm.hasMeeting)
+          TextButton(
+            onPressed: vm.goToMeeting,
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+              alignment: Alignment.centerLeft,
+              minimumSize: Size(0, 30),
+            ),
+            child: Row(
+              children: [
+                Text(loc.decisionViewPageGoToAgenda),
+                const SizedBox(width: 4),
+                const Icon(Icons.arrow_forward, size: 16),
+              ],
+            ),
+          ),
       ],
     );
   }
@@ -152,7 +135,7 @@ class _DecisionViewPageContent extends StatelessWidget {
           values: vm.assistantNames,
         ),
 
-        Spacer(),
+        const SizedBox(height: 16),
         PermissionRequired(
           neededPermissions: Permissions(deleteContent: true),
           child: TextButton(
