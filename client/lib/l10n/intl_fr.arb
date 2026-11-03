@@ -254,6 +254,8 @@
   "homePageTitle": "Accueil",
   "homePageResponsabilities": "Responsabilités",
   "homePageFutureMeetings": "Réunions à venir",
+  "homePageNoResponsibilities": "Aucune responsabilité à afficher.",
+  "homePageNoFutureMeetings": "Aucune réunion à venir.",
   "homePageProjectButton": "Définir un Projet",
   "homePageMeetingButton": "Préparer des Ordres du jour",
 
