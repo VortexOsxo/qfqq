@@ -7,7 +7,7 @@ import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/utils/text.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
 import 'package:qfqq/common/widgets/icon_status_chip.dart';
-import 'package:qfqq/common/widgets/mobile_list_action_button.dart';
+import 'package:qfqq/common/widgets/navigation/navigation_arrow_icon.dart';
 import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
 import 'package:qfqq/common/widgets/reusables/refresh_button.dart';
 import 'package:qfqq/common/widgets/status_chip.dart';
@@ -140,7 +140,7 @@ class AgendasListWidget extends StatelessWidget {
         child: Row(
           children: [
             IconStatusChip(statusUIData: uiData),
-            MobileListActionButton(
+            NavigationArrowIcon(
               tooltip: loc.agendaListView,
               onPressed: () => goToAgenda(agenda.id),
             ),

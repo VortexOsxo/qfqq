@@ -5,7 +5,7 @@ import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/platform.dart';
 import 'package:qfqq/common/utils/text.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
-import 'package:qfqq/common/widgets/mobile_list_action_button.dart';
+import 'package:qfqq/common/widgets/navigation/navigation_arrow_icon.dart';
 import 'package:qfqq/common/widgets/reusables/refresh_button.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -95,7 +95,7 @@ class ProjectListWidget extends StatelessWidget {
                       alignment: Alignment.center,
                       child:
                           platformType == PlatformType.mobile
-                              ? MobileListActionButton(
+                              ? NavigationArrowIcon(
                                 tooltip: loc.agendaListView,
                                 onPressed: () => onViewProject(project.id),
                               )
