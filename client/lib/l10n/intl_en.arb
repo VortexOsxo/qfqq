@@ -253,6 +253,8 @@
   "homePageTitle": "Home",
   "homePageResponsabilities": "Responsabilities",
   "homePageFutureMeetings": "Future Meetings",
+  "homePageNoResponsibilities": "No responsibilities to show.",
+  "homePageNoFutureMeetings": "No upcoming meetings.",
   "homePageProjectButton": "Define a Project",
   "homePageMeetingButton": "Prepare Agendas",
 
