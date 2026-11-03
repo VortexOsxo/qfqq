@@ -16,7 +16,7 @@ import 'package:qfqq/common/utils/platform.dart';
 import 'package:qfqq/common/utils/text.dart';
 import 'package:qfqq/common/widgets/empty_list_widget.dart';
 import 'package:qfqq/common/widgets/icon_status_chip.dart';
-import 'package:qfqq/common/widgets/mobile_list_action_button.dart';
+import 'package:qfqq/common/widgets/navigation/navigation_arrow_icon.dart';
 import 'package:qfqq/common/widgets/projects/project_clickable_text_widget.dart';
 import 'package:qfqq/common/widgets/dropdowns/decision_status_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/dropdowns/default_dropdown_menu.dart';
@@ -305,7 +305,7 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
         child: Row(
           children: [
             Center(child: IconStatusChip(statusUIData: uiData)),
-            MobileListActionButton(
+            NavigationArrowIcon(
               tooltip: loc.agendaListView,
               onPressed: () => context.push('/decisions/${decision.id}'),
             ),

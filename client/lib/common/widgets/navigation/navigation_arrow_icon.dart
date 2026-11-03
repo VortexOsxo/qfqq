@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class MobileListActionButton extends StatelessWidget {
+class NavigationArrowIcon extends StatelessWidget {
   final String tooltip;
   final VoidCallback onPressed;
 
-  const MobileListActionButton({
+  const NavigationArrowIcon({
     super.key,
     required this.tooltip,
     required this.onPressed,
