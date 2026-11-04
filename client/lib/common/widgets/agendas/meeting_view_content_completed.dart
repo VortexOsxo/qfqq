@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:qfqq/common/models/configs/report_config.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/widgets/meeting_review_list.dart';
-import 'package:qfqq/common/widgets/pdf_viewer_widget.dart';
+import 'package:qfqq/common/widgets/report_pdf_viewer.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class MeetingViewContentCompleted extends StatelessWidget {
@@ -30,23 +31,13 @@ class MeetingViewContentCompleted extends StatelessWidget {
           Expanded(
             child: TabBarView(
               children: [
-                _reportTab(),
-                _reviewsTab(),
+                ReportPdfViewer(config: ReportConfig.forMeeting(meeting)),
+                MeetingReviewList(meetingId: meeting.id),
               ],
             ),
           ),
         ],
       ),
     );
-  }
-
-
-  Widget _reportTab() {
-    final pdfUrl = 'reports/meeting-agendas/${meeting.id}';
-    return PdfViewerWidget(pdfUrl: pdfUrl, pdfName: meeting.title);
-  }
-
-  Widget _reviewsTab() {
-    return MeetingReviewList(meetingId: meeting.id);
   }
 }

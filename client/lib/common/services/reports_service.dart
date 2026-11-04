@@ -12,8 +12,12 @@ class ReportsService {
   ReportsService(this._client);
 
   Future<bool> sendReport(String reportUrl, List<String> emails) async {
+    final uri = Uri.parse(reportUrl);
+    final sendUri = uri.replace(
+      path: '${uri.path}/send',
+    );
     final response = await _client.post(
-      _client.getUri('$reportUrl/send'),
+      _client.getUri(sendUri.toString()),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'emails': emails}),
     );
