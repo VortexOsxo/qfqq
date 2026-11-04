@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:qfqq/common/models/configs/report_config.dart';
 import 'package:qfqq/common/models/decision.dart';
 import 'package:qfqq/common/models/project.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/widgets/decisions/decisions_list_widget.dart';
-import 'package:qfqq/common/widgets/pdf_viewer_widget.dart';
+import 'package:qfqq/common/widgets/report_pdf_viewer.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class ProjectContentWidget extends ConsumerWidget {
@@ -41,7 +42,7 @@ class ProjectContentWidget extends ConsumerWidget {
               children: [
                 if (tab != null) tab!,
                 buildDecisionLists(context),
-                buildReportViewer(context),
+                ReportPdfViewer(config: ReportConfig.forProject(project))
               ],
             ),
           ),
@@ -60,10 +61,5 @@ class ProjectContentWidget extends ConsumerWidget {
       isProjectFilterEnabled: false,
       filterFunction: filterFunc,
     );
-  }
-
-  Widget buildReportViewer(BuildContext context) {
-    final pdfUrl = 'reports/projects/${project.id}';
-    return PdfViewerWidget(pdfUrl: pdfUrl, pdfName: project.title);
   }
 }

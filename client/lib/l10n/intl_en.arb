@@ -436,6 +436,7 @@
 
   "commonCancel": "Cancel",
   "commonConfirm": "Confirm",
+  "commonReset": "Reset",
   "commonClose": "Close",
   "commonSave": "Save",
   "commonDelete": "Delete",

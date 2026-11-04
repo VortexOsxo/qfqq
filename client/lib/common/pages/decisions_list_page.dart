@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:qfqq/common/models/configs/report_config.dart';
 import 'package:qfqq/common/utils/platform.dart';
-import 'package:qfqq/common/widgets/participants_report.dart';
+import 'package:qfqq/common/widgets/report_pdf_viewer.dart';
 import 'package:qfqq/common/widgets/decisions/decisions_list_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -22,7 +23,7 @@ class DecisionsListPage extends StatelessWidget {
             child: TabBarView(
               children: [
                 DecisionsListWidget(showDetails: showDetails),
-                const ParticipantsReport(),
+                ReportPdfViewer(config: ReportConfig.forParticipants()),
               ],
             ),
           ),
