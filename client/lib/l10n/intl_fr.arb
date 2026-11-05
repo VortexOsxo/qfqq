@@ -269,6 +269,12 @@
   "agendaStatusDraft": "Brouillon",
   "agendaStatusPlanned": "Planifié",
   "agendaStatusOngoing": "En cours",
+  "agendaMeetingTodayAt": "Aujourd’hui à {time}",
+  "@agendaMeetingTodayAt": {
+    "placeholders": {
+      "time": {}
+    }
+  },
   "agendaStatusCanceled": "Annulé",
   "agendaStatusCompleted": "Terminé",
 

@@ -28,8 +28,12 @@ final myMeetingsProvider = Provider<List<MeetingAgenda>>((ref) {
       .where(
         (a) =>
             (a.animatorId == userId || a.participantsIds.contains(userId)) &&
-            (a.status == MeetingAgendaStatus.planned || a.status == MeetingAgendaStatus.ongoing) &&
-            (a.meetingDate != null && a.meetingDate!.isAfter(DateTime.now().subtract(Duration(days: 1))))
+            (a.status == MeetingAgendaStatus.ongoing ||
+                (a.status == MeetingAgendaStatus.planned &&
+                    a.meetingDate != null &&
+                    a.meetingDate!.isAfter(
+                      DateTime.now().subtract(const Duration(days: 1)),
+                    )))
       )
       .toList()
       ..sort((a, b) => a.meetingDate!.compareTo(b.meetingDate!));
