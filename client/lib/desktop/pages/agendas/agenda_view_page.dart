@@ -3,7 +3,7 @@ import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/view_models/agenda_view_model.dart';
 import 'package:qfqq/common/widgets/agenda_view_page/agenda_description_widget.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_agenda_session.dart';
-import 'package:qfqq/common/widgets/agendas/meeting_view_content.dart';
+import 'package:qfqq/common/widgets/agenda_view_page/meeting_view_content.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_control.dart';
 import 'package:qfqq/common/widgets/projects/project_title_link_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
