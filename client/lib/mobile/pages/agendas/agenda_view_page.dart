@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
+import 'package:qfqq/common/models/configs/report_config.dart';
 import 'package:qfqq/common/view_models/agenda_view_model.dart';
 import 'package:qfqq/common/widgets/agenda_view_page/agenda_description_widget.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_agenda_session.dart';
 import 'package:qfqq/common/widgets/agenda_view_page/meeting_view_content.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_control.dart';
+import 'package:qfqq/common/widgets/meeting_review_list.dart';
 import 'package:qfqq/common/widgets/projects/project_title_link_widget.dart';
+import 'package:qfqq/common/widgets/report_pdf_viewer.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/generated/l10n.dart';
 import 'package:qfqq/mobile/widgets/title_with_status.dart';
@@ -23,30 +26,21 @@ class AgendaViewPage extends StatelessWidget {
   }
 }
 
-class _AgendaViewPage extends StatefulWidget {
+class _AgendaViewPage extends StatelessWidget {
   final AgendaViewPageViewModelState vm;
 
   const _AgendaViewPage({required this.vm});
 
   @override
-  State<_AgendaViewPage> createState() => _AgendaViewPageState();
-}
-
-enum _MeetingTab { info, decisions }
-
-class _AgendaViewPageState extends State<_AgendaViewPage> {
-  _MeetingTab _tab = _MeetingTab.decisions;
-
-  @override
   Widget build(BuildContext context) {
     final loc = S.of(context);
-    final agenda = widget.vm.agenda;
+    final agenda = vm.agenda;
 
     if (agenda == null) {
       return Center(child: Text(loc.meetingNotFound));
     }
 
-    final isOngoing = agenda.status == MeetingAgendaStatus.ongoing;
+    final isCompleted = agenda.status == MeetingAgendaStatus.completed;
 
     return MeetingAgendaSession(
       meetingId: agenda.id,
@@ -55,17 +49,43 @@ class _AgendaViewPageState extends State<_AgendaViewPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildTopCard(context, agenda, isOngoing),
+            _buildTopCard(context, agenda),
             const SizedBox(height: 8),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (!isOngoing || _tab == _MeetingTab.info)
-                    Flexible(fit: FlexFit.loose, child: AgendaDescriptionWidget(vm: widget.vm)),
-                  if (!isOngoing || _tab == _MeetingTab.decisions)
-                    Expanded(child: MeetingViewContent(meeting: agenda)),
-                ],
+              child: DefaultTabController(
+                length: isCompleted ? 3 : 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TabBar(
+                      isScrollable: true,
+                      tabAlignment: TabAlignment.start,
+                      tabs: [
+                        Tab(text: loc.commonObjectInfo),
+                        if (isCompleted) ...[
+                          Tab(text: loc.commonObjectReports),
+                          Tab(text: loc.commonObjectReviews),
+                        ] else
+                          Tab(text: loc.commonObjectContent),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Expanded(
+                      child: TabBarView(
+                        children: [
+                          AgendaDescriptionWidget(vm: vm),
+                          if (isCompleted) ...[
+                            ReportPdfViewer(
+                              config: ReportConfig.forMeeting(agenda),
+                            ),
+                            MeetingReviewList(meetingId: agenda.id),
+                          ] else
+                            MeetingViewContent(meeting: agenda),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 8),
@@ -76,7 +96,7 @@ class _AgendaViewPageState extends State<_AgendaViewPage> {
     );
   }
 
-  Widget _buildTopCard(BuildContext context, MeetingAgenda agenda, bool isOngoing) {
+  Widget _buildTopCard(BuildContext context, MeetingAgenda agenda) {
     final statusUIData = getMeetingAgendaStatusUI(S.of(context), agenda.status);
 
     return Row(
@@ -86,25 +106,11 @@ class _AgendaViewPageState extends State<_AgendaViewPage> {
           child: TitleWithStatus(
             title: '${agenda.number}: ${agenda.title}',
             uiData: statusUIData,
-          )
+          ),
         ),
 
-        if (widget.vm.hasProject)
-          ProjectTitleLinkWidget(projectId: widget.vm.projectId, minimized: true),
-
-        if (isOngoing)
-          IconButton(
-            onPressed: () => setState(() => _tab = _tab == _MeetingTab.decisions
-                ? _MeetingTab.info
-                : _MeetingTab.decisions),
-            icon: Icon(
-              _tab == _MeetingTab.decisions
-                  ? Icons.info_outline
-                  : Icons.edit_note,
-              size: 22,
-            ),
-            visualDensity: VisualDensity.compact,
-          ),
+        if (vm.hasProject)
+          ProjectTitleLinkWidget(projectId: vm.projectId, minimized: true),
       ],
     );
   }
