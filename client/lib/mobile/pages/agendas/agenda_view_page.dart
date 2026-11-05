@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/view_models/agenda_view_model.dart';
 import 'package:qfqq/common/widgets/agenda_view_page/agenda_description_widget.dart';
+import 'package:qfqq/common/widgets/agendas/meeting_agenda_session.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_content.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_control.dart';
 import 'package:qfqq/common/widgets/projects/project_title_link_widget.dart';
@@ -47,27 +48,30 @@ class _AgendaViewPageState extends State<_AgendaViewPage> {
 
     final isOngoing = agenda.status == MeetingAgendaStatus.ongoing;
 
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildTopCard(context, agenda, isOngoing),
-          const SizedBox(height: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (!isOngoing || _tab == _MeetingTab.info)
-                  Flexible(fit: FlexFit.loose, child: AgendaDescriptionWidget(vm: widget.vm)),
-                if (!isOngoing || _tab == _MeetingTab.decisions)
-                  Expanded(child: MeetingViewContent(meeting: agenda)),
-              ],
+    return MeetingAgendaSession(
+      meetingId: agenda.id,
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildTopCard(context, agenda, isOngoing),
+            const SizedBox(height: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (!isOngoing || _tab == _MeetingTab.info)
+                    Flexible(fit: FlexFit.loose, child: AgendaDescriptionWidget(vm: widget.vm)),
+                  if (!isOngoing || _tab == _MeetingTab.decisions)
+                    Expanded(child: MeetingViewContent(meeting: agenda)),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Center(child: MeetingViewControl(meeting: agenda)),
-        ],
+            const SizedBox(height: 8),
+            Center(child: MeetingViewControl(meeting: agenda)),
+          ],
+        ),
       ),
     );
   }

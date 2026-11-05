@@ -3,9 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/errors/meeting_agenda_errors.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/utils/help_util.dart';
-import 'package:qfqq/common/providers/decisions_provider.dart';
 import 'package:qfqq/common/services/auth_service.dart';
-import 'package:qfqq/common/services/meeting_agenda_service.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_content_completed.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_content_ongoing.dart';
 import 'package:qfqq/common/widgets/help/help_button.dart';
@@ -13,54 +11,23 @@ import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/utils/validation.dart';
 import 'package:qfqq/generated/l10n.dart';
 
-class MeetingViewContent extends ConsumerStatefulWidget {
+class MeetingViewContent extends ConsumerWidget {
   final MeetingAgenda meeting;
   const MeetingViewContent({super.key, required this.meeting});
 
   @override
-  ConsumerState<MeetingViewContent> createState() => _MeetingViewContentState();
-}
-
-class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
-  MeetingAgendaService? service;
-
-  void _onJoinMeeting() {
-    service = ref.read(meetingAgendaServiceProvider);
-    service?.joinMeeting(widget.meeting.id);
-
-    ref.read(decisionsServiceProvider).reload(); // TODO: Optimize
-  }
-
-  void _onLeaveMeeting() {
-    service?.leaveMeeting(widget.meeting.id);
-    service = null;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _onJoinMeeting();
-  }
-
-  @override
-  void dispose() {
-    _onLeaveMeeting();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    switch (widget.meeting.status) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    switch (meeting.status) {
       case MeetingAgendaStatus.draft:
         return _draftContent(context, ref);
       case MeetingAgendaStatus.planned:
         return _plannedContent(context, ref);
       case MeetingAgendaStatus.canceled:
-        return SizedBox();
+        return const SizedBox();
       case MeetingAgendaStatus.ongoing:
-        return MeetingViewContentOngoing(meeting: widget.meeting);
+        return MeetingViewContentOngoing(meeting: meeting);
       case MeetingAgendaStatus.completed:
-        return MeetingViewContentCompleted(widget.meeting);
+        return MeetingViewContentCompleted(meeting);
     }
   }
 
@@ -68,7 +35,7 @@ class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
     final loc = S.of(context);
     final currentUser = ref.watch(authStateProvider).user;
     final isAnimator =
-        currentUser != null && widget.meeting.animatorId == currentUser.id;
+        currentUser != null && meeting.animatorId == currentUser.id;
 
     final helpLink =
         isAnimator
@@ -92,14 +59,14 @@ class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
 
   Widget _draftContent(BuildContext context, WidgetRef ref) {
     MeetingAgendaErrors errors = validateMeetingAgenda(
-      widget.meeting,
+      meeting,
       wantedStatus: MeetingAgendaStatus.planned,
     );
 
     final loc = S.of(context);
     final currentUser = ref.watch(authStateProvider).user;
     final isAnimator =
-        currentUser != null && widget.meeting.animatorId == currentUser.id;
+        currentUser != null && meeting.animatorId == currentUser.id;
     final helpLink =
         isAnimator
             ? MeetingAnimationHelpLink(loc: loc)
@@ -137,7 +104,7 @@ class _MeetingViewContentState extends ConsumerState<MeetingViewContent> {
           TextButton(
             onPressed:
                 () => meetingsService.updateMeetingAgendaStatus(
-                  widget.meeting.id,
+                  meeting.id,
                   MeetingAgendaStatus.planned,
                 ),
             child: Text(loc.meetingViewContentMarkAsPlan),

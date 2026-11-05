@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/view_models/agenda_view_model.dart';
 import 'package:qfqq/common/widgets/agenda_view_page/agenda_description_widget.dart';
+import 'package:qfqq/common/widgets/agendas/meeting_agenda_session.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_content.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_control.dart';
 import 'package:qfqq/common/widgets/projects/project_title_link_widget.dart';
@@ -34,32 +35,35 @@ class _AgendaViewPage extends StatelessWidget {
       return Center(child: Text(loc.meetingNotFound));
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(32),
-      child: Column(
-        children: [
-          _buildTopCard(context, agenda),
-          const SizedBox(height: 16),
+    return MeetingAgendaSession(
+      meetingId: agenda.id,
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          children: [
+            _buildTopCard(context, agenda),
+            const SizedBox(height: 16),
 
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: SizedBox(
-                    width: 250,
-                    child: _buildMeetingInfo(context, agenda),
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: SizedBox(
+                      width: 250,
+                      child: _buildMeetingInfo(context, agenda),
+                    ),
                   ),
-                ),
 
-                const SizedBox(width: 16),
+                  const SizedBox(width: 16),
 
-                Expanded(child: MeetingViewContent(meeting: agenda)),
-              ],
+                  Expanded(child: MeetingViewContent(meeting: agenda)),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
