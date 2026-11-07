@@ -51,6 +51,7 @@ class ReportPdfViewer extends ConsumerStatefulWidget {
 
 class _ReportPdfViewerState extends ConsumerState<ReportPdfViewer> {
   bool _isExpanded = false;
+  bool _showComments = true;
 
   int? _stagedProjectId;
   int? _stagedResponsibleId;
@@ -59,7 +60,10 @@ class _ReportPdfViewerState extends ConsumerState<ReportPdfViewer> {
   DecisionReportFilter _appliedFilter = const DecisionReportFilter();
 
   String get _currentPdfUrl {
-    final queryParams = _appliedFilter.toQueryParams();
+    final queryParams = {
+      ..._appliedFilter.toQueryParams(),
+      if (widget.config.hasComments) 'showComments': _showComments.toString(),
+    };
     if (queryParams.isEmpty) {
       return widget.config.pdfUrl;
     }
@@ -103,17 +107,39 @@ class _ReportPdfViewerState extends ConsumerState<ReportPdfViewer> {
           pdfName: widget.config.pdfName,
         ),
 
-        if (widget.config.hasFilter) ...[
-          if (_isExpanded)
-            Positioned(
-              top: 64,
-              right: 16,
-              child: _buildExpandedFilterCard(context, loc, theme),
+        if (widget.config.hasComments || widget.config.hasFilter)
+          Positioned(
+            top: 64,
+            right: 16,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (widget.config.hasComments && !_isExpanded)
+                  _buildCommentsButton(loc, theme),
+                if (widget.config.hasFilter)
+                  if (_isExpanded)
+                    _buildExpandedFilterCard(context, loc, theme)
+                  else
+                    _buildFilterButton(loc),
+              ],
             ),
-          if (!_isExpanded)
-            Positioned(top: 64, right: 16, child: _buildFilterButton(loc)),
-        ],
+          ),
       ],
+    );
+  }
+
+  Widget _buildCommentsButton(S loc, ThemeData theme) {
+    return Card(
+      child: IconButton(
+        tooltip: loc.reportShowComments,
+        onPressed: () {
+          setState(() => _showComments = !_showComments);
+        },
+        icon: Icon(
+          Icons.comment_outlined,
+          color: _showComments ? theme.colorScheme.primary : null,
+        ),
+      ),
     );
   }
 

@@ -1,4 +1,3 @@
-from typing import TypeVar, Any
 from flask import Blueprint, g, send_file, request, jsonify
 import threading
 from flaskr.services.emails.email_sender import EmailSender
@@ -11,8 +10,6 @@ from flaskr.blueprints.before_request import login_required
 
 reports_bp = Blueprint("reports", __name__, url_prefix="/reports")
 reports_bp.before_request(login_required)
-
-T = TypeVar("T", Decision, tuple)
 
 
 def _get_decision_item(item) -> Decision:
@@ -111,7 +108,11 @@ def _get_project_buffer(id: int, filters: dict[str, str] | None = None):
     buffer = ProjectReportBuilder(project, decisions, g.language).build()
     return buffer, project.title
 
-def _get_meeting_buffer(id: int, filters: dict[str, str] | None = None):
+def _get_meeting_buffer(
+    id: int,
+    filters: dict[str, str] | None = None,
+    show_comments: bool = False,
+):
     meeting, participants = MeetingDataHandler.get_meeting_with_participants(id)
     if meeting is None: return None, None
     user = UserDataHandler.get_user_by_id(g.user_id)
@@ -120,7 +121,16 @@ def _get_meeting_buffer(id: int, filters: dict[str, str] | None = None):
     if filters:
         decisions = filter_decisions(decisions, filters)
     nextMeeting = MeetingDataHandler.get_next_meeting(meeting.id)
-    buffer = MeetingReportBuilder(meeting, user, participants, decisions, nextMeeting, g.language).build()
+    reviews = MeetingDataHandler.get_meeting_reviews(meeting.id) if show_comments else []
+    buffer = MeetingReportBuilder(
+        meeting,
+        user,
+        participants,
+        decisions,
+        nextMeeting,
+        g.language,
+        reviews=reviews,
+    ).build()
     return buffer, meeting.title
 
 
@@ -190,8 +200,9 @@ def send_project_report(id: int):
 
 @reports_bp.route("/meeting-agendas/<int:id>")
 def get_meeting_report(id: int):
+    show_comments = request.args.get("showComments", "false").lower() == "true"
     filters = get_report_filter_params()
-    buffer, _ = _get_meeting_buffer(id, filters)
+    buffer, _ = _get_meeting_buffer(id, filters, show_comments)
     if not buffer: return "Not found", 404
     return send_file(
         buffer,
@@ -201,9 +212,10 @@ def get_meeting_report(id: int):
 
 @reports_bp.route("/meeting-agendas/<int:id>/send", methods=["POST"])
 def send_meeting_report(id: int):
+    show_comments = request.args.get("showComments", "false").lower() == "true"
     filters = get_report_filter_params()
     emails = request.json.get("emails", [])
-    buffer, meeting_title = _get_meeting_buffer(id, filters)
+    buffer, meeting_title = _get_meeting_buffer(id, filters, show_comments)
     if not buffer: return "Not found", 404
     threading.Thread(target=_send_meeting_async, args=(emails, buffer.getvalue(), meeting_title, g.language)).start()
     return jsonify({"success": True})

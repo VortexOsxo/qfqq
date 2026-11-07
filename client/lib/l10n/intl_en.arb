@@ -524,6 +524,7 @@
   "commonObjectContent": "Content",
   "commonObjectReviews": "Reviews",
   "commonNoReviews": "No reviews found",
+  "reportShowComments": "Show meeting review",
 
   "widgetProjectLabel": "Project",
   "widgetUserLabel": "User",

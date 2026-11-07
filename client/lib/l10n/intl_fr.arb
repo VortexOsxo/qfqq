@@ -525,6 +525,7 @@
   "commonObjectContent": "Contenu",
   "commonObjectReviews": "Retours",
   "commonNoReviews": "Aucun retour trouvé",
+  "reportShowComments": "Afficher le retour de réunion",
 
   "widgetProjectLabel": "Projet",
   "widgetUserLabel": "Utilisateur",

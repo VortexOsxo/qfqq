@@ -1,5 +1,5 @@
 from .report_builder import ReportBuilder
-from flaskr.models import Decision, MeetingAgenda, User
+from flaskr.models import Decision, MeetingAgenda, MeetingReview, User
 from io import BytesIO
 
 def format_meeting_date(date, lang='en'):
@@ -28,6 +28,7 @@ class MeetingReportBuilder:
         decisions: list[tuple[Decision, str]],
         nextMeeting: MeetingAgenda | None,
         lang: str = "fr",
+        reviews: list[MeetingReview] | None = None,
     ):
         self.meeting = meeting
         self.author = author
@@ -35,6 +36,7 @@ class MeetingReportBuilder:
         self.decisions = decisions
         self.nextMeeting = nextMeeting
         self.lang = lang
+        self.reviews = reviews or []
 
     def build(self):
         buffer = BytesIO()
@@ -63,6 +65,34 @@ class MeetingReportBuilder:
         builder.spacer(10)
 
         builder.decisions_table(self.decisions, self.lang)
+
+        if self.reviews:
+            builder.spacer(10)
+            builder.table_header(
+                ["Retours de réunion" if self.lang == "fr" else "Meeting reviews"],
+                ["100%"],
+            )
+            headers = (
+                ["Commentaire", "Objectif", "Déroulement", "Préparation", "Durée", "Respect"]
+                if self.lang == "fr"
+                else ["Comment", "Objective", "Smooth running", "Preparation", "Length", "Respect"]
+            )
+            col_widths = ["30%"] + ["14%"] * 5
+            builder.table_header(headers, col_widths)
+            for review in self.reviews:
+                comments = (review.comments or "").replace("\r\n", "\n")
+                comments = comments.replace("\n", "<br/>")
+                builder.table_content(
+                    [[
+                        comments,
+                        f"{review.objective}/5",
+                        f"{review.smoothRunning}/5",
+                        f"{review.preparation}/5",
+                        f"{review.length}/5",
+                        f"{review.respect}/5",
+                    ]],
+                    col_widths,
+                )
 
         builder.build()
         buffer.seek(0)
