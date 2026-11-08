@@ -71,6 +71,12 @@ def invite_to_organization(email, roleId):
 
     user = UserDataHandler.get_user_by_email(email)
     if user is None:
+        invited_org_id = OrganizationDataHandler.get_invite_org_id(email)
+        if orgId == invited_org_id:
+            return jsonify({"email": InputError.UserAlreadyInvitedToOurOrganization}), 400
+        if invited_org_id is not None:
+            return jsonify({"email": InputError.UserAlreadyInvitedToOtherOrganization}), 400
+
         OrganizationDataHandler.add_invite(orgId=orgId, email=email, roleId=roleId)
 
         email_obj = EmailDrafter.create_organization_invitation_email(email, org_name, lang)
@@ -78,6 +84,12 @@ def invite_to_organization(email, roleId):
         invitation = Invitation(orgId=orgId, email=email, roleId=roleId)
         success = True
     else:
+        user_org_id = OrganizationDataHandler.get_user_org_id(user.id)
+        if orgId == user_org_id:
+            return jsonify({"email": InputError.UserAlreadyInOurOrganization}), 400
+        if user_org_id is not None:
+            return jsonify({"email": InputError.UserAlreadyInOtherOrganization}), 400
+
         success = UserDataHandler.add_user_to_org(user.id, orgId, roleId)
         invitation = None
     

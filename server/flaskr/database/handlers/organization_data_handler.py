@@ -67,13 +67,20 @@ class OrganizationDataHandler:
             cur.execute(query, params)
             result = cur.fetchone()
         return result[0] if result else None
-    
+
     @classmethod
     def get_invites(cls, orgId):
         query = "SELECT orgId, email, roleId from public.invitations WHERE orgId = %s;"
         params = (orgId,)
         results = read_query(query, params)
         return [Invitation(*result) for result in results]
+
+    @classmethod
+    def get_invite_org_id(cls, email: str) -> list[int]:
+        query = "SELECT orgId FROM public.invitations WHERE email = %s;"
+        params = (email,)
+        results = read_query(query, params)
+        return results[0][0] if results else None
 
     @classmethod
     def remove_invite(cls, orgId, email):

@@ -4,6 +4,11 @@ const int requiredField = 1;
 const int invalidFormat = 2;
 const int maxLengthExceeded = 12;
 const int minLengthExceeded = 13;
+const int userAlreadyInOurOrganization = 17;
+const int userAlreadyInOtherOrganization = 18;
+const int userAlreadyInvited = 19;
+const int userAlreadyInvitedToOurOrganization = 19;
+const int userAlreadyInvitedToOtherOrganization = 20;
 
 String? translateNameError(int? error) {
   var loc = S.current;
