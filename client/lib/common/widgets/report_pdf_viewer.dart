@@ -232,7 +232,7 @@ class _ReportPdfViewerState extends ConsumerState<ReportPdfViewer> {
               ),
               const SizedBox(height: 6),
               DecisionStatusDropdownMenu(
-                key: ValueKey(_stagedStatus),
+                key: ValueKey('status-$_stagedStatus'),
                 initialStatus: _stagedStatus,
                 valueChanged: (status) {
                   setState(() => _stagedStatus = status);
@@ -250,7 +250,7 @@ class _ReportPdfViewerState extends ConsumerState<ReportPdfViewer> {
               ),
               const SizedBox(height: 6),
               UserDropdownMenu(
-                key: ValueKey(_stagedResponsibleId),
+                key: ValueKey('responsible-$_stagedResponsibleId'),
                 initialUserId: _stagedResponsibleId,
                 anyLabel: loc.decisionListAnyResponsible,
                 valueChanged: (userId) {
@@ -269,7 +269,7 @@ class _ReportPdfViewerState extends ConsumerState<ReportPdfViewer> {
               ),
               const SizedBox(height: 6),
               DefaultDropdownMenu<int?>(
-                key: ValueKey(_stagedProjectId),
+                key: ValueKey('project-$_stagedProjectId'),
                 initialSelection: _stagedProjectId,
                 onSelected: (projectId) {
                   setState(() => _stagedProjectId = projectId);

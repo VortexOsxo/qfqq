@@ -13,6 +13,10 @@ from reportlab.lib.colors import HexColor, lightgrey
 from reportlab.pdfbase.pdfmetrics import stringWidth
 
 from flaskr.models import decision_status_as_string
+from .report_columns import (
+    MEETING_REPORT_DECISION_COLUMNS,
+    PROJECT_REPORT_DECISION_COLUMNS,
+)
 
 
 styles = getSampleStyleSheet()
@@ -73,7 +77,6 @@ background_table_style = TableStyle(
         ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
     ]
 )
-
 
 class ReportBuilder:
     def __init__(self, accent_color=primary_color):
@@ -194,7 +197,7 @@ class ReportBuilder:
         return table
 
     def decisions_table(self, decisions, lang):
-        cols = ["5%", "15%", "30%", "15%", "20%", "15%"]
+        cols = MEETING_REPORT_DECISION_COLUMNS
         headers = (
             ["N", "Action", "Responsable", "Échéance", "Statut", "Date de fin"]
             if lang == "fr"
@@ -204,7 +207,7 @@ class ReportBuilder:
 
         values = [
             [
-                str(decision.number),
+                str(decision.number+1000),
                 decision.description,
                 responsible_name,
                 decision.dueDate.strftime("%Y-%m-%d") if decision.dueDate else " ",
@@ -220,7 +223,7 @@ class ReportBuilder:
         self.table_content(values, cols)
 
     def decisions_table_with_meeting_id(self, decisions, lang):
-        cols = ["5%", "5%", "15%", "25%", "15%", "20%", "15%"]
+        cols = PROJECT_REPORT_DECISION_COLUMNS
         headers = (
             ["N", "R", "Action", "Responsable", "Échéance", "Statut", "Date de fin"]
             if lang == "fr"

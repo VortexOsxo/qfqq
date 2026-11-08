@@ -1,4 +1,5 @@
 from .report_builder import ReportBuilder
+from .report_columns import MEETING_REVIEW_COLUMNS
 from flaskr.models import Decision, MeetingAgenda, MeetingReview, User
 from io import BytesIO
 
@@ -77,7 +78,7 @@ class MeetingReportBuilder:
                 if self.lang == "fr"
                 else ["Comment", "Objective", "Smooth running", "Preparation", "Length", "Respect"]
             )
-            col_widths = ["30%"] + ["14%"] * 5
+            col_widths = MEETING_REVIEW_COLUMNS
             builder.table_header(headers, col_widths)
             for review in self.reviews:
                 comments = (review.comments or "").replace("\r\n", "\n")

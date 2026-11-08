@@ -1,4 +1,5 @@
 from .report_builder import ReportBuilder
+from .report_columns import PARTICIPANT_REPORT_COLUMNS
 from flaskr.models import Decision, decision_status_as_string
 from io import BytesIO
 
@@ -21,7 +22,7 @@ class ParticipantReportBuilder:
 
         builder.division()
 
-        cols = ["5%", "45%", "15%", "20%", "15%"]
+        cols = PARTICIPANT_REPORT_COLUMNS
         headers = (
             ["N", "Action", "Échéance", "Statut", "Date de fin"]
             if self.lang == "fr"
