@@ -495,6 +495,10 @@
   "organizationInviteUserAddedMessage": "L'utilisateur avec l'adresse e-mail {email} a été ajouté à l'organisation.",
   "organizationInvitePendingTitle": "Invitation envoyée",
   "organizationInvitePendingMessage": "L'utilisateur avec l'adresse e-mail {email} a été invité et sera ajouté à l'organisation lorsqu'il créera un compte.",
+  "organizationInviteUserAlreadyInOurOrganization": "Cet utilisateur fait déjà partie de votre organisation.",
+  "organizationInviteUserAlreadyInOtherOrganization": "Cet utilisateur fait déjà partie d'une autre organisation.",
+  "organizationInviteUserAlreadyInvited": "Cet utilisateur a déjà été invité dans votre organisation.",
+  "organizationInviteUserAlreadyInvitedToOtherOrganization": "Cet utilisateur a déjà été invité dans une autre organisation.",
   "commonMeeting": "Réunion",
   "commonSelectDate": "Sélectionner une date",
   "commonTapToSelectDate": "Appuyer pour sélectionner une date",
@@ -599,5 +603,12 @@
 
   "roleContributeTooltip": "Permet de créer et modifier les réunions, décisions et projets.",
   "roleDeleteContentTooltip": "Permet de supprimer les réunions, décisions et projets.",
-  "roleManageTeamTooltip": "Permet d'inviter des membres, de créer/supprimer des rôles et de modifier les permissions."
+  "roleManageTeamTooltip": "Permet d'inviter des membres, de créer/supprimer des rôles et de modifier les permissions.",
+  "organizationFreeTrialBanner": "Cette organisation bénéficie actuellement d'un accès d'essai gratuit.",
+  "organizationFreeTrialEndsOn": "L'accès d'essai gratuit se termine le {date}.",
+  "@organizationFreeTrialEndsOn": {
+    "placeholders": {
+      "date": {}
+    }
+  }
 }

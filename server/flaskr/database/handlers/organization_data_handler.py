@@ -54,6 +54,40 @@ class OrganizationDataHandler:
         return orgs[0] if orgs else None
 
     @classmethod
+    def set_is_paying(cls, orgId, isPaying):
+        query = f"UPDATE public.organizations SET isPaying = %s WHERE id = %s;"
+        params = (isPaying, orgId)
+        write_query(query, params)
+
+    @classmethod
+    def has_access(cls, orgId) -> bool:
+        return cls.get_access_status(orgId) in ("paidAccess", "freeTrialAccess")
+
+    @classmethod
+    def get_access_status(cls, orgId) -> str:
+        return cls.get_access_info(orgId)[0]
+
+    @classmethod
+    def get_access_info(cls, orgId):
+        query = """
+            SELECT CASE
+                WHEN isPaying THEN 'paidAccess'
+                WHEN NOW() < trial_ends_at THEN 'freeTrialAccess'
+                ELSE 'noAccess'
+            END,
+            trial_ends_at
+            FROM (
+                SELECT isPaying,
+                    date_trunc('day', createdAt + INTERVAL '30 days')
+                        + INTERVAL '1 day' AS trial_ends_at
+                FROM public.organizations
+                WHERE id = %s
+            ) organization_access;
+        """
+        result = read_query(query, (orgId,))
+        return result[0] if result else ("noAccess", None)
+
+    @classmethod
     def get_existing_slugs(cls):
         query = "SELECT slug from public.organizations;"
         return [res[0] for res in read_query(query)]
@@ -67,13 +101,20 @@ class OrganizationDataHandler:
             cur.execute(query, params)
             result = cur.fetchone()
         return result[0] if result else None
-    
+
     @classmethod
     def get_invites(cls, orgId):
         query = "SELECT orgId, email, roleId from public.invitations WHERE orgId = %s;"
         params = (orgId,)
         results = read_query(query, params)
         return [Invitation(*result) for result in results]
+
+    @classmethod
+    def get_invite_org_id(cls, email: str) -> list[int]:
+        query = "SELECT orgId FROM public.invitations WHERE email = %s;"
+        params = (email,)
+        results = read_query(query, params)
+        return results[0][0] if results else None
 
     @classmethod
     def remove_invite(cls, orgId, email):

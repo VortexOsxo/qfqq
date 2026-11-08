@@ -11,6 +11,7 @@ import 'package:qfqq/common/utils/role.dart';
 import 'package:qfqq/common/utils/string.dart';
 import 'package:qfqq/common/widgets/role_creation_modal.dart';
 import 'package:qfqq/common/widgets/dropdowns/role_dropdown_menu.dart';
+import 'package:qfqq/common/widgets/organization_page/organization_access_status_banner.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 // Inpirations
@@ -32,6 +33,7 @@ class OrganizationPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const OrganizationAccessStatusBanner(),
             OrganizationTitle(),
             TabBar(
               isScrollable: true,

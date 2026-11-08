@@ -19,3 +19,7 @@ class InputError(Enum):
     MustBeUnique = 14
     InvalidField = 15
     OutOfRange = 16
+    UserAlreadyInOurOrganization = 17
+    UserAlreadyInOtherOrganization = 18
+    UserAlreadyInvitedToOurOrganization = 19
+    UserAlreadyInvitedToOtherOrganization = 20

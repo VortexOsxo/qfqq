@@ -494,6 +494,10 @@
   "organizationInviteUserAddedMessage": "The user with email {email} has been added to the organization.",
   "organizationInvitePendingTitle": "Invitation sent",
   "organizationInvitePendingMessage": "The user with email {email} was invited and will be added to the organization when they create an account.",
+  "organizationInviteUserAlreadyInOurOrganization": "This user is already part of your organization.",
+  "organizationInviteUserAlreadyInOtherOrganization": "This user is already part of another organization.",
+  "organizationInviteUserAlreadyInvited": "This user has already been invited to your organization.",
+  "organizationInviteUserAlreadyInvitedToOtherOrganization": "This user has already been invited to another organization.",
   "commonMeeting": "Meeting",
   "commonSelectDate": "Select Date",
   "commonTapToSelectDate": "Tap to select date",
@@ -598,5 +602,12 @@
 
   "roleContributeTooltip": "Allows creating and editing meetings, decisions, and projects.",
   "roleDeleteContentTooltip": "Allows deleting meetings, decisions, and projects.",
-  "roleManageTeamTooltip": "Allows inviting members, creating/deleting roles, and modifying permissions."
+  "roleManageTeamTooltip": "Allows inviting members, creating/deleting roles, and modifying permissions.",
+  "organizationFreeTrialBanner": "This organization is currently using free trial access.",
+  "organizationFreeTrialEndsOn": "Free trial access ends on {date}.",
+  "@organizationFreeTrialEndsOn": {
+    "placeholders": {
+      "date": {}
+    }
+  }
 }

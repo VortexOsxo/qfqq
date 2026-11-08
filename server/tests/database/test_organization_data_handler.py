@@ -1,9 +1,69 @@
 from flaskr.database import OrganizationDataHandler
+from flaskr.database.postgres import read_query, write_query
 from flaskr.models.data.invitation import Invitation
 
 def test_create_organization(app):
     orgId = OrganizationDataHandler.create_organization("Bubbly")
     assert orgId == 3
+
+def test_create_organization_defaults(app):
+    before_creation = read_query("SELECT clock_timestamp();")[0][0]
+    orgId = OrganizationDataHandler.create_organization("Bubbly")
+    createdAt, isPaying = read_query(
+        "SELECT createdAt, isPaying FROM public.organizations WHERE id = %s;",
+        (orgId,),
+    )[0]
+    after_creation = read_query("SELECT clock_timestamp();")[0][0]
+
+    assert before_creation <= createdAt <= after_creation
+    assert isPaying is False
+
+
+def test_set_is_paying(app):
+    orgId = OrganizationDataHandler.create_organization("Bubbly")
+
+    OrganizationDataHandler.set_is_paying(orgId, True)
+
+    assert read_query(
+        "SELECT isPaying FROM public.organizations WHERE id = %s;",
+        (orgId,),
+    ) == [(True,)]
+
+    OrganizationDataHandler.set_is_paying(orgId, False)
+
+    assert read_query(
+        "SELECT isPaying FROM public.organizations WHERE id = %s;",
+        (orgId,),
+    ) == [(False,)]
+
+
+def test_has_access_during_free_trial(app):
+    orgId = OrganizationDataHandler.create_organization("Bubbly")
+
+    assert OrganizationDataHandler.has_access(orgId) is True
+
+
+def test_has_access_for_paying_organization_after_trial(app):
+    orgId = OrganizationDataHandler.create_organization("Bubbly")
+    write_query(
+        "UPDATE public.organizations SET createdAt = NOW() - INTERVAL '31 days' "
+        "WHERE id = %s;",
+        (orgId,),
+    )
+    OrganizationDataHandler.set_is_paying(orgId, True)
+
+    assert OrganizationDataHandler.has_access(orgId) is True
+
+
+def test_has_no_access_after_free_trial(app):
+    orgId = OrganizationDataHandler.create_organization("Bubbly")
+    write_query(
+        "UPDATE public.organizations SET createdAt = NOW() - INTERVAL '31 days' "
+        "WHERE id = %s;",
+        (orgId,),
+    )
+
+    assert OrganizationDataHandler.has_access(orgId) is False
 
 
 def test_get_slugs(app):

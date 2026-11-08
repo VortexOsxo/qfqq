@@ -16,6 +16,21 @@ final organizationNameProvider = FutureProvider<String?>((ref) async {
   return service.getOrganizationName();
 });
 
+final organizationAccessStatusProvider =
+    FutureProvider<OrganizationAccessInfo?>((ref) async {
+      ref.watch(authStateProvider);
+
+      final service = ref.read(organizationServiceProvider);
+      return service.getOrganizationAccessStatus();
+    });
+
+class OrganizationAccessInfo {
+  final String status;
+  final DateTime? trialEndsAt;
+
+  const OrganizationAccessInfo({required this.status, this.trialEndsAt});
+}
+
 class OrganizationService {
   final QfqqHttpClient _http;
   final AuthService _authService;
@@ -51,5 +66,24 @@ class OrganizationService {
 
     final Map<String, dynamic> data = jsonDecode(response.body);
     return data['orgName'];
+  }
+
+  Future<OrganizationAccessInfo?> getOrganizationAccessStatus() async {
+    final response = await _http.get(
+      _http.getUri('organizations/status'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode != 200) {
+      return null;
+    }
+
+    final Map<String, dynamic> data = jsonDecode(response.body);
+    final trialEndsAt = data['trialEndsAt'];
+    return OrganizationAccessInfo(
+      status: data['status'],
+      trialEndsAt:
+          trialEndsAt == null ? null : DateTime.parse(trialEndsAt as String),
+    );
   }
 }
