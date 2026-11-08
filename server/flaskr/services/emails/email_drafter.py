@@ -16,8 +16,8 @@ class EmailDrafter:
             <td align="center">
                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:560px; background-color:#ffffff; border-radius:8px;">
                     <tr>
-                        <td style="padding:24px 28px; border-bottom:3px solid #0175C2;">
-                            <p style="margin:0; color:#0175C2; font-size:18px; font-weight:bold;">QuiFaitQuoiQuand</p>
+                        <td style="padding:24px 28px; border-bottom:3px solid #36618E;">
+                            <p style="margin:0; color:#36618E; font-size:18px; font-weight:bold;">QuiFaitQuoiQuand</p>
                         </td>
                     </tr>
                     <tr>
@@ -70,7 +70,7 @@ class EmailDrafter:
 <p style="margin:0 0 16px;">{message}</p>
 <p style="margin:0 0 20px;">{ignore_message}</p>
 <p style="margin:0 0 12px;">{code_message}</p>
-<p style="margin:0 0 24px; padding:14px 18px; background-color:#f3f5f9; color:#0175C2; font-size:22px; font-weight:bold; letter-spacing:2px; text-align:center;">{escape(reset_code)}</p>
+<p style="margin:0 0 24px; padding:14px 18px; background-color:#f3f5f9; color:#36618E; font-size:22px; font-weight:bold; letter-spacing:2px; text-align:center;">{escape(reset_code)}</p>
 <p style="margin:0;">{sign_off}</p>"""
         )
 
@@ -105,7 +105,7 @@ class EmailDrafter:
 <p style="margin:0 0 16px;">{greeting}</p>
 <p style="margin:0 0 20px;">{message}</p>
 <p style="margin:0 0 20px;">{ignore_message}</p>
-<p style="margin:0 0 24px; padding:14px 18px; background-color:#f3f5f9; color:#0175C2; font-size:22px; font-weight:bold; letter-spacing:2px; text-align:center;">{escape(verification_code)}</p>
+<p style="margin:0 0 24px; padding:14px 18px; background-color:#f3f5f9; color:#36618E; font-size:22px; font-weight:bold; letter-spacing:2px; text-align:center;">{escape(verification_code)}</p>
 <p style="margin:0;">{sign_off}</p>"""
         )
 
@@ -263,12 +263,12 @@ class EmailDrafter:
 
         body = EmailDrafter._format_email_card(
             f"""\
-<p style="margin:0 0 20px;">{invitation_prefix} <strong style="color:#0175C2;">{safe_org_name}</strong>.</p>
+<p style="margin:0 0 20px;">{invitation_prefix} <strong style="color:#36618E;">{safe_org_name}</strong>.</p>
 <p style="margin:0 0 20px;">{account_message}</p>
 <p style="margin:0 0 12px;">{download_message}</p>
 <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 24px;">
     <tr>
-        <td bgcolor="#0175C2" style="border-radius:4px;">
+        <td bgcolor="#36618E" style="border-radius:4px;">
             <a href="{windows_link}" style="display:inline-block; padding:12px 20px; color:#ffffff; font-weight:bold; text-decoration:none;">{download_label}</a>
         </td>
     </tr>
