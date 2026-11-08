@@ -103,5 +103,5 @@ def delete_invite(email):
     if orgId is None:
         return "", 400
 
-    OrganizationDataHandler.revoke_invite(orgId=orgId, email=email)
+    OrganizationDataHandler.remove_invite(orgId=orgId, email=email)
     return "", 200

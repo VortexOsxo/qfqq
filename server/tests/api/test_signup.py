@@ -1,4 +1,5 @@
 import pytest
+from flaskr.database import OrganizationDataHandler, UserDataHandler
 from flaskr.errors import InputError
 from flaskr.services.account_service import AccountService
 
@@ -21,6 +22,11 @@ def mock_email_validation(monkeypatch):
 def signup(client, **overrides):
     payload = {**VALID_SIGNUP_PAYLOAD, **overrides}
     return client.post("/auth/signup", json=payload, headers={"QfqqVersion": "0.0.1"})
+
+
+def signup_with_invitation(client, email):
+    OrganizationDataHandler.add_invite(orgId=1, email=email, roleId=2)
+    return signup(client, firstName="Invited", lastName="User", email=email)
 
 
 # ── firstName length tests ──────────────────────────────────────────────
@@ -102,6 +108,29 @@ def test_signup_default(client):
     assert body["firstName"] == 'Salut'
     assert body["lastName"] == 'Joe'
     assert body["email"] == 'salut@gmail.com'
+
+
+def test_signup_with_invitation_joins_organization(client):
+    email = "invited-member@example.com"
+
+    response = signup_with_invitation(client, email)
+
+    assert response.status_code == 201
+    assert response.get_json()["hasOrg"] is True
+    user = UserDataHandler.get_user_by_email(email)
+    assert user is not None
+    assert OrganizationDataHandler.get_user_org_id(user.id) == 1
+    assert UserDataHandler.get_user_role_id(user.id) == 2
+
+
+def test_signup_with_invitation_revokes_invite(client):
+    email = "invited-member@example.com"
+    OrganizationDataHandler.add_invite(orgId=1, email=email, roleId=2)
+
+    response = signup(client, firstName="Invited", lastName="User", email=email)
+
+    assert response.status_code == 201
+    assert OrganizationDataHandler.check_invite(email) == (None, None)
 
 
 def test_signup_invalid_code(client):

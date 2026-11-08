@@ -76,7 +76,7 @@ class OrganizationDataHandler:
         return [Invitation(*result) for result in results]
 
     @classmethod
-    def revoke_invite(cls, orgId, email):
+    def remove_invite(cls, orgId, email):
         query = "DELETE FROM public.invitations WHERE orgId = %s and email = %s;"
         params = (orgId, email)
         write_query(query, params)

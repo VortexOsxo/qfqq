@@ -33,6 +33,7 @@ def signup(firstName, lastName, email, password, code):
     if orgId:
         result = UserDataHandler.add_user_to_org(user.id, orgId, roleId)
         assert result, "Should be able to join a org when invited"
+        OrganizationDataHandler.remove_invite(orgId=orgId, email=email)
         set_tenant(orgId)
         permissions = UserDataHandler.get_user_permissions(userId=user.id)
         return (

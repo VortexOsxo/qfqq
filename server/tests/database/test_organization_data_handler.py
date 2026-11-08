@@ -60,6 +60,6 @@ def test_revoke_invite(app):
     orgId, _ = OrganizationDataHandler.check_invite("random@email.com")
     assert orgId == 1
 
-    OrganizationDataHandler.revoke_invite(1, "random@email.com")
+    OrganizationDataHandler.remove_invite(1, "random@email.com")
     orgId, _ = OrganizationDataHandler.check_invite("random@email.com")
     assert orgId is None
