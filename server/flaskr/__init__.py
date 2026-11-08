@@ -9,6 +9,7 @@ from .blueprints import register_blueprints, get_api_version, get_language
 
 from .commands.mock import mock_command
 from .commands.migrate import migrate_command
+from .commands.set_org_paying import set_org_paying_command
 
 class EnumJSONProvider(DefaultJSONProvider):
     def default(self, obj):
@@ -41,5 +42,6 @@ def create_app(config_name='development'):
     init_db(app, uri=app.config["DATABASE_URL"])
     app.cli.add_command(mock_command)
     app.cli.add_command(migrate_command)
+    app.cli.add_command(set_org_paying_command)
 
     return app
