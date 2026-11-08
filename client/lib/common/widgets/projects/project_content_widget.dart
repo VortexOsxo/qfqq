@@ -52,10 +52,7 @@ class ProjectContentWidget extends ConsumerWidget {
   }
 
   Widget buildDecisionLists(BuildContext context) {
-    bool filterFunc(Decision decision) {
-      if (!isIdValid(project.id)) return false;
-      return decision.projectId == project.id;
-    }
+    bool filterFunc(Decision decision) => isIdValidAndEqual(project.id, decision.projectId);
 
     return DecisionsListWidget(
       isProjectFilterEnabled: false,

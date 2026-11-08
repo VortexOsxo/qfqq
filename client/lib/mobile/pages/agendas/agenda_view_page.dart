@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/configs/report_config.dart';
+import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/view_models/agenda_view_model.dart';
 import 'package:qfqq/common/widgets/agenda_view_page/agenda_description_widget.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_agenda_session.dart';
 import 'package:qfqq/common/widgets/agenda_view_page/meeting_view_content.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_control.dart';
+import 'package:qfqq/common/widgets/decisions/decisions_list_widget.dart';
 import 'package:qfqq/common/widgets/meeting_review_list.dart';
 import 'package:qfqq/common/widgets/projects/project_title_link_widget.dart';
 import 'package:qfqq/common/widgets/report_pdf_viewer.dart';
@@ -53,7 +55,7 @@ class _AgendaViewPage extends StatelessWidget {
             const SizedBox(height: 8),
             Expanded(
               child: DefaultTabController(
-                length: isCompleted ? 3 : 2,
+                length: isCompleted ? 4 : 2,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -63,6 +65,7 @@ class _AgendaViewPage extends StatelessWidget {
                       tabs: [
                         Tab(text: loc.commonObjectInfo),
                         if (isCompleted) ...[
+                          Tab(text: loc.commonObjectDecisions),
                           Tab(text: loc.commonObjectReports),
                           Tab(text: loc.commonObjectReviews),
                         ] else
@@ -75,6 +78,7 @@ class _AgendaViewPage extends StatelessWidget {
                         children: [
                           AgendaDescriptionWidget(vm: vm),
                           if (isCompleted) ...[
+                            _buildDecisionLists(agenda),
                             ReportPdfViewer(
                               config: ReportConfig.forMeeting(agenda),
                             ),
@@ -93,6 +97,15 @@ class _AgendaViewPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildDecisionLists(MeetingAgenda meeting) {
+    bool filterFunc(decision) => isIdValidAndEqual(meeting.id, decision.meetingId);
+
+    return DecisionsListWidget(
+      isProjectFilterEnabled: false,
+      filterFunction: filterFunc,
     );
   }
 
