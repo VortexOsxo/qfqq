@@ -14,6 +14,7 @@ final allowedRoutesNoAccount = {'/login', '/signup', '/forgotten-password'};
 final allowedRoutesNoOrg = allowedRoutesNoAccount.union({
   '/organizations/links',
 });
+final allowedRoutesInactiveOrg = allowedRoutesNoAccount.union({'/subscribe'});
 
 String? redirect(Ref ref, BuildContext context, GoRouterState state) {
   final authState = ref.read(authStateProvider);
@@ -25,6 +26,10 @@ String? redirect(Ref ref, BuildContext context, GoRouterState state) {
 
   if (!authState.hasOrg && !allowedRoutesNoOrg.contains(loc)) {
     return '/organizations/links';
+  }
+
+  if (authState.hasOrg && !authState.hasOrgWithAccess && allowedRoutesInactiveOrg.contains(loc)) {
+    return '/subscribe';
   }
 
   return null;
