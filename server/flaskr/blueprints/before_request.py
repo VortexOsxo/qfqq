@@ -1,9 +1,18 @@
 from flask import request, jsonify, g, current_app
 import jwt
 
+from functools import wraps
+from enum import IntEnum
+
 from flaskr.errors import AuthError
-from flaskr.database import UserDataHandler
+from flaskr.database import UserDataHandler, OrganizationDataHandler
 from flaskr.database.tenant_context import set_tenant
+
+class AuthRequirement(IntEnum):
+    Optional = 0
+    LoggedIn = 1
+    HasOrg = 2
+    HasOrgWithAccess = 3
 
 def get_authorization():
     token = None
@@ -25,32 +34,40 @@ def get_authorization():
 
     return data.get("user_id"), data.get("org_id")
 
-def login_required():
-    if request.method == "OPTIONS":
-        return
+def check_auth(authRequirement: AuthRequirement):
+    def decorated():
+        if request.method == "OPTIONS":
+            return
 
-    userId, orgId = get_authorization()
-    if (
-        userId is None
-        or orgId is None
-        or UserDataHandler.get_user_by_id(userId) is None
-    ):
-        return jsonify({"auth": AuthError.mustBeLoggedIn}), 401
+        userId, orgId = get_authorization()
 
-    g.user_id = userId
-    g.org_id = orgId
-    set_tenant(g.org_id)
+        if authRequirement >= 1 and (userId is None or UserDataHandler.get_user_by_id(userId) is None):
+            return jsonify({"auth": AuthError.mustBeLoggedIn}), 401
+        if authRequirement >= 2 and (orgId is None):
+            return jsonify({"auth": AuthError.mustBeLoggedIn}), 401
+        if authRequirement >= 3 and not OrganizationDataHandler.has_access(orgId):
+            return jsonify({"auth": AuthError.mustBeLoggedIn}), 401
 
-def login_optionnal():
-    if request.method == "OPTIONS":
-        return
+        g.user_id = userId
+        g.org_id = orgId
+        if g.org_id is not None:
+            set_tenant(g.org_id)
+    return decorated
 
-    g.user_id, g.org_id = get_authorization()
-    if g.user_id is not None and UserDataHandler.get_user_by_id(g.user_id) is None:
-        g.user_id, g.org_id = None, None
+login_required = check_auth(AuthRequirement.HasOrgWithAccess)
+login_optional = check_auth(AuthRequirement.Optional)
 
-    if g.org_id is not None:
-        set_tenant(g.org_id)
+def check_auth_decorator(authRequirement: AuthRequirement):
+    def middleware(func):
+        @wraps(func)
+        def decorated(*args, **kwargs):
+            response = check_auth(authRequirement)()
+            if response is not None:
+                return response
+
+            return func(*args, **kwargs)
+        return decorated
+    return middleware
 
 SUPPORTED_VERSIONS = ['0.0.1']
 

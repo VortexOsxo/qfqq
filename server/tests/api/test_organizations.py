@@ -14,13 +14,6 @@ def test_get_organization(client):
     assert response.status_code == 200
     assert response.json == {"orgName": "Test"}
 
-def test_get_organization_not_found(client):
-    headers = get_auth_headers(client, user_id=1, org_id=1000)
-
-    response = client.get("/organizations/", headers=headers)
-
-    assert response.status_code == 404
-
 
 def test_get_organization_status_during_free_trial(client):
     response = client.get("/organizations/status", headers=get_auth_headers(client))

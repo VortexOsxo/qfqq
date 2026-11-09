@@ -4,7 +4,7 @@ from flaskr.errors.input_error import InputError
 from flaskr.services.inputs import input_middleware, LambdaBuilder, RoleIdValidator, StringValidator,EmailValidator
 from flaskr.database import OrganizationDataHandler, UserDataHandler
 from flaskr.utils import create_auth_response, create_tokens 
-from flaskr.blueprints.before_request import login_optionnal
+from flaskr.blueprints.before_request import check_auth_decorator, AuthRequirement
 from flaskr.blueprints.middlewares import permission_middleware
 from flaskr.models import Permission, Invitation
 from flaskr.services.emails import EmailDrafter, EmailSender
@@ -12,9 +12,9 @@ from flaskr.database.tenant_context import set_tenant
 from threading import Thread
 
 organizations_bp = Blueprint("organizations", __name__, url_prefix="/organizations")
-organizations_bp.before_request(login_optionnal)
 
 @organizations_bp.post("/")
+@check_auth_decorator(AuthRequirement.LoggedIn)
 @input_middleware(LambdaBuilder(("organizationName", StringValidator())))
 def create_organization(organizationName: str):
     orgId = OrganizationDataHandler.create_organization(organizationName)
@@ -22,9 +22,6 @@ def create_organization(organizationName: str):
         return "", 400
     
     userId = g.user_id
-    if userId is None:
-        return jsonify({"orgId": orgId}), 201
-    
     result = UserDataHandler.add_user_to_org(userId, orgId, 2)
     assert result, "Should not fail to join a just created org"
 
@@ -40,25 +37,16 @@ def create_organization(organizationName: str):
     )
 
 @organizations_bp.get("/")
+@check_auth_decorator(AuthRequirement.HasOrg)
 def get_organization():
-    orgId = g.org_id
-    if orgId is None:
-        return "", 400
-
-    org = OrganizationDataHandler.get_org(orgId)
-    if org is None:
-        return "", 404
-
+    org = OrganizationDataHandler.get_org(g.org_id)
     return jsonify({'orgName': org[2]}), 200
 
 
 @organizations_bp.get("/status")
+@check_auth_decorator(AuthRequirement.HasOrg)
 def get_organization_status():
-    orgId = g.org_id
-    if orgId is None:
-        return "", 400
-
-    status, trialEndsAt = OrganizationDataHandler.get_access_info(orgId)
+    status, trialEndsAt = OrganizationDataHandler.get_access_info(g.org_id)
     return jsonify({
         "status": status,
         "trialEndsAt": trialEndsAt.isoformat() if trialEndsAt is not None else None,
@@ -70,12 +58,11 @@ def get_organization_status():
     ("email", EmailValidator()),
     ("roleId", RoleIdValidator())
 ))
+@check_auth_decorator(AuthRequirement.HasOrgWithAccess)
 @permission_middleware(Permission.ManageTeam)
 def invite_to_organization(email, roleId):
     orgId = g.org_id
     org = OrganizationDataHandler.get_org(orgId)
-    if not org:
-        return jsonify({"orgId": InputError.ObjectIdNotFound}), 404
 
     org_name = org[2]
     lang = g.language
@@ -112,21 +99,15 @@ def invite_to_organization(email, roleId):
         return "", 500
     
 @organizations_bp.get("invitations")
+@check_auth_decorator(AuthRequirement.HasOrgWithAccess)
 @permission_middleware(Permission.ManageTeam)
 def get_invites():
-    orgId = g.org_id
-    if orgId is None:
-        return "", 400
-
-    invitations = OrganizationDataHandler.get_invites(orgId)
+    invitations = OrganizationDataHandler.get_invites(g.org_id)
     return jsonify([i.to_dict() for i in invitations]), 200
 
 @organizations_bp.delete("invitations/<email>")
+@check_auth_decorator(AuthRequirement.HasOrgWithAccess)
 @permission_middleware(Permission.ManageTeam)
 def delete_invite(email):
-    orgId = g.org_id
-    if orgId is None:
-        return "", 400
-
-    OrganizationDataHandler.remove_invite(orgId=orgId, email=email)
+    OrganizationDataHandler.remove_invite(orgId=g.org_id, email=email)
     return "", 200
