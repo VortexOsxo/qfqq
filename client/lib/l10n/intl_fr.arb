@@ -604,14 +604,17 @@
   "roleContributeTooltip": "Permet de créer et modifier les réunions, décisions et projets.",
   "roleDeleteContentTooltip": "Permet de supprimer les réunions, décisions et projets.",
   "roleManageTeamTooltip": "Permet d'inviter des membres, de créer/supprimer des rôles et de modifier les permissions.",
-  "organizationFreeTrialBanner": "Cette organisation bénéficie actuellement d'un accès d'essai gratuit.",
-  "organizationFreeTrialEndsOn": "L'accès d'essai gratuit se termine le {date}.",
+  "organizationFreeTrialBanner": "Cette organisation bénéficie actuellement d'un essai gratuit.",
+  "organizationFreeTrialEndsOn": "L'essai gratuit se termine le {date}.",
   "@organizationFreeTrialEndsOn": {
     "placeholders": {
       "date": {}
     }
   },
   "subscribePageTitle": "Abonnement",
-  "subscribePageTrialEnded": "Votre période d’essai gratuite de 30 jours est terminée.",
-  "subscribePageContactPrompt": "Pour vous abonner et rétablir l’accès à votre organisation, contactez :"
+  "subscribePageTrialEnded": "La période d’essai gratuite de votre organisation est terminée.",
+  "subscribePageButton": "Demander des informations",
+  "subscribePageContactPrompt": "Vous souhaitez vous abonner ? Envoyez-nous une demande et nous vous contacterons avec plus d’informations et les tarifs.",
+  "subscribePageRequestSent": "Votre demande a été envoyée. Nous vous contacterons bientôt avec plus d’informations et les tarifs.",
+  "subscribePageRequestError": "Votre demande n’a pas pu être envoyée. Veuillez réessayer."
 }

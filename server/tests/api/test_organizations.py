@@ -6,6 +6,39 @@ from flaskr.errors import InputError
 from threading import Event
 
 
+def test_request_organization_subscription_sends_email(client, monkeypatch):
+    email_started = Event()
+    sent_emails = []
+
+    def fake_send(email):
+        sent_emails.append(email)
+        email_started.set()
+        return True
+
+    monkeypatch.setattr(EmailSender, "send_email", fake_send)
+
+    response = client.post(
+        "/organizations/subscription-request",
+        headers=get_auth_headers(client),
+    )
+
+    assert response.status_code == 202
+    assert email_started.wait(timeout=1)
+    assert len(sent_emails) == 1
+    assert sent_emails[0].recipient == "qfqq.communication@gmail.com"
+    assert "Identifiant de l'organisation :</strong> 1" in sent_emails[0].body
+    assert "Test" in sent_emails[0].body
+    assert UserDataHandler.get_user_by_id(1).email in sent_emails[0].body
+    assert "Demande d'abonnement" in sent_emails[0].subject
+
+def test_request_organization_subscription_requires_authentication(client):
+    response = client.post(
+        "/organizations/subscription-request",
+    )
+
+    assert response.status_code == 401
+
+
 def test_get_organization(client):
     headers = get_auth_headers(client)
 

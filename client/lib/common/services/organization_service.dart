@@ -86,4 +86,13 @@ class OrganizationService {
           trialEndsAt == null ? null : DateTime.parse(trialEndsAt as String),
     );
   }
+
+  Future<bool> requestSubscription() async {
+    final response = await _http.post(
+      _http.getUri('organizations/subscription-request'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    return response.statusCode == 202;
+  }
 }

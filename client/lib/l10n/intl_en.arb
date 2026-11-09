@@ -611,6 +611,9 @@
     }
   },
   "subscribePageTitle": "Subscribe",
-  "subscribePageTrialEnded": "Your 30-day free trial has ended.",
-  "subscribePageContactPrompt": "To subscribe and restore access to your organization, contact:"
+  "subscribePageTrialEnded": "Your organization's free trial has ended.",
+  "subscribePageButton": "Request information",
+  "subscribePageContactPrompt": "Interested in subscribing? Send us a request and we’ll contact you with more information and pricing.",
+  "subscribePageRequestSent": "Your request has been sent. We’ll contact you soon with more information and pricing.",
+  "subscribePageRequestError": "Your request could not be sent. Please try again."
 }

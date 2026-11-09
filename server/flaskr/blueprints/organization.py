@@ -54,6 +54,19 @@ def get_organization_status():
     }), 200
 
 
+@organizations_bp.post("/subscription-request")
+@check_auth_decorator(AuthRequirement.HasOrg)
+def request_organization_subscription():
+    org = OrganizationDataHandler.get_org(g.org_id)
+    user = UserDataHandler.get_user_by_id(g.user_id)
+
+    email_obj = EmailDrafter.create_organization_subscription_request_email(
+        g.org_id, org[2], user.email
+    )
+    EmailSender.send_email(email_obj)
+    return "", 202
+
+
 @organizations_bp.post("invitations")
 @input_middleware(LambdaBuilder(
     ("email", EmailValidator()),

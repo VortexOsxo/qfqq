@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/services/organization_service.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -20,8 +21,10 @@ class OrganizationAccessStatusBanner extends ConsumerWidget {
 
   Widget buildInternal(BuildContext context, OrganizationAccessInfo? info) {
     if (info == null || info.status != 'freeTrialAccess') {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
+
+    final loc = S.of(context);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 6),
@@ -32,16 +35,19 @@ class OrganizationAccessStatusBanner extends ConsumerWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.info_outline),
+          const Icon(Icons.info_outline),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              S
-                  .of(context)
-                  .organizationFreeTrialEndsOn(
-                    formatDateDay(context, info.trialEndsAt),
-                  ),
+              loc.organizationFreeTrialEndsOn(
+                formatDateDay(context, info.trialEndsAt),
+              ),
             ),
+          ),
+          TextButton.icon(
+            onPressed: () => context.go('/organization/subscription'),
+            icon: const Icon(Icons.contact_support_outlined),
+            label: Text(loc.subscribePageTitle),
           ),
         ],
       ),

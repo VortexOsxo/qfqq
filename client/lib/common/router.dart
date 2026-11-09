@@ -27,10 +27,6 @@ String? redirect(Ref ref, BuildContext context, GoRouterState state) {
     return '/organizations/links';
   }
 
-  if (authState.hasOrg && !authState.hasOrgWithAccess && loc != '/subscribe') {
-    return '/subscribe';
-  }
-
   return null;
 }
 
@@ -108,7 +104,10 @@ abstract class RouterBuilder {
   List<RoutePlan> otherRoutes() {
     return [
       RoutePlan('/organizations/links', (c, s) => const OrganizationLinksPage()),
-      RoutePlan('/subscribe', (c, s) => const SubscribePage()),
+      RoutePlan(
+        '/subscribe',
+        (c, s) => const SubscribePage(hasOrganizationAccess: false),
+      ),
     ];
   }
 

@@ -16,6 +16,7 @@ import 'package:qfqq/common/pages/project_modification_page.dart';
 import 'package:qfqq/desktop/pages/projects/project_page.dart';
 import 'package:qfqq/desktop/pages/projects/project_view_page.dart';
 import 'package:qfqq/common/pages/user_pages/profile_page.dart';
+import 'package:qfqq/common/pages/user_pages/subscribe_page.dart';
 import 'package:qfqq/desktop/pages/user_pages/signup_page.dart';
 import 'package:qfqq/desktop/pages/agendas/agenda_list_page.dart';
 import 'package:qfqq/common/pages/help_page.dart';
@@ -78,20 +79,22 @@ class DesktopRouterBuilder extends RouterBuilder {
         return ProjectViewPage(projectId: int.tryParse(id) ?? 0);
       }),
       RoutePlan('/organization', (c, s) => const OrganizationPage()),
+      RoutePlan(
+        '/organization/subscription',
+        (c, s) => const SubscribePage(hasOrganizationAccess: true),
+      ),
       RoutePlan('/organization/invite', (c, s) => const OrganizationInvitePage()),
       RoutePlan('/profile', (c, s) => const ProfilePage()),
       RoutePlan('/help', (c, s) => HelpPage(content: s.extra as HelpContent)),
     ];
   }
 
-  
   @override
   List<RoutePlan> authShellRoutes() {
     return [
       RoutePlan('/login', (c, s) => const LoginPage()),
       RoutePlan('/signup', (c, s) => const SignupPage()),
       RoutePlan('/forgotten-password', (c, s) => const ForgottenPasswordPage()),
-      
     ];
   }
 }

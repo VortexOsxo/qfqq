@@ -277,3 +277,22 @@ class EmailDrafter:
         )
 
         return Email(subject=subject, recipient=recipient, body=body)
+
+    @staticmethod
+    def create_organization_subscription_request_email(
+        organization_id: int, organization_name: str, requester_email: str
+    ) -> Email:
+        recipient = "qfqq.communication@gmail.com"
+        safe_organization_name = escape(organization_name)
+        safe_requester_email = escape(requester_email)
+        subject = f"Demande d'abonnement pour l'organisation {organization_id}"
+        body = EmailDrafter._format_email_card(
+            f"""\
+<p>Une demande d'abonnement a été faite pour l'organisation suivante :</p>
+<ul>
+    <li><strong>Identifiant de l'organisation :</strong> {organization_id}</li>
+    <li><strong>Nom de l'organisation :</strong> {safe_organization_name}</li>
+    <li><strong>Adresse e-mail du demandeur :</strong> {safe_requester_email}</li>
+</ul>"""
+        )
+        return Email(subject=subject, recipient=recipient, body=body)
