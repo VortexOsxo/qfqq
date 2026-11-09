@@ -610,5 +610,8 @@
     "placeholders": {
       "date": {}
     }
-  }
+  },
+  "subscribePageTitle": "Abonnement",
+  "subscribePageTrialEnded": "Votre période d’essai gratuite de 30 jours est terminée.",
+  "subscribePageContactPrompt": "Pour vous abonner et rétablir l’accès à votre organisation, contactez :"
 }

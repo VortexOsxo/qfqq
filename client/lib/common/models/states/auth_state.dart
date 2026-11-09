@@ -4,11 +4,17 @@ import 'package:qfqq/common/models/user.dart';
 class AuthState {
   final String sessionId;
   final User? user;
-  final bool hasOrg;
+  final String? orgStatus;
   final Permissions? permissions;
 
   bool get isAuthenticated => sessionId.isNotEmpty;
-  AuthState({String? sessionId, this.user, bool? hasOrg, this.permissions})
-    : sessionId = sessionId ?? "",
-      hasOrg = hasOrg ?? false;
+  bool get hasOrg => orgStatus != null;
+  bool get hasOrgWithAccess => orgStatus == 'paidAccess' || orgStatus == 'freeTrialAccess';
+
+  AuthState({
+    String? sessionId,
+    this.user,
+    this.orgStatus,
+    this.permissions,
+  }) : sessionId = sessionId ?? "";
 }

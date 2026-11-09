@@ -33,7 +33,8 @@ class LoginPageViewModelState extends ConsumerState<LoginPageViewModel> {
     } else {
       final authState = ref.read(authStateProvider);
       if (authState.hasOrg) {
-        ref.read(routerProvider).go('/');
+        final path = authState.hasOrgWithAccess ? '/' : '/subscribe';
+        ref.read(routerProvider).go(path);
       } else {
         ref.read(routerProvider).go('/organizations/links');
       }

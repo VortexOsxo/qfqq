@@ -609,5 +609,8 @@
     "placeholders": {
       "date": {}
     }
-  }
+  },
+  "subscribePageTitle": "Subscribe",
+  "subscribePageTrialEnded": "Your 30-day free trial has ended.",
+  "subscribePageContactPrompt": "To subscribe and restore access to your organization, contact:"
 }

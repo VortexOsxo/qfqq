@@ -36,8 +36,9 @@ def signup(firstName, lastName, email, password, code):
         OrganizationDataHandler.remove_invite(orgId=orgId, email=email)
         set_tenant(orgId)
         permissions = UserDataHandler.get_user_permissions(userId=user.id)
+        orgStatus = OrganizationDataHandler.get_access_status(orgId)
         return (
-            create_auth_response(*create_tokens(user.id, orgId), user, True, permissions),
+            create_auth_response(*create_tokens(user.id, orgId), user, orgStatus, permissions),
             201,
         )
 
@@ -64,9 +65,10 @@ def login(email, password):
 
     set_tenant(orgId)
     permissions = UserDataHandler.get_user_permissions(userId=user.id)
+    orgStatus = OrganizationDataHandler.get_access_status(orgId)
 
     return (
-        create_auth_response(*create_tokens(user.id, orgId), user, True, permissions),
+        create_auth_response(*create_tokens(user.id, orgId), user, orgStatus, permissions),
         200,
     )
 
@@ -128,9 +130,10 @@ def refresh():
 
     set_tenant(orgId)
     permissions = UserDataHandler.get_user_permissions(userId=userId)
+    orgStatus = OrganizationDataHandler.get_access_status(orgId)
 
     return (
-        create_auth_response(*create_tokens(userId, orgId), user, True, permissions),
+        create_auth_response(*create_tokens(userId, orgId), user, orgStatus, permissions),
         200,
     )
 

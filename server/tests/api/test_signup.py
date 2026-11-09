@@ -116,7 +116,7 @@ def test_signup_with_invitation_joins_organization(client):
     response = signup_with_invitation(client, email)
 
     assert response.status_code == 201
-    assert response.get_json()["hasOrg"] is True
+    assert response.get_json()["orgStatus"] == "freeTrialAccess"
     user = UserDataHandler.get_user_by_email(email)
     assert user is not None
     assert OrganizationDataHandler.get_user_org_id(user.id) == 1

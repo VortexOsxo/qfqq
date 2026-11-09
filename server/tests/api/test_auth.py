@@ -70,7 +70,7 @@ def test_refresh_for_user_with_organization(client):
     assert response.status_code == 200
     body = response.get_json()
     assert body["id"] == 1
-    assert body["hasOrg"] is True
+    assert body["orgStatus"] == "freeTrialAccess"
     assert body["contribute"] is True
     assert body["deleteContent"] is True
     assert body["manageTeam"] is True
@@ -120,7 +120,7 @@ def test_refresh_for_user_without_organization(client):
     assert response.status_code == 200
     body = response.get_json()
     assert body["email"] == "unaffiliated@example.com"
-    assert body["hasOrg"] is False
+    assert body["orgStatus"] is None
     assert "contribute" not in body
     assert "deleteContent" not in body
     assert "manageTeam" not in body
@@ -218,3 +218,37 @@ def test_delete_account_without_organization(client):
 
     assert response.status_code == 204
     assert UserDataHandler.get_user_by_id(user.id) is None
+
+def test_login_returns_org_status(client):
+    password = "password123!"
+    user = UserDataHandler.create_user(
+        "Login", "OrgUser", "login-org@example.com", generate_password_hash(password)
+    )
+    with get_db_access() as conn:
+        conn.execute(
+            "INSERT INTO public.memberships (userId, orgId) VALUES (%s, 1);",
+            (user.id,),
+        )
+    response = client.post(
+        "/auth/login",
+        json={"email": user.email, "password": password},
+        headers={"QfqqVersion": "0.0.1"},
+    )
+    assert response.status_code == 200
+    body = response.get_json()
+    assert body["orgStatus"] == "freeTrialAccess"
+
+
+def test_login_without_org_returns_null_org_status(client):
+    password = "password123!"
+    user = UserDataHandler.create_user(
+        "Login", "NoOrg", "login-no-org@example.com", generate_password_hash(password)
+    )
+    response = client.post(
+        "/auth/login",
+        json={"email": user.email, "password": password},
+        headers={"QfqqVersion": "0.0.1"},
+    )
+    assert response.status_code == 200
+    body = response.get_json()
+    assert body["orgStatus"] is None

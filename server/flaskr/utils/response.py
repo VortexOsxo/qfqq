@@ -1,12 +1,12 @@
 from flask import jsonify
 
 
-def create_auth_response(session_token, refresh_token, user, hasOrg=False, permissions=None):
+def create_auth_response(session_token, refresh_token, user, orgStatus=None, permissions=None):
     return jsonify(
         {
             "session_token": session_token,
             "refresh_token": refresh_token,
-            "hasOrg": hasOrg,
+            "orgStatus": orgStatus,
         }
         | user.to_dict()
         | (

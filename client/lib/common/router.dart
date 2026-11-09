@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/pages/not_found_page.dart';
+import 'package:qfqq/common/pages/user_pages/subscribe_page.dart';
 import 'package:qfqq/common/pages/user_pages/organization_links_page.dart';
 import 'package:qfqq/common/providers/navigator_key.dart';
 import 'package:qfqq/common/services/auth_service.dart';
@@ -24,6 +25,10 @@ String? redirect(Ref ref, BuildContext context, GoRouterState state) {
 
   if (!authState.hasOrg && !allowedRoutesNoOrg.contains(loc)) {
     return '/organizations/links';
+  }
+
+  if (authState.hasOrg && !authState.hasOrgWithAccess && loc != '/subscribe') {
+    return '/subscribe';
   }
 
   return null;
@@ -102,7 +107,8 @@ abstract class RouterBuilder {
 
   List<RoutePlan> otherRoutes() {
     return [
-      RoutePlan('/organizations/links', (c, s) => const OrganizationLinksPage())
+      RoutePlan('/organizations/links', (c, s) => const OrganizationLinksPage()),
+      RoutePlan('/subscribe', (c, s) => const SubscribePage()),
     ];
   }
 

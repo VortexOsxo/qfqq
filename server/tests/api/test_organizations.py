@@ -198,3 +198,20 @@ def test_invite_user_already_invited_to_other_organization(client):
     )
     assert response.status_code == 400
     assert response.json == {"email": InputError.UserAlreadyInvitedToOtherOrganization.value}
+
+
+def test_create_organization_returns_org_status(client):
+    user = UserDataHandler.create_user(
+        "Creator", "User", "creator@example.com", "dummyhash"
+    )
+    headers = get_auth_headers(client, user_id=user.id, org_id=None)
+    response = client.post(
+        "/organizations/",
+        json={"organizationName": "Brand New Org"},
+        headers=headers,
+    )
+    assert response.status_code == 201
+    body = response.get_json()
+    assert body["orgStatus"] == "freeTrialAccess"
+    assert body["session_token"]
+    assert body["refresh_token"]

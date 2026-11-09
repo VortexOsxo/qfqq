@@ -12,9 +12,10 @@ class NotFoundPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final loc = S.of(context);
 
-    final isAuthenticated = ref.watch(authStateProvider.select((state) => state.isAuthenticated));
-
     final isMobile = platformType == PlatformType.mobile;
+
+    final auth = ref.watch(authStateProvider);
+    final path = auth.isAuthenticated ? (auth.hasOrgWithAccess ? '/' : '/subscribe') : '/login';
 
     return Scaffold(
       body: Center(
@@ -25,7 +26,7 @@ class NotFoundPage extends ConsumerWidget {
             const SizedBox(height: 4),
             Text(loc.notFoundMessage, textAlign: TextAlign.center),
             TextButton(
-              onPressed: () => context.go(isAuthenticated ? '/' : '/login'),
+              onPressed: () => context.go(path),
               child: Text(loc.commonBack),
             ),
           ],

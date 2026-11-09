@@ -161,7 +161,7 @@ class AuthService extends StateNotifier<AuthState> {
     state = AuthState(
       sessionId: data['session_token'],
       user: User.fromJson(data),
-      hasOrg: data['hasOrg'],
+      orgStatus: data['orgStatus'],
       permissions: Permissions.fromJson(data),
     );
     _sessionTokenStore.token = state.sessionId;

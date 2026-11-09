@@ -30,9 +30,10 @@ def create_organization(organizationName: str):
     user = UserDataHandler.get_user_by_id(userId)
     set_tenant(orgId)
     permissions = UserDataHandler.get_user_permissions(userId)
+    orgStatus = OrganizationDataHandler.get_access_status(orgId)
 
     return (
-        create_auth_response(*tokens, user, True, permissions),
+        create_auth_response(*tokens, user, orgStatus, permissions),
         201
     )
 

@@ -24,7 +24,8 @@ void main() async {
     final restored = await container.read(authStateProvider.notifier).refresh();
     final auth = container.read(authStateProvider);
     if (restored && auth.hasOrg) {
-      container.read(routerProvider).go('/');
+      final path = auth.hasOrgWithAccess ? '/' : '/subscribe';
+      container.read(routerProvider).go(path);
     }
   } catch (_) {
 
