@@ -68,11 +68,11 @@ def request_organization_subscription():
 
 
 @organizations_bp.post("invitations")
+@check_auth_decorator(AuthRequirement.HasOrgWithAccess)
 @input_middleware(LambdaBuilder(
     ("email", EmailValidator()),
     ("roleId", RoleIdValidator())
 ))
-@check_auth_decorator(AuthRequirement.HasOrgWithAccess)
 @permission_middleware(Permission.ManageTeam)
 def invite_to_organization(email, roleId):
     orgId = g.org_id
