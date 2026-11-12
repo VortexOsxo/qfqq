@@ -16,6 +16,7 @@ from flaskr.models import decision_status_as_string
 from .report_columns import (
     MEETING_REPORT_DECISION_COLUMNS,
     PROJECT_REPORT_DECISION_COLUMNS,
+    select_report_columns,
 )
 
 
@@ -196,15 +197,13 @@ class ReportBuilder:
         table.setStyle(content_table_style)
         return table
 
-    def decisions_table(self, decisions, lang):
+    def decisions_table(self, decisions, lang, selected_columns=None):
         cols = MEETING_REPORT_DECISION_COLUMNS
         headers = (
-            ["N", "Action", "Responsable", "Échéance", "Statut", "Date de fin"]
+            ["Numéro de décision", "Action", "Responsable", "Échéance", "Statut", "Date de fin"]
             if lang == "fr"
             else ["N", "Action", "Responsible", "Due Date", "Status", "Completed Date"]
         )
-        self.table_header(headers, cols)
-
         values = [
             [
                 str(decision.number+1000),
@@ -220,17 +219,36 @@ class ReportBuilder:
             ]
             for decision, responsible_name in decisions
         ]
+        headers, values, cols = select_report_columns(
+            [
+                "number",
+                "description",
+                "responsible",
+                "dueDate",
+                "status",
+                "completedDate",
+            ],
+            headers,
+            values,
+            cols,
+            selected_columns,
+            {"description"},
+        )
+        if not headers:
+            return
+
+        self.table_header(headers, cols)
         self.table_content(values, cols)
 
-    def decisions_table_with_meeting_id(self, decisions, lang):
+    def decisions_table_with_meeting_id(
+        self, decisions, lang, selected_columns=None
+    ):
         cols = PROJECT_REPORT_DECISION_COLUMNS
         headers = (
-            ["N", "R", "Action", "Responsable", "Échéance", "Statut", "Date de fin"]
+            ["Numéro de décision", "R", "Action", "Responsable", "Échéance", "Statut", "Date de fin"]
             if lang == "fr"
             else ["N", "M", "Action", "Responsible", "Due Date", "Status", "Completed Date"]
         )
-        self.table_header(headers, cols)
-
         values = [
             [
                 str(decision.number),
@@ -247,6 +265,26 @@ class ReportBuilder:
             ]
             for decision, responsible_name in decisions
         ]
+        headers, values, cols = select_report_columns(
+            [
+                "number",
+                "meetingId",
+                "description",
+                "responsible",
+                "dueDate",
+                "status",
+                "completedDate",
+            ],
+            headers,
+            values,
+            cols,
+            selected_columns,
+            {"description"},
+        )
+        if not headers:
+            return
+
+        self.table_header(headers, cols)
         self.table_content(values, cols)
 
     def build(self, reset=True):
