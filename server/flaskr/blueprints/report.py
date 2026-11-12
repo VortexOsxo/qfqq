@@ -60,6 +60,13 @@ def get_report_filter_params() -> dict[str, str]:
     return params
 
 
+def get_report_column_params() -> set[str] | None:
+    value = request.args.get("columns")
+    if value is None:
+        return None
+    return {column for column in value.split(",") if column}
+
+
 def _send_participants_async(emails: list[str], report_bytes: bytes, lang: str):
     for email_addr in emails:
         email = EmailDrafter.create_participant_report_email(email_addr, report_bytes, lang=lang)
@@ -81,13 +88,22 @@ def _send_meeting_async(emails: list[str], report_bytes: bytes, meeting_title: s
         EmailSender.send_email(email)
 
 
-def _get_participants_buffer(filters: dict[str, str] | None = None):
+def _get_participants_buffer(
+    filters: dict[str, str] | None = None,
+    selected_columns: set[str] | None = None,
+):
     decisions = DecisionDataHandler.get_decisions_and_responsible()
     if filters:
         decisions = filter_decisions(decisions, filters)
-    return ParticipantsReportBuilder(decisions, g.language).build()
+    return ParticipantsReportBuilder(
+        decisions, g.language, selected_columns
+    ).build()
 
-def _get_participant_buffer(participantId: int | str, filters: dict[str, str] | None = None):
+def _get_participant_buffer(
+    participantId: int | str,
+    filters: dict[str, str] | None = None,
+    selected_columns: set[str] | None = None,
+):
     try:
         p_id = int(participantId)
     except (ValueError, TypeError):
@@ -97,21 +113,33 @@ def _get_participant_buffer(participantId: int | str, filters: dict[str, str] | 
         return None, None
     if filters:
         decisions = filter_decisions(decisions, filters)
-    return ParticipantReportBuilder(decisions, name, g.language).build(), name
+    return (
+        ParticipantReportBuilder(
+            decisions, name, g.language, selected_columns
+        ).build(),
+        name,
+    )
 
-def _get_project_buffer(id: int, filters: dict[str, str] | None = None):
+def _get_project_buffer(
+    id: int,
+    filters: dict[str, str] | None = None,
+    selected_columns: set[str] | None = None,
+):
     project = ProjectDataHandler.get_project_by_id(id)
     if project is None: return None, None
     decisions = DecisionDataHandler.get_decisions_and_responsible_by_project(project.id)
     if filters:
         decisions = filter_decisions(decisions, filters)
-    buffer = ProjectReportBuilder(project, decisions, g.language).build()
+    buffer = ProjectReportBuilder(
+        project, decisions, g.language, selected_columns
+    ).build()
     return buffer, project.title
 
 def _get_meeting_buffer(
     id: int,
     filters: dict[str, str] | None = None,
     show_comments: bool = False,
+    selected_columns: set[str] | None = None,
 ):
     meeting, participants = MeetingDataHandler.get_meeting_with_participants(id)
     if meeting is None: return None, None
@@ -130,6 +158,7 @@ def _get_meeting_buffer(
         nextMeeting,
         g.language,
         reviews=reviews,
+        selected_columns=selected_columns,
     ).build()
     return buffer, meeting.title
 
@@ -137,10 +166,13 @@ def _get_meeting_buffer(
 @reports_bp.route("/participants")
 def get_participants_report():
     filters = get_report_filter_params()
+    selected_columns = get_report_column_params()
     responsible_id = filters.get("responsibleId")
 
     if responsible_id:
-        buffer, _ = _get_participant_buffer(responsible_id, filters)
+        buffer, _ = _get_participant_buffer(
+            responsible_id, filters, selected_columns
+        )
         if buffer is None:
             return "Participant not found", 404
         return send_file(
@@ -150,7 +182,7 @@ def get_participants_report():
         )
 
     return send_file(
-        _get_participants_buffer(filters),
+        _get_participants_buffer(filters, selected_columns),
         mimetype="application/pdf",
         as_attachment=False,
     )
@@ -158,11 +190,14 @@ def get_participants_report():
 @reports_bp.route("/participants/send", methods=["POST"])
 def send_participants_report():
     filters = get_report_filter_params()
+    selected_columns = get_report_column_params()
     emails = request.json.get("emails", [])
     responsible_id = filters.get("responsibleId")
 
     if responsible_id:
-        buffer, name = _get_participant_buffer(responsible_id, filters)
+        buffer, name = _get_participant_buffer(
+            responsible_id, filters, selected_columns
+        )
         if buffer is None:
             return "Participant not found", 404
         threading.Thread(
@@ -173,14 +208,19 @@ def send_participants_report():
 
     threading.Thread(
         target=_send_participants_async,
-        args=(emails, _get_participants_buffer(filters).getvalue(), g.language),
+        args=(
+            emails,
+            _get_participants_buffer(filters, selected_columns).getvalue(),
+            g.language,
+        ),
     ).start()
     return jsonify({"success": True})
 
 @reports_bp.route("/projects/<int:id>")
 def get_project_report(id: int):
     filters = get_report_filter_params()
-    buffer, _ = _get_project_buffer(id, filters)
+    selected_columns = get_report_column_params()
+    buffer, _ = _get_project_buffer(id, filters, selected_columns)
     if not buffer: return "Not found", 404
     return send_file(
         buffer,
@@ -191,8 +231,9 @@ def get_project_report(id: int):
 @reports_bp.route("/projects/<int:id>/send", methods=["POST"])
 def send_project_report(id: int):
     filters = get_report_filter_params()
+    selected_columns = get_report_column_params()
     emails = request.json.get("emails", [])
-    buffer, project_title = _get_project_buffer(id, filters)
+    buffer, project_title = _get_project_buffer(id, filters, selected_columns)
     if not buffer: return "Not found", 404
     threading.Thread(target=_send_project_async, args=(emails, buffer.getvalue(), project_title, g.language)).start()
     return jsonify({"success": True})
@@ -202,7 +243,10 @@ def send_project_report(id: int):
 def get_meeting_report(id: int):
     show_comments = request.args.get("showComments", "false").lower() == "true"
     filters = get_report_filter_params()
-    buffer, _ = _get_meeting_buffer(id, filters, show_comments)
+    selected_columns = get_report_column_params()
+    buffer, _ = _get_meeting_buffer(
+        id, filters, show_comments, selected_columns
+    )
     if not buffer: return "Not found", 404
     return send_file(
         buffer,
@@ -214,8 +258,11 @@ def get_meeting_report(id: int):
 def send_meeting_report(id: int):
     show_comments = request.args.get("showComments", "false").lower() == "true"
     filters = get_report_filter_params()
+    selected_columns = get_report_column_params()
     emails = request.json.get("emails", [])
-    buffer, meeting_title = _get_meeting_buffer(id, filters, show_comments)
+    buffer, meeting_title = _get_meeting_buffer(
+        id, filters, show_comments, selected_columns
+    )
     if not buffer: return "Not found", 404
     threading.Thread(target=_send_meeting_async, args=(emails, buffer.getvalue(), meeting_title, g.language)).start()
     return jsonify({"success": True})

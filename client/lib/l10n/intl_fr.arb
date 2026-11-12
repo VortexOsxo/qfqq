@@ -529,7 +529,12 @@
   "commonObjectContent": "Contenu",
   "commonObjectReviews": "Retours",
   "commonNoReviews": "Aucun retour trouvé",
-  "reportShowComments": "Afficher le retour de réunion",
+  "reportOptionsTitle": "Contenu du rapport",
+  "reportShowReviews": "Inclure les retours de réunion",
+  "reportColumnNumber": "Numéro de décision",
+  "reportColumnMeetingNumber": "R",
+  "reportColumnDueDate": "Échéance",
+  "reportColumnCompletedDate": "Date de fin",
 
   "widgetProjectLabel": "Projet",
   "widgetUserLabel": "Utilisateur",

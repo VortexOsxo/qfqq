@@ -7,6 +7,7 @@ from flaskr.reports.report_columns import (
     PARTICIPANTS_REPORT_COLUMNS,
     PROJECT_REPORT_DECISION_COLUMNS,
     calculate_column_widths,
+    select_report_columns,
 )
 
 
@@ -50,3 +51,31 @@ def test_report_column_widths_total_100_percent(columns):
 
 def test_participant_reports_share_the_same_column_widths():
     assert PARTICIPANT_REPORT_COLUMNS is PARTICIPANTS_REPORT_COLUMNS
+
+
+def test_select_report_columns_expands_only_flexible_columns():
+    headers, rows, widths = select_report_columns(
+        ["number", "description", "dueDate", "status"],
+        ["N", "Action", "Due Date", "Status"],
+        [["1", "Task", "2026-01-01", "Open"]],
+        ["5%", "71%", "12%", "12%"],
+        {"number", "description", "dueDate"},
+        {"description"},
+    )
+
+    assert headers == ["N", "Action", "Due Date"]
+    assert rows == [["1", "Task", "2026-01-01"]]
+    assert widths == ["5%", "83%", "12%"]
+
+
+def test_select_report_columns_leaves_fixed_columns_unchanged_without_flexible_column():
+    _, _, widths = select_report_columns(
+        ["number", "description", "dueDate"],
+        ["N", "Action", "Due Date"],
+        [["1", "Task", "2026-01-01"]],
+        ["5%", "83%", "12%"],
+        {"number", "dueDate"},
+        {"description"},
+    )
+
+    assert widths == ["5%", "12%"]

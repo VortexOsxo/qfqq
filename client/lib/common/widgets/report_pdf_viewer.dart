@@ -49,9 +49,20 @@ class ReportPdfViewer extends ConsumerStatefulWidget {
   ConsumerState<ReportPdfViewer> createState() => _ReportPdfViewerState();
 }
 
+class _ReportDisplayOptions {
+  final Set<String> columns;
+  final bool showReviews;
+
+  const _ReportDisplayOptions({
+    required this.columns,
+    required this.showReviews,
+  });
+}
+
 class _ReportPdfViewerState extends ConsumerState<ReportPdfViewer> {
   bool _isExpanded = false;
   bool _showComments = true;
+  late Set<String> _selectedColumns;
 
   int? _stagedProjectId;
   int? _stagedResponsibleId;
@@ -59,14 +70,18 @@ class _ReportPdfViewerState extends ConsumerState<ReportPdfViewer> {
 
   DecisionReportFilter _appliedFilter = const DecisionReportFilter();
 
+  @override
+  void initState() {
+    super.initState();
+    _selectedColumns = widget.config.availableColumns.toSet();
+  }
+
   String get _currentPdfUrl {
     final queryParams = {
       ..._appliedFilter.toQueryParams(),
+      'columns': _selectedColumns.join(','),
       if (widget.config.hasComments) 'showComments': _showComments.toString(),
     };
-    if (queryParams.isEmpty) {
-      return widget.config.pdfUrl;
-    }
     final uri = Uri.parse(widget.config.pdfUrl);
     final merged = {...uri.queryParameters, ...queryParams};
     return uri.replace(queryParameters: merged).toString();
@@ -107,15 +122,16 @@ class _ReportPdfViewerState extends ConsumerState<ReportPdfViewer> {
           pdfName: widget.config.pdfName,
         ),
 
-        if (widget.config.hasComments || widget.config.hasFilter)
+        if (widget.config.availableColumns.isNotEmpty ||
+            widget.config.hasFilter)
           Positioned(
             top: 64,
             right: 16,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (widget.config.hasComments && !_isExpanded)
-                  _buildCommentsButton(loc, theme),
+                if (!_isExpanded && widget.config.availableColumns.isNotEmpty)
+                  _buildDisplayOptionsButton(loc),
                 if (widget.config.hasFilter)
                   if (_isExpanded)
                     _buildExpandedFilterCard(context, loc, theme)
@@ -128,20 +144,122 @@ class _ReportPdfViewerState extends ConsumerState<ReportPdfViewer> {
     );
   }
 
-  Widget _buildCommentsButton(S loc, ThemeData theme) {
+  Widget _buildDisplayOptionsButton(S loc) {
     return Card(
       child: IconButton(
-        tooltip: loc.reportShowComments,
-        onPressed: () {
-          setState(() => _showComments = !_showComments);
-        },
-        icon: Icon(
-          Icons.comment_outlined,
-          color: _showComments ? theme.colorScheme.primary : null,
-        ),
+        tooltip: loc.reportOptionsTitle,
+        onPressed: _openDisplayOptions,
+        icon: const Icon(Icons.view_column_outlined),
       ),
     );
   }
+
+  Future<void> _openDisplayOptions() async {
+    var columns = _selectedColumns.toSet();
+    var showReviews = _showComments;
+
+    final options = await showDialog<_ReportDisplayOptions>(
+      context: context,
+      builder:
+          (dialogContext) => StatefulBuilder(
+            builder:
+                (context, setDialogState) => AlertDialog(
+                  title: Text(S.of(context).reportOptionsTitle),
+                  content: SizedBox(
+                    width: 380,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxHeight: 420),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ...widget.config.availableColumns.map(
+                              (column) => CheckboxListTile(
+                                contentPadding: EdgeInsets.zero,
+                                dense: true,
+                                controlAffinity:
+                                    ListTileControlAffinity.leading,
+                                title: Text(
+                                  _columnLabel(S.of(context), column),
+                                ),
+                                value: columns.contains(column),
+                                onChanged: (value) {
+                                  setDialogState(() {
+                                    if (value ?? false) {
+                                      columns.add(column);
+                                    } else {
+                                      columns.remove(column);
+                                    }
+                                  });
+                                },
+                              ),
+                            ),
+                            if (widget.config.hasComments)
+                              CheckboxListTile(
+                                contentPadding: EdgeInsets.zero,
+                                dense: true,
+                                controlAffinity:
+                                    ListTileControlAffinity.leading,
+                                title: Text(S.of(context).reportShowReviews),
+                                value: showReviews,
+                                onChanged: (value) {
+                                  setDialogState(
+                                    () => showReviews = value ?? false,
+                                  );
+                                },
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        setDialogState(() {
+                          columns = widget.config.availableColumns.toSet();
+                          showReviews = true;
+                        });
+                      },
+                      child: Text(S.of(context).commonReset),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(dialogContext),
+                      child: Text(S.of(context).commonCancel),
+                    ),
+                    FilledButton(
+                      onPressed:
+                          () => Navigator.pop(
+                            dialogContext,
+                            _ReportDisplayOptions(
+                              columns: columns,
+                              showReviews: showReviews,
+                            ),
+                          ),
+                      child: Text(S.of(context).commonConfirm),
+                    ),
+                  ],
+                ),
+          ),
+    );
+
+    if (options == null || !mounted) return;
+    setState(() {
+      _selectedColumns = options.columns;
+      _showComments = options.showReviews;
+    });
+  }
+
+  String _columnLabel(S loc, String column) => switch (column) {
+    'number' => loc.reportColumnNumber,
+    'meetingId' => loc.reportColumnMeetingNumber,
+    'description' => loc.commonAction,
+    'responsible' => loc.decisionListResponsible,
+    'dueDate' => loc.reportColumnDueDate,
+    'status' => loc.attributeStatus,
+    'completedDate' => loc.reportColumnCompletedDate,
+    _ => column,
+  };
 
   Widget _buildFilterButton(S loc) {
     final activeCount = _appliedFilter.activeCount;

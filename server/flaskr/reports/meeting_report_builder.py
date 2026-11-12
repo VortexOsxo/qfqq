@@ -30,6 +30,7 @@ class MeetingReportBuilder:
         nextMeeting: MeetingAgenda | None,
         lang: str = "fr",
         reviews: list[MeetingReview] | None = None,
+        selected_columns: set[str] | None = None,
     ):
         self.meeting = meeting
         self.author = author
@@ -38,6 +39,7 @@ class MeetingReportBuilder:
         self.nextMeeting = nextMeeting
         self.lang = lang
         self.reviews = reviews or []
+        self.selected_columns = selected_columns
 
     def build(self):
         buffer = BytesIO()
@@ -65,7 +67,9 @@ class MeetingReportBuilder:
         builder.division()
         builder.spacer(10)
 
-        builder.decisions_table(self.decisions, self.lang)
+        builder.decisions_table(
+            self.decisions, self.lang, self.selected_columns
+        )
 
         if self.reviews:
             builder.spacer(10)
