@@ -1,20 +1,26 @@
 from .report_builder import ReportBuilder
-from .report_columns import PARTICIPANTS_REPORT_COLUMNS
-from flaskr.models import Decision, decision_status_as_string
+from flaskr.models import Decision
 from io import BytesIO
+from .report_columns import PARTICIPANTS_REPORT_COLUMNS, get_column_id_from_name, ReportLineManager
 
 
 class ParticipantsReportBuilder:
 
-    def __init__(self, decisions: list[tuple[Decision, str]], lang: str = "fr"):
+    def __init__(
+        self,
+        decisions: list[tuple[Decision, str]],
+        lang: str = "fr",
+        selected_columns: set[str] | None = None,
+    ):
         self.decisions_by_participant = {}
         # TODO: Handle name collision
-        for decision, responsible_name in decisions:
-            if responsible_name not in self.decisions_by_participant:
-                self.decisions_by_participant[responsible_name] = [] 
-            self.decisions_by_participant[responsible_name].append(decision)
+        for decision in decisions:
+            if decision.responsibleName not in self.decisions_by_participant:
+                self.decisions_by_participant[decision.responsibleName] = [] 
+            self.decisions_by_participant[decision.responsibleName].append(decision)
 
         self.lang = lang
+        self.selected_columns = selected_columns
 
     def build(self):
         buffer = BytesIO()
@@ -24,32 +30,21 @@ class ParticipantsReportBuilder:
 
         builder.division()
 
-        cols = PARTICIPANTS_REPORT_COLUMNS
-        headers = (
-            ["N", "Action", "Échéance", "Statut", "Date de fin"]
-            if self.lang == "fr"
-            else ["N", "Action", "Due Date", "Status", "Completed Date"]
-        )
-        builder.table_header(headers, cols)
+        columns_id = PARTICIPANTS_REPORT_COLUMNS
+        if self.selected_columns is not None:
+            columns_id = columns_id & {
+                get_column_id_from_name(name) for name in self.selected_columns
+            }
 
-        for participant, decisions in self.decisions_by_participant.items():
-            builder.table_section(participant)
-
-            values = [
-                [
-                    str(decision.number),
-                    decision.description,
-                    decision.dueDate.strftime("%Y-%m-%d") if decision.dueDate else " ",
-                    decision_status_as_string(decision.status, self.lang),
-                    (
-                        decision.completedDate.strftime("%Y-%m-%d")
-                        if decision.completedDate
-                        else " "
-                    ),
-                ]
-                for decision in decisions
-            ]
-            builder.table_content(values, cols)
+        _, headers, widths = ReportLineManager.process([], columns_id, self.lang)
+        if headers:
+            builder.table_header(headers, widths)
+            for participant, decisions in self.decisions_by_participant.items():
+                values, _, _ = ReportLineManager.process(
+                    decisions, columns_id, self.lang
+                )
+                builder.table_section(participant)
+                builder.table_content(values, widths)
 
         builder.build()
         buffer.seek(0)

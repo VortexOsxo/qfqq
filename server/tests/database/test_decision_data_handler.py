@@ -61,34 +61,30 @@ def test_get_decisions_by_project(app):
     assert decisions[2].description == "Review accessibility checklist"
 
 def test_get_decisions_and_responsible_by_project(app):
-    decisions_with_responsibles = DecisionDataHandler.get_decisions_and_responsible_by_project(1)
-    decisions = [dr[0] for dr in decisions_with_responsibles]
-    responsibles = [dr[1] for dr in decisions_with_responsibles]
+    lines = DecisionDataHandler.get_decisions_report_lines_by_project(1)
 
-    assert len(decisions) == 3
-    decisions.sort(key=lambda x: x.description)
-    assert decisions[0].description == "Create accessibility checklist"
-    assert decisions[1].description == "Define MVP features"
-    assert decisions[2].description == "Review accessibility checklist"
+    assert len(lines) == 3
+    lines.sort(key=lambda x: x.description)
+    assert lines[0].description == "Create accessibility checklist"
+    assert lines[1].description == "Define MVP features"
+    assert lines[2].description == "Review accessibility checklist"
 
-    assert len(responsibles) == len(decisions)
-    assert "Carol Davis" in responsibles
-    assert "Alice Smith" in responsibles
+    assert lines[0].responsibleName == "Carol Davis"
+    assert lines[1].responsibleName == "Alice Smith"
 
 def test_get_decisions_and_responsible_by_responsible(app):
-    decisions, name = DecisionDataHandler.get_decisions_and_responsible_by_responsible(3)
+    lines = DecisionDataHandler.get_decision_report_lines_by_responsible(3)
 
-    assert len(decisions) == 2
-    assert decisions[0].description == "Review accessibility checklist"
-    assert decisions[1].description == "Create accessibility checklist"
-    assert decisions[1].responsibleId == 3
-    assert name == "Carol Davis"
+    assert len(lines) == 2
+    assert lines[0].description == "Review accessibility checklist"
+    assert lines[1].description == "Create accessibility checklist"
+    assert lines[1].responsibleId == 3
+
+    assert all(line.responsibleName == "Carol Davis" for line in lines)
 
 def test_get_decisions_and_responsible_by_responsible(app):
-    decisions, name = DecisionDataHandler.get_decisions_and_responsible_by_responsible(5)
-
-    assert decisions is None
-    assert name is None
+    lines = DecisionDataHandler.get_decision_report_lines_by_responsible(5)
+    assert len(lines) == 0
 
 def test_create_decision(app):
     dueDate = datetime.now() + timedelta(days=7)
@@ -121,15 +117,12 @@ def test_get_not_found_decision_by_responsible(app):
     assert len(decisions) == 0
 
 def test_get_decisions_and_responsible_by_meeting(app):
-    decisions_with_responsibles = DecisionDataHandler.get_decisions_and_responsible_by_meeting(1)
-    decisions = [dr[0] for dr in decisions_with_responsibles]
-    responsibles = [dr[1] for dr in decisions_with_responsibles]
+    lines = DecisionDataHandler.get_decision_report_lines_by_meeting(1)
 
-    assert len(decisions) == 1
-    assert decisions[0].description == "Define MVP features"
+    assert len(lines) == 1
+    assert lines[0].description == "Define MVP features"
 
-    assert len(responsibles) == len(decisions)
-    assert responsibles[0] == "Alice Smith"
+    assert lines[0].responsibleName == "Alice Smith"
 
 def test_set_status_as_completed(app, monkeypatch):
     import datetime
