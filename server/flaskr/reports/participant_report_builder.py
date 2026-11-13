@@ -1,6 +1,6 @@
 from .report_builder import ReportBuilder
-from .report_columns import PARTICIPANT_REPORT_COLUMNS, select_report_columns
-from flaskr.models import Decision, decision_status_as_string
+from .report_columns import PARTICIPANT_REPORT_COLUMNS as columns
+from flaskr.models import Decision
 from io import BytesIO
 
 
@@ -29,37 +29,7 @@ class ParticipantReportBuilder:
 
         builder.division()
 
-        cols = PARTICIPANT_REPORT_COLUMNS
-        headers = (
-            ["N", "Action", "Échéance", "Statut", "Date de fin"]
-            if self.lang == "fr"
-            else ["N", "Action", "Due Date", "Status", "Completed Date"]
-        )
-        values = [
-            [
-                str(decision.number),
-                decision.description,
-                decision.dueDate.strftime("%Y-%m-%d") if decision.dueDate else " ",
-                decision_status_as_string(decision.status, self.lang),
-                (
-                    decision.completedDate.strftime("%Y-%m-%d")
-                    if decision.completedDate
-                    else " "
-                ),
-            ]
-            for decision in self.decisions
-        ]
-        headers, values, cols = select_report_columns(
-            ["number", "description", "dueDate", "status", "completedDate"],
-            headers,
-            values,
-            cols,
-            self.selected_columns,
-            {"description"},
-        )
-        if headers:
-            builder.table_header(headers, cols)
-            builder.table_content(values, cols)
+        builder.decisions_table(self.decisions, self.lang, columns, self.selected_columns)
 
         builder.build()
         buffer.seek(0)

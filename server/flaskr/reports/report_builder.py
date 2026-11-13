@@ -12,11 +12,9 @@ from reportlab.lib.enums import TA_LEFT, TA_RIGHT
 from reportlab.lib.colors import HexColor, lightgrey
 from reportlab.pdfbase.pdfmetrics import stringWidth
 
-from flaskr.models import decision_status_as_string
 from .report_columns import (
-    MEETING_REPORT_DECISION_COLUMNS,
-    PROJECT_REPORT_DECISION_COLUMNS,
-    select_report_columns,
+    ReportLineManager,
+    get_column_id_from_name,
 )
 
 
@@ -197,95 +195,18 @@ class ReportBuilder:
         table.setStyle(content_table_style)
         return table
 
-    def decisions_table(self, decisions, lang, selected_columns=None):
-        cols = MEETING_REPORT_DECISION_COLUMNS
-        headers = (
-            ["N", "Action", "Responsable", "Échéance", "Statut", "Date de fin"]
-            if lang == "fr"
-            else ["N", "Action", "Responsible", "Due Date", "Status", "Completed Date"]
-        )
-        values = [
-            [
-                str(decision.number+1000),
-                decision.description,
-                decision.responsibleName,
-                decision.dueDate.strftime("%Y-%m-%d") if decision.dueDate else " ",
-                decision_status_as_string(decision.status, lang),
-                (
-                    decision.completedDate.strftime("%Y-%m-%d")
-                    if decision.completedDate
-                    else " "
-                ),
-            ]
-            for decision in decisions
-        ]
-        headers, values, cols = select_report_columns(
-            [
-                "number",
-                "description",
-                "responsible",
-                "dueDate",
-                "status",
-                "completedDate",
-            ],
-            headers,
-            values,
-            cols,
-            selected_columns,
-            {"description"},
-        )
+    def decisions_table(self, lines, lang, column_ids, selected_columns=None):
+        if selected_columns is not None:
+            column_ids = column_ids & {
+                get_column_id_from_name(name) for name in selected_columns
+            }
+
+        values, headers, widths = ReportLineManager.process(lines, column_ids, lang)
         if not headers:
             return
 
-        self.table_header(headers, cols)
-        self.table_content(values, cols)
-
-    def decisions_table_with_meeting_id(
-        self, decisions, lang, selected_columns=None
-    ):
-        cols = PROJECT_REPORT_DECISION_COLUMNS
-        headers = (
-            ["N", "R", "Action", "Responsable", "Échéance", "Statut", "Date de fin"]
-            if lang == "fr"
-            else ["N", "M", "Action", "Responsible", "Due Date", "Status", "Completed Date"]
-        )
-        values = [
-            [
-                str(decision.number),
-                str(decision.meetingId),
-                decision.description,
-                decision.responsibleName,
-                decision.dueDate.strftime("%Y-%m-%d") if decision.dueDate else " ",
-                decision_status_as_string(decision.status, lang),
-                (
-                    decision.completedDate.strftime("%Y-%m-%d")
-                    if decision.completedDate
-                    else " "
-                ),
-            ]
-            for decision in decisions
-        ]
-        headers, values, cols = select_report_columns(
-            [
-                "number",
-                "meetingId",
-                "description",
-                "responsible",
-                "dueDate",
-                "status",
-                "completedDate",
-            ],
-            headers,
-            values,
-            cols,
-            selected_columns,
-            {"description"},
-        )
-        if not headers:
-            return
-
-        self.table_header(headers, cols)
-        self.table_content(values, cols)
+        self.table_header(headers, widths)
+        self.table_content(values, widths)
 
     def build(self, reset=True):
         self.doc.build(self.elements)

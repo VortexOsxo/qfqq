@@ -25,11 +25,9 @@ class ReportEndpointService(ABC):
         threading.Thread(target=self._send_emails, args=(emails, bytes)).start()
         return jsonify({"success": True})
 
-    @abstractmethod
     def _init(self):
         pass
 
-    @abstractmethod
     def _is_valid(self):
         return True
 
