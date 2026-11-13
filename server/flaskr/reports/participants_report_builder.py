@@ -14,10 +14,10 @@ class ParticipantsReportBuilder:
     ):
         self.decisions_by_participant = {}
         # TODO: Handle name collision
-        for decision, responsible_name in decisions:
-            if responsible_name not in self.decisions_by_participant:
-                self.decisions_by_participant[responsible_name] = [] 
-            self.decisions_by_participant[responsible_name].append(decision)
+        for decision in decisions:
+            if decision.responsibleName not in self.decisions_by_participant:
+                self.decisions_by_participant[decision.responsibleName] = [] 
+            self.decisions_by_participant[decision.responsibleName].append(decision)
 
         self.lang = lang
         self.selected_columns = selected_columns
@@ -32,7 +32,7 @@ class ParticipantsReportBuilder:
 
         cols = PARTICIPANTS_REPORT_COLUMNS
         headers = (
-            ["Numéro de décision", "Action", "Échéance", "Statut", "Date de fin"]
+            ["N", "Action", "Échéance", "Statut", "Date de fin"]
             if self.lang == "fr"
             else ["N", "Action", "Due Date", "Status", "Completed Date"]
         )

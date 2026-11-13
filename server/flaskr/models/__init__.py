@@ -11,3 +11,4 @@ from .data.notification import (
 	ScheduledNotification,
 )
 from .permission import Permission
+from .decision_report_line import DecisionReportLine
