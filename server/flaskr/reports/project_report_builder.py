@@ -1,5 +1,6 @@
 from .report_builder import ReportBuilder
 from flaskr.models import Decision, Project
+from .report_columns import PROJECT_REPORT_DECISION_COLUMNS as columns
 from io import BytesIO
 
 
@@ -27,9 +28,7 @@ class ProjectReportBuilder:
         builder.division()
         builder.spacer(10)
 
-        builder.decisions_table_with_meeting_id(
-            self.decisions, self.lang, self.selected_columns
-        )
+        builder.decisions_table(self.decisions, self.lang, columns, self.selected_columns)
 
         builder.build()
         buffer.seek(0)
