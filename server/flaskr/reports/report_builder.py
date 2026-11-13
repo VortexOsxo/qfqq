@@ -200,7 +200,7 @@ class ReportBuilder:
     def decisions_table(self, decisions, lang, selected_columns=None):
         cols = MEETING_REPORT_DECISION_COLUMNS
         headers = (
-            ["Numéro de décision", "Action", "Responsable", "Échéance", "Statut", "Date de fin"]
+            ["N", "Action", "Responsable", "Échéance", "Statut", "Date de fin"]
             if lang == "fr"
             else ["N", "Action", "Responsible", "Due Date", "Status", "Completed Date"]
         )
@@ -208,7 +208,7 @@ class ReportBuilder:
             [
                 str(decision.number+1000),
                 decision.description,
-                responsible_name,
+                decision.responsibleName,
                 decision.dueDate.strftime("%Y-%m-%d") if decision.dueDate else " ",
                 decision_status_as_string(decision.status, lang),
                 (
@@ -217,7 +217,7 @@ class ReportBuilder:
                     else " "
                 ),
             ]
-            for decision, responsible_name in decisions
+            for decision in decisions
         ]
         headers, values, cols = select_report_columns(
             [
@@ -245,7 +245,7 @@ class ReportBuilder:
     ):
         cols = PROJECT_REPORT_DECISION_COLUMNS
         headers = (
-            ["Numéro de décision", "R", "Action", "Responsable", "Échéance", "Statut", "Date de fin"]
+            ["N", "R", "Action", "Responsable", "Échéance", "Statut", "Date de fin"]
             if lang == "fr"
             else ["N", "M", "Action", "Responsible", "Due Date", "Status", "Completed Date"]
         )
@@ -254,7 +254,7 @@ class ReportBuilder:
                 str(decision.number),
                 str(decision.meetingId),
                 decision.description,
-                responsible_name,
+                decision.responsibleName,
                 decision.dueDate.strftime("%Y-%m-%d") if decision.dueDate else " ",
                 decision_status_as_string(decision.status, lang),
                 (
@@ -263,7 +263,7 @@ class ReportBuilder:
                     else " "
                 ),
             ]
-            for decision, responsible_name in decisions
+            for decision in decisions
         ]
         headers, values, cols = select_report_columns(
             [

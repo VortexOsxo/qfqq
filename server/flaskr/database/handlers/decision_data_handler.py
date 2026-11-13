@@ -1,5 +1,5 @@
 from datetime import datetime
-from flaskr.models import Decision, DecisionStatus
+from flaskr.models import Decision, DecisionStatus, DecisionReportLine
 from ..postgres import read_query, write_query, get_db_access
 from flaskr.utils.time import time_now_to_string
 
@@ -69,11 +69,11 @@ class DecisionDataHandler:
         return [Decision(*d) for d in decisions]
     
     @classmethod
-    def get_decisions_and_responsible_by_project(cls, projectId: int) -> list[tuple[Decision, str]]:
+    def get_decisions_report_lines_by_project(cls, projectId: int) -> list[DecisionReportLine]:
         query = "SELECT dc.*, u.firstName, u.lastName from decisionsComplete dc JOIN users u ON u.id = dc.responsibleId WHERE projectId = %s"
 
         decisions = read_query(query, (projectId,))
-        return [(Decision(*d[:-2]), d[-2] + ' ' + d[-1]) for d in decisions]
+        return [DecisionReportLine(*d[:-2], d[-2] + ' ' + d[-1]) for d in decisions]
 
     @classmethod
     def get_decision_by_responsible(cls, responsibleId: int):
@@ -82,31 +82,29 @@ class DecisionDataHandler:
         return [Decision(*d) for d in decisions]
     
     @classmethod
-    def get_decisions_and_responsible(cls) -> list[tuple[Decision, str]]:
+    def get_decisions_report_lines(cls) -> list[DecisionReportLine]:
         query = "SELECT dc.*, u.firstName, u.lastName from decisionsComplete dc JOIN users u ON u.id = dc.responsibleId;"
         decisions = read_query(query)
-        return [(Decision(*d[:-2]), d[-2] + ' ' + d[-1]) for d in decisions]
+        return [DecisionReportLine(*d[:-2], d[-2] + ' ' + d[-1]) for d in decisions]
 
     @classmethod
-    def get_decisions_and_responsible_by_responsible(cls, responsibleId: int) -> tuple[list[Decision], str] | tuple[None, None]:
+    def get_decision_report_lines_by_responsible(cls, responsibleId: int) -> list[DecisionReportLine]:
         nameResult = read_query("SELECT u.firstName, u.lastName FROM users u WHERE u.id = %s;", (responsibleId,))
         if len(nameResult) == 0:
-            return None, None
+            return []
         
         name = nameResult[0][0] + ' ' + nameResult[0][1]
 
         query = "SELECT dc.* from decisionsComplete dc WHERE dc.responsibleId = %s;"
         decisions = read_query(query, (responsibleId,))
-        decisions = [Decision(*d) for d in decisions]
-
-        return decisions, name
+        return [DecisionReportLine(*d, name) for d in decisions]
 
     @classmethod
-    def get_decisions_and_responsible_by_meeting(cls, meetingId: int) -> list[tuple[Decision, str]]:
+    def get_decision_report_lines_by_meeting(cls, meetingId: int) -> list[DecisionReportLine]:
         query = "SELECT dc.*, u.firstName, u.lastName from decisionsComplete dc JOIN users u ON u.id = dc.responsibleId WHERE dc.meetingId = %s"
 
         decisions = read_query(query, (meetingId,))
-        return [(Decision(*d[:-2]), d[-2] + ' ' + d[-1]) for d in decisions]
+        return [DecisionReportLine(*d[:-2], d[-2] + ' ' + d[-1]) for d in decisions]
     
     @classmethod
     def complete_decision(cls, id: int):

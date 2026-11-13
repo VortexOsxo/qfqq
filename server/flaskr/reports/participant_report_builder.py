@@ -31,7 +31,7 @@ class ParticipantReportBuilder:
 
         cols = PARTICIPANT_REPORT_COLUMNS
         headers = (
-            ["Numéro de décision", "Action", "Échéance", "Statut", "Date de fin"]
+            ["N", "Action", "Échéance", "Statut", "Date de fin"]
             if self.lang == "fr"
             else ["N", "Action", "Due Date", "Status", "Completed Date"]
         )

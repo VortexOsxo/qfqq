@@ -10,7 +10,7 @@ def calculate_column_widths(widths: list[float | None]) -> list[str]:
     ]
 
 
-NUMBER_PERCENT = 16
+NUMBER_PERCENT = 5
 DATE_PERCENT = 12
 STATUS_PERCENT = 12
 
