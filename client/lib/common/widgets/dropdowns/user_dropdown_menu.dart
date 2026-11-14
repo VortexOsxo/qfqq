@@ -15,6 +15,7 @@ class UserDropdownMenu extends ConsumerWidget {
   final ValueChanged<int?> valueChanged;
   final String anyLabel;
   final String? noneLabel;
+  final double width;
 
   const UserDropdownMenu({
     super.key,
@@ -22,6 +23,7 @@ class UserDropdownMenu extends ConsumerWidget {
     required this.valueChanged,
     required this.anyLabel,
     this.noneLabel,
+    this.width = 200,
   });
 
   @override
@@ -43,6 +45,7 @@ class UserDropdownMenu extends ConsumerWidget {
       initialSelection: initialUserId ?? _anyUserValue,
       onSelected:
           (value) => valueChanged(value == _anyUserValue ? null : value),
+      width: width,
     );
   }
 }
