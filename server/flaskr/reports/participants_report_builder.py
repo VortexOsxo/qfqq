@@ -1,7 +1,7 @@
 from .report_builder import ReportBuilder
 from flaskr.models import Decision
 from io import BytesIO
-from .report_columns import PARTICIPANTS_REPORT_COLUMNS, get_column_id_from_name, ReportLineManager
+from .report_columns import PARTICIPANTS_REPORT_COLUMNS as columns, ReportLineManager
 
 
 class ParticipantsReportBuilder:
@@ -9,8 +9,8 @@ class ParticipantsReportBuilder:
     def __init__(
         self,
         decisions: list[tuple[Decision, str]],
+        selected_columns: set[int],
         lang: str = "fr",
-        selected_columns: set[str] | None = None,
     ):
         self.decisions_by_participant = {}
         # TODO: Handle name collision
@@ -30,11 +30,7 @@ class ParticipantsReportBuilder:
 
         builder.division()
 
-        columns_id = PARTICIPANTS_REPORT_COLUMNS
-        if self.selected_columns is not None:
-            columns_id = columns_id & {
-                get_column_id_from_name(name) for name in self.selected_columns
-            }
+        columns_id = columns & self.selected_columns
 
         _, headers, widths = ReportLineManager.process([], columns_id, self.lang)
         if headers:

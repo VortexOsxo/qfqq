@@ -9,8 +9,8 @@ class ProjectReportBuilder:
         self,
         project: Project,
         decisions: list[tuple[Decision, str]],
+        selected_columns: set[int],
         lang: str = "fr",
-        selected_columns: set[str] | None = None,
     ):
         self.project = project
         self.decisions = decisions

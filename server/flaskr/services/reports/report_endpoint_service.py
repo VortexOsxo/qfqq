@@ -5,6 +5,7 @@ import threading
 from flaskr.database.handlers import DecisionDataHandler, ProjectDataHandler, MeetingDataHandler, UserDataHandler
 from flaskr.services.emails import EmailSender, EmailDrafter
 from flaskr.reports import ParticipantReportBuilder, ParticipantsReportBuilder, ProjectReportBuilder, MeetingReportBuilder
+from flaskr.reports.report_columns import ALL_REPORT_COLUMNS
 
 class ReportEndpointService(ABC):
     def __init__(self, id=None):
@@ -147,8 +148,15 @@ def _filter_decisions(decisions):
             filtered = [d for d in filtered if d.status == status]
         return filtered
 
-def _get_report_column_params() -> set[str] | None:
+def _get_report_column_params() -> set[int]:
         value = request.args.get("columns")
         if value is None:
-            return None
-        return {column for column in value.split(",") if column}
+            return set(ALL_REPORT_COLUMNS)
+
+        columns = set()
+        for column in value.split(","):
+            try:
+                columns.add(int(column))
+            except ValueError:
+                continue
+        return columns

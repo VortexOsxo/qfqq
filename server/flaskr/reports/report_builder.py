@@ -12,10 +12,7 @@ from reportlab.lib.enums import TA_LEFT, TA_RIGHT
 from reportlab.lib.colors import HexColor, lightgrey
 from reportlab.pdfbase.pdfmetrics import stringWidth
 
-from .report_columns import (
-    ReportLineManager,
-    get_column_id_from_name,
-)
+from .report_columns import ReportLineManager
 
 
 styles = getSampleStyleSheet()
@@ -195,11 +192,8 @@ class ReportBuilder:
         table.setStyle(content_table_style)
         return table
 
-    def decisions_table(self, lines, lang, column_ids, selected_columns=None):
-        if selected_columns is not None:
-            column_ids = column_ids & {
-                get_column_id_from_name(name) for name in selected_columns
-            }
+    def decisions_table(self, lines, lang, column_ids, selected_columns):
+        column_ids = column_ids & selected_columns
 
         values, headers, widths = ReportLineManager.process(lines, column_ids, lang)
         if not headers:
