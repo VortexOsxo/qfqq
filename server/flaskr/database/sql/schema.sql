@@ -7,7 +7,8 @@ meetingsReviews,
 meetingsThemes,
 meetingsParticipants,
 decisions,
-decisionsAssistants CASCADE;
+decisionsAssistants,
+reportsConfigs CASCADE;
 
 DROP TYPE IF EXISTS projectStatus,
 meetingStatus,
@@ -171,3 +172,12 @@ INSERT INTO
 VALUES
   ('default', true, false, false),
   ('admin', true, true, true);
+
+CREATE TABLE
+  reportsConfigs (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name TEXT NOT NULL,
+    encodedColumns TEXT NOT NULL,
+    encodedFilters TEXT NOT NULL,
+    showReviews BOOLEAN NOT NULL
+  );

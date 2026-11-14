@@ -6,6 +6,7 @@ from flaskr.database.handlers import DecisionDataHandler, ProjectDataHandler, Me
 from flaskr.services.emails import EmailSender, EmailDrafter
 from flaskr.reports import ParticipantReportBuilder, ParticipantsReportBuilder, ProjectReportBuilder, MeetingReportBuilder
 from flaskr.reports.report_columns import ALL_REPORT_COLUMNS
+from flaskr.utils.report import *
 
 class ReportEndpointService(ABC):
     def __init__(self, id=None):
@@ -54,9 +55,8 @@ class ParticipantsReportEndpointService(ReportEndpointService):
         return EmailDrafter.create_participant_report_email(email_addr, report_bytes, lang=g.language)
 
     def get_buffer(self):
-        return ParticipantsReportBuilder(
-            self._get_decisions(), g.language, _get_report_column_params()
-        ).build()
+        columns = get_report_column(args=request.args, default=ALL_REPORT_COLUMNS)
+        return ParticipantsReportBuilder(self._get_decisions(), columns, g.language).build()
 
 
 class ParticipantReportEndpointService(ReportEndpointService):
@@ -74,9 +74,8 @@ class ParticipantReportEndpointService(ReportEndpointService):
         return EmailDrafter.create_participant_report_email(email_addr, report_bytes, self.name, g.language)
 
     def get_buffer(self):
-        return ParticipantReportBuilder(
-            self._get_decisions(), self.name, g.language, _get_report_column_params()
-        ).build()
+        columns = get_report_column(args=request.args, default=ALL_REPORT_COLUMNS)
+        return ParticipantReportBuilder(self._get_decisions(), self.name, columns, g.language).build()
 
 
 class ProjectReportEndpointService(ReportEndpointService):
@@ -93,14 +92,13 @@ class ProjectReportEndpointService(ReportEndpointService):
         return EmailDrafter.create_project_report_email(email_addr, report_bytes, self.project.title, g.language)
 
     def get_buffer(self):
-        return ProjectReportBuilder(
-            self.project, self._get_decisions(), g.language, _get_report_column_params()
-        ).build()
+        columns = get_report_column(args=request.args, default=ALL_REPORT_COLUMNS)
+        return ProjectReportBuilder(self._get_decisions(), columns, g.language).build()
 
 
 class MeetingReportEndpointService(ReportEndpointService):
     def _init(self):
-        self.show_comments = request.args.get("showComments", "false").lower() == "true"
+        self.show_comments = get_report_show_reviews()
 
         self.meeting, self.participants = MeetingDataHandler.get_meeting_with_participants(self.id)
         self.user = UserDataHandler.get_user_by_id(g.user_id)
@@ -117,46 +115,26 @@ class MeetingReportEndpointService(ReportEndpointService):
     def get_buffer(self):
         nextMeeting = MeetingDataHandler.get_next_meeting(self.meeting.id)
         reviews = MeetingDataHandler.get_meeting_reviews(self.meeting.id) if self.show_comments else []
+        columns = get_report_column(args=request.args, default=ALL_REPORT_COLUMNS)
         return MeetingReportBuilder(
             self.meeting,
             self.user,
             self.participants,
             self._get_decisions(),
+            columns,
             nextMeeting,
             g.language,
             reviews=reviews,
-            selected_columns=_get_report_column_params(),
         ).build()
 
 def _filter_decisions(decisions):
-        filters = request.args
-        try:
-            projectId = filters.get("projectId", None, type=int)
-            responsibleId = filters.get("responsibleId", None, type=int)
-            status = filters.get("status", None, type=str)
-        except:
-            return decisions
+    filters = get_report_filter(args=request.args)
 
-        filtered = decisions
-        if projectId is not None:
-            filtered = [d for d in filtered if d.projectId == projectId]
-
-        if responsibleId is not None:
-            filtered = [d for d in filtered if d.responsibleId == responsibleId]
-
-        if status is not None:
-            filtered = [d for d in filtered if d.status == status]
-        return filtered
-
-def _get_report_column_params() -> set[int]:
-        value = request.args.get("columns")
-        if value is None:
-            return set(ALL_REPORT_COLUMNS)
-
-        columns = set()
-        for column in value.split(","):
-            try:
-                columns.add(int(column))
-            except ValueError:
-                continue
-        return columns
+    filtered = decisions
+    if projectId := filters.get("projectId"):
+        filtered = [d for d in filtered if d.projectId == projectId]
+    if responsibleId := filters.get("responsibleId"):
+        filtered = [d for d in filtered if d.responsibleId == responsibleId]
+    if status := filters.get("status"):
+        filtered = [d for d in filtered if d.status == status]
+    return filtered

@@ -1,11 +1,9 @@
--- qfqq-128 : Adding a project status
-DO $$
-BEGIN
-    CREATE TYPE projectStatus AS ENUM ('inProgress', 'completed');
-EXCEPTION
-    WHEN duplicate_object THEN NULL;
-END
-$$;
-
-ALTER TABLE projects
-ADD COLUMN IF NOT EXISTS status projectStatus NOT NULL DEFAULT 'inProgress';
+-- qfqq-161 : Adding reports configs
+CREATE TABLE IF NOT EXISTS
+  reportsConfigs (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name TEXT NOT NULL,
+    encodedColumns TEXT NOT NULL,
+    encodedFilters TEXT NOT NULL,
+    showReviews BOOLEAN NOT NULL
+  );

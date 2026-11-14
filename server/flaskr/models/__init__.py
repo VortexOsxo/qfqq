@@ -10,5 +10,6 @@ from .data.notification import (
 	NotificationTarget,
 	ScheduledNotification,
 )
+from .data.report_config import ReportConfig
 from .permission import Permission
 from .decision_report_line import DecisionReportLine
