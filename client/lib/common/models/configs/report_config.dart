@@ -2,29 +2,38 @@ import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/project.dart';
 
 class ReportConfig {
+  // Ids match the column definitions in the backend report columns.
+  static const numberColumn = 1;
+  static const meetingColumn = 2;
+  static const descriptionColumn = 3;
+  static const responsibleColumn = 4;
+  static const dueDateColumn = 5;
+  static const statusColumn = 6;
+  static const completedDateColumn = 7;
+
   static const participantColumns = [
-    'number',
-    'description',
-    'dueDate',
-    'status',
-    'completedDate',
+    numberColumn,
+    descriptionColumn,
+    dueDateColumn,
+    statusColumn,
+    completedDateColumn,
   ];
   static const meetingColumns = [
-    'number',
-    'description',
-    'responsible',
-    'dueDate',
-    'status',
-    'completedDate',
+    numberColumn,
+    descriptionColumn,
+    responsibleColumn,
+    dueDateColumn,
+    statusColumn,
+    completedDateColumn,
   ];
   static const projectColumns = [
-    'number',
-    'meetingId',
-    'description',
-    'responsible',
-    'dueDate',
-    'status',
-    'completedDate',
+    numberColumn,
+    meetingColumn,
+    descriptionColumn,
+    responsibleColumn,
+    dueDateColumn,
+    statusColumn,
+    completedDateColumn,
   ];
 
   final String pdfUrl;
@@ -33,7 +42,7 @@ class ReportConfig {
   final bool hasResponsibleFilter;
   final bool hasStatusFilter;
   final bool hasComments;
-  final List<String> availableColumns;
+  final List<int> availableColumns;
 
   const ReportConfig({
     required this.pdfUrl,

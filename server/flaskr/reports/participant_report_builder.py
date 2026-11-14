@@ -10,8 +10,8 @@ class ParticipantReportBuilder:
         self,
         decisions: list[Decision],
         name: str,
+        selected_columns: set[int],     
         lang: str = "fr",
-        selected_columns: set[str] | None = None,
     ):
         self.decisions = decisions
         self.name = name.title()

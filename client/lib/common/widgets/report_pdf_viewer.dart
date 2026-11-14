@@ -50,7 +50,7 @@ class ReportPdfViewer extends ConsumerStatefulWidget {
 }
 
 class _ReportDisplayOptions {
-  final Set<String> columns;
+  final Set<int> columns;
   final bool showReviews;
   final DecisionReportFilter filter;
 
@@ -63,7 +63,7 @@ class _ReportDisplayOptions {
 
 class _ReportPdfViewerState extends ConsumerState<ReportPdfViewer> {
   bool _showComments = true;
-  late Set<String> _selectedColumns;
+  late Set<int> _selectedColumns;
 
   DecisionReportFilter _appliedFilter = const DecisionReportFilter();
 
@@ -331,14 +331,14 @@ class _ReportPdfViewerState extends ConsumerState<ReportPdfViewer> {
     );
   }
 
-  String _columnLabel(S loc, String column) => switch (column) {
-    'number' => loc.reportColumnNumber,
-    'meetingId' => loc.reportColumnMeetingNumber,
-    'description' => loc.commonAction,
-    'responsible' => loc.decisionListResponsible,
-    'dueDate' => loc.reportColumnDueDate,
-    'status' => loc.attributeStatus,
-    'completedDate' => loc.reportColumnCompletedDate,
-    _ => column,
+  String _columnLabel(S loc, int column) => switch (column) {
+    ReportConfig.numberColumn => loc.reportColumnNumber,
+    ReportConfig.meetingColumn => loc.reportColumnMeetingNumber,
+    ReportConfig.descriptionColumn => loc.commonAction,
+    ReportConfig.responsibleColumn => loc.decisionListResponsible,
+    ReportConfig.dueDateColumn => loc.reportColumnDueDate,
+    ReportConfig.statusColumn => loc.attributeStatus,
+    ReportConfig.completedDateColumn => loc.reportColumnCompletedDate,
+    _ => column.toString(),
   };
 }

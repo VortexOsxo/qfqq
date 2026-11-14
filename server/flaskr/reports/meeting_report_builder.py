@@ -27,10 +27,10 @@ class MeetingReportBuilder:
         author: User,
         participants: list[str],
         decisions: list[tuple[Decision, str]],
+        selected_columns: set[int],
         nextMeeting: MeetingAgenda | None,
         lang: str = "fr",
         reviews: list[MeetingReview] | None = None,
-        selected_columns: set[str] | None = None,
     ):
         self.meeting = meeting
         self.author = author

@@ -20,19 +20,6 @@ get_column_definitions = lambda lang: [
     Column(7, ("Date de fin", "Completed Date"), 12, lambda line: (line.completedDate.strftime("%Y-%m-%d") if line.completedDate else " "))
 ]
 
-def get_column_id_from_name(name):
-    ids = {
-        "number": 1,
-        "meetingId": 2,
-        "description": 3,
-        "responsible": 4,
-        "dueDate": 5,
-        "status": 6,
-        "completedDate": 7,
-    }
-    return ids.get(name, 1)
-
-
 class ReportLineManager:
     @staticmethod
     def process(lines, column_ids, lang):
@@ -82,6 +69,7 @@ class ReportLineManager:
         ]
 
 
+ALL_REPORT_COLUMNS = {column.id for column in get_column_definitions("en")}
 PARTICIPANT_REPORT_COLUMNS = {1, 3, 5, 6, 7}
 PARTICIPANTS_REPORT_COLUMNS = PARTICIPANT_REPORT_COLUMNS
 MEETING_REPORT_DECISION_COLUMNS = {1, 3, 4, 5, 6, 7}
