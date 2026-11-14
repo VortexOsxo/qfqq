@@ -212,3 +212,7 @@ class SlugValidator(StringValidator):
             return InputError.ObjectIdNotFound
         
         return InputError.NoError
+
+class EmptyValidator(InputValidator):
+    def validate(self, value) -> InputError:
+        return InputError.NoError
