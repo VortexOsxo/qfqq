@@ -52,21 +52,18 @@ class ReportPdfViewer extends ConsumerStatefulWidget {
 class _ReportDisplayOptions {
   final Set<String> columns;
   final bool showReviews;
+  final DecisionReportFilter filter;
 
   const _ReportDisplayOptions({
     required this.columns,
     required this.showReviews,
+    required this.filter,
   });
 }
 
 class _ReportPdfViewerState extends ConsumerState<ReportPdfViewer> {
-  bool _isExpanded = false;
   bool _showComments = true;
   late Set<String> _selectedColumns;
-
-  int? _stagedProjectId;
-  int? _stagedResponsibleId;
-  DecisionStatus? _stagedStatus;
 
   DecisionReportFilter _appliedFilter = const DecisionReportFilter();
 
@@ -87,76 +84,66 @@ class _ReportPdfViewerState extends ConsumerState<ReportPdfViewer> {
     return uri.replace(queryParameters: merged).toString();
   }
 
-  void _applyFilters() {
-    final newFilter = DecisionReportFilter(
-      projectId: _stagedProjectId,
-      responsibleId: _stagedResponsibleId,
-      status: _stagedStatus,
-    );
-    setState(() {
-      _appliedFilter = newFilter;
-    });
-    widget.onFilterApplied?.call(newFilter);
-  }
-
-  void _resetFilters() {
-    setState(() {
-      _stagedProjectId = null;
-      _stagedResponsibleId = null;
-      _stagedStatus = null;
-      _appliedFilter = const DecisionReportFilter();
-    });
-    widget.onFilterApplied?.call(_appliedFilter);
-  }
-
   @override
   Widget build(BuildContext context) {
     final loc = S.of(context);
-    final theme = Theme.of(context);
+    final isMobile = MediaQuery.sizeOf(context).width < 600;
 
     return Stack(
       children: [
-        PdfViewerWidget(
-          key: ValueKey(_currentPdfUrl),
-          pdfUrl: _currentPdfUrl,
-          pdfName: widget.config.pdfName,
-        ),
+        PdfViewerWidget(pdfUrl: _currentPdfUrl, pdfName: widget.config.pdfName),
 
         if (widget.config.availableColumns.isNotEmpty ||
             widget.config.hasFilter)
           Positioned(
-            top: 64,
+            top: isMobile ? 80 : 64,
             right: 16,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (!_isExpanded && widget.config.availableColumns.isNotEmpty)
-                  _buildDisplayOptionsButton(loc),
-                if (widget.config.hasFilter)
-                  if (_isExpanded)
-                    _buildExpandedFilterCard(context, loc, theme)
-                  else
-                    _buildFilterButton(loc),
-              ],
-            ),
+            child: _buildOptionsButton(loc),
           ),
       ],
     );
   }
 
-  Widget _buildDisplayOptionsButton(S loc) {
+  Widget _buildOptionsButton(S loc) {
+    final activeCount = _appliedFilter.activeCount;
+
     return Card(
       child: IconButton(
-        tooltip: loc.reportOptionsTitle,
-        onPressed: _openDisplayOptions,
-        icon: const Icon(Icons.view_column_outlined),
+        tooltip: loc.reportOptionsDialogTitle,
+        onPressed: _openReportOptions,
+        icon: Badge(
+          isLabelVisible: activeCount > 0,
+          label: Text(activeCount.toString()),
+          child: const Icon(Icons.tune),
+        ),
       ),
     );
   }
 
-  Future<void> _openDisplayOptions() async {
+  Future<void> _openReportOptions() async {
     var columns = _selectedColumns.toSet();
     var showReviews = _showComments;
+    var projectId = _appliedFilter.projectId;
+    var responsibleId = _appliedFilter.responsibleId;
+    var status = _appliedFilter.status;
+    final loc = S.of(context);
+    final theme = Theme.of(context);
+    final dropdownWidth = (MediaQuery.sizeOf(context).width - 120).clamp(
+      200.0,
+      360.0,
+    );
+
+    final projectEntries = UnmodifiableListView<DropdownMenuEntry<int?>>([
+      DropdownMenuEntry<int?>(value: null, label: loc.agendaListAnyProject),
+      ...ref
+          .read(projectsProvider)
+          .map(
+            (project) => DropdownMenuEntry<int?>(
+              value: project.id,
+              label: '${loc.commonProject}: ${project.title}',
+            ),
+          ),
+    ]);
 
     final options = await showDialog<_ReportDisplayOptions>(
       context: context,
@@ -164,50 +151,120 @@ class _ReportPdfViewerState extends ConsumerState<ReportPdfViewer> {
           (dialogContext) => StatefulBuilder(
             builder:
                 (context, setDialogState) => AlertDialog(
-                  title: Text(S.of(context).reportOptionsTitle),
+                  title: Text(loc.reportOptionsDialogTitle),
                   content: SizedBox(
-                    width: 380,
+                    width:
+                        MediaQuery.sizeOf(context).width < 540
+                            ? MediaQuery.sizeOf(context).width - 80
+                            : 460,
                     child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxHeight: 420),
+                      constraints: const BoxConstraints(maxHeight: 560),
                       child: SingleChildScrollView(
                         child: Column(
-                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            ...widget.config.availableColumns.map(
-                              (column) => CheckboxListTile(
-                                contentPadding: EdgeInsets.zero,
-                                dense: true,
-                                controlAffinity:
-                                    ListTileControlAffinity.leading,
-                                title: Text(
-                                  _columnLabel(S.of(context), column),
+                            if (widget.config.hasFilter) ...[
+                              _buildSectionHeading(
+                                loc.commonFilters,
+                                Icons.filter_list,
+                                theme,
+                              ),
+                              if (widget.config.hasStatusFilter) ...[
+                                Text(
+                                  loc.attributeStatus,
+                                  style: theme.textTheme.labelLarge,
                                 ),
-                                value: columns.contains(column),
-                                onChanged: (value) {
-                                  setDialogState(() {
-                                    if (value ?? false) {
-                                      columns.add(column);
-                                    } else {
-                                      columns.remove(column);
-                                    }
-                                  });
-                                },
+                                const SizedBox(height: 6),
+                                DecisionStatusDropdownMenu(
+                                  key: ValueKey('status-$status'),
+                                  initialStatus: status,
+                                  width: dropdownWidth,
+                                  valueChanged:
+                                      (value) =>
+                                          setDialogState(() => status = value),
+                                ),
+                                const SizedBox(height: 14),
+                              ],
+                              if (widget.config.hasResponsibleFilter) ...[
+                                Text(
+                                  loc.decisionListResponsible,
+                                  style: theme.textTheme.labelLarge,
+                                ),
+                                const SizedBox(height: 6),
+                                UserDropdownMenu(
+                                  key: ValueKey('responsible-$responsibleId'),
+                                  initialUserId: responsibleId,
+                                  anyLabel: loc.decisionListAnyResponsible,
+                                  width: dropdownWidth,
+                                  valueChanged:
+                                      (value) => setDialogState(
+                                        () => responsibleId = value,
+                                      ),
+                                ),
+                                const SizedBox(height: 14),
+                              ],
+                              if (widget.config.hasProjectFilter) ...[
+                                Text(
+                                  loc.commonProject,
+                                  style: theme.textTheme.labelLarge,
+                                ),
+                                const SizedBox(height: 6),
+                                DefaultDropdownMenu<int?>(
+                                  key: ValueKey('project-$projectId'),
+                                  initialSelection: projectId,
+                                  width: dropdownWidth,
+                                  onSelected:
+                                      (value) => setDialogState(
+                                        () => projectId = value,
+                                      ),
+                                  entries: projectEntries,
+                                ),
+                              ],
+                              const SizedBox(height: 20),
+                              const Divider(),
+                              const SizedBox(height: 12),
+                            ],
+                            if (widget.config.availableColumns.isNotEmpty ||
+                                widget.config.hasComments) ...[
+                              _buildSectionHeading(
+                                loc.reportOptionsTitle,
+                                Icons.view_column_outlined,
+                                theme,
                               ),
-                            ),
-                            if (widget.config.hasComments)
-                              CheckboxListTile(
-                                contentPadding: EdgeInsets.zero,
-                                dense: true,
-                                controlAffinity:
-                                    ListTileControlAffinity.leading,
-                                title: Text(S.of(context).reportShowReviews),
-                                value: showReviews,
-                                onChanged: (value) {
-                                  setDialogState(
-                                    () => showReviews = value ?? false,
-                                  );
-                                },
+                              ...widget.config.availableColumns.map(
+                                (column) => CheckboxListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  dense: true,
+                                  controlAffinity:
+                                      ListTileControlAffinity.leading,
+                                  title: Text(_columnLabel(loc, column)),
+                                  value: columns.contains(column),
+                                  onChanged: (value) {
+                                    setDialogState(() {
+                                      if (value ?? false) {
+                                        columns.add(column);
+                                      } else {
+                                        columns.remove(column);
+                                      }
+                                    });
+                                  },
+                                ),
                               ),
+                              if (widget.config.hasComments)
+                                CheckboxListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  dense: true,
+                                  controlAffinity:
+                                      ListTileControlAffinity.leading,
+                                  title: Text(loc.reportShowReviews),
+                                  value: showReviews,
+                                  onChanged: (value) {
+                                    setDialogState(
+                                      () => showReviews = value ?? false,
+                                    );
+                                  },
+                                ),
+                            ],
                           ],
                         ),
                       ),
@@ -217,15 +274,14 @@ class _ReportPdfViewerState extends ConsumerState<ReportPdfViewer> {
                     TextButton(
                       onPressed: () {
                         setDialogState(() {
+                          projectId = null;
+                          responsibleId = null;
+                          status = null;
                           columns = widget.config.availableColumns.toSet();
                           showReviews = true;
                         });
                       },
-                      child: Text(S.of(context).commonReset),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.pop(dialogContext),
-                      child: Text(S.of(context).commonCancel),
+                      child: Text(loc.commonReset),
                     ),
                     FilledButton(
                       onPressed:
@@ -234,9 +290,14 @@ class _ReportPdfViewerState extends ConsumerState<ReportPdfViewer> {
                             _ReportDisplayOptions(
                               columns: columns,
                               showReviews: showReviews,
+                              filter: DecisionReportFilter(
+                                projectId: projectId,
+                                responsibleId: responsibleId,
+                                status: status,
+                              ),
                             ),
                           ),
-                      child: Text(S.of(context).commonConfirm),
+                      child: Text(loc.commonConfirm),
                     ),
                   ],
                 ),
@@ -247,7 +308,27 @@ class _ReportPdfViewerState extends ConsumerState<ReportPdfViewer> {
     setState(() {
       _selectedColumns = options.columns;
       _showComments = options.showReviews;
+      _appliedFilter = options.filter;
     });
+    widget.onFilterApplied?.call(options.filter);
+  }
+
+  Widget _buildSectionHeading(String title, IconData icon, ThemeData theme) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: theme.colorScheme.primary),
+          const SizedBox(width: 8),
+          Text(
+            title,
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   String _columnLabel(S loc, String column) => switch (column) {
@@ -260,161 +341,4 @@ class _ReportPdfViewerState extends ConsumerState<ReportPdfViewer> {
     'completedDate' => loc.reportColumnCompletedDate,
     _ => column,
   };
-
-  Widget _buildFilterButton(S loc) {
-    final activeCount = _appliedFilter.activeCount;
-
-    return Card(
-      child: IconButton(
-        tooltip: loc.commonFilters,
-        onPressed: () {
-          setState(() {
-            _stagedProjectId = _appliedFilter.projectId;
-            _stagedResponsibleId = _appliedFilter.responsibleId;
-            _stagedStatus = _appliedFilter.status;
-            _isExpanded = true;
-          });
-        },
-        icon: Badge(
-          isLabelVisible: activeCount > 0,
-          label: Text(activeCount.toString()),
-          child: const Icon(Icons.filter_list),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildExpandedFilterCard(
-    BuildContext context,
-    S loc,
-    ThemeData theme,
-  ) {
-    final projects = ref.watch(projectsProvider);
-
-    final List<DropdownMenuEntry<int?>> projectEntries = UnmodifiableListView([
-      DropdownMenuEntry<int?>(value: null, label: loc.agendaListAnyProject),
-      ...projects.map(
-        (project) => DropdownMenuEntry<int?>(
-          value: project.id,
-          label: '${loc.commonProject}: ${project.title}',
-        ),
-      ),
-    ]);
-
-    return Card(
-      elevation: 6,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Container(
-        width: 320,
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Header: Title + collapse button
-            Row(
-              children: [
-                Icon(Icons.filter_list, size: 20, color: theme.primaryColor),
-                const SizedBox(width: 8),
-                Text(
-                  loc.commonFilters,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.close, size: 20),
-                  tooltip: loc.commonCancel,
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  onPressed: () {
-                    setState(() {
-                      _stagedProjectId = _appliedFilter.projectId;
-                      _stagedResponsibleId = _appliedFilter.responsibleId;
-                      _stagedStatus = _appliedFilter.status;
-                      _isExpanded = false;
-                    });
-                  },
-                ),
-              ],
-            ),
-            const Divider(height: 20),
-
-            if (widget.config.hasStatusFilter) ...[
-              Text(
-                loc.attributeStatus,
-                style: theme.textTheme.labelMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 6),
-              DecisionStatusDropdownMenu(
-                key: ValueKey('status-$_stagedStatus'),
-                initialStatus: _stagedStatus,
-                valueChanged: (status) {
-                  setState(() => _stagedStatus = status);
-                },
-              ),
-              const SizedBox(height: 12),
-            ],
-
-            if (widget.config.hasResponsibleFilter) ...[
-              Text(
-                loc.decisionListResponsible,
-                style: theme.textTheme.labelMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 6),
-              UserDropdownMenu(
-                key: ValueKey('responsible-$_stagedResponsibleId'),
-                initialUserId: _stagedResponsibleId,
-                anyLabel: loc.decisionListAnyResponsible,
-                valueChanged: (userId) {
-                  setState(() => _stagedResponsibleId = userId);
-                },
-              ),
-              const SizedBox(height: 12),
-            ],
-
-            if (widget.config.hasProjectFilter) ...[
-              Text(
-                loc.commonProject,
-                style: theme.textTheme.labelMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 6),
-              DefaultDropdownMenu<int?>(
-                key: ValueKey('project-$_stagedProjectId'),
-                initialSelection: _stagedProjectId,
-                onSelected: (projectId) {
-                  setState(() => _stagedProjectId = projectId);
-                },
-                entries: projectEntries,
-              ),
-              const SizedBox(height: 16),
-            ],
-
-            // Actions: Reset & Confirm
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                OutlinedButton(
-                  onPressed: _resetFilters,
-                  child: Text(loc.commonReset),
-                ),
-                const SizedBox(width: 8),
-                FilledButton(
-                  onPressed: _applyFilters,
-                  child: Text(loc.commonConfirm),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

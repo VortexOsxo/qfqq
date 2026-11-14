@@ -60,11 +60,22 @@ class ReportLineManager:
 
     @staticmethod
     def get_column_widths(widths):
+        if not widths:
+            return []
+
         fixed_widths = [width for width in widths if width is not None]
         flexible_count = len(widths) - len(fixed_widths)
-        flexible_width = (
-            (100 - sum(fixed_widths)) / flexible_count if flexible_count else 0
-        )
+        if not flexible_count:
+            total_fixed_width = sum(fixed_widths)
+            if total_fixed_width:
+                widths = [
+                    width * 100 / total_fixed_width for width in fixed_widths
+                ]
+            else:
+                widths = [100 / len(fixed_widths)] * len(fixed_widths)
+            return [f"{width:g}%" for width in widths]
+
+        flexible_width = (100 - sum(fixed_widths)) / flexible_count
         return [
             f"{flexible_width if width is None else width:g}%"
             for width in widths

@@ -8,7 +8,7 @@ class DefaultDropdownMenu<T> extends StatelessWidget {
   final EdgeInsetsGeometry? contentPadding;
   final BoxConstraints? constraints;
   final TextStyle? textStyle;
-
+  final double width;
 
   const DefaultDropdownMenu({
     super.key,
@@ -19,6 +19,7 @@ class DefaultDropdownMenu<T> extends StatelessWidget {
     this.contentPadding,
     this.constraints,
     this.textStyle,
+    this.width = 200,
   });
 
   @override
@@ -26,7 +27,7 @@ class DefaultDropdownMenu<T> extends StatelessWidget {
     var theme = Theme.of(context);
 
     return DropdownMenu(
-      width: 200,
+      width: width,
       textStyle: textStyle,
       inputDecorationTheme: InputDecorationTheme(
         isDense: isDense,

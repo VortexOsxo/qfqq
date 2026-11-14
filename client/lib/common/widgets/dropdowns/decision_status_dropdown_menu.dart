@@ -9,11 +9,13 @@ import 'package:qfqq/generated/l10n.dart';
 class DecisionStatusDropdownMenu extends StatelessWidget {
   final DecisionStatus? initialStatus;
   final ValueChanged<DecisionStatus?> valueChanged;
+  final double width;
 
   const DecisionStatusDropdownMenu({
     super.key,
     required this.initialStatus,
     required this.valueChanged,
+    this.width = 200,
   });
 
   @override
@@ -39,6 +41,7 @@ class DecisionStatusDropdownMenu extends StatelessWidget {
       entries: menuEntries,
       initialSelection: initialStatus,
       onSelected: valueChanged,
+      width: width,
     );
   }
 }

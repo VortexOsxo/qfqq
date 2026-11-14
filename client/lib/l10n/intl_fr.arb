@@ -529,6 +529,7 @@
   "commonObjectContent": "Contenu",
   "commonObjectReviews": "Retours",
   "commonNoReviews": "Aucun retour trouvé",
+  "reportOptionsDialogTitle": "Options du rapport",
   "reportOptionsTitle": "Contenu du rapport",
   "reportShowReviews": "Inclure les retours de réunion",
   "reportColumnNumber": "Numéro de décision",
