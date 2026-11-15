@@ -57,4 +57,11 @@ def create_report_config():
     config = ReportConfigDataHandler.create_report_config(name, columns, filters, showReviews)
     return jsonify(config.to_dict()), 201
 
+
+@configs_bp.delete("/<int:id>")
+def delete_report_config(id: int):
+    ReportConfigDataHandler.delete_report_config(id)
+    return "", 204
+
+
 reports_bp.register_blueprint(configs_bp)

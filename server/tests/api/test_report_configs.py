@@ -43,3 +43,19 @@ def test_create_report_config_defaults_show_reviews_to_false(client):
 
     assert response.status_code == 201
     assert response.get_json()["showReviews"] is False
+
+
+def test_delete_report_config(client):
+    headers = get_auth_headers(client)
+    create_response = client.post(
+        "/reports/configs",
+        query_string={"name": "Config to delete"},
+        headers=headers,
+    )
+    config_id = create_response.get_json()["id"]
+
+    response = client.delete(f"/reports/configs/{config_id}", headers=headers)
+
+    assert response.status_code == 204
+    configs_response = client.get("/reports/configs", headers=headers)
+    assert all(config["id"] != config_id for config in configs_response.get_json())

@@ -5,6 +5,7 @@ import 'package:qfqq/common/models/decision.dart';
 import 'package:qfqq/common/models/configs/report_config.dart';
 import 'package:qfqq/common/models/configs/saved_report_config.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
+import 'package:qfqq/common/services/modal_service.dart';
 import 'package:qfqq/common/services/reports_service.dart';
 import 'package:qfqq/common/widgets/dropdowns/decision_status_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/dropdowns/default_dropdown_menu.dart';
@@ -79,6 +80,7 @@ class _ReportOptionsDialogState extends ConsumerState<ReportOptionsDialog> {
   final _nameController = TextEditingController();
   bool _showSaveInput = false;
   bool _isSaving = false;
+  bool _isDeleting = false;
   int? _selectedSavedConfigId;
   late Future<List<SavedReportConfig>> _savedConfigsFuture;
 
@@ -312,27 +314,59 @@ class _ReportOptionsDialogState extends ConsumerState<ReportOptionsDialog> {
               );
             }
 
-            return DefaultDropdownMenu<int?>(
-              key: ValueKey(_selectedSavedConfigId),
-              entries: [
-                DropdownMenuEntry<int?>(
-                  value: null,
-                  label: loc.reportConfigOpen,
-                ),
-                ...configs.map(
-                  (config) => DropdownMenuEntry<int?>(
-                    value: config.id,
-                    label: config.name,
+            SavedReportConfig? selectedConfig;
+            for (final config in configs) {
+              if (config.id == _selectedSavedConfigId) {
+                selectedConfig = config;
+                break;
+              }
+            }
+            final configToDelete = selectedConfig;
+
+            return Row(
+              children: [
+                Expanded(
+                  child: DefaultDropdownMenu<int?>(
+                    key: ValueKey(_selectedSavedConfigId),
+                    entries: [
+                      DropdownMenuEntry<int?>(
+                        value: null,
+                        label: loc.reportConfigOpen,
+                      ),
+                      ...configs.map(
+                        (config) => DropdownMenuEntry<int?>(
+                          value: config.id,
+                          label: config.name,
+                        ),
+                      ),
+                    ],
+                    initialSelection: _selectedSavedConfigId,
+                    width: dropdownWidth,
+                    onSelected: (id) {
+                      if (id == null) return;
+                      final config = configs.firstWhere(
+                        (item) => item.id == id,
+                      );
+                      _applySavedConfig(config);
+                    },
                   ),
                 ),
+                IconButton(
+                  tooltip: loc.commonDelete,
+                  onPressed:
+                      configToDelete == null || _isDeleting
+                          ? null
+                          : () => _deleteSavedConfig(configToDelete),
+                  icon:
+                      _isDeleting
+                          ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                          : const Icon(Icons.delete_outline),
+                ),
               ],
-              initialSelection: _selectedSavedConfigId,
-              width: dropdownWidth,
-              onSelected: (id) {
-                if (id == null) return;
-                final config = configs.firstWhere((item) => item.id == id);
-                _applySavedConfig(config);
-              },
             );
           },
         ),
@@ -364,6 +398,43 @@ class _ReportOptionsDialogState extends ConsumerState<ReportOptionsDialog> {
   int? _parseFilterId(Object? value) {
     if (value is int) return value;
     return value is String ? int.tryParse(value) : null;
+  }
+
+  Future<void> _deleteSavedConfig(SavedReportConfig config) async {
+    final loc = S.of(context);
+    final confirmed = await ModalService.showConfirmation(
+      context: context,
+      title: loc.reportConfigDeleteTitle,
+      message: loc.reportConfigDeleteConfirmation(config.name),
+      confirmLabel: loc.commonDelete,
+      cancelLabel: loc.commonCancel,
+    );
+    if (!confirmed || !mounted) return;
+
+    setState(() => _isDeleting = true);
+    final bool deleted;
+    try {
+      deleted = await ref
+          .read(reportsServiceProvider)
+          .deleteReportConfig(config.id);
+    } finally {
+      if (mounted) setState(() => _isDeleting = false);
+    }
+
+    if (!mounted) return;
+    if (deleted) {
+      setState(() {
+        _selectedSavedConfigId = null;
+        _savedConfigsFuture = _loadSavedConfigs();
+      });
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(loc.reportConfigDeleted)));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(loc.errorUnknown), backgroundColor: Colors.red),
+      );
+    }
   }
 
   DecisionStatus? _parseStatus(Object? value) {
