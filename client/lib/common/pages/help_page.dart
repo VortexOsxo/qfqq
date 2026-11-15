@@ -12,13 +12,13 @@ class HelpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (platformType == PlatformType.mobile) {
-      return HelpWidget(content: content, showBackButton: true);
+      return HelpWidget(content: content);
     }
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(child: HelpWidget(content: content, showBackButton: true)),
+        Expanded(child: HelpWidget(content: content)),
         const SizedBox(width: 16),
         SizedBox(
           width: 220,

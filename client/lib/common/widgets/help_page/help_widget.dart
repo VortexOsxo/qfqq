@@ -3,14 +3,10 @@ import 'package:qfqq/common/widgets/help_page/help_info.dart';
 
 class HelpWidget extends StatelessWidget {
   final HelpContent content;
-  final bool showBackButton;
-  final Widget? titleAction;
 
   const HelpWidget({
     super.key,
     required this.content,
-    this.showBackButton = false,
-    this.titleAction,
   });
 
   @override
@@ -23,27 +19,13 @@ class HelpWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            children: [
-              if (showBackButton)
-                IconButton(
-                  onPressed: () => Navigator.of(context).maybePop(),
-                  icon: const Icon(Icons.arrow_back),
-                  tooltip: 'Back',
-                  visualDensity: VisualDensity.compact,
-                ),
-              Expanded(
-                child: Text(
-                  content.title,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: colorScheme.primary,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              if (titleAction != null) titleAction!,
-            ],
+          Text(
+            content.title,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              color: colorScheme.primary,
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           const SizedBox(height: 24),
           for (final tip in content.components) tip.build(context),
