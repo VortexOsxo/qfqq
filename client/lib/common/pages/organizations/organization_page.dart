@@ -35,13 +35,58 @@ class OrganizationPage extends StatelessWidget {
           children: [
             const OrganizationAccessStatusBanner(),
             OrganizationTitle(),
-            TabBar(
-              isScrollable: true,
-              tabAlignment: TabAlignment.start,
-              tabs: [
-                Tab(text: S.of(context).commonMembers),
-                Tab(text: S.of(context).commonRoles),
-              ],
+            Builder(
+              builder: (context) {
+                final tabController = DefaultTabController.of(context);
+                return Row(
+                  children: [
+                    Expanded(
+                      child: TabBar(
+                        isScrollable: true,
+                        tabAlignment: TabAlignment.start,
+                        tabs: [
+                          Tab(text: S.of(context).commonMembers),
+                          Tab(text: S.of(context).commonRoles),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    AnimatedBuilder(
+                      animation: tabController,
+                      builder: (context, _) {
+                        final isMembersTab = tabController.index == 0;
+                        return SizedBox(
+                          width: 200,
+                          child: ElevatedButton.icon(
+                            onPressed:
+                                isMembersTab
+                                    ? () =>
+                                        context.push('/organization/invite')
+                                    : () {
+                                      showDialog(
+                                        context: context,
+                                        barrierDismissible: true,
+                                        builder: (_) => RoleCreationModal(),
+                                      );
+                                    },
+                            style: squareButtonStyleSmall(context),
+                            icon: Icon(
+                              isMembersTab
+                                  ? Icons.person_add_alt_1
+                                  : Icons.add,
+                            ),
+                            label: Text(
+                              isMembersTab
+                                  ? S.of(context).buttonInvitePeople
+                                  : S.of(context).buttonCreateRole,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },
             ),
             const SizedBox(height: 16),
             const Expanded(
@@ -132,12 +177,6 @@ class MembersTab extends ConsumerWidget {
               ),
             ),
           ),
-        ),
-        const SizedBox(height: 16),
-        ElevatedButton(
-          onPressed: () => context.push('/organization/invite'),
-          style: squareButtonStyle(context),
-          child: Text(loc.buttonInvitePeople),
         ),
       ],
     );
@@ -237,18 +276,6 @@ class RolesTab extends ConsumerWidget {
               ),
             ),
           ),
-        ),
-        const SizedBox(height: 16),
-        ElevatedButton(
-          onPressed: () {
-            showDialog(
-              context: context,
-              barrierDismissible: true,
-              builder: (_) => RoleCreationModal(),
-            );
-          },
-          style: squareButtonStyle(context),
-          child: Text(loc.buttonCreateRole),
         ),
       ],
     );
