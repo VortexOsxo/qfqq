@@ -4,20 +4,24 @@ import 'package:qfqq/common/widgets/help_page/help_info.dart';
 class HelpWidget extends StatelessWidget {
   final HelpContent content;
 
-  const HelpWidget({
-    super.key,
-    required this.content,
-  });
+  const HelpWidget({super.key, required this.content});
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+    final tips = SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
+        children: [for (final tip in content.components) tip.build(context)],
+      ),
+    );
+
+    return Padding(
+      padding: EdgeInsetsGeometry.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             content.title,
@@ -27,8 +31,8 @@ class HelpWidget extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 24),
-          for (final tip in content.components) tip.build(context),
+          SizedBox(height: 12),
+          tips,
         ],
       ),
     );
