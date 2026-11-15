@@ -2,9 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
+import 'package:qfqq/common/utils/platform.dart';
+
+class NavigationTextLink extends StatelessWidget {
+  final String text;
+  final VoidCallback navigate;
+
+  const NavigationTextLink({
+    super.key,
+    required this.text,
+    required this.navigate,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final accentColor = Colors.blue.shade700;
+
+    return TextButton(
+      onPressed: navigate,
+      style: TextButton.styleFrom(
+        foregroundColor: accentColor,
+        padding: EdgeInsets.zero,
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      child: Text(
+        text,
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+          color: accentColor,
+          fontSize: isMobile ? 12 : 14
+        ),
+      ),
+    );
+  }
+}
 
 abstract class NavigationTextButton extends ConsumerWidget {
-  
   void navigate(BuildContext context);
   String? getTitle(WidgetRef ref);
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/view_models/agenda_view_model.dart';
 import 'package:qfqq/common/widgets/agenda_view_page/agenda_description_widget.dart';
@@ -38,10 +39,24 @@ class _AgendaViewPage extends StatelessWidget {
     return MeetingAgendaSession(
       meetingId: agenda.id,
       child: Padding(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.fromLTRB(32, 0, 32, 32),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildTopCard(context, agenda),
+            if (vm.hasProject && vm.projectName != null)
+              NavigationTextLink(
+                text: "${vm.projectName!}/",
+                navigate: () => context.push('/projects/${vm.projectId}'),
+              ),
+            SizedBox(height: 8),
+            Text(
+              '${agenda.number}: ${agenda.title}',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
             const SizedBox(height: 16),
 
             Expanded(
@@ -64,30 +79,6 @@ class _AgendaViewPage extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildTopCard(BuildContext context, MeetingAgenda agenda) {
-    final theme = Theme.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            '${agenda.number}: ${agenda.title}',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 24,
-              color: theme.primaryColor,
-            ),
-          ),
-
-          if (vm.hasProject)
-            ProjectNavigationTextButton(projectId: vm.projectId),
-        ],
       ),
     );
   }

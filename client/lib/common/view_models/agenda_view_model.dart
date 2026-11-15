@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
+import 'package:qfqq/common/providers/projects_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
 
@@ -25,6 +26,7 @@ class AgendaViewPageViewModelState extends ConsumerState<AgendaViewModel> {
   bool get hasProject => isIdValid(agenda?.projectId);
 
   int get projectId => agenda?.projectId ?? 0;
+  String? get projectName => ref.watch(projectProviderById(projectId).select((p) => p?.title));
 
   String get animatorName {
     final animatorId = agenda?.animatorId;

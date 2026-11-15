@@ -251,6 +251,34 @@
 
   "agendaStatusDraft": "Draft",
   "agendaStatusPlanned": "Planned",
+  "meetingStartsInLessThanHour": "Starts in less than an hour",
+  "meetingStartsInOneHour": "Starts in about 1 hour",
+  "meetingStartsInHours": "Starts in about {hours} hours",
+  "@meetingStartsInHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "meetingStartsInOneDay": "Starts in about 1 day",
+  "meetingStartsInDays": "Starts in about {days} days",
+  "@meetingStartsInDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "meetingStartsInOneDayAndOneHour": "Starts in about 1 day and 1 hour",
+  "meetingStartsInOneDayAndHours": "Starts in about 1 day and {hours} hours",
+  "@meetingStartsInOneDayAndHours": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
   "agendaStatusOngoing": "In Progress",
   "agendaMeetingTodayAt": "Today at {time}",
   "@agendaMeetingTodayAt": {

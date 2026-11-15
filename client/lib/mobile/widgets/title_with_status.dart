@@ -16,11 +16,12 @@ class TitleWithStatus extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          title,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: pageTitleTextStyle(theme),
+        Expanded(
+          child: Text(
+            title,
+            maxLines: 2,
+            style: pageTitleTextStyle(theme),
+          ),
         ),
         Transform.translate(
           offset: const Offset(0, -10),

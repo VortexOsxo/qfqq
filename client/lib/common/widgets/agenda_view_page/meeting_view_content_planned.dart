@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/services/auth_service.dart';
+import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/help_util.dart';
 import 'package:qfqq/common/widgets/help_page/help_button.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -16,6 +17,7 @@ class MeetingViewContentPlanned extends ConsumerWidget {
     final loc = S.of(context);
     final currentUser = ref.watch(authStateProvider).user;
     final isAnimator = currentUser != null && meeting.animatorId == currentUser.id;
+    final countdownText = formatMeetingCountdown(context, meeting.meetingDate);
 
     final helpLink = isAnimator
             ? MeetingAnimationHelpLink(loc: loc)
@@ -23,15 +25,28 @@ class MeetingViewContentPlanned extends ConsumerWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Text(
-              loc.agendaStatusPlanned,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  loc.agendaStatusPlanned,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              HelpButton(helpLink: helpLink),
+            ],
           ),
-          HelpButton(helpLink: helpLink),
+          if (countdownText != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text(
+                countdownText,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
         ],
       ),
     );

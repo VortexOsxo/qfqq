@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qfqq/common/utils/platform.dart';
 
 // Buttons
 
@@ -31,7 +32,7 @@ ButtonStyle inplaceTextButtonStyle(BuildContext context) {
 TextStyle pageTitleTextStyle(ThemeData theme) {
   return TextStyle(
     fontWeight: FontWeight.bold,
-    fontSize: 24,
+    fontSize: isMobile ? 16 : 24,
     color: theme.primaryColor,
   );
 } 

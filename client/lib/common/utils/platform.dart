@@ -15,3 +15,6 @@ PlatformType _checkPlatform() {
 }
 
 final PlatformType platformType = _checkPlatform();
+
+final isMobile = platformType == PlatformType.mobile;
+final isDesktop = platformType == PlatformType.desktop;

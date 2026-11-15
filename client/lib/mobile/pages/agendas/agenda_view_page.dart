@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/models/configs/report_config.dart';
 import 'package:qfqq/common/utils/is_id_valid.dart';
@@ -47,11 +48,20 @@ class _AgendaViewPage extends StatelessWidget {
     return MeetingAgendaSession(
       meetingId: agenda.id,
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.fromLTRB(8,0,8,8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildTopCard(context, agenda),
+            if (vm.hasProject && vm.projectName != null)
+              NavigationTextLink(
+                text: "${vm.projectName!}/",
+                navigate: () => context.push('/projects/${vm.projectId}'),
+              ),
+            SizedBox(height: 8),
+            TitleWithStatus(
+              title: '${agenda.number}: ${agenda.title}',
+              uiData: getMeetingAgendaStatusUI(S.of(context), agenda.status),
+            ),
             const SizedBox(height: 8),
             Expanded(
               child: DefaultTabController(
@@ -106,25 +116,6 @@ class _AgendaViewPage extends StatelessWidget {
     return DecisionsListWidget(
       isProjectFilterEnabled: false,
       filterFunction: filterFunc,
-    );
-  }
-
-  Widget _buildTopCard(BuildContext context, MeetingAgenda agenda) {
-    final statusUIData = getMeetingAgendaStatusUI(S.of(context), agenda.status);
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: TitleWithStatus(
-            title: '${agenda.number}: ${agenda.title}',
-            uiData: statusUIData,
-          ),
-        ),
-
-        if (vm.hasProject)
-          ProjectNavigationTextButton(projectId: vm.projectId),
-      ],
     );
   }
 }
