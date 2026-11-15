@@ -6,10 +6,10 @@ import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/view_models/decision_view_page_view_model.dart';
 import 'package:qfqq/common/widgets/decisions/decision_status_control_widget.dart';
+import 'package:qfqq/common/widgets/navigation/navigation_text_button.dart';
 import 'package:qfqq/common/widgets/permission_required.dart';
 import 'package:qfqq/common/widgets/details_attribute_widget.dart';
 import 'package:qfqq/common/widgets/details_list_widget.dart';
-import 'package:qfqq/common/widgets/projects/project_title_link_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 import 'package:qfqq/mobile/widgets/title_with_status.dart';
 
@@ -69,10 +69,7 @@ class _DecisionViewPageContent extends StatelessWidget {
           uiData: uiData,
         ),
         if (vm.hasProject)
-          ProjectTitleLinkWidget(
-            projectId: decision.projectId!,
-            minimized: true,
-          ),
+          ProjectNavigationTextButton(projectId: decision.projectId!),
         if (vm.hasMeeting)
           TextButton(
             onPressed: vm.goToMeeting,

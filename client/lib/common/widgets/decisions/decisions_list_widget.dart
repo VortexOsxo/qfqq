@@ -22,10 +22,8 @@ import 'package:qfqq/common/widgets/dropdowns/decision_status_dropdown_menu.dart
 import 'package:qfqq/common/widgets/dropdowns/default_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/dropdowns/user_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
-import 'package:qfqq/desktop/widgets/filters/filter_container.dart'
-    as desktop_filter;
-import 'package:qfqq/mobile/widgets/filters/filter_container.dart'
-    as mobile_filter;
+import 'package:qfqq/desktop/widgets/filters/filter_container.dart' as desktop_filter;
+import 'package:qfqq/mobile/widgets/filters/filter_container.dart' as mobile_filter;
 import 'package:qfqq/common/widgets/status_chip.dart';
 import 'package:qfqq/generated/l10n.dart';
 

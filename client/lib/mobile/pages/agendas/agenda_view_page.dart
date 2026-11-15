@@ -9,7 +9,7 @@ import 'package:qfqq/common/widgets/agenda_view_page/meeting_view_content.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_control.dart';
 import 'package:qfqq/common/widgets/decisions/decisions_list_widget.dart';
 import 'package:qfqq/common/widgets/meeting_review_list.dart';
-import 'package:qfqq/common/widgets/projects/project_title_link_widget.dart';
+import 'package:qfqq/common/widgets/navigation/navigation_text_button.dart';
 import 'package:qfqq/common/widgets/report_pdf_viewer.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -123,7 +123,7 @@ class _AgendaViewPage extends StatelessWidget {
         ),
 
         if (vm.hasProject)
-          ProjectTitleLinkWidget(projectId: vm.projectId, minimized: true),
+          ProjectNavigationTextButton(projectId: vm.projectId),
       ],
     );
   }

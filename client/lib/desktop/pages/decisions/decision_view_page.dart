@@ -6,11 +6,11 @@ import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/view_models/decision_view_page_view_model.dart';
 import 'package:qfqq/common/widgets/decisions/decision_status_control_widget.dart';
+import 'package:qfqq/common/widgets/navigation/navigation_text_button.dart';
 import 'package:qfqq/common/widgets/permission_required.dart';
 import 'package:qfqq/common/widgets/status_chip.dart';
 import 'package:qfqq/common/widgets/details_attribute_widget.dart';
 import 'package:qfqq/common/widgets/details_list_widget.dart';
-import 'package:qfqq/common/widgets/projects/project_title_link_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class DecisionViewPage extends ConsumerWidget {
@@ -52,7 +52,7 @@ class _DecisionViewPageContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: 300,
+                  width: 180,
                   child: _buildDecisionInfo(context, decision),
                 ),
                 const SizedBox(width: 16),
@@ -106,7 +106,7 @@ class _DecisionViewPageContent extends StatelessWidget {
               color: theme.primaryColor,
             ),
           ),
-          ProjectTitleLinkWidget(projectId: decision.projectId ?? 0),
+          ProjectNavigationTextButton(projectId: decision.projectId ?? 0),
         ],
       ),
     );
@@ -188,14 +188,17 @@ class _DecisionViewPageContent extends StatelessWidget {
             onPressed: vm.goToMeeting,
             style: TextButton.styleFrom(
               padding: EdgeInsets.zero,
-              alignment: Alignment.centerLeft,
-              minimumSize: Size(0, 30),
+              minimumSize: Size.zero,
             ),
             child: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(loc.decisionViewPageGoToAgenda),
                 const SizedBox(width: 4),
-                const Icon(Icons.arrow_forward, size: 16),
+                Transform.translate(
+                  offset: const Offset(0, 1),
+                  child: const Icon(Icons.arrow_forward, size: 16),
+                ),
               ],
             ),
           ),

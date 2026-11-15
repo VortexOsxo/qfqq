@@ -5,7 +5,7 @@ import 'package:qfqq/common/widgets/agenda_view_page/agenda_description_widget.d
 import 'package:qfqq/common/widgets/agendas/meeting_agenda_session.dart';
 import 'package:qfqq/common/widgets/agenda_view_page/meeting_view_content.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_control.dart';
-import 'package:qfqq/common/widgets/projects/project_title_link_widget.dart';
+import 'package:qfqq/common/widgets/navigation/navigation_text_button.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class AgendaViewPage extends StatelessWidget {
@@ -86,7 +86,7 @@ class _AgendaViewPage extends StatelessWidget {
           ),
 
           if (vm.hasProject)
-            ProjectTitleLinkWidget(projectId: vm.projectId),
+            ProjectNavigationTextButton(projectId: vm.projectId),
         ],
       ),
     );
