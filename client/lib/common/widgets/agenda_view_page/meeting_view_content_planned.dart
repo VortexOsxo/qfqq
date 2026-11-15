@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/utils/help_util.dart';
-import 'package:qfqq/common/widgets/help/help_button.dart';
+import 'package:qfqq/common/widgets/help_page/help_button.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class MeetingViewContentPlanned extends ConsumerWidget {

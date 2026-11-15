@@ -6,7 +6,7 @@ import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/utils/help_util.dart';
 import 'package:qfqq/common/utils/validation.dart';
-import 'package:qfqq/common/widgets/help/help_button.dart';
+import 'package:qfqq/common/widgets/help_page/help_button.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class MeetingViewContentDraft extends ConsumerWidget {

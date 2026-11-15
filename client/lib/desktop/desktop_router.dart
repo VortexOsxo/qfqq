@@ -20,7 +20,7 @@ import 'package:qfqq/common/pages/user_pages/subscribe_page.dart';
 import 'package:qfqq/desktop/pages/user_pages/signup_page.dart';
 import 'package:qfqq/desktop/pages/agendas/agenda_list_page.dart';
 import 'package:qfqq/common/pages/help_page.dart';
-import 'package:qfqq/common/widgets/help/help_info.dart';
+import 'package:qfqq/common/widgets/help_page/help_info.dart';
 import 'package:qfqq/common/widgets/scaffolds/default_page_scaffold.dart';
 import 'package:qfqq/common/utils/route_titles.dart';
 import 'package:qfqq/desktop/pages/user_pages/login_page.dart';

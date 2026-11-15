@@ -5,7 +5,8 @@ import 'package:qfqq/common/widgets/hover_text_button.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class HelpSelection extends StatelessWidget {
-  const HelpSelection({super.key});
+  final Type selected;
+  const HelpSelection({super.key, required this.selected});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class HelpSelection extends StatelessWidget {
       children: [
         const SizedBox(height: 8),
         for (final section in helpSections)
-          _HelpSection(section: section),
+          _HelpSection(section: section, selected: selected),
       ],
     );
   }
@@ -23,8 +24,9 @@ class HelpSelection extends StatelessWidget {
 
 class _HelpSection extends StatelessWidget {
   final HelpSection section;
+  final Type selected;
 
-  const _HelpSection({required this.section});
+  const _HelpSection({required this.section, required this.selected});
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,7 @@ class _HelpSection extends StatelessWidget {
           ),
         ),
         for (final link in section.getSections(loc))
-          _HelpLink(content: link),
+          _HelpLink(content: link, isSelected: link.id == selected),
       ],
     );
   }
@@ -54,8 +56,9 @@ class _HelpSection extends StatelessWidget {
 
 class _HelpLink extends StatelessWidget {
   final HelpLink content;
+  final bool isSelected;
 
-  const _HelpLink({required this.content});
+  const _HelpLink({required this.content, required this.isSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -63,15 +66,15 @@ class _HelpLink extends StatelessWidget {
 
     return HoverTextButton(
       text: content.getTitle(),
-      isActive: false,
+      isActive: isSelected,
       color: colorScheme.primary,
       fontSize: 14,
       fontWeight: FontWeight.normal,
       activeFontWeight: FontWeight.normal,
       hoverFontWeight: FontWeight.bold,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-      iconSize: 16,
-      iconWidth: 14,
+      iconSize: 20,
+      iconWidth: 20,
       spacing: 2,
       onTap: () {
         final router = GoRouter.of(context);

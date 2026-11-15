@@ -8,7 +8,7 @@ import 'package:qfqq/common/services/modal_service.dart';
 import 'package:qfqq/common/templates/navigation_guard.dart';
 import 'package:qfqq/common/utils/help_util.dart';
 import 'package:qfqq/common/utils/validation.dart';
-import 'package:qfqq/common/widgets/help/help_button.dart';
+import 'package:qfqq/common/widgets/help_page/help_button.dart';
 import 'package:qfqq/common/widgets/reusables/form_filled_button.dart';
 import 'package:qfqq/common/widgets/reusables/form_outlined_button.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';

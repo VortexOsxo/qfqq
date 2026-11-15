@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:qfqq/common/utils/platform.dart';
-import 'package:qfqq/common/widgets/help/help_info.dart';
-import 'package:qfqq/common/widgets/help/help_selection.dart';
-import 'package:qfqq/common/widgets/help/help_widget.dart';
+import 'package:qfqq/common/widgets/help_page/help_info.dart';
+import 'package:qfqq/common/widgets/help_page/help_selection.dart';
+import 'package:qfqq/common/widgets/help_page/help_widget.dart';
 
 class HelpPage extends StatelessWidget {
   final HelpContent content;
@@ -27,7 +27,7 @@ class HelpPage extends StatelessWidget {
               side: BorderSide(color: Theme.of(context).primaryColor, width: 2),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Center(child: HelpSelection()),
+            child: Center(child: HelpSelection(selected: content.parent)),
           ),
         ),
       ],

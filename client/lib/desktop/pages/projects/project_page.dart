@@ -6,7 +6,7 @@ import 'package:qfqq/common/widgets/dropdowns/project_status_dropdown_menu.dart'
 import 'package:qfqq/common/widgets/dropdowns/user_dropdown_menu.dart';
 import 'package:qfqq/common/widgets/permission_required.dart';
 import 'package:qfqq/common/utils/help_util.dart';
-import 'package:qfqq/common/widgets/help/help_button.dart';
+import 'package:qfqq/common/widgets/help_page/help_button.dart';
 import 'package:qfqq/common/widgets/projects/project_list_widget.dart';
 import 'package:qfqq/common/widgets/reusables/default_text_field.dart';
 import 'package:qfqq/desktop/widgets/filters/filter_container.dart';

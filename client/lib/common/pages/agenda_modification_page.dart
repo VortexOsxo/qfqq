@@ -15,7 +15,7 @@ import 'package:qfqq/common/widgets/agendas/inputs/meeting_people_input.dart';
 import 'package:qfqq/common/widgets/agendas/inputs/meeting_theme_input.dart';
 import 'package:qfqq/common/widgets/reusables/form_filled_button.dart';
 import 'package:qfqq/common/widgets/reusables/form_outlined_button.dart';
-import 'package:qfqq/common/widgets/help/help_button.dart';
+import 'package:qfqq/common/widgets/help_page/help_button.dart';
 import 'package:qfqq/generated/l10n.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 

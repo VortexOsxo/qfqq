@@ -10,11 +10,13 @@ class HelpContent {
   final String title;
   final String tooltip;
   final List<HelpComponent> components;
+  final Type parent;
 
   const HelpContent({
     required this.title,
     required this.tooltip,
     required this.components,
+    required this.parent
   });
 }
 
