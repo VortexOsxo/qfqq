@@ -24,7 +24,7 @@ class ReportEndpointService(ABC):
 
         emails = request.json.get("emails", [])
         bytes = self.get_buffer().getvalue()
-        threading.Thread(target=self._send_emails, args=(emails, bytes)).start()
+        self._send_emails(emails, bytes)
         return jsonify({"success": True})
 
     def _init(self):
@@ -93,12 +93,12 @@ class ProjectReportEndpointService(ReportEndpointService):
 
     def get_buffer(self):
         columns = get_report_column(args=request.args, default=ALL_REPORT_COLUMNS)
-        return ProjectReportBuilder(self._get_decisions(), columns, g.language).build()
+        return ProjectReportBuilder(self.project, self._get_decisions(), columns, g.language).build()
 
 
 class MeetingReportEndpointService(ReportEndpointService):
     def _init(self):
-        self.show_comments = get_report_show_reviews()
+        self.show_comments = get_report_show_reviews(request.args)
 
         self.meeting, self.participants = MeetingDataHandler.get_meeting_with_participants(self.id)
         self.user = UserDataHandler.get_user_by_id(g.user_id)

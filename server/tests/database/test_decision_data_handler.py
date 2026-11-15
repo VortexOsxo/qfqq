@@ -82,7 +82,7 @@ def test_get_decisions_and_responsible_by_responsible(app):
 
     assert all(line.responsibleName == "Carol Davis" for line in lines)
 
-def test_get_decisions_and_responsible_by_responsible(app):
+def test_get_decisions_and_responsible_by_responsible_with_invalid_id(app):
     lines = DecisionDataHandler.get_decision_report_lines_by_responsible(5)
     assert len(lines) == 0
 
