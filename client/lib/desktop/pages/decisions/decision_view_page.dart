@@ -175,7 +175,7 @@ class _DecisionViewPageContent extends StatelessWidget {
         ),
         DetailsListWidget(
           label: loc.attributeAssitants,
-          emptyLabel: loc.attributeNoAssitants,
+          emptyLabel: loc.attributeNoAssistants,
           values: vm.assistantNames,
         ),
         if (vm.hasMeeting) ...[
