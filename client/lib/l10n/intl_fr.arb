@@ -535,6 +535,16 @@
   "reportConfigSaved": "Configuration du rapport enregistrée",
   "reportConfigOpen": "Ouvrir une configuration enregistrée",
   "reportConfigNone": "Aucune configuration de rapport enregistrée",
+  "reportConfigDeleteTitle": "Supprimer la configuration de rapport enregistrée ?",
+  "reportConfigDeleteConfirmation": "Supprimer « {name} » ? Cette action est irréversible.",
+  "@reportConfigDeleteConfirmation": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "reportConfigDeleted": "Configuration du rapport supprimée",
   "reportShowReviews": "Inclure les retours de réunion",
   "reportColumnNumber": "Numéro de décision",
   "reportColumnMeetingNumber": "R",

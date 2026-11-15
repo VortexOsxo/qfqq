@@ -28,3 +28,10 @@ class ReportConfigDataHandler:
             filters = ast.literal_eval(encodedFilters)
             configs.append(ReportConfig(id, name, columns, filters, showReviews))
         return configs
+
+    @classmethod
+    def delete_report_config(cls, id):
+        query = "DELETE FROM reportsConfigs WHERE id = %s;"
+        with get_db_access() as conn:
+            cur = conn.cursor()
+            cur.execute(query, (id,))

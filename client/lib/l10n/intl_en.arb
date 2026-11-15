@@ -534,6 +534,16 @@
   "reportConfigSaved": "Report configuration saved",
   "reportConfigOpen": "Open saved configuration",
   "reportConfigNone": "No saved report configurations",
+  "reportConfigDeleteTitle": "Delete saved report configuration?",
+  "reportConfigDeleteConfirmation": "Delete \"{name}\"? This action can't be undone.",
+  "@reportConfigDeleteConfirmation": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "reportConfigDeleted": "Report configuration deleted",
   "reportShowReviews": "Include meeting reviews",
   "reportColumnNumber": "Decision number",
   "reportColumnMeetingNumber": "M",

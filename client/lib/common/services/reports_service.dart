@@ -40,6 +40,13 @@ class ReportsService {
     return response.statusCode == 201;
   }
 
+  Future<bool> deleteReportConfig(int configId) async {
+    final response = await _client.delete(
+      _client.getUri('reports/configs/$configId'),
+    );
+    return response.statusCode == 204;
+  }
+
   Future<bool> sendReport(String reportUrl, List<String> emails) async {
     final uri = Uri.parse(reportUrl);
     final sendUri = uri.replace(path: '${uri.path}/send');
