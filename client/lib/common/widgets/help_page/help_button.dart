@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/utils/help_util.dart';
-import 'package:qfqq/common/widgets/help/help_widget.dart';
+import 'package:qfqq/common/widgets/help_page/help_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class HelpButton extends StatelessWidget {

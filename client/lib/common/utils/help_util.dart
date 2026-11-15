@@ -1,4 +1,4 @@
-import 'package:qfqq/common/widgets/help/help_info.dart';
+import 'package:qfqq/common/widgets/help_page/help_info.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 abstract class HelpLink {
@@ -9,6 +9,8 @@ abstract class HelpLink {
   String getTitle();
   HelpContent getContent();
   HelpContent getModal();
+
+  Type get id => runtimeType;
 }
 
 class MeetingCreationHelpLink extends HelpLink {
@@ -22,6 +24,7 @@ class MeetingCreationHelpLink extends HelpLink {
     return HelpContent(
       title: loc.helpContentMeetingCreationTitle,
       tooltip: loc.helpContentMeetingCreationTooltip,
+      parent: id,
       components: [
         HelpSectionTitle(title: loc.helpContentMeetingCreationMeetingsTitle),
         HelpParagraph(text: loc.helpContentMeetingCreationMeetingsParagraph),
@@ -83,6 +86,7 @@ class MeetingCreationHelpLink extends HelpLink {
     return HelpContent(
       title: loc.helpContentMeetingCreationTitle,
       tooltip: loc.helpContentMeetingCreationTooltip,
+      parent: id,
       components: [
         HelpSectionTitle(title: loc.helpContentMeetingCreationMeetingsTitle),
         HelpParagraph(text: loc.helpContentMeetingCreationMeetingsParagraph),
@@ -119,6 +123,7 @@ class MeetingAnimationHelpLink extends HelpLink {
     return HelpContent(
       title: loc.helpContentMeetingAnimationTitle,
       tooltip: loc.helpContentMeetingAnimationTooltip,
+      parent: id,
       components: [
         HelpBulletList(
           title: loc.helpContentMeetingAnimationClimateTitle,
@@ -222,6 +227,7 @@ class MeetingAnimationHelpLink extends HelpLink {
     return HelpContent(
       title: loc.helpContentMeetingAnimationTitle,
       tooltip: loc.helpContentMeetingAnimationTooltip,
+      parent: id,
       components: [
         HelpParagraph(text: loc.helpContentMeetingAnimationSummaryIntro),
         HelpBulletList(
@@ -264,6 +270,7 @@ class MeetingParticipationHelpLink extends HelpLink {
     return HelpContent(
       title: loc.helpContentMeetingParticipationTitle,
       tooltip: loc.helpContentMeetingParticipationTooltip,
+      parent: id,
       components: [
         HelpBulletList(
           title: loc.helpContentMeetingParticipationPrinciplesTitle,
@@ -285,6 +292,7 @@ class MeetingParticipationHelpLink extends HelpLink {
     return HelpContent(
       title: loc.helpContentMeetingParticipationTitle,
       tooltip: loc.helpContentMeetingParticipationTooltip,
+      parent: id,
       components: [
         HelpParagraph(text: loc.helpContentMeetingParticipationSummaryIntro),
         HelpBulletList(
@@ -313,6 +321,7 @@ class ProjectEvaluationHelpLink extends HelpLink {
     return HelpContent(
       title: loc.helpContentProjectEvaluationTitle,
       tooltip: loc.helpContentProjectEvaluationTooltip,
+      parent: id,
       components: [
         HelpParagraph(text: loc.helpContentProjectEvaluationIntro),
         HelpParagraph(text: loc.helpContentProjectEvaluationAssessment),
@@ -338,6 +347,7 @@ class ProjectEvaluationHelpLink extends HelpLink {
     return HelpContent(
       title: loc.helpContentProjectEvaluationTitle,
       tooltip: loc.helpContentProjectEvaluationTooltip,
+      parent: id,
       components: [
         HelpParagraph(text: loc.helpContentProjectEvaluationIntro),
         HelpParagraph(text: loc.helpContentProjectEvaluationAssessment),
@@ -357,6 +367,7 @@ class ProjectPlanningHelpLink extends HelpLink {
     return HelpContent(
       title: loc.helpContentProjectPlanningTitle,
       tooltip: loc.helpContentProjectPlanningTooltip,
+      parent: id,
       components: [
         HelpSectionTitle(title: loc.helpContentProjectPlanningTitleSection),
         HelpParagraph(text: loc.helpContentProjectPlanningTitleGuidance),

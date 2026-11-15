@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/pages/help_page.dart';
 import 'package:qfqq/common/router.dart';
-import 'package:qfqq/common/widgets/help/help_info.dart';
+import 'package:qfqq/common/widgets/help_page/help_info.dart';
 import 'package:qfqq/mobile/pages/agendas/agenda_view_page.dart';
 import 'package:qfqq/common/pages/decisions_list_page.dart';
 import 'package:qfqq/mobile/pages/decisions/decision_view_page.dart';

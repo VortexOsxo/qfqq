@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qfqq/common/widgets/help/help_info.dart';
+import 'package:qfqq/common/widgets/help_page/help_info.dart';
 
 class HelpWidget extends StatelessWidget {
   final HelpContent content;
