@@ -41,18 +41,28 @@ class _DecisionViewPageContent extends StatelessWidget {
       return Center(child: Text(loc.decisionNotFound));
     }
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildTopCard(context, decision),
-          const SizedBox(height: 16),
-          _buildDecisionInfo(context, decision),
-          const SizedBox(height: 16),
-          DecisionsStatusControlWidget(vm: vm),
-        ],
-      ),
+    return LayoutBuilder(
+      builder:
+          (context, constraints) => SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: IntrinsicHeight(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildTopCard(context, decision),
+                      const SizedBox(height: 16),
+                      _buildDecisionInfo(context, decision),
+                      const Spacer(),
+                      DecisionsStatusControlWidget(vm: vm),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
     );
   }
 
