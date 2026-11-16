@@ -369,6 +369,8 @@
       "date": {}
     }
   },
+  "decisionViewPageProject": "Project",
+  "decisionViewPageGoToProject": "Go to Project",
   "decisionViewPageMeeting": "Meeting",
   "decisionViewPageGoToAgenda": "Go to Agenda",
   "decisionViewPageMarkAsCompleted": "Mark as completed",

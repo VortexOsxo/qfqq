@@ -370,6 +370,8 @@
       "date": {}
     }
   },
+  "decisionViewPageProject": "Projet",
+  "decisionViewPageGoToProject": "Voir le projet",
   "decisionViewPageMeeting": "Réunion",
   "decisionViewPageGoToAgenda": "Voir l'ordre du jour",
   "decisionViewPageMarkAsCompleted": "Marquer comme terminée",

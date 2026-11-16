@@ -9,7 +9,6 @@ import 'package:qfqq/common/widgets/agenda_view_page/meeting_view_content.dart';
 import 'package:qfqq/common/widgets/agendas/meeting_view_control.dart';
 import 'package:qfqq/common/widgets/decisions/decisions_list_widget.dart';
 import 'package:qfqq/common/widgets/meeting_review_list.dart';
-import 'package:qfqq/common/widgets/navigation/navigation_text_button.dart';
 import 'package:qfqq/common/widgets/report_pdf_viewer.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/generated/l10n.dart';
@@ -47,12 +46,10 @@ class _AgendaViewPage extends StatelessWidget {
     return MeetingAgendaSession(
       meetingId: agenda.id,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(8,0,8,8),
+        padding: const EdgeInsets.all(8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ProjectNavigationTextLink(projectId: vm.projectId),
-            SizedBox(height: 8),
             TitleWithStatus(
               title: '${agenda.number}: ${agenda.title}',
               uiData: getMeetingAgendaStatusUI(S.of(context), agenda.status),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
@@ -38,6 +39,8 @@ class AgendaViewPageViewModelState extends ConsumerState<AgendaViewModel> {
         .map((participantId) => ref.watch(userByIdProvider(participantId))?.displayName ?? '')
         .toList();
   }
+
+  void goToProject() => context.push('/projects/${agenda?.projectId}');
 
   @override
   Widget build(BuildContext context) => widget.builder(this);

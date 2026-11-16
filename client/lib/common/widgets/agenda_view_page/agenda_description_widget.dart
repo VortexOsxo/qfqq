@@ -5,6 +5,7 @@ import 'package:qfqq/common/utils/platform.dart';
 import 'package:qfqq/common/view_models/agenda_view_model.dart';
 import 'package:qfqq/common/widgets/details_attribute_widget.dart';
 import 'package:qfqq/common/widgets/details_list_widget.dart';
+import 'package:qfqq/common/widgets/navigation/navigation_text_button.dart';
 import 'package:qfqq/common/widgets/status_chip.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -63,6 +64,19 @@ class AgendaDescriptionWidget extends StatelessWidget {
             emptyLabel: loc.attributeNoParticipants,
             values: vm.participantNames.isNotEmpty ? vm.participantNames : [],
           ),
+          const SizedBox(height: 4),
+          if (vm.hasProject) ...[
+            Text(
+              loc.decisionViewPageProject,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            if (isDesktop) const SizedBox(height: 4),
+            NavigationTextButton(
+              title: loc.decisionViewPageGoToProject,
+              navigate: vm.goToProject,
+            ),
+            if (isDesktop) const SizedBox(height: 8),
+          ],
         ],
       ),
     );

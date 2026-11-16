@@ -116,6 +116,7 @@ class DecisionViewPageViewModelState extends ConsumerState<DecisionViewPageViewM
       .updateDecisionStatus(widget.decisionId, DecisionStatus.pending);
 
   void goToMeeting() => context.push('/agendas/${decision?.meetingId}');
+  void goToProject() => context.push('/projects/${decision?.projectId}');
   void goToDecisions() => context.push('/decisions');
 
   Future<void> deleteDecision() async {

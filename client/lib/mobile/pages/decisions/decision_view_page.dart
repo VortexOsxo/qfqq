@@ -68,24 +68,6 @@ class _DecisionViewPageContent extends StatelessWidget {
           title: '${loc.attributeNumber}: ${decision.number}',
           uiData: uiData,
         ),
-        if (vm.hasProject)
-          ProjectNavigationTextButton(projectId: decision.projectId!),
-        if (vm.hasMeeting)
-          TextButton(
-            onPressed: vm.goToMeeting,
-            style: TextButton.styleFrom(
-              padding: EdgeInsets.zero,
-              alignment: Alignment.centerLeft,
-              minimumSize: Size(0, 30),
-            ),
-            child: Row(
-              children: [
-                Text(loc.decisionViewPageGoToAgenda),
-                const SizedBox(width: 4),
-                const Icon(Icons.arrow_forward, size: 16),
-              ],
-            ),
-          ),
       ],
     );
   }
@@ -131,6 +113,30 @@ class _DecisionViewPageContent extends StatelessWidget {
           emptyLabel: loc.attributeNoAssistants,
           values: vm.assistantNames,
         ),
+        if (vm.hasProject) ...[
+          Text(
+            loc.decisionViewPageProject,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 4),
+          NavigationTextButton(
+            title: loc.decisionViewPageGoToProject,
+            navigate: vm.goToProject,
+          ),
+          const SizedBox(height: 8),
+        ],
+        if (vm.hasMeeting) ...[
+          Text(
+            loc.decisionViewPageMeeting,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 4),
+          NavigationTextButton(
+            title: loc.decisionViewPageGoToAgenda,
+            navigate: vm.goToMeeting,
+          ),
+          const SizedBox(height: 8),
+        ],
 
         const SizedBox(height: 16),
         PermissionRequired(

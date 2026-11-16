@@ -5,12 +5,11 @@ import 'package:qfqq/common/models/permissions.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/view_models/decision_view_page_view_model.dart';
+import 'package:qfqq/common/widgets/decisions/decision_description_widget.dart';
 import 'package:qfqq/common/widgets/decisions/decision_status_control_widget.dart';
 import 'package:qfqq/common/widgets/navigation/navigation_text_button.dart';
 import 'package:qfqq/common/widgets/permission_required.dart';
 import 'package:qfqq/common/widgets/status_chip.dart';
-import 'package:qfqq/common/widgets/details_attribute_widget.dart';
-import 'package:qfqq/common/widgets/details_list_widget.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class DecisionViewPage extends ConsumerWidget {
@@ -146,52 +145,7 @@ class _DecisionViewPageContent extends StatelessWidget {
           statusUIData: getDecisionStatusUI(S.of(context), decision.status),
         ),
         const SizedBox(height: 12),
-        DetailsAttributeWidget(
-          label: loc.attributeDate,
-          value: formatDateDay(context, decision.initialDate),
-        ),
-        DetailsAttributeWidget(
-          label: loc.decisionListDueDate,
-          value: formatDateDayIfPresent(context, decision.dueDate),
-        ),
-        DetailsAttributeWidget(
-          label: loc.decisionListResponsible,
-          value:
-              vm.responsibleName.isNotEmpty
-                  ? vm.responsibleName
-                  : loc.decisionListNoResponsibleSet,
-        ),
-        DetailsListWidget(
-          label: loc.attributeAssitants,
-          emptyLabel: loc.attributeNoAssistants,
-          values: vm.assistantNames,
-        ),
-        if (vm.hasMeeting) ...[
-          Text(
-            loc.decisionViewPageMeeting,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 4),
-          TextButton(
-            onPressed: vm.goToMeeting,
-            style: TextButton.styleFrom(
-              padding: EdgeInsets.zero,
-              minimumSize: Size.zero,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(loc.decisionViewPageGoToAgenda),
-                const SizedBox(width: 4),
-                Transform.translate(
-                  offset: const Offset(0, 1),
-                  child: const Icon(Icons.arrow_forward, size: 16),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-        ],
+        DecisionDescriptionWidget(vm: vm),
         Spacer(),
         PermissionRequired(
           neededPermissions: Permissions(deleteContent: true),
