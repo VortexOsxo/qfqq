@@ -47,6 +47,10 @@ class DecisionViewPageViewModelState extends ConsumerState<DecisionViewPageViewM
   bool get hasMeeting => isIdValid(decision?.meetingId);
   bool get hasProject => isIdValid(decision?.projectId);
 
+  int? get meetingId => decision?.meetingId;
+  int? get projectId => decision?.projectId;
+
+
   Future<void> markAsCompleted() async {
     final loc = S.of(context);
     final currentMessage = decision?.completedMessage;

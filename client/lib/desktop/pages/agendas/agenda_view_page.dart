@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/view_models/agenda_view_model.dart';
 import 'package:qfqq/common/widgets/agenda_view_page/agenda_description_widget.dart';
@@ -43,11 +42,7 @@ class _AgendaViewPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (vm.hasProject && vm.projectName != null)
-              NavigationTextLink(
-                text: "${vm.projectName!}/",
-                navigate: () => context.push('/projects/${vm.projectId}'),
-              ),
+            ProjectNavigationTextLink(projectId: vm.projectId),
             SizedBox(height: 8),
             Text(
               '${agenda.number}: ${agenda.title}',

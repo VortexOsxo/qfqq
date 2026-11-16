@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/providers/meeting_agendas_provider.dart';
 import 'package:qfqq/common/providers/projects_provider.dart';
+import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/utils/platform.dart';
 
 class NavigationTextLink extends StatelessWidget {
@@ -33,6 +35,57 @@ class NavigationTextLink extends StatelessWidget {
           fontSize: isMobile ? 12 : 14
         ),
       ),
+    );
+  }
+}
+
+class ProjectNavigationTextLink extends ConsumerWidget {
+  final int? projectId;
+
+  const ProjectNavigationTextLink({super.key, required this.projectId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (!isIdValid(projectId)) {
+      return SizedBox.shrink();
+    }
+
+    Future<Object?> navigate() => context.push('/projects/$projectId');
+    final name = ref.watch(projectProviderById(projectId!).select((p) => p?.title));
+    if (name == null) {
+      return SizedBox.shrink();
+    }
+
+    return NavigationTextLink(text: '$name/', navigate: navigate);
+  }
+}
+
+class ProjectAndMeetingNavigationTextLink extends ConsumerWidget {
+  final int? projectId;
+  final int? meetingId;
+
+  const ProjectAndMeetingNavigationTextLink({super.key, required this.projectId, required this.meetingId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (!isIdValid(projectId) && !isIdValid(meetingId)) {
+      return SizedBox.shrink();
+    }
+
+    Future<Object?> mNavigate() => context.push('/agendas/$meetingId');
+    Future<Object?> pNavigate() => context.push('/projects/$projectId');
+
+    final mName = ref.watch(meetingAgendaByIdProvider(meetingId!).select((m) => m?.title));
+    final pName = ref.watch(projectProviderById(projectId!).select((p) => p?.title));
+
+    return Row(children: [
+      if (pName != null) ...[
+        NavigationTextLink(text: pName, navigate: pNavigate),
+        Text('/', style: TextStyle(color: Colors.blue.shade700)),
+      ],
+      if (mName != null)
+        NavigationTextLink(text: mName, navigate: mNavigate),
+      ],
     );
   }
 }

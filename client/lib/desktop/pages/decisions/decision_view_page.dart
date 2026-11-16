@@ -36,16 +36,26 @@ class _DecisionViewPageContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final decision = vm.decision;
     final loc = S.of(context);
+    final theme = Theme.of(context);
 
     if (decision == null) {
       return Center(child: Text(loc.decisionNotFound));
     }
 
     return Padding(
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.fromLTRB(32, 0, 32, 32),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildTopCard(context, decision),
+          ProjectAndMeetingNavigationTextLink(projectId: vm.projectId, meetingId: vm.meetingId),
+          SizedBox(height: 8),
+          Text(
+            '${loc.attributeNumber}: ${decision.number}',
+            style: theme.textTheme.headlineMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: theme.primaryColor,
+            ),
+          ),
           const SizedBox(height: 16),
           Expanded(
             child: Row(
@@ -85,28 +95,6 @@ class _DecisionViewPageContent extends StatelessWidget {
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTopCard(BuildContext context, Decision decision) {
-    final theme = Theme.of(context);
-    final loc = S.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 24),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            '${loc.attributeNumber}: ${decision.number}',
-            style: theme.textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: theme.primaryColor,
-            ),
-          ),
-          ProjectNavigationTextButton(projectId: decision.projectId ?? 0),
         ],
       ),
     );
