@@ -13,7 +13,11 @@ import 'package:qfqq/mobile/mobile_app.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  if (!isIOS) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
 
   WebSocketService.connect();
 
@@ -27,10 +31,7 @@ void main() async {
       final path = auth.hasOrgWithAccess ? '/' : '/subscribe';
       container.read(routerProvider).go(path);
     }
-  } catch (_) {
-
-  }
-
+  } catch (_) {}
 
   runApp(
     UncontrolledProviderScope(

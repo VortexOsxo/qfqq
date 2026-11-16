@@ -18,3 +18,4 @@ final PlatformType platformType = _checkPlatform();
 
 final isMobile = platformType == PlatformType.mobile;
 final isDesktop = platformType == PlatformType.desktop;
+final isIOS = defaultTargetPlatform == TargetPlatform.iOS;

@@ -18,9 +18,9 @@ final initializationProvider = Provider<int>((ref) {
   ref.read(meetingsAgendasProvider.notifier);
   ref.read(invitationsProvider.notifier);
 
-  if (platformType == PlatformType.mobile) {
+  if (platformType == PlatformType.mobile && !isIOS) {
     ref.read(pushNotificationServiceProvider);
   }
-  
+
   return 0;
 });
