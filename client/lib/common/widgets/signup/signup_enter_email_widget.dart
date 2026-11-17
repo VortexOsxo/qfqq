@@ -20,6 +20,7 @@ class SignupEnterEmailWidget extends StatelessWidget {
           decoration: InputDecoration(
             labelText: loc.attributeEmail,
             errorText: vm.stepErrorMessage,
+            errorMaxLines: 3,
           ),
           keyboardType: TextInputType.emailAddress,
           onChanged: vm.setEmail,

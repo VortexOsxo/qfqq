@@ -15,7 +15,7 @@ class UserDropdownMenu extends ConsumerWidget {
   final ValueChanged<int?> valueChanged;
   final String anyLabel;
   final String? noneLabel;
-  final double width;
+  final double? width;
 
   const UserDropdownMenu({
     super.key,

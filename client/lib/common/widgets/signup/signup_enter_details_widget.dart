@@ -36,6 +36,7 @@ class SignupEnterDetailsWidget extends StatelessWidget {
             decoration: InputDecoration(
               labelText: loc.attributeFirstName,
               errorText: vm.accountError.firstNameError,
+              errorMaxLines: 3,
             ),
             onChanged: vm.setFirstName,
             onSaved: vm.saveFirstName,
@@ -46,6 +47,7 @@ class SignupEnterDetailsWidget extends StatelessWidget {
             decoration: InputDecoration(
               labelText: loc.attributeLastName,
               errorText: vm.accountError.lastNameError,
+              errorMaxLines: 3,
             ),
             onChanged: vm.setLastName,
             onSaved: vm.saveLastName,
@@ -55,6 +57,7 @@ class SignupEnterDetailsWidget extends StatelessWidget {
             decoration: InputDecoration(
               labelText: loc.attributePassword,
               errorText: vm.accountError.passwordError,
+              errorMaxLines: 3,
             ),
             onChanged: vm.setPassword,
             onSaved: vm.savePassword,
@@ -64,6 +67,7 @@ class SignupEnterDetailsWidget extends StatelessWidget {
             decoration: InputDecoration(
               labelText: loc.signUpPageConfirmPassword,
               errorText: vm.accountError.passwordError,
+              errorMaxLines: 3,
             ),
             onChanged: vm.setConfirmPassword,
             onSaved: vm.saveConfirmPassword,

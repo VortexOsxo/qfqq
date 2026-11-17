@@ -41,10 +41,14 @@ class SignupEnterCodeWidget extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         if (vm.stepErrorMessage != null)
-          Text(
-            vm.stepErrorMessage!,
-            style: const TextStyle(color: Colors.red),
-            textAlign: TextAlign.center,
+          SizedBox(
+            width: double.infinity,
+            child: Text(
+              vm.stepErrorMessage!,
+              style: const TextStyle(color: Colors.red),
+              textAlign: TextAlign.center,
+              softWrap: true,
+            ),
           ),
         const SizedBox(height: 16),
         ElevatedButton(

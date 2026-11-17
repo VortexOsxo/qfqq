@@ -9,11 +9,13 @@ import 'package:qfqq/generated/l10n.dart';
 class AgendaStatusDropdownMenu extends StatelessWidget {
   final MeetingAgendaStatus? initialStatus;
   final ValueChanged<MeetingAgendaStatus?> valueChanged;
+  final double? width;
 
   const AgendaStatusDropdownMenu({
     super.key,
     required this.initialStatus,
     required this.valueChanged,
+    this.width = 200,
   });
 
   String getStatusLabel(BuildContext context, MeetingAgendaStatus status) {
@@ -42,6 +44,7 @@ class AgendaStatusDropdownMenu extends StatelessWidget {
       entries: menuEntries,
       initialSelection: initialStatus,
       onSelected: valueChanged,
+      width: width,
     );
   }
 }

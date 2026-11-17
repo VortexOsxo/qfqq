@@ -55,12 +55,14 @@ class _ProjectPageView extends StatelessWidget {
             ProjectStatusDropdownMenu(
               initialStatus: vm.statusQuery,
               valueChanged: vm.onStatusQueryChanged,
+              width: null
             ),
             const SizedBox(height: 8),
             UserDropdownMenu(
               initialUserId: vm.userIdQuery,
               valueChanged: vm.onUserQueryChanged,
               anyLabel: S.of(context).commonAllSupervisors,
+              width: null
             ),
           ],
         ),

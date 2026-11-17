@@ -9,7 +9,7 @@ import 'package:qfqq/generated/l10n.dart';
 class DecisionStatusDropdownMenu extends StatelessWidget {
   final DecisionStatus? initialStatus;
   final ValueChanged<DecisionStatus?> valueChanged;
-  final double width;
+  final double? width;
 
   const DecisionStatusDropdownMenu({
     super.key,

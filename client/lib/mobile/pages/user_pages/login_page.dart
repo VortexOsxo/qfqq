@@ -48,7 +48,15 @@ class _MobileLoginView extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           if (vm.error.isNotEmpty)
-            Text(vm.error, style: const TextStyle(color: Colors.red)),
+            SizedBox(
+              width: double.infinity,
+              child: Text(
+                vm.error,
+                style: const TextStyle(color: Colors.red),
+                textAlign: TextAlign.center,
+                softWrap: true,
+              ),
+            ),
           ElevatedButton(
             style: squareButtonStyle(context),
             onPressed: vm.submit,

@@ -121,6 +121,23 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
   }
 
   Widget _buildSearchAndFilterSection(BuildContext context, WidgetRef ref) {
+    final decisionDropdown = DecisionStatusDropdownMenu(
+      initialStatus: _selectedStatus,
+      valueChanged: (value) {
+        setState(() => _selectedStatus = value);
+      },
+      width: isDesktop ? 200 : null
+    );
+
+    final userDropdown = UserDropdownMenu(
+      initialUserId: _selectedResponsibleId,
+      valueChanged: (value) {
+        setState(() => _selectedResponsibleId = value);
+      },
+      anyLabel: S.of(context).decisionListAnyResponsible,
+      width: isDesktop ? 200 : null
+    );
+
     final filters = Padding(
       padding: const EdgeInsets.all(8),
       child: Column(
@@ -132,26 +149,26 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
             hintText: S.of(context).searchDescriptionIdHint,
           ),
           SizedBox(height: 8),
-          Row(
-            spacing: 8,
-            children: [
-              DecisionStatusDropdownMenu(
-                initialStatus: _selectedStatus,
-                valueChanged: (value) {
-                  setState(() => _selectedStatus = value);
-                },
-              ),
-              UserDropdownMenu(
-                initialUserId: _selectedResponsibleId,
-                valueChanged: (value) {
-                  setState(() => _selectedResponsibleId = value);
-                },
-                anyLabel: S.of(context).decisionListAnyResponsible,
-              ),
-              if (widget.isProjectFilterEnabled)
-                _buildProjectFilterDropdown(context, ref),
-            ],
-          ),
+          if (isDesktop)
+            Row(
+              spacing: 8,
+              children: [
+                decisionDropdown,
+                userDropdown,
+                if (widget.isProjectFilterEnabled)
+                  _buildProjectFilterDropdown(context, ref),
+              ],
+            )
+          else
+            Column(
+              spacing: 8,
+              children: [
+                decisionDropdown,
+                userDropdown,
+                if (widget.isProjectFilterEnabled)
+                  _buildProjectFilterDropdown(context, ref),
+              ],
+            ),
         ],
       ),
     );
@@ -189,6 +206,7 @@ class _DecisionsListPageState extends ConsumerState<DecisionsListWidget> {
         });
       },
       entries: menuEntries,
+      width: isDesktop ? 200 : null
     );
   }
 

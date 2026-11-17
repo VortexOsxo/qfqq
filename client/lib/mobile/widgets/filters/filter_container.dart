@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qfqq/common/utils/platform.dart';
 import 'package:qfqq/generated/l10n.dart';
 
 class FilterContainer extends StatefulWidget {
@@ -12,7 +13,7 @@ class FilterContainer extends StatefulWidget {
 }
 
 class _FilterContainerState extends State<FilterContainer> {
-  bool _isExpanded = true;
+  bool _isExpanded = isDesktop;
 
   @override
   Widget build(BuildContext context) {

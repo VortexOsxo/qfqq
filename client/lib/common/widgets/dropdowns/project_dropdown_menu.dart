@@ -11,11 +11,13 @@ import 'package:qfqq/generated/l10n.dart';
 class ProjectDropdownMenu extends ConsumerWidget {
   final int? initialProject;
   final ValueChanged<int?> valueChanged;
+  final double? width;
 
   const ProjectDropdownMenu({
     super.key,
     required this.initialProject,
     required this.valueChanged,
+    this.width = 200,
   });
 
   String getStatusLabel(BuildContext context, MeetingAgendaStatus status) {
@@ -49,6 +51,7 @@ class ProjectDropdownMenu extends ConsumerWidget {
       entries: menuEntries,
       initialSelection: initialProject,
       onSelected: valueChanged,
+      width: width,
     );
   }
 }

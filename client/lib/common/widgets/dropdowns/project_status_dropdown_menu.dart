@@ -9,11 +9,13 @@ import 'package:qfqq/generated/l10n.dart';
 class ProjectStatusDropdownMenu extends StatelessWidget {
   final ProjectStatus? initialStatus;
   final ValueChanged<ProjectStatus?> valueChanged;
+  final double? width;
 
   const ProjectStatusDropdownMenu({
     super.key,
     required this.initialStatus,
     required this.valueChanged,
+    this.width = 200,
   });
 
   @override
@@ -37,6 +39,7 @@ class ProjectStatusDropdownMenu extends StatelessWidget {
       entries: entries,
       initialSelection: initialStatus,
       onSelected: valueChanged,
+      width: width,
     );
   }
 }

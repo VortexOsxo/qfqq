@@ -25,11 +25,13 @@ class AgendaFilterWidget extends StatelessWidget {
         AgendaStatusDropdownMenu(
           initialStatus: vm.statusQuery,
           valueChanged: vm.onStatusQueryChanged,
+          width: null
         ),
         const SizedBox(height: 8),
         ProjectDropdownMenu(
           initialProject: vm.projectIdQuery,
           valueChanged: vm.onProjectQueryChanged,
+          width: null
         ),
         const SizedBox(height: 8),
         UserDropdownMenu(
@@ -37,6 +39,7 @@ class AgendaFilterWidget extends StatelessWidget {
           valueChanged: vm.onAnimatorQueryChanged,
           anyLabel: S.of(context).agendaListAnyAnimator,
           noneLabel: S.of(context).commonNoAnimatorSet,
+          width: null
         ),
       ],
     );

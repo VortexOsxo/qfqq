@@ -48,7 +48,9 @@ flutter_intl:
 
 flutter_launcher_icons:
   android: true
+  ios: true
   image_path: "assets/logo.png"
+  image_path_ios: "ios/app_icon_source.png"
 
 msix_config:
   display_name: QuiFaitQuoiQuand
