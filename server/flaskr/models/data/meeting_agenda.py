@@ -24,6 +24,7 @@ class MeetingAgenda:
 
     participantsIds: list[str]
     themes: list[str]
+    nextMeetingId: int | None = None
 
     def to_dict(self):
         return {
@@ -39,4 +40,5 @@ class MeetingAgenda:
             "participantsIds": self.participantsIds or [],
             "themes": self.themes or [],
             "projectId": self.projectId,
+            "nextMeetingId": self.nextMeetingId,
         }

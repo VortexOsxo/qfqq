@@ -378,6 +378,8 @@
   "decisionViewPageGoToProject": "Voir le projet",
   "decisionViewPageMeeting": "Réunion",
   "decisionViewPageGoToAgenda": "Voir l'ordre du jour",
+  "agendaViewPageNextMeeting": "Prochaine Réunion",
+  "agendaViewPageGoToNextMeeting": "Voir la prochaine réunion",
   "decisionViewPageMarkAsCompleted": "Marquer comme terminée",
   "decisionViewPageMarkAsCancelled": "Marquer comme annulée",
   "decisionViewPageMarkAsPending": "Marquer comme en attente",

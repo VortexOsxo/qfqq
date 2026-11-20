@@ -15,6 +15,7 @@ class MeetingAgenda {
 
   int? animatorId;
   int? projectId;
+  int? nextMeetingId;
 
   List<int> participantsIds = [];
   List<String> themes = [];
@@ -41,6 +42,7 @@ class MeetingAgenda {
       ..meetingLocation = meetingLocation
       ..animatorId = animatorId
       ..projectId = projectId
+      ..nextMeetingId = nextMeetingId
       ..participantsIds = List<int>.from(participantsIds)
       ..themes = List<String>.from(themes);
   }
@@ -70,7 +72,8 @@ class MeetingAgenda {
       animatorId = data['animatorId'],
       participantsIds = List<int>.from(data['participantsIds']),
       themes = List<String>.from(data['themes']),
-      projectId = data['projectId'];
+      projectId = data['projectId'],
+      nextMeetingId = data['nextMeetingId'];
 
   Map<String, dynamic> toJson() {
     return {
@@ -87,6 +90,7 @@ class MeetingAgenda {
       if (participantsIds.isNotEmpty) 'participantsIds': participantsIds,
       'themes': themes,
       if (projectId != null) 'projectId': projectId,
+      if (nextMeetingId != null) 'nextMeetingId': nextMeetingId,
     };
   }
 
@@ -103,6 +107,7 @@ class MeetingAgenda {
            other.meetingLocation == meetingLocation &&
            other.animatorId == animatorId &&
            other.projectId == projectId &&
+           other.nextMeetingId == nextMeetingId &&
            listEquals(other.participantsIds, participantsIds) &&
            listEquals(other.themes, themes);
   }

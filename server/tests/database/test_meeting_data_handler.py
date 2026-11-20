@@ -106,6 +106,7 @@ def test_get_meeting_with_participants_names(app):
     meeting, participants = MeetingDataHandler.get_meeting_with_participants(3)
 
     assert meeting.title == "Sprint Review"
+    assert meeting.nextMeetingId == 2
 
     assert len(participants) == 2
     assert "Bob Jones" in participants

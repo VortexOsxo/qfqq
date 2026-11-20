@@ -9,6 +9,41 @@ def test_create_meeting_draft_success(client):
     payload = {"title": "Test Meeting", "status": "draft"}
     response = client.post("/meeting-agendas", json=payload, headers=headers)
     assert response.status_code == 201
+    assert response.get_json()["nextMeetingId"] is None
+
+
+def test_meeting_agendas_include_next_meeting_id(client):
+    headers = get_auth_headers(client)
+
+    linked = client.get("/meeting-agendas/3", headers=headers)
+    unlinked = client.get("/meeting-agendas/2", headers=headers)
+    assert linked.status_code == 200
+    assert linked.get_json()["nextMeetingId"] == 2
+    assert unlinked.status_code == 200
+    assert unlinked.get_json()["nextMeetingId"] is None
+
+    for url in ("/meeting-agendas/", "/meeting-agendas/?participantId=2"):
+        response = client.get(url, headers=headers)
+        assert response.status_code == 200
+        meetings = {meeting["id"]: meeting for meeting in response.get_json()}
+        assert meetings[3]["nextMeetingId"] == 2
+        assert meetings[2]["nextMeetingId"] is None
+
+
+def test_creating_followup_exposes_id_on_previous_meeting(client):
+    headers = get_auth_headers(client)
+    response = client.post(
+        "/meeting-agendas",
+        json={"title": "Follow-up", "status": "draft", "previousMeetingId": 1},
+        headers=headers,
+    )
+    assert response.status_code == 201
+    new_meeting = response.get_json()
+    assert new_meeting["nextMeetingId"] is None
+
+    previous = client.get("/meeting-agendas/1", headers=headers)
+    assert previous.status_code == 200
+    assert previous.get_json()["nextMeetingId"] == new_meeting["id"]
 
 
 def test_create_meeting_draft_missing_title(client):

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
+import 'package:qfqq/common/utils/is_id_valid.dart';
 import 'package:qfqq/common/utils/platform.dart';
 import 'package:qfqq/common/view_models/agenda_view_model.dart';
 import 'package:qfqq/common/widgets/details_attribute_widget.dart';
@@ -9,12 +12,12 @@ import 'package:qfqq/common/widgets/navigation/navigation_text_button.dart';
 import 'package:qfqq/common/widgets/status_chip.dart';
 import 'package:qfqq/generated/l10n.dart';
 
-class AgendaDescriptionWidget extends StatelessWidget {
+class AgendaDescriptionWidget extends ConsumerWidget {
   final AgendaViewPageViewModelState vm;
   const AgendaDescriptionWidget({super.key, required this.vm});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final loc = S.of(context);
     final agenda = vm.agenda!;
 
@@ -77,8 +80,23 @@ class AgendaDescriptionWidget extends StatelessWidget {
             ),
             if (isDesktop) const SizedBox(height: 8),
           ],
+          if (isIdValid(agenda.nextMeetingId)) ...[
+            Text(
+              loc.agendaViewPageNextMeeting,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            if (isDesktop) const SizedBox(height: 4),
+            NavigationTextButton(
+              title: loc.agendaViewPageGoToNextMeeting,
+              navigate: () => _goToNextMeeting(context, agenda.nextMeetingId!),
+            ),
+          ],
         ],
       ),
     );
+  }
+
+  void _goToNextMeeting(BuildContext context, int nextMeetingId) {
+    context.push('/agendas/$nextMeetingId');
   }
 }

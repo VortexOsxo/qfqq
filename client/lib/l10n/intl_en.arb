@@ -377,6 +377,8 @@
   "decisionViewPageGoToProject": "Go to Project",
   "decisionViewPageMeeting": "Meeting",
   "decisionViewPageGoToAgenda": "Go to Agenda",
+  "agendaViewPageNextMeeting": "Next Meeting",
+  "agendaViewPageGoToNextMeeting": "Go to Next Meeting",
   "decisionViewPageMarkAsCompleted": "Mark as completed",
   "decisionViewPageMarkAsCancelled": "Mark as cancelled",
   "decisionViewPageMarkAsPending": "Mark as pending",

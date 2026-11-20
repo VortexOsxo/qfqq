@@ -141,14 +141,14 @@ class MeetingDataHandler:
 
     @classmethod
     def get_meeting_agendas(cls) -> list[MeetingAgenda]:
-        query = "SELECT id, nb, title, goals, status, redactionDate, meetingDate, meetingLocation, animatorId, projectId, participantsIds, themes FROM meetingsComplete;"
+        query = "SELECT id, nb, title, goals, status, redactionDate, meetingDate, meetingLocation, animatorId, projectId, participantsIds, themes, nextMeetingId FROM meetingsComplete;"
 
         meetings = read_query(query)
         return [MeetingAgenda(*m) for m in meetings]
 
     @classmethod
     def get_meeting_agenda(cls, id: int) -> MeetingAgenda | None:
-        query = "SELECT id, nb, title, goals, status, redactionDate, meetingDate, meetingLocation, animatorId, projectId, participantsIds, themes FROM meetingsComplete WHERE id = %s;"
+        query = "SELECT id, nb, title, goals, status, redactionDate, meetingDate, meetingLocation, animatorId, projectId, participantsIds, themes, nextMeetingId FROM meetingsComplete WHERE id = %s;"
 
         meetings = read_query(query, (id,))
         return MeetingAgenda(*meetings[0]) if meetings else None
@@ -157,7 +157,7 @@ class MeetingDataHandler:
     def get_meeting_with_participants(cls, id: int) -> tuple[MeetingAgenda, list[str]] | None:
         query = """
         SELECT
-        mc.id, mc.nb, mc.title, mc.goals, mc.status, mc.redactionDate, mc.meetingDate, mc.meetingLocation, mc.animatorId, mc.projectId, mc.participantsIds, mc.themes,
+        mc.id, mc.nb, mc.title, mc.goals, mc.status, mc.redactionDate, mc.meetingDate, mc.meetingLocation, mc.animatorId, mc.projectId, mc.participantsIds, mc.themes, mc.nextMeetingId,
         COALESCE(p.participantsNames, '{}') AS participantsNames
         FROM meetingsComplete mc
         LEFT JOIN LATERAL (
@@ -175,7 +175,7 @@ class MeetingDataHandler:
 
     @classmethod
     def get_meetings_by_participant(cls, participantId: int) -> list[MeetingAgenda]:
-        query = "SELECT id, nb, title, goals, status, redactionDate, meetingDate, meetingLocation, animatorId, projectId, participantsIds, themes FROM meetingsComplete WHERE %s = ANY(participantsIds);"
+        query = "SELECT id, nb, title, goals, status, redactionDate, meetingDate, meetingLocation, animatorId, projectId, participantsIds, themes, nextMeetingId FROM meetingsComplete WHERE %s = ANY(participantsIds);"
 
         meetings = read_query(query, (participantId,))
         return [MeetingAgenda(*m) for m in meetings]
