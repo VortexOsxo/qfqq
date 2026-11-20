@@ -533,7 +533,7 @@
   "reportConfigDeleted": "Report configuration deleted",
   "reportShowReviews": "Include meeting reviews",
   "reportColumnNumber": "Decision number",
-  "reportColumnMeetingNumber": "M",
+  "reportColumnMeetingNumber": "Meeting number",
   "reportColumnDueDate": "Due Date",
   "reportColumnCompletedDate": "Completed Date",
 

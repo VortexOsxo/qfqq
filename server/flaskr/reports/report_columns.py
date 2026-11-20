@@ -17,7 +17,8 @@ get_column_definitions = lambda lang: [
     Column(4, ("Responsable", "Responsible"), 15, lambda line: line.responsibleName),
     Column(5, ("Échéance", "Due Date"), 12, lambda line: (line.dueDate.strftime("%Y-%m-%d") if line.dueDate else " ")),
     Column(6, ("Statut", "Status"), 12, lambda line: decision_status_as_string(line.status, lang)),
-    Column(7, ("Date de fin", "Completed Date"), 12, lambda line: (line.completedDate.strftime("%Y-%m-%d") if line.completedDate else " "))
+    Column(7, ("Date de fin", "Completed Date"), 12, lambda line: (line.completedDate.strftime("%Y-%m-%d") if line.completedDate else " ")),
+    Column(8, ("Message de clôture", "Completion Message"), None, lambda line: line.completionMessage or " ")
 ]
 
 class ReportLineManager:
@@ -70,9 +71,9 @@ class ReportLineManager:
 
 
 ALL_REPORT_COLUMNS = {column.id for column in get_column_definitions("en")}
-PARTICIPANT_REPORT_COLUMNS = {1, 3, 5, 6, 7}
+PARTICIPANT_REPORT_COLUMNS = {1, 3, 5, 6, 7, 8}
 PARTICIPANTS_REPORT_COLUMNS = PARTICIPANT_REPORT_COLUMNS
-MEETING_REPORT_DECISION_COLUMNS = {1, 3, 4, 5, 6, 7}
-PROJECT_REPORT_DECISION_COLUMNS = {1, 2, 3, 4, 5, 6, 7}
+MEETING_REPORT_DECISION_COLUMNS = {1, 3, 4, 5, 6, 7, 8}
+PROJECT_REPORT_DECISION_COLUMNS = {1, 2, 3, 4, 5, 6, 7, 8}
 
 MEETING_REVIEW_COLUMNS = ReportLineManager.get_column_widths([None, 14, 14, 14, 14, 14])

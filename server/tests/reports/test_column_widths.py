@@ -36,3 +36,20 @@ def test_process_uses_language_for_status_value(lang, expected_title, expected_v
     assert values == [[expected_value]]
     assert headers == [expected_title]
     assert widths == ["100%"]
+
+
+@pytest.mark.parametrize(
+    ("lang", "expected_title"),
+    [
+        ("fr", "Message de clôture"),
+        ("en", "Completion Message"),
+    ],
+)
+def test_completion_message_column_is_flexible(lang, expected_title):
+    line = SimpleNamespace(description="Action", completionMessage="Completed with notes")
+
+    values, headers, widths = ReportLineManager.process([line], {3, 8}, lang)
+
+    assert values == [["Action", "Completed with notes"]]
+    assert headers == ["Action", expected_title]
+    assert widths == ["50%", "50%"]

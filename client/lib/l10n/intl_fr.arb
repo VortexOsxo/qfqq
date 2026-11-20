@@ -534,7 +534,7 @@
   "reportConfigDeleted": "Configuration du rapport supprimée",
   "reportShowReviews": "Inclure les retours de réunion",
   "reportColumnNumber": "Numéro de décision",
-  "reportColumnMeetingNumber": "R",
+  "reportColumnMeetingNumber": "Numéro de réunion",
   "reportColumnDueDate": "Échéance",
   "reportColumnCompletedDate": "Date de fin",
 

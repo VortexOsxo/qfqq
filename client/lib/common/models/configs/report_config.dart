@@ -10,6 +10,7 @@ class ReportConfig {
   static const dueDateColumn = 5;
   static const statusColumn = 6;
   static const completedDateColumn = 7;
+  static const completionMessageColumn = 8;
 
   static const participantColumns = [
     numberColumn,
@@ -17,6 +18,7 @@ class ReportConfig {
     dueDateColumn,
     statusColumn,
     completedDateColumn,
+    completionMessageColumn,
   ];
   static const meetingColumns = [
     numberColumn,
@@ -25,6 +27,7 @@ class ReportConfig {
     dueDateColumn,
     statusColumn,
     completedDateColumn,
+    completionMessageColumn,
   ];
   static const projectColumns = [
     numberColumn,
@@ -34,6 +37,7 @@ class ReportConfig {
     dueDateColumn,
     statusColumn,
     completedDateColumn,
+    completionMessageColumn,
   ];
 
   final String pdfUrl;

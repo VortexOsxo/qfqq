@@ -556,6 +556,7 @@ class _ReportOptionsDialogState extends ConsumerState<ReportOptionsDialog> {
     ReportConfig.dueDateColumn => loc.reportColumnDueDate,
     ReportConfig.statusColumn => loc.attributeStatus,
     ReportConfig.completedDateColumn => loc.reportColumnCompletedDate,
+    ReportConfig.completionMessageColumn => loc.decisionCompletionMessageLabel,
     _ => column.toString(),
   };
 }
