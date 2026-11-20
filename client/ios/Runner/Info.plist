@@ -6,6 +6,8 @@
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Qfqq accède à vos photos uniquement si vous choisissez d'y joindre ou d'y enregistrer un fichier.</string>
 	<key>CFBundleDisplayName</key>
 	<string>Qfqq</string>
 	<key>CFBundleExecutable</key>
