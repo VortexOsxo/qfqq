@@ -339,9 +339,13 @@
   "meetingViewContentDraftCorrectErrors": "Pour marquer la réunion comme planifiée, veuillez corriger les erreurs suivantes :",
   "meetingViewContentDraftMarkPlanned": "Marquez cette réunion comme planifiée pour la rendre visible à votre équipe.",
   "meetingViewContentMarkAsPlan": "Marquer comme planifiée",
+  "meetingViewContentCanceled": "Réunion manquée",
+  "meetingViewContentPlannedCanceled": "Marquez cette réunion comme annulée pour la retirer.",
+  "meetingViewContentCanceledStatus": "Cette réunion a été annulée.",
 
   "meetingViewControlPlan": "Planifier",
   "meetingViewControlCancel": "Annuler",
+  "meetingViewControlMarkCanceled": "Marquer comme annulée",
   "meetingViewControlTerminate": "Terminer la réunion",
 
   "meetingNotFound": "Réunion introuvable",

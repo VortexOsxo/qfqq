@@ -338,9 +338,13 @@
   "meetingViewContentDraftCorrectErrors": "To mark the meeting as planned, please resolve the following issues:",
   "meetingViewContentDraftMarkPlanned": "Mark this meeting as planned to make it visible to your team.",
   "meetingViewContentMarkAsPlan": "Mark as planned",
+  "meetingViewContentCanceled": "Meeting missed",
+  "meetingViewContentPlannedCanceled": "Mark this meeting as canceled to clear it.",
+  "meetingViewContentCanceledStatus": "This meeting was canceled.",
 
   "meetingViewControlPlan": "Plan",
   "meetingViewControlCancel": "Cancel",
+  "meetingViewControlMarkCanceled": "Mark as canceled",
   "meetingViewControlTerminate": "End meeting",
 
   "meetingNotFound": "Meeting not found",

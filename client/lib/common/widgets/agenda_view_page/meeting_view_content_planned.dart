@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
 import 'package:qfqq/common/services/auth_service.dart';
+import 'package:qfqq/common/utils/date.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/help_util.dart';
 import 'package:qfqq/common/widgets/help_page/help_button.dart';
@@ -16,10 +17,13 @@ class MeetingViewContentPlanned extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final loc = S.of(context);
     final currentUser = ref.watch(authStateProvider).user;
-    final isAnimator = currentUser != null && meeting.animatorId == currentUser.id;
+    final isAnimator =
+        currentUser != null && meeting.animatorId == currentUser.id;
+    final meetingWasMissed = isDateBeforeToday(meeting.meetingDate);
     final countdownText = formatMeetingCountdown(context, meeting.meetingDate);
 
-    final helpLink = isAnimator
+    final helpLink =
+        isAnimator
             ? MeetingAnimationHelpLink(loc: loc)
             : MeetingParticipationHelpLink(loc: loc);
 
@@ -32,7 +36,9 @@ class MeetingViewContentPlanned extends ConsumerWidget {
             children: [
               Expanded(
                 child: Text(
-                  loc.agendaStatusPlanned,
+                  meetingWasMissed
+                      ? loc.meetingViewContentCanceled
+                      : loc.agendaStatusPlanned,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
@@ -44,6 +50,14 @@ class MeetingViewContentPlanned extends ConsumerWidget {
               padding: const EdgeInsets.only(top: 4),
               child: Text(
                 countdownText,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+          if (meetingWasMissed)
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text(
+                loc.meetingViewContentPlannedCanceled,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ),

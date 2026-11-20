@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/meeting_agenda.dart';
+import 'package:qfqq/common/widgets/agenda_view_page/meeting_view_content_canceled.dart';
 import 'package:qfqq/common/widgets/agenda_view_page/meeting_view_content_completed.dart';
 import 'package:qfqq/common/widgets/agenda_view_page/meeting_view_content_draft.dart';
 import 'package:qfqq/common/widgets/agenda_view_page/meeting_view_content_ongoing.dart';
@@ -18,7 +19,7 @@ class MeetingViewContent extends ConsumerWidget {
       case MeetingAgendaStatus.planned:
         return MeetingViewContentPlanned(meeting: meeting);
       case MeetingAgendaStatus.canceled:
-        return const SizedBox();
+        return const MeetingViewContentCanceled();
       case MeetingAgendaStatus.ongoing:
         return MeetingViewContentOngoing(meeting: meeting);
       case MeetingAgendaStatus.completed:
