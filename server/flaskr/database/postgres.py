@@ -10,11 +10,11 @@ def close_db(e=None):
 
 
 def create_db():
-    Database.run_sql_file("default")
+    Database.run_sql_file("public_schema")
 
 
 def fill_test_db():
-    Database.run_sql_file("default")
+    Database.run_sql_file("public_schema")
 
     orgId = get_current_tenant() or "1"
 
