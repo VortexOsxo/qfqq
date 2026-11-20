@@ -69,7 +69,7 @@ def check_auth_decorator(authRequirement: AuthRequirement):
         return decorated
     return middleware
 
-SUPPORTED_VERSIONS = ['0.0.1']
+SUPPORTED_VERSIONS = ['0.0.1', '1.0.0']
 
 def get_api_version():
     if request.method == "OPTIONS":
