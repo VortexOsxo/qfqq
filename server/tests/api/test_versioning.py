@@ -1,3 +1,6 @@
+from tests.api.utils import get_default_headers
+
+
 def test_accept_no_version(client):
     response = client.get("/users")
     assert response.get_json() != {"error": "Unsuported API Version"}
@@ -11,6 +14,5 @@ def test_refuse_incorrect_version(client):
 
 
 def test_accept_correct_version(client):
-    headers = {"QfqqVersion": "0.0.1"}
-    response = client.get("/users", headers=headers)
+    response = client.get("/users", headers=get_default_headers())
     assert response.get_json() != {"error": "Unsuported API Version"}
