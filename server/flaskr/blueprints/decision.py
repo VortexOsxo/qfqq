@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import Blueprint, jsonify, request, g
 
 from flaskr.models import DecisionStatus
-from flaskr.database import DecisionDataHandler
+from flaskr.database import DecisionDataHandler, DecisionEventDataHandler
 from flaskr.services.inputs import input_middleware, CreateDecisionBuilder, LambdaBuilder, LiteralValidator, StringValidator
 from flaskr.blueprints.before_request import login_required, on_exception
 from flaskr.blueprints.middlewares import permission_middleware, Permission
@@ -30,6 +30,7 @@ def create_decision(description, responsibleId, meetingId, dueDate):
         meetingId=meetingId,
     )
     if decision is not None:
+        DecisionEventDataHandler.create_decision_created(int(decision.id), g.user_id)
         NotificationService.add_notification(NotificationType.DecisionDue.value, g.org_id, decision)
         return jsonify(decision.to_dict()), 201
     
@@ -48,10 +49,16 @@ def get_decisions():
 
     return jsonify([decision.to_dict() for decision in decisions]), 200
 
-@decisions_bp.patch("/<string:id>/status")
+@decisions_bp.get("/<int:id>/events")
+def get_decision_events(id: int):
+    events = DecisionEventDataHandler.get_decision_events_by_id(id)
+    return jsonify([event.to_dict() for event in events]), 200
+
+
+@decisions_bp.patch("/<int:id>/status")
 @input_middleware(LambdaBuilder(("status", LiteralValidator(DecisionStatus))))
 @on_exception(statusCode=404)
-def patch_meeting_agenda_status(status, id: str):
+def patch_meeting_agenda_status(status, id: int):
     result = False
     if status == 'completed':
         result = DecisionDataHandler.complete_decision(id)
@@ -63,6 +70,7 @@ def patch_meeting_agenda_status(status, id: str):
     if not result:
         return '', 404
 
+    DecisionEventDataHandler.create_decision_status_updated(id, g.user_id, status)
     NotificationService.remove_notification(NotificationType.DecisionDue.value, g.org_id, id)
     return '', 204
 

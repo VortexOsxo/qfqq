@@ -365,6 +365,22 @@
   "decisionStatusCompleted": "Completed",
   
   "decisionViewPageTitle": "Decision Details",
+  "decisionHistoryTitle": "History",
+  "decisionHistoryEmpty": "No history available.",
+  "decisionHistoryCreated": "Decision created",
+  "decisionHistoryStatusUpdated": "Status updated",
+  "decisionHistoryStatusValue": "Status updated: {status}",
+  "@decisionHistoryStatusValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "decisionHistoryUser": "User #{id}",
+  "@decisionHistoryUser": {
+    "placeholders": {
+      "id": {}
+    }
+  },
   "decisionNotFound": "Decision not found",
   "decisionViewPageOutcome": "Outcome",
   "decisionViewPageCompletedOn": "Completed on {date}",

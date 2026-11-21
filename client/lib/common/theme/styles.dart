@@ -35,5 +35,9 @@ TextStyle pageTitleTextStyle(ThemeData theme) {
     fontSize: isMobile ? 16 : 24,
     color: theme.primaryColor,
   );
-} 
+}
+
+TextStyle contentSectionTitleTextStyle(ThemeData theme) {
+  return theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold);
+}
 

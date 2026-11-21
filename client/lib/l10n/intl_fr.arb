@@ -366,6 +366,22 @@
   "decisionStatusCompleted": "Terminé",
   
   "decisionViewPageTitle": "Détails de la décision",
+  "decisionHistoryTitle": "Historique",
+  "decisionHistoryEmpty": "Aucun historique disponible.",
+  "decisionHistoryCreated": "Décision créée",
+  "decisionHistoryStatusUpdated": "Statut mis à jour",
+  "decisionHistoryStatusValue": "Statut mis à jour : {status}",
+  "@decisionHistoryStatusValue": {
+    "placeholders": {
+      "status": {}
+    }
+  },
+  "decisionHistoryUser": "Utilisateur nº {id}",
+  "@decisionHistoryUser": {
+    "placeholders": {
+      "id": {}
+    }
+  },
   "decisionNotFound": "Décision introuvable",
   "decisionViewPageOutcome": "Résultat",
   "decisionViewPageCompletedOn": "Terminée le {date}",

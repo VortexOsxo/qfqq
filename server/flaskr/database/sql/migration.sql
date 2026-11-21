@@ -1,9 +1,8 @@
--- qfqq-161 : Adding reports configs
 CREATE TABLE IF NOT EXISTS
-  reportsConfigs (
-    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name TEXT NOT NULL,
-    encodedColumns TEXT NOT NULL,
-    encodedFilters TEXT NOT NULL,
-    showReviews BOOLEAN NOT NULL
+  decisionEvents (
+    decisionId INTEGER NOT NULL REFERENCES decisions (id) ON DELETE CASCADE,
+    userId INTEGER NOT NULL REFERENCES public.users (id) ON DELETE CASCADE,
+    date TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    type TEXT NOT NULL,
+    data JSONB
   );
