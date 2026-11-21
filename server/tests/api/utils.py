@@ -6,10 +6,10 @@ def get_auth_headers(client, user_id=1, org_id=1):
     )
     return {
         "Authorization": f"Bearer {token}",
-        "QfqqVersion": "0.0.1"
+        "QfqqVersion": "1.0.0"
     }
 
 def get_default_headers():
     return {
-        "QfqqVersion": "0.0.1"
+        "QfqqVersion": "1.0.0"
     }

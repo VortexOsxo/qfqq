@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash
 from flaskr.database import UserDataHandler
 from flaskr.database.postgres import get_db_access
 from flaskr.utils import create_refresh_token
-from tests.api.utils import get_auth_headers
+from tests.api.utils import get_auth_headers, get_default_headers
 
 
 def test_account_deletion_page_loads_javascript(client):
@@ -64,7 +64,7 @@ def test_account_deletion_page_loads_javascript(client):
 def test_refresh_for_user_with_organization(client):
     response = client.post(
         "/auth/refresh",
-        headers={"Refresh": create_refresh_token(1), "QfqqVersion": "0.0.1"},
+        headers={"Refresh": create_refresh_token(1), **get_default_headers()},
     )
 
     assert response.status_code == 200
@@ -106,7 +106,7 @@ def test_refresh_for_user_without_organization(client):
             "password": "securepassword123!",
             "code": "123456",
         },
-        headers={"QfqqVersion": "0.0.1"},
+        headers=get_default_headers(),
     )
 
     assert signup_response.status_code == 201
@@ -114,7 +114,7 @@ def test_refresh_for_user_without_organization(client):
 
     response = client.post(
         "/auth/refresh",
-        headers={"Refresh": refresh_token, "QfqqVersion": "0.0.1"},
+        headers={"Refresh": refresh_token, **get_default_headers()},
     )
 
     assert response.status_code == 200
@@ -199,7 +199,7 @@ def test_delete_account_cascades_and_invalidates_tokens(client):
         "/auth/refresh",
         headers={
             "Refresh": create_refresh_token(user.id),
-            "QfqqVersion": "0.0.1",
+            **get_default_headers(),
         },
     ).status_code == 401
 
@@ -232,7 +232,7 @@ def test_login_returns_org_status(client):
     response = client.post(
         "/auth/login",
         json={"email": user.email, "password": password},
-        headers={"QfqqVersion": "0.0.1"},
+        headers=get_default_headers(),
     )
     assert response.status_code == 200
     body = response.get_json()
@@ -247,7 +247,7 @@ def test_login_without_org_returns_null_org_status(client):
     response = client.post(
         "/auth/login",
         json={"email": user.email, "password": password},
-        headers={"QfqqVersion": "0.0.1"},
+        headers=get_default_headers(),
     )
     assert response.status_code == 200
     body = response.get_json()

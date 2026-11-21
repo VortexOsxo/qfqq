@@ -10,7 +10,7 @@ def get_auth_headers(client, user_id=1, org_id=1):
     token = jwt.encode(
         {"user_id": user_id, "org_id": org_id}, app.config["SECRET_KEY"], algorithm="HS256"
     )
-    return {"Authorization": f"Bearer {token}", "QfqqVersion": "0.0.1"}
+    return {"Authorization": f"Bearer {token}", "QfqqVersion": "1.0.0"}
 
 
 def add_project(client, headers, title, goals, supervisorId):
@@ -127,7 +127,7 @@ def add_review(client, headers, meeting_id, ratings, comments, is_anonymous):
 def create_user(client, firstname, lastname, email):
     signup_resp = client.post(
         "/auth/signup",
-        headers={"QfqqVersion": "0.0.1"},
+        headers={"QfqqVersion": "1.0.0"},
         json={
             "firstName": firstname,
             "lastName": lastname,
@@ -144,7 +144,7 @@ def create_user(client, firstname, lastname, email):
         click.echo(f"Failed to create user {email}: {signup_resp.get_json()}")
         login_resp = client.post(
             "/auth/login",
-            headers={"QfqqVersion": "0.0.1"},
+            headers={"QfqqVersion": "1.0.0"},
             json={"email": email, "password": "Password1234!"},
         )
         if login_resp.status_code == 200:
@@ -189,7 +189,7 @@ def mock_command():
 
         headers = {
             "Authorization": f"Bearer {org_resp.get_json()['session_token']}",
-            "QfqqVersion": "0.0.1",
+            "QfqqVersion": "1.0.0",
         }
         org_id = jwt.decode(
             org_resp.get_json()["session_token"],
