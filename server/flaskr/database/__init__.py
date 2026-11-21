@@ -4,6 +4,7 @@ from .handlers import (
     UserDataHandler,
     ProjectDataHandler,
     DecisionDataHandler,
+    DecisionEventDataHandler,
     MeetingDataHandler,
     RoleDataHandler,
     OrganizationDataHandler,

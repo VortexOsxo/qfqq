@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/decision.dart';
 import 'package:qfqq/common/models/permissions.dart';
+import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/view_models/decision_view_page_view_model.dart';
+import 'package:qfqq/common/widgets/decisions/decision_history_widget.dart';
 import 'package:qfqq/common/widgets/decisions/decision_status_control_widget.dart';
 import 'package:qfqq/common/widgets/navigation/navigation_text_button.dart';
 import 'package:qfqq/common/widgets/permission_required.dart';
@@ -55,6 +57,8 @@ class _DecisionViewPageContent extends StatelessWidget {
                       _buildTopCard(context, decision),
                       const SizedBox(height: 16),
                       _buildDecisionInfo(context, decision),
+                      const SizedBox(height: 16),
+                      DecisionHistoryWidget(decisionId: decision.id),
                       const Spacer(),
                       DecisionsStatusControlWidget(vm: vm),
                     ],
@@ -90,9 +94,7 @@ class _DecisionViewPageContent extends StatelessWidget {
       children: [
         Text(
           S.of(context).decisionListDescription,
-          style: Theme.of(
-            context,
-          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+          style: contentSectionTitleTextStyle(Theme.of(context)),
         ),
         Text(
           decision.description,
@@ -170,9 +172,7 @@ class _DecisionViewPageContent extends StatelessWidget {
         if (hasMessage) ...[
           Text(
             loc.decisionViewPageOutcome,
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            style: contentSectionTitleTextStyle(Theme.of(context)),
           ),
           const SizedBox(height: 4),
           Text(

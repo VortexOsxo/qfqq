@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qfqq/common/models/decision.dart';
+import 'package:qfqq/common/providers/decision_events_provider.dart';
 import 'package:qfqq/common/providers/decisions_provider.dart';
 import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/services/modal_service.dart';
@@ -53,6 +54,7 @@ class DecisionViewPageViewModelState extends ConsumerState<DecisionViewPageViewM
 
   Future<void> markAsCompleted() async {
     final loc = S.of(context);
+    final decisionId = widget.decisionId;
     final currentMessage = decision?.completedMessage;
     final controller = TextEditingController(text: currentMessage ?? '');
     final message = await showDialog<String>(
@@ -88,7 +90,7 @@ class DecisionViewPageViewModelState extends ConsumerState<DecisionViewPageViewM
     final decisionsService = ref.read(decisionsServiceProvider);
     if (completionMessage.isNotEmpty || currentMessage != null) {
       final saved = await decisionsService.updateDecisionCompletionMessage(
-        widget.decisionId,
+        decisionId,
         completionMessage,
       );
       if (!saved) {
@@ -101,19 +103,26 @@ class DecisionViewPageViewModelState extends ConsumerState<DecisionViewPageViewM
       }
     }
 
-    await decisionsService.updateDecisionStatus(
-      widget.decisionId,
+    final success = await decisionsService.updateDecisionStatus(
+      decisionId,
       DecisionStatus.completed,
     );
+    if (success && mounted) {
+      ref.invalidate(decisionEventsProvider(decisionId));
+    }
   }
 
-  Future<void> markAsCancelled() => ref
-      .read(decisionsServiceProvider)
-      .updateDecisionStatus(widget.decisionId, DecisionStatus.cancelled);
+  Future<void> markAsCancelled() => _updateStatus(DecisionStatus.cancelled);
 
-  Future<void> markAsPending() => ref
-      .read(decisionsServiceProvider)
-      .updateDecisionStatus(widget.decisionId, DecisionStatus.pending);
+  Future<void> markAsPending() => _updateStatus(DecisionStatus.pending);
+
+  Future<void> _updateStatus(DecisionStatus status) async {
+    final decisionId = widget.decisionId;
+    final success = await ref.read(decisionsServiceProvider).updateDecisionStatus(decisionId, status);
+    if (success && mounted) {
+      ref.invalidate(decisionEventsProvider(decisionId));
+    }
+  }
 
   void goToMeeting() => context.push('/agendas/${decision?.meetingId}');
   void goToProject() => context.push('/projects/${decision?.projectId}');

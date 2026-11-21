@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qfqq/common/models/decision.dart';
 import 'package:qfqq/common/models/permissions.dart';
+import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
 import 'package:qfqq/common/view_models/decision_view_page_view_model.dart';
 import 'package:qfqq/common/widgets/decisions/decision_description_widget.dart';
+import 'package:qfqq/common/widgets/decisions/decision_history_widget.dart';
 import 'package:qfqq/common/widgets/decisions/decision_status_control_widget.dart';
 import 'package:qfqq/common/widgets/navigation/navigation_text_button.dart';
 import 'package:qfqq/common/widgets/permission_required.dart';
@@ -69,24 +71,10 @@ class _DecisionViewPageContent extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        S.of(context).decisionListDescription,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Expanded(
+                        child: _internalContent(context, loc, theme, decision),
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        decision.description,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                      if (decision.completedDate != null ||
-                          decision.completedMessage?.trim().isNotEmpty ==
-                              true) ...[
-                        const SizedBox(height: 16),
-                        _buildCompletionDetails(context, decision),
-                      ],
-                      Spacer(),
+                      const SizedBox(height: 8),
                       DecisionsStatusControlWidget(vm: vm),
                     ],
                   ),
@@ -99,8 +87,30 @@ class _DecisionViewPageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildCompletionDetails(BuildContext context, Decision decision) {
-    final loc = S.of(context);
+  Widget _internalContent(BuildContext context, S loc, ThemeData theme, Decision decision) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            loc.decisionListDescription,
+            style: contentSectionTitleTextStyle(Theme.of(context)),
+          ),
+          const SizedBox(height: 16),
+          Text(decision.description, style: theme.textTheme.bodyLarge),
+          if (decision.completedDate != null ||
+              decision.completedMessage?.trim().isNotEmpty == true) ...[
+            const SizedBox(height: 16),
+            _buildCompletionDetails(context, loc, theme, decision),
+          ],
+          const SizedBox(height: 24),
+          DecisionHistoryWidget(decisionId: decision.id),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCompletionDetails(BuildContext context, S loc, ThemeData theme, Decision decision) {
     final hasMessage = decision.completedMessage?.trim().isNotEmpty == true;
 
     return Column(
@@ -109,14 +119,12 @@ class _DecisionViewPageContent extends StatelessWidget {
         if (hasMessage) ...[
           Text(
             loc.decisionViewPageOutcome,
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            style: contentSectionTitleTextStyle(theme),
           ),
           const SizedBox(height: 4),
           Text(
             decision.completedMessage!,
-            style: Theme.of(context).textTheme.bodyLarge,
+            style: theme.textTheme.bodyLarge,
           ),
         ],
         if (decision.completedDate != null) ...[
@@ -125,9 +133,9 @@ class _DecisionViewPageContent extends StatelessWidget {
             loc.decisionViewPageCompletedOn(
               formatDate(context, decision.completedDate),
             ),
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            style: theme.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
         ],

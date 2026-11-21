@@ -8,6 +8,7 @@ meetingsThemes,
 meetingsParticipants,
 decisions,
 decisionsAssistants,
+decisionEvents,
 reportsConfigs CASCADE;
 
 DROP TYPE IF EXISTS projectStatus,
@@ -146,6 +147,15 @@ CREATE TABLE
     decisionId INTEGER REFERENCES decisions (id) ON DELETE CASCADE,
     userId INTEGER REFERENCES users (id),
     PRIMARY KEY (decisionId, userId)
+  );
+
+CREATE TABLE
+  decisionEvents (
+    decisionId INTEGER NOT NULL REFERENCES decisions (id) ON DELETE CASCADE,
+    userId INTEGER NOT NULL REFERENCES public.users (id) ON DELETE CASCADE,
+    date TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    type TEXT NOT NULL,
+    data JSONB
   );
 
 CREATE VIEW
