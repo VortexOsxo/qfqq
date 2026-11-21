@@ -2,6 +2,7 @@ import pytest
 from flaskr.database import OrganizationDataHandler, UserDataHandler
 from flaskr.errors import InputError
 from flaskr.services.account_service import AccountService
+from tests.api.utils import get_default_headers
 
 VALID_SIGNUP_PAYLOAD = {
     "firstName": "John",
@@ -21,7 +22,7 @@ def mock_email_validation(monkeypatch):
 
 def signup(client, **overrides):
     payload = {**VALID_SIGNUP_PAYLOAD, **overrides}
-    return client.post("/auth/signup", json=payload, headers={"QfqqVersion": "0.0.1"})
+    return client.post("/auth/signup", json=payload, headers=get_default_headers())
 
 
 def signup_with_invitation(client, email):
@@ -143,7 +144,7 @@ def test_signup_invalid_code(client):
 def test_signup_missing_code(client):
     payload = {**VALID_SIGNUP_PAYLOAD, "email": "missing_code@example.com"}
     payload.pop("code")
-    response = client.post("/auth/signup", json=payload, headers={"QfqqVersion": "0.0.1"})
+    response = client.post("/auth/signup", json=payload, headers=get_default_headers())
     assert response.status_code == 400
     body = response.get_json()
     assert "code" in body

@@ -80,7 +80,7 @@ def on_exception(statusCode = 400):
         return decorated
     return middleware
 
-SUPPORTED_VERSIONS = ['0.0.1', '1.0.0']
+SUPPORTED_VERSIONS = ['1.0.0', '1.1.0']
 
 def get_api_version():
     if request.method == "OPTIONS":
