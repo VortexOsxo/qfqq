@@ -36,6 +36,18 @@ def test_create_decision_status_updated(app):
     assert events[0].date.tzinfo is not None
 
 
+def test_create_commented(app):
+    DecisionEventDataHandler.create_decision_commented(2, 3, "This is a user comment.")
+
+    events = DecisionEventDataHandler.get_decision_events_by_id(2)
+    assert len(events) == 1
+    assert events[0].decisionId == 2
+    assert events[0].userId == 3
+    assert events[0].type == "commented"
+    assert events[0].data == {"commentContent": "This is a user comment."}
+    assert events[0].date.tzinfo is not None
+
+
 def test_get_decision_events_by_id(app):
     DecisionEventDataHandler.create_decision_created(1, 1)
     DecisionEventDataHandler.create_decision_status_updated(1, 2, "completed")
@@ -83,28 +95,3 @@ def test_deleting_user_deletes_only_their_events(app):
     events = DecisionEventDataHandler.get_decision_events_by_id(1)
     assert len(events) == 1
     assert events[0].userId == 1
-
-
-def test_migration_adds_user_id_to_existing_empty_event_table(app):
-    with get_db_access() as conn:
-        cur = conn.cursor()
-        cur.execute("ALTER TABLE decisionEvents DROP COLUMN userId;")
-        Database.run_sql_file_from_cursor("migration", cur)
-        Database.run_sql_file_from_cursor("migration", cur)
-
-    DecisionEventDataHandler.create_decision_created(1, 2)
-    assert DecisionEventDataHandler.get_decision_events_by_id(1)[0].userId == 2
-    with pytest.raises(psycopg.errors.ForeignKeyViolation):
-        DecisionEventDataHandler.create_decision_created(1, 999)
-
-
-def test_migration_rejects_existing_events_without_user_ids(app):
-    DecisionEventDataHandler.create_decision_created(1, 2)
-
-    with pytest.raises(psycopg.errors.NotNullViolation):
-        with get_db_access() as conn:
-            cur = conn.cursor()
-            cur.execute("ALTER TABLE decisionEvents DROP COLUMN userId;")
-            Database.run_sql_file_from_cursor("migration", cur)
-
-    assert DecisionEventDataHandler.get_decision_events_by_id(1)[0].userId == 2

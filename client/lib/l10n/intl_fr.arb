@@ -370,6 +370,10 @@
   "decisionHistoryEmpty": "Aucun historique disponible.",
   "decisionHistoryCreated": "Décision créée",
   "decisionHistoryStatusUpdated": "Statut mis à jour",
+  "decisionHistoryCommented": "Commentaire ajouté",
+  "decisionHistoryCommentLabel": "Ajouter un commentaire",
+  "decisionHistoryCommentSubmit": "Publier le commentaire",
+  "decisionHistoryCommentFailed": "Impossible de publier le commentaire.",
   "decisionHistoryStatusValue": "Statut mis à jour : {status}",
   "@decisionHistoryStatusValue": {
     "placeholders": {

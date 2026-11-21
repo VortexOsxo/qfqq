@@ -103,6 +103,20 @@ def add_decision(
         if result.status_code != 204:
             raise click.ClickException(f"Failed to set completion message for decision {description}: {result.get_json()}")
     click.echo(f"Created decision: {description}")
+    return decision_id
+
+
+def add_decision_comment(client, headers, decision_id, comment):
+    result = client.post(
+        f"/decisions/{decision_id}/comment",
+        headers=headers,
+        json={"commentContent": comment},
+    )
+    if result.status_code != 201:
+        raise click.ClickException(
+            f"Failed to add comment to decision {decision_id}: {result.get_json()}"
+        )
+    click.echo(f"Added comment to decision {decision_id}")
 
 
 def add_review(client, headers, meeting_id, ratings, comments, is_anonymous):
@@ -278,8 +292,9 @@ def mock_command():
             ("Obtenir l'avis du service de l'environnement sur les berges", 7, alexandre_id, 21, [], "pending", None),
             ("Organiser une deuxieme consultation sur les berges", 7, owner_id, 30, [], "cancelled", None),
         ]
+        decision_ids = []
         for description, meeting_index, responsible_id, days_until_due, assistants, status, message in decisions:
-            add_decision(
+            decision_ids.append(add_decision(
                 client,
                 headers,
                 description,
@@ -289,7 +304,20 @@ def mock_command():
                 assistantsIds=assistants,
                 status=status,
                 completionMessage=message,
-            )
+            ))
+
+        add_decision_comment(
+            client,
+            get_auth_headers(client, user_id=sophie_id, org_id=org_id),
+            decision_ids[0],
+            "J'ai confirme les principales options d'accessibilite avec les equipes concernes.",
+        )
+        add_decision_comment(
+            client,
+            get_auth_headers(client, user_id=alexandre_id, org_id=org_id),
+            decision_ids[3],
+            "Les normes ont ete verifiees sur le troncon concerne.",
+        )
 
         reviews = [
             (3, owner_id, (5, 4, 5, 4, 5), "Diagnostic clair et prochaines etapes bien definies.", False),
