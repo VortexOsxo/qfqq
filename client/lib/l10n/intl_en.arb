@@ -369,6 +369,10 @@
   "decisionHistoryEmpty": "No history available.",
   "decisionHistoryCreated": "Decision created",
   "decisionHistoryStatusUpdated": "Status updated",
+  "decisionHistoryCommented": "Comment added",
+  "decisionHistoryCommentLabel": "Add a comment",
+  "decisionHistoryCommentSubmit": "Post comment",
+  "decisionHistoryCommentFailed": "Could not post the comment.",
   "decisionHistoryStatusValue": "Status updated: {status}",
   "@decisionHistoryStatusValue": {
     "placeholders": {

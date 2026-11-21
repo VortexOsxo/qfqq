@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Literal, TypeAlias
 
 
-DecisionEventType: TypeAlias = Literal["decisionCreated", "statusUpdated"]
+DecisionEventType: TypeAlias = Literal["decisionCreated", "statusUpdated", "commented"]
 
 
 @dataclass(slots=True)

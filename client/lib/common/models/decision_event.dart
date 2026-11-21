@@ -1,4 +1,4 @@
-enum DecisionEventType { decisionCreated, statusUpdated }
+enum DecisionEventType { decisionCreated, statusUpdated, commented }
 
 class DecisionEvent {
   final int decisionId;

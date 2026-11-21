@@ -104,6 +104,15 @@ class DecisionsService extends StateNotifier<List<Decision>> {
     return true;
   }
 
+  Future<bool> addComment(int decisionId, String commentContent) async {
+    final response = await _http.post(
+      _http.getUri('decisions/$decisionId/comment'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'commentContent': commentContent}),
+    );
+    return response.statusCode == 201;
+  }
+
   Future<bool> deleteDecision(int decisionId) async {
     final response = await _http.delete(
       _http.getUri('decisions/$decisionId'),

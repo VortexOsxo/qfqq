@@ -86,6 +86,16 @@ def test_set_completion_message_success(client):
     assert decision.completionMessage == "Delivered during the sprint review"
 
 
+def test_set_completion_message_invalid_id(client):
+    headers = get_auth_headers(client)
+    response = client.patch(
+        "/decisions/99/completion-message",
+        headers=headers,
+        json={"message": "Delivered during the sprint review"},
+    )
+    assert response.status_code == 404
+
+
 def test_cancel_decision_success(client):
     headers = get_auth_headers(client)
     response = client.patch("/decisions/1/status", headers=headers, json={"status": "cancelled"})
@@ -111,4 +121,26 @@ def test_cancel_decision_nonexistent_numeric_id(client):
 def test_cancel_decision_non_numeric_id(client):
     headers = get_auth_headers(client)
     response = client.patch("/decisions/xyz/status", headers=headers, json={"status": "cancelled"})
+    assert response.status_code == 404
+
+# Tests about adding a comment
+
+def test_add_comment(client):
+    headers = get_auth_headers(client)
+    response = client.post("/decisions/2/comment", headers=headers, json={"commentContent": "This is a user comment."})
+
+    assert response.status_code == 201
+
+def test_add_empty_comment(client):
+    headers = get_auth_headers(client)
+    response = client.post("/decisions/2/comment", headers=headers, json={"commentContent": ""})
+
+    assert response.status_code == 400
+    body = response.get_json()
+    assert "commentContent" in body
+
+def test_add_comment_invalid_id(client):
+    headers = get_auth_headers(client)
+    response = client.post("/decisions/2123/comment", headers=headers, json={"commentContent": "This is a user comment."})
+
     assert response.status_code == 404

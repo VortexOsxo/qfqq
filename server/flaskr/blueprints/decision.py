@@ -81,6 +81,14 @@ def patch_decision_completion_message(message, id: str):
     result = DecisionDataHandler.set_completion_message(id, message)
     return ('', 204) if result else ('', 404)
 
+@decisions_bp.post("/<string:id>/comment")
+@input_middleware(LambdaBuilder(("commentContent", StringValidator())))
+@on_exception(statusCode=404)
+def add_comment(commentContent, id: str):
+    DecisionEventDataHandler.create_decision_commented(id, g.user_id, commentContent)
+    return '', 201
+
+
 @decisions_bp.delete("/<int:id>")
 @permission_middleware(Permission.DeleteContent)
 @on_exception(statusCode=500)

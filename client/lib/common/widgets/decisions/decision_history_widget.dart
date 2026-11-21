@@ -7,6 +7,7 @@ import 'package:qfqq/common/providers/users_provider.dart';
 import 'package:qfqq/common/theme/styles.dart';
 import 'package:qfqq/common/utils/fromatting.dart';
 import 'package:qfqq/common/utils/get_status_ui.dart';
+import 'package:qfqq/common/widgets/decision_view_page/decision_comment_input.dart';
 import 'package:qfqq/common/widgets/status_chip.dart';
 import 'package:qfqq/generated/l10n.dart';
 
@@ -47,6 +48,8 @@ class DecisionHistoryWidget extends ConsumerWidget {
             );
           },
         ),
+        const SizedBox(height: 8),
+        DecisionCommentInput(key: ValueKey(decisionId), decisionId: decisionId),
       ],
     );
   }
@@ -66,9 +69,10 @@ class _DecisionHistoryEntry extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final loc = S.of(context);
-    final user = ref.watch(userByIdProvider(event.userId));
-    final userName = user?.displayName ?? loc.decisionHistoryUser(event.userId);
+    final userName = ref.watch(userByIdProvider(event.userId).select((u) => u?.displayName ?? ""));
+
     final statusValue = event.data?['decisionStatus'];
+    final commentContent = event.data?['commentContent'];
     final status =
         statusValue is String
             ? DecisionStatus.values.asNameMap()[statusValue]
@@ -79,6 +83,7 @@ class _DecisionHistoryEntry extends ConsumerWidget {
         status == null && statusValue is String
             ? loc.decisionHistoryStatusValue(statusValue)
             : loc.decisionHistoryStatusUpdated,
+      DecisionEventType.commented => loc.decisionHistoryCommented,
     };
 
     final color = Theme.of(context).primaryColor;
@@ -135,6 +140,10 @@ class _DecisionHistoryEntry extends ConsumerWidget {
                       status != null) ...[
                     const SizedBox(height: 8),
                     StatusChip(statusUIData: getDecisionStatusUI(loc, status)),
+                  ],
+                  if (event.type == DecisionEventType.commented && commentContent is String) ...[
+                    const SizedBox(height: 8),
+                    Text(commentContent),
                   ],
                 ],
               ),
