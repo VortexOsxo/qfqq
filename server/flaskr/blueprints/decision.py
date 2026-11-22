@@ -4,7 +4,7 @@ from flask import Blueprint, jsonify, request, g
 from flaskr.models import DecisionStatus
 from flaskr.database import DecisionDataHandler
 from flaskr.services.inputs import input_middleware, CreateDecisionBuilder, LambdaBuilder, LiteralValidator, StringValidator
-from flaskr.blueprints.before_request import login_required
+from flaskr.blueprints.before_request import login_required, on_exception
 from flaskr.blueprints.middlewares import permission_middleware, Permission
 
 from flaskr.services.notifications.notification_service import NotificationService
@@ -50,50 +50,33 @@ def get_decisions():
 
 @decisions_bp.patch("/<string:id>/status")
 @input_middleware(LambdaBuilder(("status", LiteralValidator(DecisionStatus))))
+@on_exception(statusCode=404)
 def patch_meeting_agenda_status(status, id: str):
-    try:
-        result = False
-        if status == 'completed':
-            result = DecisionDataHandler.complete_decision(id)
-        elif status == 'pending':
-            result = DecisionDataHandler.pending_decision(id)
-        elif status == 'cancelled':
-            result = DecisionDataHandler.cancel_decision(id)
+    result = False
+    if status == 'completed':
+        result = DecisionDataHandler.complete_decision(id)
+    elif status == 'pending':
+        result = DecisionDataHandler.pending_decision(id)
+    elif status == 'cancelled':
+        result = DecisionDataHandler.cancel_decision(id)
         
-        if not result:
-            return '', 404
+    if not result:
+        return '', 404
 
-        NotificationService.remove_notification(
-            NotificationType.DecisionDue.value,
-            g.org_id,
-            id,
-        )
-        return '', 204
-    except:
-        pass
-    return '', 404
+    NotificationService.remove_notification(NotificationType.DecisionDue.value, g.org_id, id)
+    return '', 204
 
 @decisions_bp.patch("/<string:id>/completion-message")
 @input_middleware(LambdaBuilder(("message", StringValidator())))
+@on_exception(statusCode=404)
 def patch_decision_completion_message(message, id: str):
-    try:
-        result = DecisionDataHandler.set_completion_message(id, message)
-        if not result:
-            return '', 404
-        return '', 204
-    except Exception:
-        return '', 404
+    result = DecisionDataHandler.set_completion_message(id, message)
+    return ('', 204) if result else ('', 404)
 
 @decisions_bp.delete("/<int:id>")
 @permission_middleware(Permission.DeleteContent)
+@on_exception(statusCode=500)
 def delete_decision(id):
-    try:
-        DecisionDataHandler.delete_decision(id)
-        NotificationService.remove_notification(
-            NotificationType.DecisionDue.value,
-            g.org_id,
-            id,
-        )
-        return "", 204
-    except:
-        return "", 500
+    DecisionDataHandler.delete_decision(id)
+    NotificationService.remove_notification(NotificationType.DecisionDue.value, g.org_id, id)
+    return "", 204

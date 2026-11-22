@@ -14,12 +14,10 @@ from flaskr.services.inputs import (
 )
 from flaskr.services.notifications.notification_service import NotificationService
 from flaskr.services.notifications.notification_type import NotificationType
-from flaskr.blueprints.before_request import login_required
+from flaskr.blueprints.before_request import login_required, on_exception
 from flaskr.blueprints.middlewares import permission_middleware, Permission
 
-meeting_agendas_bp = Blueprint(
-    "meeting_agendas", __name__, url_prefix="/meeting-agendas"
-)
+meeting_agendas_bp = Blueprint("meeting_agendas", __name__, url_prefix="/meeting-agendas")
 meeting_agendas_bp.before_request(login_required)
 
 
@@ -113,22 +111,20 @@ def get_meeting_reviews(id: int):
         ("isAnonymous", BooleanValidator())
     )
 )
+@on_exception(statusCode=400)
 def create_meeting_review(objective, smoothRunning, preparation, length, respect, comments, isAnonymous, id: int):
-    try:
-        MeetingDataHandler.create_review(
-            meetingId=id,
-            userId=g.user_id,
-            objective=objective,
-            smoothRunning=smoothRunning,
-            preparation=preparation,
-            length=length,
-            respect=respect,
-            comments=comments,
-            isAnonymous=isAnonymous
-        )
-        return "", 201
-    except Exception:
-        return jsonify({"error": "Unable to create meeting review"}), 400
+    MeetingDataHandler.create_review(
+        meetingId=id,
+        userId=g.user_id,
+        objective=objective,
+        smoothRunning=smoothRunning,
+        preparation=preparation,
+        length=length,
+        respect=respect,
+        comments=comments,
+        isAnonymous=isAnonymous
+    )
+    return "", 201
 
 
 @meeting_agendas_bp.patch("/<string:id>/status")
@@ -152,12 +148,10 @@ def patch_meeting_agenda_status(status, id: str):
 
 @meeting_agendas_bp.delete("/<int:id>")
 @permission_middleware(Permission.DeleteContent)
+@on_exception(statusCode=500)
 def delete_meeting(id):
-    try:
-        MeetingDataHandler.delete_meeting(id)
-        return "", 204
-    except:
-        return "", 500
+    MeetingDataHandler.delete_meeting(id)
+    return "", 204
     
 @meeting_agendas_bp.route("/<int:id>/code", methods=["GET"])
 def get_meeting_code(id):

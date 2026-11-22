@@ -69,6 +69,17 @@ def check_auth_decorator(authRequirement: AuthRequirement):
         return decorated
     return middleware
 
+def on_exception(statusCode = 400):
+    def middleware(func):
+        @wraps(func)
+        def decorated(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except:
+                return "", statusCode
+        return decorated
+    return middleware
+
 SUPPORTED_VERSIONS = ['0.0.1', '1.0.0']
 
 def get_api_version():

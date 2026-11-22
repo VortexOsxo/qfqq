@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 
 from flaskr.database import ProjectDataHandler
-from flaskr.blueprints.before_request import login_required
+from flaskr.blueprints.before_request import login_required, on_exception
 from flaskr.blueprints.middlewares import permission_middleware, Permission
 from flaskr.services.inputs import (
     input_middleware,
@@ -49,9 +49,7 @@ def patch_meeting_agenda_status(status, id: str):
 
 @projects_bp.delete("/<int:id>")
 @permission_middleware(Permission.DeleteContent)
+@on_exception(statusCode=500)
 def delete_project(id):
-    try:
-        ProjectDataHandler.delete_project_cascade(id)
-        return "", 204
-    except:
-        return "", 500
+    ProjectDataHandler.delete_project_cascade(id)
+    return "", 204

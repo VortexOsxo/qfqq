@@ -71,6 +71,7 @@ def update_permissions(userId: int, roleId: int):
 @users_bp.post('/<int:userId>/fcm')
 @input_middleware(LambdaBuilder(("fcm", StringValidator()), ("locale", StringValidator())))
 def update_fcm(userId:int, fcm: str, locale: str):
+    # TODO: Why do we send a userID ?? just use g.user_id
     if (g.user_id != userId):
         return "", 403
 
