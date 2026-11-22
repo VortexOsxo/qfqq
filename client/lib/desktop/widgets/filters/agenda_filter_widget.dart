@@ -15,6 +15,7 @@ class AgendaFilterWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final filters = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         DefaultTextField(
           initialValue: vm.searchQuery,
@@ -22,19 +23,18 @@ class AgendaFilterWidget extends StatelessWidget {
           hintText: S.of(context).searchTitleIdHint,
         ),
         SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
           children: [
             AgendaStatusDropdownMenu(
               initialStatus: vm.statusQuery,
               valueChanged: vm.onStatusQueryChanged,
             ),
-            SizedBox(width: 12,),
             ProjectDropdownMenu(
               initialProject: vm.projectIdQuery,
               valueChanged: vm.onProjectQueryChanged,
             ),
-            SizedBox(width: 12,),
             UserDropdownMenu(
               initialUserId: vm.animatorIdQuery,
               valueChanged: vm.onAnimatorQueryChanged,
