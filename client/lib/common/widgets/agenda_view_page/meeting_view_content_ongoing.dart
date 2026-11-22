@@ -87,13 +87,14 @@ class _DecisionCard extends ConsumerWidget {
       // TODO: Decide if I should show the participants here
       child: Row(
         children: [
-          Text(
+          Expanded(child: Text(
             decision.description,
             style: theme.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w600,
             ),
-          ),
-          const Spacer(),
+            overflow: TextOverflow.ellipsis,
+          ),),
+
           Icon(Icons.person_outline, size: 14, color: theme.hintColor),
           const SizedBox(width: 3),
           Text(
@@ -225,7 +226,6 @@ class _ComposeBarState extends ConsumerState<_ComposeBar> {
           Row(
             children: [
               Expanded(
-                flex: 3,
                 child: UserTextField(
                   key: ValueKey('resp_$_resetCounter'),
                   label: loc.meetingInProgressResponsible,
@@ -234,7 +234,7 @@ class _ComposeBarState extends ConsumerState<_ComposeBar> {
                 ),
               ),
               const SizedBox(width: 10),
-              Expanded(flex: 1, child: _dueDateField(loc)),
+              SizedBox(width: 150, child: _dueDateField(loc)),
             ],
           ),
         const SizedBox(height: 12),
