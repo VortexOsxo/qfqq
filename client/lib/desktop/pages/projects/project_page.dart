@@ -51,36 +51,7 @@ class _ProjectPageView extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            flex: 12,
-            child: FilterContainer(
-              child: Padding(
-                padding: EdgeInsetsGeometry.all(8),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: DefaultTextField(
-                        initialValue: vm.searchQuery,
-                        onChanged: vm.onSearchQueryChanged,
-                        hintText: S.of(context).searchTitleIdHint,
-                      ),
-                    ),
-                    SizedBox(width: 12),
-                    UserDropdownMenu(
-                      initialUserId: vm.userIdQuery,
-                      valueChanged: vm.onUserQueryChanged,
-                      anyLabel: S.of(context).commonAllSupervisors,
-                    ),
-                    SizedBox(width: 12),
-                    ProjectStatusDropdownMenu(
-                      initialStatus: vm.statusQuery,
-                      valueChanged: vm.onStatusQueryChanged,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          Expanded(flex: 12, child: _filters(context)),
           Expanded(flex: 1, child: SizedBox()),
           PermissionRequired(
             neededPermissions: Permissions(contribute: true),
@@ -99,6 +70,38 @@ class _ProjectPageView extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _filters(BuildContext context) {
+    return FilterContainer(
+      child: Padding(
+        padding: EdgeInsetsGeometry.all(8),
+        child: Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 600),
+              child: DefaultTextField(
+                initialValue: vm.searchQuery,
+                onChanged: vm.onSearchQueryChanged,
+                hintText: S.of(context).searchTitleIdHint,
+              ),
+            ),
+
+            UserDropdownMenu(
+              initialUserId: vm.userIdQuery,
+              valueChanged: vm.onUserQueryChanged,
+              anyLabel: S.of(context).commonAllSupervisors,
+            ),
+            ProjectStatusDropdownMenu(
+              initialStatus: vm.statusQuery,
+              valueChanged: vm.onStatusQueryChanged,
+            ),
+          ],
+        ),
       ),
     );
   }
