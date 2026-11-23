@@ -1,5 +1,31 @@
 # Server commands
 
+## Update to a new version
+Run these commands from the qfqq/server folder
+
+1. Clone the latest changes:
+    ```
+    sudo git clone
+    ```
+
+2. Stop the systemctl service:
+    ```
+    sudo systemctl stop qfqq
+    ```
+
+3. Update the database if needed:
+    ```
+    source venv/bin/activate
+    flask migrate-db
+    ```
+4. Update the environment variable if needed:
+    TODO
+
+5. Restart the systemctl service:
+    ```
+    sudo systemctl start qfqq
+    ```
+
 ## Setup the environment variable
 
 1. Create the file in the etc folder:
@@ -53,26 +79,7 @@
     expected output:
     `/usr/bin/python3.12 cap_net_bind_service=ep`
 
-1. Activate the virtual environment:
-
-    ```bash
-    source venv/bin/activate
-    ```
-
-2. Start the Flask application:
-
-    ```bash
-    sudo nohup venv/bin/gunicorn --workers 4 --bind 0.0.0.0:443 --certfile=/etc/letsencrypt/live/quifaitquoiquand.com/fullchain.pem --keyfile=/etc/letsencrypt/live/quifaitquoiquand.com/privkey.pem --access-logfile access.log --error-logfile error.log "flaskr:create_app()" &
-    ```
-
-3. Start the background scripts:
-
-    ```bash
-    nohup python notifications.py &
-    ```
-
-    ```bash
-    nohup python events.py &
+1. Launch the bash start.sh script to launch the server
     ```
 
 ## Renew the certificate
