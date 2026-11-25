@@ -1,3 +1,14 @@
+SUPPORT_COPY = {
+    "en": {
+        "title": "Support",
+        "contact": "For any support inquiry, contact us at",
+    },
+    "fr": {
+        "title": "Assistance",
+        "contact": "Pour toute demande d’assistance, contactez-nous à",
+    },
+}
+
 ACCOUNT_DELETION_COPY = {
     "en": {
         "title": "Delete your account",

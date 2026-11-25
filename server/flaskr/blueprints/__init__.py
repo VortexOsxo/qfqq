@@ -7,11 +7,13 @@ from .role import roles_bp
 from .organization import organizations_bp
 from .report import reports_bp
 from .privacy import privacy_bp
+from .support import support_bp
 from .before_request import get_api_version, get_language
 
 def register_blueprints(app):
     app.register_blueprint(auth_bp)
     app.register_blueprint(privacy_bp)
+    app.register_blueprint(support_bp)
     app.register_blueprint(users_bp)
     app.register_blueprint(meeting_agendas_bp)
     app.register_blueprint(decisions_bp)
