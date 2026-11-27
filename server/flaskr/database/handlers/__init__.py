@@ -2,6 +2,7 @@ from .user_data_handler import UserDataHandler
 from .project_data_handler import ProjectDataHandler
 from .decision_data_handler import DecisionDataHandler
 from .decision_event_data_handler import DecisionEventDataHandler
+from .chat_data_handler import ChatDataHandler
 from .meeting_data_handler import MeetingDataHandler
 from .password_request_data_handler import PasswordRequestDataHandler
 from .email_verification_data_handler import EmailValidationDataHandler

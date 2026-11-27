@@ -8,6 +8,7 @@ from .organization import organizations_bp
 from .report import reports_bp
 from .privacy import privacy_bp
 from .support import support_bp
+from .chat import chats_bp
 from .before_request import get_api_version, get_language
 
 def register_blueprints(app):
@@ -21,5 +22,6 @@ def register_blueprints(app):
     app.register_blueprint(roles_bp)
     app.register_blueprint(organizations_bp)
     app.register_blueprint(reports_bp)
+    app.register_blueprint(chats_bp)
 
 __all__ = ["register_blueprints", "get_api_version", "get_language"]

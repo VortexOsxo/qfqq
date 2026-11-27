@@ -27,6 +27,8 @@ String? getTitleForRoute(BuildContext context, GoRouterState state) {
       return loc.decisionsReportPageTitle;
     case '/decisions/:id':
       return loc.decisionViewPageTitle;
+    case '/chat':
+      return loc.chatPageTitle;
     case '/projects':
       return loc.projectPageTitle;
     case '/projects/creation':

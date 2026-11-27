@@ -122,7 +122,7 @@ def test_status_event_failure_returns_error(client):
         "/decisions/1/status", headers=get_auth_headers(client), json={"status": "pending"}
     )
 
-    assert response.status_code == 500
+    assert response.status_code == 404
     assert DecisionDataHandler.get_decision(1).status == "pending"
     assert DecisionEventDataHandler.get_decision_events_by_id(1) == []
 

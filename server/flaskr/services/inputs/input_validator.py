@@ -60,7 +60,7 @@ class IntValidator(InputValidator):
     def validate(self, value):
         if value is None:
             return InputError.RequiredField
-        if not isinstance(value, int):
+        if not isinstance(value, int) or isinstance(value, bool):
             return InputError.InvalidType
         if self.min_value is not None and value < self.min_value:
             return InputError.OutOfRange
@@ -174,9 +174,10 @@ class ListValidator(InputValidator):
 
 
 class TypedListValidator(InputValidator):
-    def __init__(self, element_validator: InputValidator, can_be_empty: bool = True):
+    def __init__(self, element_validator: InputValidator, can_be_empty: bool = True, unique_element: bool = False):
         self.element_validator = element_validator
         self.can_be_empty = can_be_empty
+        self.unique_element = unique_element
 
     def validate(self, l) -> InputError:
         if not isinstance(l, list):
@@ -184,6 +185,9 @@ class TypedListValidator(InputValidator):
 
         if not self.can_be_empty and len(l) == 0:
             return InputError.ListMustBeNonEmpty
+
+        if self.unique_element and len(l) != len(set(l)):
+            return InputError.MustBeUnique
 
         for item in l:
             error = self.element_validator.validate(item)

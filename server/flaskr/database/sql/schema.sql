@@ -9,7 +9,10 @@ meetingsParticipants,
 decisions,
 decisionsAssistants,
 decisionEvents,
-reportsConfigs CASCADE;
+reportsConfigs,
+messages,
+chatsUsers,
+chats CASCADE;
 
 DROP TYPE IF EXISTS projectStatus,
 meetingStatus,
@@ -190,4 +193,30 @@ CREATE TABLE
     encodedColumns TEXT NOT NULL,
     encodedFilters TEXT NOT NULL,
     showReviews BOOLEAN NOT NULL
+  );
+
+CREATE TABLE
+  chats (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    chatName TEXT NOT NULL,
+    createdAt TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  );
+
+CREATE TABLE
+  chatsUsers (
+    chatId INTEGER NOT NULL REFERENCES chats (id) ON DELETE CASCADE,
+    userId INTEGER NOT NULL REFERENCES public.users (id) ON DELETE CASCADE,
+    joinedAt TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    leftAt TIMESTAMPTZ,
+    PRIMARY KEY (chatId, userId)
+  );
+
+CREATE TABLE
+  messages (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    chatId INTEGER NOT NULL REFERENCES chats (id) ON DELETE CASCADE,
+    content TEXT NOT NULL,
+    sentAt TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    senderId INTEGER NOT NULL,
+    FOREIGN KEY (chatId, senderId) REFERENCES chatsUsers (chatId, userId) ON DELETE CASCADE
   );

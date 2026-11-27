@@ -184,6 +184,28 @@
   "helpContentMeetingParticipationAskForHelp": "Ask for help: to go further, together.",
   "helpDialogLearnMore": "Learn more",
   "helpPageTitle": "Help",
+  "chatPageTitle": "Chat",
+  "chatCreateNew": "New chat",
+  "chatNameLabel": "Chat name",
+  "chatNameTooLong": "Chat name cannot exceed 400 characters.",
+  "chatParticipantsLabel": "Add participants",
+  "chatCreateSuccess": "Chat created.",
+  "chatCreateFailure": "Could not create the chat. Please try again.",
+  "chatListTitle": "Chats",
+  "chatListEmpty": "No chats yet.",
+  "chatMessageHint": "Write a message",
+  "chatMessageSend": "Send message",
+  "chatMessageSendFailure": "Could not send the message. Please try again.",
+  "chatMessagesEmpty": "No messages yet.",
+  "chatMessagesLoadFailure": "Could not load messages.",
+  "chatMessagesLoadOlder": "Load older messages",
+  "chatMessagesRefresh": "Refresh messages",
+  "chatMessageUser": "User #{id}",
+  "@chatMessageUser": {
+    "placeholders": {
+      "id": {}
+    }
+  },
   "agendaPageSelectProject": "Select project",
   "agendaPageUpdateDraft": "Update Agenda as draft",
   "agendaPageSaveDraft": "Save Agenda as draft",

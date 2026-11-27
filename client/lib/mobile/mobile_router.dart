@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qfqq/common/pages/chat_page.dart';
 import 'package:qfqq/common/pages/help_page.dart';
 import 'package:qfqq/common/router.dart';
 import 'package:qfqq/common/widgets/help_page/help_info.dart';
@@ -49,6 +50,7 @@ class MobileRouterBuilder extends RouterBuilder {
         return DecisionViewPage(decisionId: int.tryParse(id) ?? 0);
       }),
 
+      RoutePlan('/chat', (c, s) => const ChatPage()),
       RoutePlan('/projects', (c, s) => const ProjectPage()),
       RoutePlan('/projects/:id', (c, s) {
         final id = s.pathParameters['id']!;

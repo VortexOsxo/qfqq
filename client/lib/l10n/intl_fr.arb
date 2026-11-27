@@ -184,6 +184,28 @@
   "helpContentMeetingParticipationAskForHelp": "Demander de l’aide : pour aller plus loin, ensemble.",
   "helpDialogLearnMore": "En savoir plus",
   "helpPageTitle": "Aide",
+  "chatPageTitle": "Discussion",
+  "chatCreateNew": "Nouvelle discussion",
+  "chatNameLabel": "Nom de la discussion",
+  "chatNameTooLong": "Le nom de la discussion ne peut pas dépasser 400 caractères.",
+  "chatParticipantsLabel": "Ajouter des participants",
+  "chatCreateSuccess": "Discussion créée.",
+  "chatCreateFailure": "Impossible de créer la discussion. Veuillez réessayer.",
+  "chatListTitle": "Discussions",
+  "chatListEmpty": "Aucune discussion pour le moment.",
+  "chatMessageHint": "Écrire un message",
+  "chatMessageSend": "Envoyer le message",
+  "chatMessageSendFailure": "Impossible d'envoyer le message. Veuillez réessayer.",
+  "chatMessagesEmpty": "Aucun message pour le moment.",
+  "chatMessagesLoadFailure": "Impossible de charger les messages.",
+  "chatMessagesLoadOlder": "Charger les messages précédents",
+  "chatMessagesRefresh": "Actualiser les messages",
+  "chatMessageUser": "Utilisateur nº {id}",
+  "@chatMessageUser": {
+    "placeholders": {
+      "id": {}
+    }
+  },
   "agendaPageSelectProject": "Sélectionner un projet",
   "agendaPageUpdateDraft": "Mettre à jour comme brouillon",
   "agendaPageSaveDraft": "Enregistrer comme brouillon",

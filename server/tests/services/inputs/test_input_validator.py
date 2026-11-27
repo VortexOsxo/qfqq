@@ -2,7 +2,7 @@ import pytest
 
 from flaskr.errors import InputError
 from flaskr.models import ProjectStatus
-from flaskr.services.inputs.input_validator import LiteralValidator, PasswordValidator
+from flaskr.services.inputs.input_validator import IntValidator, LiteralValidator, PasswordValidator, TypedListValidator
 
 @pytest.fixture
 def validator():
@@ -51,3 +51,24 @@ def test_literal_validator_accepts_values_and_rejects_invalid_types():
     assert validator.validate("fake") == InputError.EnumMemberNotFound
     assert validator.validate(["completed"]) == InputError.InvalidType
     assert validator.validate({"status": "completed"}) == InputError.InvalidType
+
+
+def test_typed_list_validator_requires_unique_values():
+    validator = TypedListValidator(IntValidator(), unique_element=True)
+
+    assert validator.validate([1, 2, 3]) == InputError.NoError
+    assert validator.validate([1, 2, 1]) == InputError.MustBeUnique
+
+
+def test_int_validator_for_bool():
+    validator = IntValidator()
+
+    assert validator.validate(True) == InputError.InvalidType
+    assert validator.validate(False) == InputError.InvalidType
+
+
+def test_int_validator_for_0_1():
+    validator = IntValidator()
+
+    assert validator.validate(1) == InputError.NoError
+    assert validator.validate(0) == InputError.NoError

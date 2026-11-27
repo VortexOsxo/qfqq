@@ -18,6 +18,7 @@ class BottomBarWidget extends StatelessWidget {
           _BottomBarItem(icon: Icons.folder, label: loc.projectPageTitle, path: '/projects'),
           _BottomBarItem(icon: Icons.event_note, label: loc.agendasListPageTitle, path: '/agendas'),
           _BottomBarItem(icon: Icons.checklist, label: loc.decisionsListPageTitle, path: '/decisions'),
+          _BottomBarItem(icon: Icons.chat, label: loc.chatPageTitle, path: '/chat'),
         ],
       ),
     );
