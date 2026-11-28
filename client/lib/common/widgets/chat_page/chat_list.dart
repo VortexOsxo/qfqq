@@ -12,6 +12,7 @@ class ChatSidebar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final loc = S.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       children: [
         Padding(
@@ -32,15 +33,32 @@ class ChatSidebar extends ConsumerWidget {
                     itemCount: chats.length,
                     itemBuilder: (context, index) {
                       final chat = chats[index];
-                      return Material(
-                        color: Colors.transparent,
-                        child: ListTile(
-                          title: Text(
-                            chat.name,
-                            overflow: TextOverflow.ellipsis,
+                      final isSelected =
+                          chat.id == ref.watch(chatUiProvider).chatId;
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: ListTile(
+                            title: Text(
+                              chat.name,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            selected: isSelected,
+                            selectedTileColor: colorScheme.primary.withValues(
+                              alpha: 0.16,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            onTap:
+                                () => ref
+                                    .read(chatUiProvider.notifier)
+                                    .selectChat(chat.id),
                           ),
-                          selected: chat.id == ref.watch(chatUiProvider).chatId,
-                          onTap: () => ref.read(chatUiProvider.notifier).selectChat(chat.id),
                         ),
                       );
                     },
@@ -98,8 +116,12 @@ class MobileChatSelector extends ConsumerWidget {
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            selected: chat.id == ref.watch(chatUiProvider).chatId,
-                            onSelected: (_) => ref.read(chatUiProvider.notifier).selectChat(chat.id),
+                            selected:
+                                chat.id == ref.watch(chatUiProvider).chatId,
+                            onSelected:
+                                (_) => ref
+                                    .read(chatUiProvider.notifier)
+                                    .selectChat(chat.id),
                           ),
                         );
                       },
