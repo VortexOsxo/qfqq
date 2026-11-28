@@ -7,7 +7,7 @@ from tests.api.utils import get_auth_headers
 
 @pytest.fixture
 def chat_id():
-    return ChatDataHandler.create_chat("Test chat", [1, 2])
+    return ChatDataHandler.create_chat("Test chat", [1, 2, 4])
 
 
 @pytest.fixture
@@ -19,17 +19,60 @@ def chat_messages(chat_id):
 
 def test_create_chat_adds_creator_and_participants(client):
     response = client.post(
-        "/chats", json={"chatName": "Test chat", "userIds": [2]}, headers=get_auth_headers(client)
+        "/chats", json={"chatName": "Test chat", "userIds": [2, 3]}, headers=get_auth_headers(client)
     )
     assert response.status_code == 201
     chat_id = response.json["id"]
     assert read_query(
         "SELECT userId FROM chatsUsers WHERE chatId = %s ORDER BY userId;",
         (chat_id,),
-    ) == [(1,), (2,)]
+    ) == [(1,), (2,), (3,)]
     assert read_query("SELECT chatName FROM chats WHERE id = %s;", (chat_id,)) == [("Test chat",)]
     response = client.get("/chats", headers=get_auth_headers(client))
     assert response.json == [{"id": chat_id, "chatName": "Test chat"}]
+
+
+def test_direct_chat_reuses_existing_chat_for_both_users(client):
+    legacy_id = ChatDataHandler.create_chat("Named chat", [1, 2])
+    first = client.post(
+        "/chats", json={"chatName": "Bob", "userIds": [2]},
+        headers=get_auth_headers(client, user_id=1),
+    )
+    second = client.post(
+        "/chats", json={"chatName": "Alice", "userIds": [1]},
+        headers=get_auth_headers(client, user_id=2),
+    )
+    assert first.status_code == 200
+    assert second.status_code == 200
+    assert first.json["id"] == second.json["id"] == legacy_id
+    assert read_query("SELECT COUNT(*) FROM chats;") == [(1,)]
+
+
+def test_three_person_chat_remains_a_group_if_someone_left(client):
+    group_id = ChatDataHandler.create_chat("Group name", [1, 2, 3])
+    assert ChatDataHandler.leave_chat(group_id, 3)
+    response = client.post(
+        "/chats", json={"chatName": "Bob", "userIds": [2]},
+        headers=get_auth_headers(client),
+    )
+    assert response.status_code == 201
+    assert response.json["id"] != group_id
+    assert client.get("/chats", headers=get_auth_headers(client)).json == [
+        {"id": group_id, "chatName": "Group name"},
+        {"id": response.json["id"], "chatName": "Bob Jones"},
+    ]
+
+
+@pytest.mark.parametrize("inactive_other", [False, True])
+def test_cannot_leave_two_person_chat(client, inactive_other):
+    chat_id = ChatDataHandler.create_chat("Chat", [1, 2])
+    if inactive_other:
+        write_query("UPDATE chatsUsers SET leftAt = NOW() WHERE chatId = %s AND userId = %s;", (chat_id, 2))
+    response = client.delete(
+        f"/chats/{chat_id}/participants/me", headers=get_auth_headers(client)
+    )
+    assert response.status_code == 403
+    assert ChatDataHandler.is_active_participant(chat_id, 1)
 
 
 def test_create_chat_does_not_duplicate_creator(client):
@@ -42,9 +85,9 @@ def test_create_chat_does_not_duplicate_creator(client):
     ) == [(1,)]
 
 def test_get_chats_returns_only_active_chats_for_user(client):
-    active_chat_id = ChatDataHandler.create_chat("Active chat", [1, 2])
+    active_chat_id = ChatDataHandler.create_chat("Active chat", [1, 2, 4])
     ChatDataHandler.create_chat("Other chat", [2])
-    left_chat_id = ChatDataHandler.create_chat("Left chat", [1, 2])
+    left_chat_id = ChatDataHandler.create_chat("Left chat", [1, 2, 4])
     ChatDataHandler.leave_chat(left_chat_id, 1)
 
     response = client.get("/chats", headers=get_auth_headers(client, user_id=1))
@@ -160,7 +203,7 @@ def test_create_chat_rejects_users_outside_organization(client):
 def test_create_chat_name_length(client, chat_name, status_code):
     response = client.post(
         "/chats",
-        json={"chatName": chat_name, "userIds": [2]},
+        json={"chatName": chat_name, "userIds": [2, 3]},
         headers=get_auth_headers(client),
     )
     assert response.status_code == status_code

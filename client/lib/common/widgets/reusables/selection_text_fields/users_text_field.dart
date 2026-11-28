@@ -10,6 +10,7 @@ class UsersTextField extends ConsumerStatefulWidget {
   final List<int> initialUsersIds;
   final void Function(List<User>)? onChanged;
   final String? error;
+  final List<int> excludedUserIds;
 
   const UsersTextField({
     super.key,
@@ -17,6 +18,7 @@ class UsersTextField extends ConsumerStatefulWidget {
     initialUsersIds,
     this.onChanged,
     this.error,
+    this.excludedUserIds = const [],
   }) : initialUsersIds = initialUsersIds ?? const [];
 
   @override
@@ -68,6 +70,7 @@ class _UsersTextFieldState extends ConsumerState<UsersTextField> {
           onSelected: _onUserSelected,
           resetOnSelect: true,
           error: widget.error,
+          excludedUserIds: widget.excludedUserIds,
         ),
         ChipList<User>(
           items: _users,

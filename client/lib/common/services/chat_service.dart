@@ -32,19 +32,29 @@ class ChatService extends StateNotifier<List<Chat>> {
 
   void _clearChats() => state = [];
 
-  Future<int> createChat(String name, List<int> participantIds) async {
+  Future<({int statusCode, int? chatId})> createChat(
+    String name,
+    List<int> participantIds,
+  ) async {
     final response = await _http.post(
       _http.getUri('chats'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'chatName': name, 'userIds': participantIds}),
     );
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       final data = jsonDecode(response.body) as Map<String, dynamic>;
-      state = [...state, Chat(id: data['id'] as int, name: name)];
+      final chat = Chat.fromJson(data);
+      final index = state.indexWhere((existing) => existing.id == chat.id);
+      if (index == -1) {
+        state = [...state, chat];
+      } else {
+        state = [...state]..[index] = chat;
+      }
+      return (statusCode: response.statusCode, chatId: chat.id);
     }
 
-    return response.statusCode;
+    return (statusCode: response.statusCode, chatId: null);
   }
 
   Future<int> sendMessage(int chatId, String content) async {
@@ -111,6 +121,8 @@ class ChatUiState {
 class ChatUiService extends StateNotifier<ChatUiState> {
   ChatUiService() : super(ChatUiState(null, false));
 
-  void selectChat(int chatId) => state = state.copyWith(chatId: chatId, showCreation: false);
-  void setShowCreation(bool showCreation) => state = state.copyWith(showCreation: showCreation);
+  void selectChat(int chatId) =>
+      state = state.copyWith(chatId: chatId, showCreation: false);
+  void setShowCreation(bool showCreation) =>
+      state = state.copyWith(showCreation: showCreation);
 }

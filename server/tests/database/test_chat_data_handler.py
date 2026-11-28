@@ -1,8 +1,11 @@
 import psycopg
 import pytest
+from concurrent.futures import ThreadPoolExecutor
+from threading import Barrier
 
 from flaskr.database import ChatDataHandler, UserDataHandler
 from flaskr.database.postgres import read_query, write_query
+from flaskr.database.tenant_context import use_tenant
 from flaskr.models import Message
 
 
@@ -22,7 +25,7 @@ def test_create_chat_is_atomic_when_participant_is_invalid(app):
 
 
 def test_is_active_participant(app):
-    chat_id = ChatDataHandler.create_chat("Name", [1, 2])
+    chat_id = ChatDataHandler.create_chat("Name", [1, 2, 4])
     ChatDataHandler.create_chat("Name", [3])
     ChatDataHandler.leave_chat(chat_id, 2)
 
@@ -77,7 +80,7 @@ def test_get_messages_invalid():
 
 
 def test_leaving_preserves_messages_and_prevents_sending(app):
-    chat_id = ChatDataHandler.create_chat("Name", [1, 2])
+    chat_id = ChatDataHandler.create_chat("Name", [1, 2, 4])
     message = ChatDataHandler.send_message(chat_id, 1, "Hello")
 
     ChatDataHandler.leave_chat(chat_id, 1)
@@ -91,6 +94,22 @@ def test_leaving_preserves_messages_and_prevents_sending(app):
         ChatDataHandler.send_message(chat_id, 3, "Not a member")
 
     assert ChatDataHandler.send_message(chat_id, 2, "Still here").senderId == 2
+
+
+def test_concurrent_direct_chat_creation_reuses_one_chat(app):
+    barrier = Barrier(2)
+
+    def create(user_ids):
+        with use_tenant("1"):
+            barrier.wait(timeout=10)
+            return ChatDataHandler.create_direct_chat("Name", user_ids)
+
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        results = list(executor.map(create, ([1, 2], [2, 1])))
+
+    assert results[0][0] == results[1][0]
+    assert sorted(result[1] for result in results) == [False, True]
+    assert read_query("SELECT COUNT(*) FROM chats;") == [(1,)]
 
 
 def test_deleting_account_removes_only_its_messages(app):

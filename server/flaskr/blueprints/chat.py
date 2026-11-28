@@ -20,23 +20,28 @@ def get_chats():
 @input_middleware(
     LambdaBuilder(
         ("chatName", StringValidator(max_length=400)),
-        ("userIds", TypedListValidator(IntValidator(min_value=1), unique_element=True))
+        ("userIds", TypedListValidator(IntValidator(min_value=1), unique_element=True)),
     )
 )
 def create_chat(chatName, userIds):
-    allUserIds = {user.id for user in UserDataHandler.get_users(g.org_id)}
-    if not set(userIds).issubset(allUserIds):
+    users = {user.id: user for user in UserDataHandler.get_users(g.org_id)}
+    if not set(userIds).issubset(users):
         return jsonify({"userIds": InputError.ObjectIdNotFound}), 400
 
     if g.user_id not in userIds:
         userIds = [g.user_id, *userIds]
-    chatId = ChatDataHandler.create_chat(chatName, userIds)
-    return jsonify({"id": chatId}), 201
+    if len(userIds) == 2:
+        chatId, created = ChatDataHandler.create_direct_chat("direct-chat", userIds)
+    else:
+        chatId = ChatDataHandler.create_chat(chatName, userIds)
+        created = True
+    return jsonify({"id": chatId, "chatName": chatName}), 201 if created else 200
 
 
 @chats_bp.delete("/<int:chatId>/participants/me")
 def leave_chat(chatId):
-    ChatDataHandler.leave_chat(chatId, g.user_id)
+    if not ChatDataHandler.leave_chat(chatId, g.user_id):
+        return jsonify({"error": "Cannot leave a two-person chat"}), 403
     return "", 204
 
 

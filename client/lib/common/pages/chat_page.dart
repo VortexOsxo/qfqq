@@ -22,40 +22,32 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     final chats = ref.watch(chatsProvider);
 
     final selectedChat = ref.watch(selectedChatProvider);
-    final showCreation = selectedChat == null || ref.watch(chatUiProvider).showCreation;
+    final showCreation =
+        selectedChat == null || ref.watch(chatUiProvider).showCreation;
 
-    final headerTitle = selectedChat == null ? loc.chatCreateNew : selectedChat.name;
-
-    final chatContent = Column(
-      children: [
-        _buildHeader(context, headerTitle, loc),
-        const Divider(height: 1),
-        if (isMobile) ...[
-          MobileChatSelector(chats: chats),
-          const Divider(height: 1),
-        ],
-        Expanded(
-          child:
-              showCreation
-                  ? CreateChatForm()
-                  : Column(
-                    children: [
-                      Expanded(child: ChatMessages(chatId: selectedChat.id)),
-                      ChatMessageInput(),
-                    ],
-                  ),
-        ),
-      ],
-    );
+    final chatContent =
+        showCreation
+            ? CreateChatForm(
+              chatSelector: isMobile ? MobileChatSelector(chats: chats) : null,
+            )
+            : Column(
+              children: [
+                _buildHeader(context, selectedChat.name, loc),
+                const Divider(height: 1),
+                if (isMobile) ...[
+                  MobileChatSelector(chats: chats),
+                  const Divider(height: 1),
+                ],
+                Expanded(child: ChatMessages(chatId: selectedChat.id)),
+                const ChatMessageInput(),
+              ],
+            );
 
     if (isMobile) return chatContent;
 
     return Row(
       children: [
-        SizedBox(
-          width: 240,
-          child: ChatSidebar(chats: chats),
-        ),
+        SizedBox(width: 240, child: ChatSidebar(chats: chats)),
         const VerticalDivider(width: 1),
         Expanded(child: chatContent),
       ],
@@ -81,7 +73,8 @@ class _ChatPageState extends ConsumerState<ChatPage> {
             ),
             IconButton(
               tooltip: loc.chatCreateNew,
-              onPressed: showCreation
+              onPressed:
+                  showCreation
                       ? null
                       : () {
                         FocusScope.of(context).unfocus();

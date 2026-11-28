@@ -10,6 +10,7 @@ class UserTextField extends ConsumerStatefulWidget {
   final void Function(User)? onSelected;
   final String? error;
   final bool resetOnSelect;
+  final List<int> excludedUserIds;
 
   const UserTextField({
     super.key,
@@ -17,6 +18,7 @@ class UserTextField extends ConsumerStatefulWidget {
     this.initialUserId = 0,
     this.onSelected,
     this.resetOnSelect = false,
+    this.excludedUserIds = const [],
     this.error,
   });
 
@@ -55,13 +57,13 @@ class _UserTextFieldState extends ConsumerState<UserTextField> {
 
       optionsBuilder: (TextEditingValue value) {
         final key = value.text.trim().toLowerCase();
-        if (key.isEmpty) return users;
-
         return users
             .where(
               (user) =>
-                  user.email.toLowerCase().contains(key) ||
-                  user.displayName.toLowerCase().contains(key),
+                  !widget.excludedUserIds.contains(user.id) &&
+                  (key.isEmpty ||
+                      user.email.toLowerCase().contains(key) ||
+                      user.displayName.toLowerCase().contains(key)),
             )
             .toList();
       },

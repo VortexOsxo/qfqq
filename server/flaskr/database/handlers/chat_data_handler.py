@@ -4,6 +4,37 @@ from psycopg import sql
 
 class ChatDataHandler:
     @classmethod
+    def create_direct_chat(cls, chatName: str, userIds: list[int]) -> tuple[int, bool]:
+        firstUserId, secondUserId = sorted(userIds)
+        with get_db_access() as conn:
+            cur = conn.cursor()
+            cur.execute("SELECT pg_advisory_xact_lock(%s, %s);", (firstUserId, secondUserId))
+            cur.execute(
+                "SELECT c.id FROM chats c "
+                "JOIN chatsUsers firstUser ON firstUser.chatId = c.id "
+                "JOIN chatsUsers secondUser ON secondUser.chatId = c.id "
+                "WHERE firstUser.userId = %s AND secondUser.userId = %s "
+                "AND firstUser.leftAt IS NULL AND secondUser.leftAt IS NULL "
+                "AND (SELECT COUNT(*) FROM chatsUsers WHERE chatId = c.id) = 2 "
+                "ORDER BY c.id LIMIT 1;",
+                (firstUserId, secondUserId),
+            )
+            existing = cur.fetchone()
+            if existing:
+                return existing[0], False
+
+            cur.execute(
+                "INSERT INTO chats (chatName) VALUES (%s) RETURNING id;",
+                (chatName,),
+            )
+            chatId = cur.fetchone()[0]
+            cur.executemany(
+                "INSERT INTO chatsUsers (chatId, userId) VALUES (%s, %s);",
+                [(chatId, userId) for userId in userIds],
+            )
+            return chatId, True
+
+    @classmethod
     def create_chat(cls, chatName: str, userIds: list[int]) -> int:
         with get_db_access() as conn:
             cur = conn.cursor()
@@ -18,21 +49,34 @@ class ChatDataHandler:
     @classmethod
     def get_chats(cls, userId: int) -> list[tuple[int, str]]:
         rows = read_query(
-            "SELECT c.id, c.chatName FROM chats c "
+            "SELECT c.id, COALESCE(otherUser.firstName || ' ' || otherUser.lastName, c.chatName) FROM chats c "
             "JOIN chatsUsers cu ON cu.chatId = c.id "
+            "LEFT JOIN chatsUsers otherParticipant ON otherParticipant.chatId = c.id "
+            "AND (SELECT COUNT(*) FROM chatsUsers participants WHERE participants.chatId = c.id) = 2 "
+            "AND otherParticipant.userId <> cu.userId "
+            "LEFT JOIN public.users otherUser ON otherUser.id = otherParticipant.userId "
             "WHERE cu.userId = %s AND cu.leftAt IS NULL ORDER BY c.id;",
             (userId,),
         )
         return rows
 
     @classmethod
-    def leave_chat(cls, chatId: int, userId: int):
+    def leave_chat(cls, chatId: int, userId: int) -> bool:
         with get_db_access() as conn:
-            conn.execute(
+            result = conn.execute(
                 "UPDATE chatsUsers SET leftAt = NOW() "
-                "WHERE chatId = %s AND userId = %s AND leftAt IS NULL;",
-                (chatId, userId),
+                "WHERE chatId = %s AND userId = %s AND leftAt IS NULL "
+                "AND (SELECT COUNT(*) FROM chatsUsers participants WHERE participants.chatId = %s) <> 2;",
+                (chatId, userId, chatId),
             )
+            if result.rowcount:
+                return True
+            blocked = conn.execute(
+                "SELECT 1 FROM chatsUsers WHERE chatId = %s AND userId = %s AND leftAt IS NULL "
+                "AND (SELECT COUNT(*) FROM chatsUsers participants WHERE participants.chatId = %s) = 2;",
+                (chatId, userId, chatId),
+            ).fetchone()
+            return blocked is None
 
     @classmethod
     def is_active_participant(cls, chatId: int, userId: int) -> bool:
