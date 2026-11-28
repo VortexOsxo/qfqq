@@ -31,6 +31,18 @@ def test_is_active_participant(app):
     assert ChatDataHandler.is_active_participant(chat_id, 3) is False
 
 
+def test_get_active_participants(app):
+    chat_id = ChatDataHandler.create_chat("Name", [1, 2, 3])
+    other_chat_id = ChatDataHandler.create_chat("Other chat", [2])
+    ChatDataHandler.leave_chat(chat_id, 2)
+
+    assert sorted(ChatDataHandler.get_active_participants(chat_id)) == [1, 3]
+    assert ChatDataHandler.get_active_participants(other_chat_id) == [2]
+    ChatDataHandler.leave_chat(chat_id, 1)
+    ChatDataHandler.leave_chat(chat_id, 3)
+    assert ChatDataHandler.get_active_participants(chat_id) == []
+
+
 def test_send_and_paginate_messages(app):
     chat_id = ChatDataHandler.create_chat("Name", [1, 2])
     other_chat_id = ChatDataHandler.create_chat("Name", [1])

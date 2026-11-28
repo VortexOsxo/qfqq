@@ -1,3 +1,4 @@
+import asyncio
 import json
 
 class MeetingHandler:
@@ -39,10 +40,14 @@ class MeetingHandler:
 
     async def _broadcast_message(self, message, send_to_self = False):
         room = self.rooms[self.joined]
-        for ws in room:
-            if ws is self.websocket and not send_to_self:
-                continue
-            await ws.send(json.dumps(message))
+        payload = json.dumps(message)
+        sends = [
+            ws.send(payload)
+            for ws in room
+            if send_to_self or ws is not self.websocket
+        ]
+        if sends:
+            await asyncio.gather(*sends)
 
     def _join(self, code):
         if code not in self.rooms:

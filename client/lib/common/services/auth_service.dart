@@ -3,6 +3,7 @@ import 'package:qfqq/common/models/errors/account_error.dart';
 import 'package:qfqq/common/models/permissions.dart';
 import 'package:qfqq/common/models/states/auth_state.dart';
 import 'package:qfqq/common/models/user.dart';
+import 'package:qfqq/common/services/web_socket_service.dart';
 import 'dart:convert';
 import 'package:qfqq/common/utils/events/event_notifier.dart';
 import 'package:qfqq/common/utils/storage.dart';
@@ -149,6 +150,7 @@ class AuthService extends StateNotifier<AuthState> {
     _sessionTokenStore.token = null;
     state = AuthState();
     disconnectionNotifier.notify(state);
+    WebSocketService.send('chat', 'leave', {});
   }
 
   _onSuccessfulAuth(dynamic data, {bool stay= false, bool clear = false}) {
@@ -158,13 +160,15 @@ class AuthService extends StateNotifier<AuthState> {
       storage.delete(key: 'refresh_token');
     }
 
+    final user = User.fromJson(data);
     state = AuthState(
       sessionId: data['session_token'],
-      user: User.fromJson(data),
+      user: user,
       orgStatus: data['orgStatus'],
       permissions: Permissions.fromJson(data),
     );
     _sessionTokenStore.token = state.sessionId;
     connectionNotifier.notify(state);
+    WebSocketService.send('chat', 'join', {"userId": user.id});
   }
 }

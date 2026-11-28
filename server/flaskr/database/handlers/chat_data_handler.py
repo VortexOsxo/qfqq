@@ -1,6 +1,6 @@
 from flaskr.models import Message
 from ..postgres import get_db_access, read_query
-
+from psycopg import sql
 
 class ChatDataHandler:
     @classmethod
@@ -35,12 +35,26 @@ class ChatDataHandler:
             )
 
     @classmethod
-    def is_active_participant(cls, chat_id: int, user_id: int) -> bool:
+    def is_active_participant(cls, chatId: int, userId: int) -> bool:
         return bool(read_query(
             "SELECT 1 FROM chatsUsers WHERE chatId = %s AND userId = %s AND leftAt IS NULL;",
-            (chat_id, user_id),
+            (chatId, userId),
         ))
 
+    @classmethod
+    def get_active_participants(cls, chatId, orgId=None) -> list[int]:
+        query = "SELECT userId from chatsUsers WHERE chatId = %s AND leftAt IS NULL;"
+
+        with get_db_access() as conn:
+            cur = conn.cursor()
+
+            if orgId is not None:
+                cur.execute(sql.SQL("SET search_path TO {}, public;").format(sql.Identifier(str(orgId))))
+
+            cur.execute(query, (chatId,))
+            results = cur.fetchall()
+
+        return [result[0] for result in results]
 
     @classmethod
     def send_message(cls, chatId: int, senderId: int, content: str) -> Message:

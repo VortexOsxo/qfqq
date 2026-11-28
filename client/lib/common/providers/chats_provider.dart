@@ -5,10 +5,13 @@ import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/chat_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
 
-final chatsProvider = StateNotifierProvider<ChatService, List<Chat>>(
+final StateNotifierProvider<ChatService, List<Chat>> chatsProvider =
+    StateNotifierProvider<ChatService, List<Chat>>(
   (ref) => ChatService(
     ref.read(qfqqHttpClientProvider),
     ref.read(authStateProvider.notifier),
+    invalidateChatMessages: (chatId) =>
+        ref.invalidate(chatMessagesProvider(chatId)),
   ),
 );
 

@@ -2,25 +2,28 @@ import json
 import ssl
 import sys
 
+import os
+from dotenv import load_dotenv
 from websockets.asyncio.server import serve
 
+from flaskr.database.database import Database
 from .meeting_handler import MeetingHandler
+from .chat_handler import ChatHandler
+
 
 async def handler(websocket):
-    handlers = {
-        'meeting': MeetingHandler(websocket)
-    }
+    handlers = {"meeting": MeetingHandler(websocket), "chat": ChatHandler(websocket)}
 
     try:
         async for message in websocket:
             print(f"Received: {message}")
-            
+
             event = json.loads(message)
 
-            handler = handlers.get(event.get('handler', None), None)
+            handler = handlers.get(event.get("handler", None), None)
             assert handler is not None
             await handler.on_event(event)
-                        
+
     except Exception as e:
         print(e)
     finally:
@@ -39,6 +42,9 @@ async def main():
         )
     else:
         ssl_context = None
+
+    load_dotenv()
+    Database.init_pool(os.environ.get("DB_URL"))
 
     async with serve(handler, "", 8001, ssl=ssl_context) as server:
         print(f"Web socket server running in {'dev' if is_dev else 'prod'} mode")

@@ -5,15 +5,29 @@ import 'package:qfqq/common/models/chat.dart';
 import 'package:qfqq/common/models/chat_message.dart';
 import 'package:qfqq/common/services/auth_service.dart';
 import 'package:qfqq/common/services/qfqq_http_client.dart';
+import 'package:qfqq/common/services/web_socket_service.dart';
 
 class ChatService extends StateNotifier<List<Chat>> {
   final QfqqHttpClient _http;
+  final void Function(int chatId) _invalidateChatMessages;
 
-  ChatService(this._http, AuthService auth) : super([]) {
+  ChatService(
+    this._http,
+    AuthService auth, {
+    required void Function(int chatId) invalidateChatMessages,
+  }) : _invalidateChatMessages = invalidateChatMessages,
+       super([]) {
+    WebSocketService.registerHandler('chat', chatEventHandler);
     auth.connectionNotifier.subscribe((_) => loadChats());
     auth.disconnectionNotifier.subscribe((_) => _clearChats());
 
     if (auth.isAuthenticated()) loadChats();
+  }
+
+  @override
+  void dispose() {
+    WebSocketService.unregisterHandler('chat');
+    super.dispose();
   }
 
   void _clearChats() => state = [];
@@ -39,6 +53,9 @@ class ChatService extends StateNotifier<List<Chat>> {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'content': content}),
     );
+    if (response.statusCode == 201) {
+      WebSocketService.send('chat', 'sendMessage', {'chatId': chatId});
+    }
     return response.statusCode;
   }
 
@@ -69,6 +86,15 @@ class ChatService extends StateNotifier<List<Chat>> {
         data
             .map((item) => Chat.fromJson(item as Map<String, dynamic>))
             .toList();
+  }
+
+  void chatEventHandler(dynamic event) {
+    print('Client event: $event');
+
+    if (event["type"] == "receiveMessage") {
+      final chatId = event["chatId"] as int;
+      _invalidateChatMessages(chatId);
+    }
   }
 }
 
